@@ -72,8 +72,7 @@ class CreateAnAccount extends Component {
     }
   };
 
-  status = ({status}) => {
-    const {navigation, email} = this.state;
+  status = ({status, clientid}) => {
     switch (status) {
       case 'PasswordTooShort':
         Toast.show({
@@ -88,23 +87,23 @@ class CreateAnAccount extends Component {
           position: 'top',
           type: 'error',
         });
-        this.saveEmail(email);
         break;
-      case 'Success':
+      case 'MFACodeRequired':
         Toast.show({
           text: 'You have successfully registered',
           position: 'top',
           type: 'success',
         });
-        this.saveEmail(email);
-        navigation.navigate('EmailKey');
+        this.saveClientid(clientid);
         break;
     }
   };
 
-  saveEmail = async (email) => {
+  saveClientid = async (clientid) => {
+    const {navigation, email} = this.state;
     try {
-      await AsyncStorage.setItem('user_email', email);
+      await AsyncStorage.setItem('clientid', clientid);
+      navigation.navigate('AuthCode', {email: email});
     } catch (error) {
       console.log('Error in storing email in async storage: ', error);
     }

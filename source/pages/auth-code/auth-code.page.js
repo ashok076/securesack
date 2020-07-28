@@ -18,57 +18,24 @@ class AuthCode extends Component {
     this.state = {
       authcode: '',
       clientid: '',
-      email: '',
+      email: props.route.params.email,
     };
   }
 
   componentDidMount() {
-    this.getEmail();
+    this.getClientid();
+    console.log("Checking props: ", this.props)
   }
 
-  getEmail = async () => {
+  getClientid = async () => {
     try {
-      let email = await AsyncStorage.getItem('user_email');
-      if (email !== null) {
-        console.log('User email: ', email);
-        this.setState({email}, () => this.sendAuthCode());
+      let clientid = await AsyncStorage.getItem('clientid');
+      if (clientid !== null) {
+        console.log('User clientid: ', clientid);
+        this.setState({clientid});
       }
     } catch (error) {
-      console.log('Error in getting email: ', error);
-    }
-  };
-
-  sendAuthCode = () => {
-    const {email} = this.state;
-    let data = qs.stringify({
-      email: email,
-    });
-    let config = {
-      method: 'post',
-      url: `${BASE_URL}${END_POINTS.SEND_AUTH_CODE_API}`,
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      data,
-    };
-    console.log('Data: ', data);
-    axios(config)
-      .then((response) => {
-        console.log(JSON.stringify(response.data));
-        this.saveClientId(response.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-
-  saveClientId = async ({clientid}) => {
-    this.setState({clientid});
-    console.log('Client Id: ', clientid);
-    try {
-      await AsyncStorage.setItem('clientid', clientid);
-    } catch (error) {
-      console.log('Error in storing client Id: ', error);
+      console.log('Error in getting clientid: ', error);
     }
   };
 
@@ -76,7 +43,7 @@ class AuthCode extends Component {
     this.setState({authcode: text});
   };
 
-  handleClick = () => {
+  handleClick = async () => {
     const {authcode, clientid, email} = this.state;
     const {navigation} = this.props;
     console.log(this.props);
@@ -95,11 +62,11 @@ class AuthCode extends Component {
         data,
       };
 
-      axios(config)
+      await axios(config)
         .then((response) => {
           navigation.reset({
             index: 0,
-            routes: [{ name: 'Login' }],
+            routes: [{ name: 'Home' }],
           })
           console.log(JSON.stringify("response.data", response.data));
         })
