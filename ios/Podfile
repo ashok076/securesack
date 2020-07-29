@@ -12,6 +12,8 @@ target 'SecureSack' do
 
   pod 'RNCAsyncStorage', :path => '../node_modules/@react-native-community/async-storage'
 
+  pod 'react-native-background-timer', :path => '../node_modules/react-native-background-timer'
+
   target 'SecureSackTests' do
     inherit! :complete
     # Pods for testing

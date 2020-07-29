@@ -4,11 +4,13 @@ import {Root, Toast} from 'native-base';
 import AsyncStorage from '@react-native-community/async-storage';
 import qs from 'qs';
 import axios from 'axios';
+import { connect } from 'react-redux';
 
 import InputText from '../../components/input-text/input-text.component.js';
 import Button from '../../components/button/button.component.js';
 import {END_POINTS, BASE_URL} from '../../configuration/api/api.types';
 import {postApi} from '../../configuration/api/api.functions';
+import { toggleLoginSession } from '../../redux/login-session/actions/login-session.action';
 
 import styles from './auth-code.style.js';
 
@@ -45,7 +47,7 @@ class AuthCode extends Component {
 
   handleClick = async () => {
     const {authcode, clientid, email} = this.state;
-    const {navigation} = this.props;
+    const {navigation, toggleLoginSession} = this.props;
     console.log(this.props);
     if (this.fieldVerification(authcode)) {
       var data = qs.stringify({
@@ -64,11 +66,13 @@ class AuthCode extends Component {
 
       await axios(config)
         .then((response) => {
+          this.saveClientid(response.data);
+          toggleLoginSession(true)
           navigation.reset({
             index: 0,
-            routes: [{ name: 'Home' }],
+            routes: [{ name: 'Home', params: {access_token: response.data.access_token, fullname: response.data.fullname} }]
           })
-          console.log(JSON.stringify(response.data));
+          toggleLoginSession
         })
         .catch((error) => {
           if (error !== undefined) this.showMessage(error.response);
@@ -76,6 +80,14 @@ class AuthCode extends Component {
         });
     }
   };
+
+  saveClientid = async ({ clientid }) => {
+    try {
+      await AsyncStorage.setItem('clientid', clientid);
+    } catch (error) {
+      console.log("Error in storing clientid in auth: ", error)
+    }
+  }
 
   showMessage = ({status}) => {
     console.log("status: ", status)
@@ -128,4 +140,8 @@ class AuthCode extends Component {
     );
   }
 }
-export default AuthCode;
+
+const mapDispatchToProps = (dispatch) => ({
+  toggleLoginSession: (isLogin) => dispatch(toggleLoginSession(isLogin))
+})
+export default connect(null, mapDispatchToProps)(AuthCode);

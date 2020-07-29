@@ -6,10 +6,11 @@ import {
   ScrollView,
   ImageBackground,
   TouchableOpacity,
-  Image
+  Image,
 } from 'react-native';
 import {Toast} from 'native-base';
 import {Root} from 'native-base';
+import {connect} from 'react-redux';
 
 import LoginComponent from '../../components/login/login.component';
 import CreateAnAccount from '../../components/create-an-account/create-an-account.component';
@@ -24,9 +25,23 @@ class Login extends Component {
     };
   }
 
+  componentDidMount() {
+    this.checkingLoginStatus();
+  }
+
+  checkingLoginStatus = () => {
+    const {navigation, isLogin} = this.props;
+    if (isLogin) {
+      navigation.reset({
+        index: 0,
+        routes: [{name: 'Home'}],
+      });
+    }
+  };
+
   render() {
     const {isActiveLoginSwitcher} = this.state;
-    const { navigation } = this.props;
+    const {navigation} = this.props;
     return (
       <Root>
         <SafeAreaView style={styles.container}>
@@ -36,8 +51,10 @@ class Login extends Component {
                 <ImageBackground
                   source={require('../../assets/png-images/semi-cricle.png')}
                   style={styles.circle}>
-                  <Text style={styles.logo}>SECURE
-                  <Text style={styles.logoSecure}>SACK</Text></Text>
+                  <Text style={styles.logo}>
+                    SECURE
+                    <Text style={styles.logoSecure}>SACK</Text>
+                  </Text>
                 </ImageBackground>
               </View>
               <View style={styles.middleContainer}>
@@ -76,9 +93,9 @@ class Login extends Component {
                   </TouchableOpacity>
                 </View>
                 {isActiveLoginSwitcher ? (
-                  <LoginComponent navigation={navigation}/>
+                  <LoginComponent navigation={navigation} />
                 ) : (
-                  <CreateAnAccount navigation={navigation}/>
+                  <CreateAnAccount navigation={navigation} />
                 )}
               </View>
             </View>
@@ -89,4 +106,8 @@ class Login extends Component {
   }
 }
 
-export default Login;
+const mapStateToProps = ({isLogin}) => ({
+  isLogin: isLogin,
+});
+
+export default connect(mapStateToProps)(Login);

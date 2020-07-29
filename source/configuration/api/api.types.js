@@ -4,5 +4,5 @@ export const END_POINTS = {
     LOGIN_API : "/actions/auth/login",
     CONFIRM_AUTH_CODE_API : "/actions/auth/confirmAuthCode",
     REGISTRATION_API : "/actions/register",
-    CONFIRM_EMAIL_API : "/actions/confirmEmail",
+    AUTH_STATUS: "/api/authStatus"
 }
