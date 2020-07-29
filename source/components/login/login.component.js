@@ -45,73 +45,51 @@ class LoginComponent extends Component {
     console.log('Login function called');
     const {username, password, clientid} = this.state;
     console.log('Login api client id: ', clientid);
-    //TODO: if not needed delete this
-    // if (this.validation(username, password)) {
-    //   console.log('Validation function complete');
-    //   let data = qs.stringify({
-    //     email: username,
-    //   });
-    //   let config = {
-    //     method: 'post',
-    //     url: `${BASE_URL}${END_POINTS.SEND_AUTH_CODE_API}`,
-    //     headers: {
-    //       'Content-Type': 'application/x-www-form-urlencoded',
-    //     },
-    //     data,
-    //   };
-
-    //   console.log(config);
-    //   axios(config)
-    //     .then((response) => {
-    //       console.log('Response', JSON.stringify(response.data));
-    //       this.saveClientId(response.data);
-    //     })
-    //     .catch((error) => {
-    //       console.log(error);
-    //     });
-    // }
-
-  let data = qs.stringify({
-      email: username,
-      password,
-      clientid,
-    });
-    let config = {
-      method: 'post',
-      url: `${BASE_URL}${END_POINTS.LOGIN_API}`,
-      headers: {
-        'Content-type': 'application/x-www-form-urlencoded',
-      },
-      data,
-    };
-    console.log('Login api config: ', config);
-    await axios(config)
-      .then((response) => {
-        console.log('Response Login Api: ', JSON.stringify(response.data));
-        this.status(response.data);
-      })
-      .catch((error) => {
-        console.log('Error in Login api: ', error.response);
-        Toast.show({
-          text: error.response.data.message,
-          type: 'error',
-          position: 'bottom',
-          textStyle: styles.toastText,
-          buttonText: 'DISMISS',
-          duration: 7000
-        })
+    if (this.validation(username, password)) {
+      let data = qs.stringify({
+        email: username,
+        password,
+        clientid,
       });
+      let config = {
+        method: 'post',
+        url: `${BASE_URL}${END_POINTS.LOGIN_API}`,
+        headers: {
+          'Content-type': 'application/x-www-form-urlencoded',
+        },
+        data,
+      };
+      console.log('Login api config: ', config);
+      await axios(config)
+        .then((response) => {
+          console.log('Response Login Api: ', JSON.stringify(response));
+          this.status(response.data);
+        })
+        .catch((error) => {
+          console.log('Error in Login api: ', error.response);
+          Toast.show({
+            text: error.response.data.message,
+            type: 'error',
+            position: 'bottom',
+            textStyle: styles.toastText,
+            buttonText: 'DISMISS',
+            duration: 7000,
+          });
+        });
+    }
+  };
+
+  saveClientId = async (clientid) => {
+    try {
+      await AsyncStorage.setItem('clientid', clientid);
+    } catch (error) {
+      console.log("Error while storing client id in login: ", error)
+    }
 
   };
 
-//TODO: if not needed delete this
-  // saveClientId = async ({clientid}) => {
-  //   const {username, password} = this.state;
-    
-  // };
-
-  status = ({status, message}) => {
-    const {navigation} = this.state;
+  status = ({status, message, clientid}) => {
+    const {navigation, email} = this.state;
     switch (status) {
       case 'IncorrectPassword':
         this.showToast(message, 'error', true);
@@ -134,6 +112,10 @@ class LoginComponent extends Component {
       case 'Success':
         this.showToast(message, 'success', true);
         navigation.navigate('Home');
+        break;
+        case 'MFACodeRequired':
+        this.saveClientId(clientid);
+        navigation.navigate('AuthCode', {email: email})
         break;
     }
   };

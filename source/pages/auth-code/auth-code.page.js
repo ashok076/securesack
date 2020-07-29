@@ -68,7 +68,7 @@ class AuthCode extends Component {
             index: 0,
             routes: [{ name: 'Home' }],
           })
-          console.log(JSON.stringify("response.data", response.data));
+          console.log(JSON.stringify(response.data));
         })
         .catch((error) => {
           if (error !== undefined) this.showMessage(error.response);
