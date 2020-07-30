@@ -31,11 +31,11 @@ class CreateAnAccount extends Component {
   };
 
   handleFirstNaame = ({nativeEvent: {eventCount, target, text}}) => {
-    this.setState({firstname: text});
+    this.setState({firstname: text.replace(/[^A-Za-z]/ig, '')});
   };
 
   handleLastName = ({nativeEvent: {eventCount, target, text}}) => {
-    this.setState({lastname: text});
+    this.setState({lastname: text.replace(/[^A-Za-z]/ig, '')});
   };
 
   handlePasswordText = ({nativeEvent: {eventCount, target, text}}) => {
@@ -50,7 +50,6 @@ class CreateAnAccount extends Component {
       `${firstname}, ${lastname}, ${email}, ${password}, ${END_POINTS.REGISTRATION_API}`,
     );
     if (this.validation(firstname, lastname, email, password)) {
-
       let data = qs.stringify({
         firstname: firstname,
         lastname: lastname,
@@ -60,7 +59,7 @@ class CreateAnAccount extends Component {
 
       postApi({
         endpoint: END_POINTS.REGISTRATION_API,
-        data
+        data,
       })
         .then((res) => {
           console.log('Registration response: ', res.data);
@@ -85,7 +84,7 @@ class CreateAnAccount extends Component {
         Toast.show({
           text: 'Email already exists',
           position: 'top',
-          type: 'error',
+          type: 'danger',
         });
         break;
       case 'MFACodeRequired':

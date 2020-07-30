@@ -69,7 +69,7 @@ class LoginComponent extends Component {
           console.log('Error in Login api: ', error.response);
           Toast.show({
             text: error.response.data.message,
-            type: 'error',
+            type: 'danger',
             position: 'bottom',
             textStyle: styles.toastText,
             buttonText: 'DISMISS',
@@ -92,22 +92,22 @@ class LoginComponent extends Component {
     const {navigation, email} = this.state;
     switch (status) {
       case 'IncorrectPassword':
-        this.showToast(message, 'error', true);
+        this.showToast(message, 'danger', true);
         break;
       case 'UserUnconfirmedPasswordOk':
         this.showToast(message, 'warning', false);
         break;
       case 'UserNotFound':
-        this.showToast(message, 'error', true);
+        this.showToast(message, 'danger', true);
         break;
       case 'DBSystemError':
-        this.showToast(message, 'error', true);
+        this.showToast(message, 'danger', true);
         break;
       case 'UserLockout':
         this.showToast(message, 'warning', false);
         break;
       case 'UserAlreadyLockedOut':
-        this.showToast(message, 'error', true);
+        this.showToast(message, 'danger', true);
         break;
       case 'Success':
         this.showToast(message, 'success', true);

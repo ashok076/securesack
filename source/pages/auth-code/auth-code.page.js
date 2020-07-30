@@ -4,13 +4,14 @@ import {Root, Toast} from 'native-base';
 import AsyncStorage from '@react-native-community/async-storage';
 import qs from 'qs';
 import axios from 'axios';
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 
 import InputText from '../../components/input-text/input-text.component.js';
 import Button from '../../components/button/button.component.js';
 import {END_POINTS, BASE_URL} from '../../configuration/api/api.types';
 import {postApi} from '../../configuration/api/api.functions';
-import { toggleLoginSession } from '../../redux/login-session/actions/login-session.action';
+import {toggleLoginSession} from '../../redux/login-session/actions/login-session.action';
+import {userInfo} from '../../redux/user-info/actions/user-info.action';
 
 import styles from './auth-code.style.js';
 
@@ -26,7 +27,15 @@ class AuthCode extends Component {
 
   componentDidMount() {
     this.getClientid();
-    console.log("Checking props: ", this.props)
+    console.log('Checking props: ', this.props);
+    Toast.show({
+      text: 'Please check your registered email id for the auth-code',
+      type: 'success',
+      position: 'bottom',
+      textStyle: styles.toastText,
+      buttonText: 'DISMISS',
+      duration: 7000,
+    });
   }
 
   getClientid = async () => {
@@ -47,7 +56,7 @@ class AuthCode extends Component {
 
   handleClick = async () => {
     const {authcode, clientid, email} = this.state;
-    const {navigation, toggleLoginSession} = this.props;
+    const {navigation, toggleLoginSession, userInfo} = this.props;
     console.log(this.props);
     if (this.fieldVerification(authcode)) {
       var data = qs.stringify({
@@ -66,38 +75,45 @@ class AuthCode extends Component {
 
       await axios(config)
         .then((response) => {
-          this.saveClientid(response.data);
-          toggleLoginSession(true)
-          navigation.reset({
-            index: 0,
-            routes: [{ name: 'Home', params: {access_token: response.data.access_token, fullname: response.data.fullname} }]
-          })
-          toggleLoginSession
+          if (response.data !== null) {
+            toggleLoginSession(true);
+            this.saveSession();
+            userInfo(response.data);
+            navigation.reset({
+              index: 0,
+              routes: [{name: 'Home'}],
+            });
+          }
         })
         .catch((error) => {
           if (error !== undefined) this.showMessage(error.response);
-          console.log(error)
+          console.log(error);
         });
     }
   };
 
-  saveClientid = async ({ clientid }) => {
+  saveSession = async () => {
     try {
-      await AsyncStorage.setItem('clientid', clientid);
+      await AsyncStorage.setItem('isLogin', 'true');
     } catch (error) {
-      console.log("Error in storing clientid in auth: ", error)
+      console.log('Error in login session: ', error);
     }
-  }
+  };
 
   showMessage = ({status}) => {
-    console.log("status: ", status)
+    console.log('status: ', status);
+
     if (status !== undefined) {
+      console.log('Working', typeof status);
       switch (status) {
-        case 400:
+        case 404:
           Toast.show({
-            text: 'The provided code did not match',
+            text: 'Invalid code. Make sure you have entered proper code',
+            type: 'danger',
             position: 'top',
-            type: 'error',
+            textStyle: styles.toastText,
+            buttonText: 'DISMISS',
+            duration: 7000,
           });
           break;
       }
@@ -142,6 +158,7 @@ class AuthCode extends Component {
 }
 
 const mapDispatchToProps = (dispatch) => ({
-  toggleLoginSession: (isLogin) => dispatch(toggleLoginSession(isLogin))
-})
+  toggleLoginSession: (isLogin) => dispatch(toggleLoginSession(isLogin)),
+  userInfo: (userData) => dispatch(userInfo(userData)),
+});
 export default connect(null, mapDispatchToProps)(AuthCode);

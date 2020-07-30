@@ -11,6 +11,7 @@ import {
 import {Toast} from 'native-base';
 import {Root} from 'native-base';
 import {connect} from 'react-redux';
+import AsyncStorage from '@react-native-community/async-storage';
 
 import LoginComponent from '../../components/login/login.component';
 import CreateAnAccount from '../../components/create-an-account/create-an-account.component';
@@ -22,6 +23,7 @@ class Login extends Component {
     super(props);
     this.state = {
       isActiveLoginSwitcher: true,
+      isLogin: 'false'
     };
   }
 
@@ -30,14 +32,27 @@ class Login extends Component {
   }
 
   checkingLoginStatus = () => {
-    const {navigation, isLogin} = this.props;
-    if (isLogin) {
+    const {navigation} = this.props;
+    const { isLogin } = this.state;
+    if (isLogin === 'true') {
       navigation.reset({
         index: 0,
         routes: [{name: 'Home'}],
       });
     }
   };
+
+  getLoginSession = () => {
+    try {
+      const isLogin = AsyncStorage.getItem('isLogin');
+      if (isLogin !== null){
+      console.log("Login: ", isLogin);
+      this.setState({ isLogin })
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   render() {
     const {isActiveLoginSwitcher} = this.state;
@@ -107,7 +122,7 @@ class Login extends Component {
 }
 
 const mapStateToProps = ({isLogin}) => ({
-  isLogin: isLogin,
+  isLogin,
 });
 
 export default connect(mapStateToProps)(Login);

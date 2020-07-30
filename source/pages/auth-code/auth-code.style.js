@@ -12,5 +12,9 @@ const styles = {
   buttonContainer: {
     paddingTop: 20,
   },
+  toastText: {
+    fontFamily: 'PublicSans-Regular',
+    color: '#FFFFFF',
+  },
 };
-export default styles
+export default styles;
