@@ -3,7 +3,7 @@ import {TextInput, View} from 'react-native';
 
 import styles from "./input-text.style.js"
 
-const InputText = ({placeholder, onChange, value}) => (
+const InputText = ({placeholder, onChange, value, keyboardType}) => (
   <View>
     <TextInput 
       style={styles.input}
@@ -12,6 +12,7 @@ const InputText = ({placeholder, onChange, value}) => (
       onChange={onChange}
       placeholderTextColor="#FFFFFF"
       value={value}
+      keyboardType={keyboardType}
     />
   </View>
 );

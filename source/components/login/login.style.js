@@ -23,6 +23,7 @@ const styles = StyleSheet.create({
     fontFamily: 'PublicSans-Regular',
     color: '#FFFFFF',
     fontSize: 12,
+    textAlign: 'center'
   },
   bottomContainer: {
     justifyContent: 'center',

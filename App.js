@@ -8,7 +8,8 @@ import {Provider} from 'react-redux';
 import Login from './source/pages/login-registration/login-registration.page';
 import AuthCode from './source/pages/auth-code/auth-code.page';
 import Home from './source/pages/home/home.page';
-import store from './source/redux/root-reducer/root.reducer'
+import ForgotPassword from './source/pages/forgot-password/forgot-password.page';
+import store from './source/redux/root-reducer/root.reducer';
 
 const Stack = createStackNavigator();
 
@@ -21,6 +22,7 @@ class App extends Component {
             <Stack.Screen name="Login" component={Login} />
             <Stack.Screen name="AuthCode" component={AuthCode} />
             <Stack.Screen name="Home" component={Home} />
+            <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
           </Stack.Navigator>
         </NavigationContainer>
       </Provider>

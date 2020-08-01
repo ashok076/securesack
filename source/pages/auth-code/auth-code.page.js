@@ -1,16 +1,16 @@
 import React, {Component} from 'react';
-import {View, Text, SafeAreaView} from 'react-native';
+import {View, Text, SafeAreaView, ImageBackground} from 'react-native';
 import {Root, Toast} from 'native-base';
 import AsyncStorage from '@react-native-community/async-storage';
 import qs from 'qs';
 import axios from 'axios';
 import {connect} from 'react-redux';
 
-import InputText from '../../components/input-text/input-text.component.js';
+import InputTextIcon from '../../components/input-text-icon/input-text-icon.component.js';
 import Button from '../../components/button/button.component.js';
 import {END_POINTS, BASE_URL} from '../../configuration/api/api.types';
 import {postApi} from '../../configuration/api/api.functions';
-import {toggleLoginSession} from '../../redux/login-session/actions/login-session.action';
+
 import {userInfo} from '../../redux/user-info/actions/user-info.action';
 
 import styles from './auth-code.style.js';
@@ -21,7 +21,7 @@ class AuthCode extends Component {
     this.state = {
       authcode: '',
       clientid: '',
-      email: props.route.params.email,
+      email: 'props.route.params.email',
     };
   }
 
@@ -56,7 +56,7 @@ class AuthCode extends Component {
 
   handleClick = async () => {
     const {authcode, clientid, email} = this.state;
-    const {navigation, toggleLoginSession, userInfo} = this.props;
+    const {navigation, userInfo} = this.props;
     console.log(this.props);
     if (this.fieldVerification(authcode)) {
       var data = qs.stringify({
@@ -76,7 +76,6 @@ class AuthCode extends Component {
       await axios(config)
         .then((response) => {
           if (response.data !== null) {
-            toggleLoginSession(true);
             this.saveSession();
             userInfo(response.data);
             navigation.reset({
@@ -110,7 +109,7 @@ class AuthCode extends Component {
           Toast.show({
             text: 'Invalid code. Make sure you have entered proper code',
             type: 'danger',
-            position: 'top',
+            position: 'bottom',
             textStyle: styles.toastText,
             buttonText: 'DISMISS',
             duration: 7000,
@@ -126,7 +125,7 @@ class AuthCode extends Component {
         text: 'Please enter OTP',
         buttonText: 'DISMISS',
         type: 'danger',
-        position: 'top',
+        position: 'bottom',
         duration: 3000,
         textStyle: styles.toastText,
       });
@@ -140,12 +139,25 @@ class AuthCode extends Component {
     const {authcode} = this.state;
     return (
       <Root>
+        <View style={styles.background}>
+          <ImageBackground
+            source={require('../../assets/png-images/semi-cricle.png')}
+            style={styles.circle}>
+            <Text style={styles.logo}>
+              SECURE
+              <Text style={styles.logoSecure}>SACK</Text>
+            </Text>
+          </ImageBackground>
+        </View>
         <SafeAreaView style={styles.container}>
           <View style={styles.inputContainer}>
-            <InputText
+            <InputTextIcon
               placeholder="Enter 6-digit code"
               onChange={this.handleAuthCode}
               value={authcode}
+              keyboardType="number-pad"
+              icon={'lock'}
+              show={true}
             />
           </View>
           <View style={styles.buttonContainer}>
@@ -158,7 +170,6 @@ class AuthCode extends Component {
 }
 
 const mapDispatchToProps = (dispatch) => ({
-  toggleLoginSession: (isLogin) => dispatch(toggleLoginSession(isLogin)),
   userInfo: (userData) => dispatch(userInfo(userData)),
 });
 export default connect(null, mapDispatchToProps)(AuthCode);

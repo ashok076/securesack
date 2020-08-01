@@ -23,6 +23,8 @@ class CreateAnAccount extends Component {
       password: '',
       isShowPassword: true,
       navigation: props.navigation,
+      isShowPasswordError: false,
+      passwordMessage: '',
     };
   }
 
@@ -31,11 +33,11 @@ class CreateAnAccount extends Component {
   };
 
   handleFirstNaame = ({nativeEvent: {eventCount, target, text}}) => {
-    this.setState({firstname: text.replace(/[^A-Za-z]/ig, '')});
+    this.setState({firstname: text.replace(/[^A-Za-z]/gi, '')});
   };
 
   handleLastName = ({nativeEvent: {eventCount, target, text}}) => {
-    this.setState({lastname: text.replace(/[^A-Za-z]/ig, '')});
+    this.setState({lastname: text.replace(/[^A-Za-z]/gi, '')});
   };
 
   handlePasswordText = ({nativeEvent: {eventCount, target, text}}) => {
@@ -50,24 +52,26 @@ class CreateAnAccount extends Component {
       `${firstname}, ${lastname}, ${email}, ${password}, ${END_POINTS.REGISTRATION_API}`,
     );
     if (this.validation(firstname, lastname, email, password)) {
-      let data = qs.stringify({
-        firstname: firstname,
-        lastname: lastname,
-        email: email,
-        password: password,
-      });
-
-      postApi({
-        endpoint: END_POINTS.REGISTRATION_API,
-        data,
-      })
-        .then((res) => {
-          console.log('Registration response: ', res.data);
-          this.status(res.data);
-        })
-        .catch((error) => {
-          console.log('Error in registration: ', error.message);
+      if (this.savePasswordError(password)) {
+        let data = qs.stringify({
+          firstname: firstname,
+          lastname: lastname,
+          email: email,
+          password: password,
         });
+
+        postApi({
+          endpoint: END_POINTS.REGISTRATION_API,
+          data,
+        })
+          .then((res) => {
+            console.log('Registration response: ', res.data);
+            this.status(res.data);
+          })
+          .catch((error) => {
+            console.log('Error in registration: ', error.message);
+          });
+      }
     }
   };
 
@@ -76,21 +80,21 @@ class CreateAnAccount extends Component {
       case 'PasswordTooShort':
         Toast.show({
           text: 'Password too short',
-          position: 'top',
+          position: 'bottom',
           type: 'warning',
         });
         break;
       case 'UserEmailExists':
         Toast.show({
           text: 'Email already exists',
-          position: 'top',
+          position: 'bottom',
           type: 'danger',
         });
         break;
       case 'MFACodeRequired':
         Toast.show({
           text: 'You have successfully registered',
-          position: 'top',
+          position: 'bottom',
           type: 'success',
         });
         this.saveClientid(clientid);
@@ -128,19 +132,19 @@ class CreateAnAccount extends Component {
     ) {
       if (email.length == 0) {
         cancel = true;
-        message = 'Please enter Email';
+        message = 'Please fill all the inputs';
       }
       if (firstname.length == 0) {
         cancel = true;
-        message = 'Please enter First Name';
+        message = 'Please fill all the inputs';
       }
       if (lastname.length == 0) {
         cancel = true;
-        message = 'Please enter Last Name';
+        message = 'Please fill all the inputs';
       }
       if (password.length == 0) {
         cancel = true;
-        message = 'Please enter Password';
+        message = 'Please fill all the inputs';
       }
     }
     if (email.length > 0) {
@@ -155,11 +159,28 @@ class CreateAnAccount extends Component {
         text: message,
         buttonText: 'DISMISS',
         type: 'danger',
-        position: 'top',
+        position: 'bottom',
         duration: 3000,
         textStyle: styles.toastText,
       });
     } else {
+      return true;
+    }
+    return false;
+  };
+
+  savePasswordError = (password) => {
+    let reg = /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,16}$/;
+    let cancel = false;
+
+    if (reg.test(password) === false) {
+      cancel = true;
+    }
+    if (cancel) {
+      console.log('PASSword ', password);
+      this.setState({isShowPasswordError: true});
+    } else {
+      this.setState({isShowPasswordError: false});
       return true;
     }
     return false;
@@ -172,7 +193,14 @@ class CreateAnAccount extends Component {
   };
 
   render() {
-    const {email, isShowPassword, firstname, lastname, password} = this.state;
+    const {
+      email,
+      isShowPassword,
+      firstname,
+      lastname,
+      password,
+      isShowPasswordError,
+    } = this.state;
     return (
       <View>
         <View style={styles.inputContainer}>
@@ -180,6 +208,7 @@ class CreateAnAccount extends Component {
             placeholder="First Name"
             onChange={this.handleFirstNaame}
             value={firstname}
+            keyboardType="default"
           />
         </View>
 
@@ -188,6 +217,7 @@ class CreateAnAccount extends Component {
             placeholder="Last Name"
             onChange={this.handleLastName}
             value={lastname}
+            keyboardType="default"
           />
         </View>
 
@@ -196,6 +226,7 @@ class CreateAnAccount extends Component {
             placeholder="Email"
             onChange={this.handleEmail}
             value={email}
+            keyboardType="email-address"
           />
         </View>
 
@@ -208,6 +239,15 @@ class CreateAnAccount extends Component {
             show={isShowPassword}
             onPress={this.handleTogglePassword}
           />
+          {isShowPasswordError && (
+            <View style={styles.extras}>
+              <Text style={styles.extrasText}>
+                {' '}
+                Your password must be at least 8 characters and must contain one
+                UPPERCASE, one digit and special character '?!@#$%^&*'{' '}
+              </Text>
+            </View>
+          )}
         </View>
 
         <View style={styles.buttonContainer}>

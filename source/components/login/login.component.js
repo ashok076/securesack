@@ -1,9 +1,10 @@
 import React, {Component} from 'react';
-import {View, Text, TouchableOpacity, Image} from 'react-native';
+import {View, Text, TouchableOpacity, Image, AppState} from 'react-native';
 import {Toast} from 'native-base';
 import AsyncStorage from '@react-native-community/async-storage';
 import axios from 'axios';
 import qs from 'qs';
+import FingerprintScanner from 'react-native-fingerprint-scanner';
 
 import InputText from '../input-text/input-text.component.js';
 import InputTextIcon from '../input-text-icon/input-text-icon.component.js';
@@ -22,12 +23,72 @@ class LoginComponent extends Component {
       password: '',
       message: '',
       navigation: props.navigation,
+      isShowPasswordError: false,
+      passwordMessage: '',
+      errorMessage: undefined,
+      biometric: undefined,
+      popupShowed: false,
+      isSensorAvailable: false,
+      isPromptShow: false,
     };
   }
 
   componentDidMount() {
     this.getClientId();
+    this.addFingerprintEvent();
   }
+
+  componentWillUnmount() {
+    AppState.removeEventListener('change', this.handleAppStateChange);
+    FingerprintScanner.release();
+  }
+
+  addFingerprintEvent = () => {
+    AppState.addEventListener('change', this.handleAppStateChange);
+    this.detectFingerprintAvailable();
+  };
+
+  detectFingerprintAvailable = () => {
+    FingerprintScanner.isSensorAvailable()
+      .then((result) => {
+        this.setState({isSensorAvailable: true, isPromptShow: true});
+      })
+      .catch((error) => {
+        this.setState({
+          errorMessage: error.message,
+          biometric: error.biometric,
+        });
+        console.log(error);
+      });
+  };
+
+  startScannerProcess = () => {
+    const {navigation, isPromptShow} = this.state;
+    if (isPromptShow) {
+      FingerprintScanner.authenticate({
+        description: 'Scan your fingerprint on the device scanner to continue',
+      })
+        .then(() => {
+          navigation.reset({
+            index: 0,
+            routes: [{name: 'Home'}],
+          });
+        })
+        .catch((error) => console.log('Fingerprint scanner: ', error));
+    }
+  };
+
+  handleAppStateChange = (nextAppState) => {
+    if (
+      this.state.appState &&
+      this.state.appState.match(/inactive|background/) &&
+      nextAppState === 'active'
+    ) {
+      FingerprintScanner.release();
+      this.detectFingerprintAvailable();
+    }
+    this.setState({appState: nextAppState});
+  };
 
   getClientId = async () => {
     try {
@@ -46,50 +107,71 @@ class LoginComponent extends Component {
     const {username, password, clientid} = this.state;
     console.log('Login api client id: ', clientid);
     if (this.validation(username, password)) {
-      let data = qs.stringify({
-        email: username,
-        password,
-        clientid,
-      });
-      let config = {
-        method: 'post',
-        url: `${BASE_URL}${END_POINTS.LOGIN_API}`,
-        headers: {
-          'Content-type': 'application/x-www-form-urlencoded',
-        },
-        data,
-      };
-      console.log('Login api config: ', config);
-      await axios(config)
-        .then((response) => {
-          console.log('Response Login Api: ', JSON.stringify(response));
-          this.status(response.data);
-        })
-        .catch((error) => {
-          console.log('Error in Login api: ', error.response);
-          Toast.show({
-            text: error.response.data.message,
-            type: 'danger',
-            position: 'bottom',
-            textStyle: styles.toastText,
-            buttonText: 'DISMISS',
-            duration: 7000,
-          });
+      if (this.savePasswordError(password)) {
+        let data = qs.stringify({
+          email: username,
+          password,
+          clientid,
         });
+        let config = {
+          method: 'post',
+          url: `${BASE_URL}${END_POINTS.LOGIN_API}`,
+          headers: {
+            'Content-type': 'application/x-www-form-urlencoded',
+          },
+          data,
+        };
+        console.log('Login api config: ', config);
+        await axios(config)
+          .then((response) => {
+            console.log('Response Login Api: ', JSON.stringify(response));
+            this.status(response.data);
+          })
+          .catch((error) => {
+            console.log('Error in Login api: ', error.response);
+            Toast.show({
+              text: error.response.data.message,
+              type: 'danger',
+              position: 'bottom',
+              textStyle: styles.toastText,
+              buttonText: 'DISMISS',
+              duration: 7000,
+            });
+          });
+      }
     }
+  };
+
+  savePasswordError = (password) => {
+    let reg = /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{7,15}$/;
+    let cancel = false;
+
+    if (reg.test(password) === false) {
+      cancel = true;
+    }
+    if (cancel) {
+      console.log('PASSword ', password);
+      this.setState({isShowPasswordError: true});
+    } else {
+      this.setState({isShowPasswordError: false});
+      return true;
+    }
+    return false;
   };
 
   saveClientId = async (clientid) => {
     try {
       await AsyncStorage.setItem('clientid', clientid);
     } catch (error) {
-      console.log("Error while storing client id in login: ", error)
+      console.log('Error while storing client id in login: ', error);
     }
-
   };
 
   status = ({status, message, clientid}) => {
     const {navigation, email} = this.state;
+    if (status === undefined) {
+      this.showToast(message, 'danger', true);
+    }
     switch (status) {
       case 'IncorrectPassword':
         this.showToast(message, 'danger', true);
@@ -113,9 +195,12 @@ class LoginComponent extends Component {
         this.showToast(message, 'success', true);
         navigation.navigate('Home');
         break;
-        case 'MFACodeRequired':
+      case 'MFACodeRequired':
         this.saveClientId(clientid);
-        navigation.navigate('AuthCode', {email: email})
+        navigation.navigate('AuthCode', {email: email});
+        break;
+      default:
+        this.showToast(message, 'warning', true);
         break;
     }
   };
@@ -157,7 +242,7 @@ class LoginComponent extends Component {
         text: message,
         buttonText: 'DISMISS',
         type: 'danger',
-        position: 'top',
+        position: 'bottom',
         duration: 3000,
         textStyle: styles.toastText,
       });
@@ -184,7 +269,17 @@ class LoginComponent extends Component {
   };
 
   render() {
-    const {isShowPassword, username, password} = this.state;
+    const {
+      isShowPassword,
+      username,
+      password,
+      isShowPasswordError,
+      passwordMessage,
+      navigation,
+      errorMessage,
+      biometric,
+      isSensorAvailable,
+    } = this.state;
     return (
       <View>
         <View style={styles.inputContainer}>
@@ -192,6 +287,7 @@ class LoginComponent extends Component {
             placeholder="Username"
             onChange={this.handleLoginText}
             value={username}
+            keyboardType="email-address"
           />
         </View>
         <View style={styles.inputContainer}>
@@ -203,13 +299,22 @@ class LoginComponent extends Component {
             show={isShowPassword}
             onPress={this.handleTogglePassword}
           />
+          {isShowPasswordError && (
+            <View style={styles.extras}>
+              <Text style={styles.extrasText}>
+                {' '}
+                Your password must be at least 8 characters and must contain one
+                uppercase, one digit and special character '?!@#$%^&*'{' '}
+              </Text>
+            </View>
+          )}
         </View>
         <View style={styles.buttonContainer}>
           <Button onPress={this.handleClick} title="Login" />
         </View>
         <View style={styles.extras}>
           <TouchableOpacity
-            onPress={() => Toast.show({text: 'Clicked on forgot password'})}>
+            onPress={() => navigation.navigate('ForgotPassword')}>
             <Text style={styles.extrasText}> Forgot Password? </Text>
           </TouchableOpacity>
           <TouchableOpacity
@@ -217,12 +322,17 @@ class LoginComponent extends Component {
             <Text style={styles.extrasText}> No username? Enroll now </Text>
           </TouchableOpacity>
         </View>
-        <View style={styles.bottomContainer}>
-          <Image
-            source={require('../../assets/png-images/fingerprint.png')}
-            style={styles.fingerprint}
-          />
-        </View>
+        {isSensorAvailable && (
+          <TouchableOpacity
+            style={styles.bottomContainer}
+            onPress={() => this.startScannerProcess()}>
+            <Image
+              source={require('../../assets/png-images/fingerprint.png')}
+              style={styles.fingerprint}
+            />
+            <Text style={styles.extrasText}> {errorMessage} </Text>
+          </TouchableOpacity>
+        )}
       </View>
     );
   }
