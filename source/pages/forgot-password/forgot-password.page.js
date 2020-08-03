@@ -82,6 +82,7 @@ class ForgotPassword extends Component {
   };
 
   startResetPasswordStatus = ({status}) => {
+    const {navigation} = this.props;
     switch (status) {
       case 'Success':
         this.showToast(
@@ -90,6 +91,7 @@ class ForgotPassword extends Component {
           false,
         );
         this.setState({isEmailComponent: false});
+        navigation.goBack();
         break;
       case 'emailSendError':
         this.showToast('Error in sending email', 'danger', true);
@@ -187,7 +189,7 @@ class ForgotPassword extends Component {
   };
 
   doResetPasswordStatus = ({status, message}) => {
-    const {navigation} = this.props;
+    
     switch (status) {
       case 'NewPasswordEncryptionError':
         this.showToast(message, 'danger', true);
@@ -215,7 +217,6 @@ class ForgotPassword extends Component {
         break;
       case 'Success':
         this.showToast('Password successfully reset', 'success', false);
-        navigation.goBack();
         break;
       default:
         break;
@@ -412,7 +413,8 @@ class ForgotPassword extends Component {
           {isEmailComponent ? (
             <View>{this.emailComponent()}</View>
           ) : (
-            <View>{this.emailKeyPassComponent()}</View>
+            // <View>{this.emailKeyPassComponent()}</View>
+            <View/>
           )}
         </SafeAreaView>
       </Root>

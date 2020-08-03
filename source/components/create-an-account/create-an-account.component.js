@@ -243,8 +243,8 @@ class CreateAnAccount extends Component {
             <View style={styles.extras}>
               <Text style={styles.extrasText}>
                 {' '}
-                Your password must be at least 8 characters and must contain one
-                UPPERCASE, one digit and special character '?!@#$%^&*'{' '}
+                Your password must be minimum 8 characters to 16 characters and must contain one
+                uppercase, one digit and special character '?!@#$%^&*'{' '}
               </Text>
             </View>
           )}

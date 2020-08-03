@@ -21,7 +21,7 @@ class AuthCode extends Component {
     this.state = {
       authcode: '',
       clientid: '',
-      email: 'props.route.params.email',
+      email: props.route.params.email,
     };
   }
 
@@ -76,7 +76,7 @@ class AuthCode extends Component {
       await axios(config)
         .then((response) => {
           if (response.data !== null) {
-            this.saveSession();
+            this.saveSession(response.data.access_token);
             userInfo(response.data);
             navigation.reset({
               index: 0,
@@ -91,11 +91,11 @@ class AuthCode extends Component {
     }
   };
 
-  saveSession = async () => {
+  saveSession = async (access_token) => {
     try {
-      await AsyncStorage.setItem('isLogin', 'true');
+      await AsyncStorage.setItem('access_token', access_token);
     } catch (error) {
-      console.log('Error in login session: ', error);
+      console.log('Error in user info: ', error);
     }
   };
 
