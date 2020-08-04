@@ -9,6 +9,7 @@ import FingerprintScanner from 'react-native-fingerprint-scanner';
 import InputText from '../input-text/input-text.component.js';
 import InputTextIcon from '../input-text-icon/input-text-icon.component.js';
 import Button from '../button/button.component';
+import Loader from '../loader/loader.component';
 import {END_POINTS, BASE_URL} from '../../configuration/api/api.types';
 import {postApi} from '../../configuration/api/api.functions';
 
@@ -32,7 +33,9 @@ class LoginComponent extends Component {
       isPromptShow: false,
       clientid: '',
       access_token: '',
-      isAcessTokenExpire: true
+      isAcessTokenExpire: true,
+      isLoader: false,
+      enableFingerprint: false,
     };
   }
 
@@ -66,27 +69,46 @@ class LoginComponent extends Component {
   };
 
   startScannerProcess = async () => {
-    const {navigation, isPromptShow, isAcessTokenExpire} = this.state;
+    const {
+      navigation,
+      isPromptShow,
+      isAcessTokenExpire,
+      enableFingerprint,
+    } = this.state;
     if (isPromptShow) {
-      if (!isAcessTokenExpire){
-        FingerprintScanner.authenticate({
-        description: 'Scan your fingerprint on the device scanner to continue',
-      })
-        .then(() => {
-          navigation.reset({
-            index: 0,
-            routes: [{name: 'Home'}],
-          });
-        })
-        .catch((error) => console.log('Fingerprint scanner: ', error));
+      if (!isAcessTokenExpire) {
+        if (enableFingerprint) {
+          FingerprintScanner.authenticate({
+            description:
+              'Scan your fingerprint on the device scanner to continue',
+          })
+            .then(() => {
+              navigation.reset({
+                index: 0,
+                routes: [{name: 'Home'}],
+              });
+            })
+            .catch((error) => console.log('Fingerprint scanner: ', error));
+        } else {
+          this.showToast(
+            'Make sure you have enable biometric from app settings',
+            'warning',
+            false,
+          );
+        }
       }
     }
   };
 
   checkAccessToken = async () => {
+    this.setState({isLoader: true});
     const {access_token} = this.state;
-    console.log("Acess token api: ", access_token)
-    if (access_token !== null && access_token !== undefined && access_token.length > 0) {
+    console.log('Acess token api: ', access_token);
+    if (
+      access_token !== null &&
+      access_token !== undefined &&
+      access_token.length > 0
+    ) {
       var config = {
         method: 'get',
         url: `${BASE_URL}${END_POINTS.AUTH_STATUS}`,
@@ -99,23 +121,29 @@ class LoginComponent extends Component {
         .then((res) => {
           console.log('Response in status checking: ', res.data);
           this.actionAsPerStatus(res.data);
+          this.setState({isLoader: false});
         })
         .catch((error) => {
           console.log('Error in status checking: ', error);
+          this.setState({isLoader: false});
         });
     }
   };
 
-  actionAsPerStatus = ({ status, message }) => {
-    switch (status){
-      case 'notAuthenticated' :
-      this.showToast('Access token expired. Please log in again', 'warning' , true)
-      this.setState({ isAcessTokenExpire: true });
-      break;
+  actionAsPerStatus = ({status, message}) => {
+    switch (status) {
+      case 'notAuthenticated':
+        this.showToast(
+          'Access token expired. Please log in again',
+          'warning',
+          true,
+        );
+        this.setState({isAcessTokenExpire: true});
+        break;
       default:
-      this.setState({ isAcessTokenExpire: false });
+        this.setState({isAcessTokenExpire: false});
     }
-  }
+  };
 
   handleAppStateChange = (nextAppState) => {
     if (
@@ -131,15 +159,23 @@ class LoginComponent extends Component {
 
   getAsyncItem = async () => {
     try {
-      let value = await AsyncStorage.multiGet(['clientid', 'access_token']);
+      let value = await AsyncStorage.multiGet([
+        'clientid',
+        'access_token',
+        'enable_fingerprint',
+      ]);
       if (value !== null) {
         let clientid = value[0][1];
         let access_token = value[1][1];
+        let enableFingerprint = JSON.parse(value[2][1]);
         if (clientid !== null) {
           this.setState({clientid});
         }
         if (access_token !== null) {
           this.setState({access_token}, () => this.checkAccessToken());
+        }
+        if (enableFingerprint !== null) {
+          this.setState({enableFingerprint});
         }
       }
     } catch (error) {
@@ -151,41 +187,45 @@ class LoginComponent extends Component {
   };
 
   handleClick = async () => {
-    console.log('Login function called');
+    this.setState({isLoader: true});
     const {username, password, clientid} = this.state;
     console.log('Login api client id: ', clientid);
     if (this.validation(username, password)) {
       if (this.savePasswordError(password)) {
-      let data = qs.stringify({
-        email: username,
-        password,
-        clientid,
-      });
-      let config = {
-        method: 'post',
-        url: `${BASE_URL}${END_POINTS.LOGIN_API}`,
-        headers: {
-          'Content-type': 'application/x-www-form-urlencoded',
-        },
-        data,
-      };
-      console.log('Login api config: ', config);
-      await axios(config)
-        .then((response) => {
-          console.log('Response Login Api: ', JSON.stringify(response));
-          this.status(response.data);
-        })
-        .catch((error) => {
-          console.log('Error in Login api: ', error.response);
-          Toast.show({
-            text: error.response.data.message,
-            type: 'danger',
-            position: 'bottom',
-            textStyle: styles.toastText,
-            buttonText: 'DISMISS',
-            duration: 7000,
-          });
+        let data = qs.stringify({
+          email: username,
+          password,
+          clientid,
         });
+        let config = {
+          method: 'post',
+          url: `${BASE_URL}${END_POINTS.LOGIN_API}`,
+          headers: {
+            'Content-type': 'application/x-www-form-urlencoded',
+          },
+          data,
+        };
+        console.log('Login api config: ', config);
+        await axios(config)
+          .then((response) => {
+            console.log('Response Login Api: ', JSON.stringify(response));
+            this.status(response.data);
+            this.setState({isLoader: false});
+          })
+          .catch((error) => {
+            console.log('Error in Login api: ', error.response);
+            Toast.show({
+              text: error.response.data.message,
+              type: 'danger',
+              position: 'bottom',
+              textStyle: styles.toastText,
+              buttonText: 'DISMISS',
+              duration: 7000,
+            });
+            this.setState({isLoader: false});
+          });
+      } else {
+        this.setState({isLoader: false});
       }
     }
   };
@@ -327,6 +367,7 @@ class LoginComponent extends Component {
       errorMessage,
       biometric,
       isSensorAvailable,
+      isLoader,
     } = this.state;
     return (
       <View>
@@ -351,8 +392,9 @@ class LoginComponent extends Component {
             <View style={styles.extras}>
               <Text style={styles.extrasText}>
                 {' '}
-                Your password must be minimum 8 characters to 16 characters and must contain one
-                uppercase, one digit and special character '?!@#$%^&*'{' '}
+                Your password must be minimum 8 characters to 16 characters and
+                must contain one uppercase, one digit and special character
+                '?!@#$%^&*'{' '}
               </Text>
             </View>
           )}
@@ -377,6 +419,7 @@ class LoginComponent extends Component {
             <Text style={styles.extrasText}> {errorMessage} </Text>
           </TouchableOpacity>
         )}
+        <Loader isLoader={isLoader} />
       </View>
     );
   }

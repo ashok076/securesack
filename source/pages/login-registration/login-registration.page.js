@@ -60,7 +60,7 @@ class Login extends Component {
     return (
       <Root>
         <SafeAreaView style={styles.container}>
-          <ScrollView>
+          <ScrollView keyboardShouldPersistTaps='handled'>
             <View>
               <View>
                 <ImageBackground
