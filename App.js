@@ -18,7 +18,7 @@ class App extends Component {
     return (
       <Provider store={store}>
         <NavigationContainer>
-          <Stack.Navigator screenOptions={{headerShown: false}}>
+          <Stack.Navigator screenOptions={{headerShown: false}} initialRouteName="Home">
             <Stack.Screen name="Login" component={Login} />
             <Stack.Screen name="AuthCode" component={AuthCode} />
             <Stack.Screen name="Home" component={Home} />

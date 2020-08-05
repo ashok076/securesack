@@ -16,6 +16,8 @@ import FingerprintScanner from 'react-native-fingerprint-scanner';
 import {connect} from 'react-redux';
 
 import {END_POINTS, BASE_URL} from '../../configuration/api/api.types';
+import MainContent from '../../components/main-content/main-content.component';
+import InputTextSearch from '../../components/input-text-search/input-text-search.component';
 
 import styles from './home.style';
 
@@ -27,6 +29,7 @@ class Home extends Component {
       isSensorAvailable: false,
       enable_fingerprint: false,
       showPopup: true,
+      search: ''
     };
   }
 
@@ -128,11 +131,11 @@ class Home extends Component {
 
   storePopupSession = async () => {
     try {
-      await AsyncStorage.setItem('showPopup', JSON.stringify(false))
+      await AsyncStorage.setItem('showPopup', JSON.stringify(false));
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-  }
+  };
 
   fingerPrintPopup = (isFingerPrintSettings, isSensorAvailable) => (
     <View>
@@ -151,7 +154,7 @@ class Home extends Component {
               </View>
               <View style={styles.modalImageView}>
                 <Image
-                  source={require('../../assets/png-images/fingerprint-blue.png')}
+                  source={require('../../assets/png-images/fingerprint.png')}
                 />
               </View>
               <View style={styles.modalButtonView}>
@@ -167,10 +170,13 @@ class Home extends Component {
                 <TouchableOpacity
                   style={styles.modalButton}
                   onPress={() =>
-                    this.setState({
-                      isFingerPrintSettings: false,
-                      enable_fingerprint: false,
-                    }, () => this.storePopupSession())
+                    this.setState(
+                      {
+                        isFingerPrintSettings: false,
+                        enable_fingerprint: false,
+                      },
+                      () => this.storePopupSession(),
+                    )
                   }>
                   <Text style={styles.modalButtonTitle}>No</Text>
                 </TouchableOpacity>
@@ -182,13 +188,23 @@ class Home extends Component {
     </View>
   );
 
+  handleSearch = ({nativeEvent: {eventCount, target, text}}) => {
+
+  }
+
   render() {
+    const {search} = this.state;
     const {isFingerPrintSettings, isSensorAvailable} = this.state;
     return (
       <SafeAreaView style={styles.container}>
         {this.fingerPrintPopup(isFingerPrintSettings, isSensorAvailable)}
         <View>
-          <Text style={styles.title}>Home Page</Text>
+          <View>
+            <InputTextSearch placeholder="Search" onChange={this.handleSearch} value={search}/>
+          </View>
+          <View style={styles.mainContentView}>
+            <MainContent />
+          </View>
         </View>
       </SafeAreaView>
     );

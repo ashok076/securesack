@@ -1,4 +1,4 @@
-import {StyleSheet, Dimensions} from 'react-native';
+import {StyleSheet, Dimensions, StatusBar} from 'react-native';
 
 const height = Dimensions.get('window').height;
 const width = Dimensions.get('window').width;
@@ -6,9 +6,10 @@ const width = Dimensions.get('window').width;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#212F3C',
+    backgroundColor: '#FFFFFF',
     justifyContent: 'center',
     alignItems: 'center',
+    marginTop: StatusBar.currentHeight
   },
   title: {
     color: '#FFFFFF',
@@ -18,12 +19,12 @@ const styles = StyleSheet.create({
     padding: 20,
     justifyContent: 'center',
     height: height / 3.5,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#212F3C',
     borderRadius: 9,
   },
   modalText: {
     textAlign: 'center',
-    color: '#212F3C',
+    color: '#FFFFFF',
     fontSize: 15,
   },
   modelTextView: {
@@ -46,7 +47,7 @@ const styles = StyleSheet.create({
     margin: 5
   },
   modalButtonTitle: {
-    color: '#FFF',
+    color: '#FFFFFF',
     fontSize: 15,
     fontFamily: 'PublicSans-Regular',
   },
@@ -61,6 +62,9 @@ const styles = StyleSheet.create({
   modalImageView: {
     alignItems: 'center',
     marginTop: 20
+  },
+  mainContentView: {
+    marginTop: 30
   }
 });
 
