@@ -3,11 +3,12 @@ import {View, Text} from 'react-native';
 import {Toast} from 'native-base';
 import AsyncStorage from '@react-native-community/async-storage';
 import qs from 'qs';
+import axios from 'axios';
 
 import InputText from '../input-text/input-text.component.js';
 import InputTextIcon from '../input-text-icon/input-text-icon.component.js';
 import Button from '../button/button.component';
-import {END_POINTS} from '../../configuration/api/api.types';
+import {BASE_URL,END_POINTS} from '../../configuration/api/api.types';
 import {postApi} from '../../configuration/api/api.functions';
 
 import styles from './create-an-account.style';
@@ -44,13 +45,9 @@ class CreateAnAccount extends Component {
     this.setState({password: text});
   };
 
-  handleClick = () => {
+  handleClick = async () => {
     console.log('Clicked on registration button');
     const {firstname, lastname, email, password} = this.state;
-    console.log(
-      'All info: ',
-      `${firstname}, ${lastname}, ${email}, ${password}, ${END_POINTS.REGISTRATION_API}`,
-    );
     if (this.validation(firstname, lastname, email, password)) {
       if (this.savePasswordError(password)) {
         let data = qs.stringify({
@@ -60,10 +57,29 @@ class CreateAnAccount extends Component {
           password: password,
         });
 
-        postApi({
-          endpoint: END_POINTS.REGISTRATION_API,
+        // postApi({
+        //   endpoint: END_POINTS.REGISTRATION_API,
+        //   data,
+        // })
+        //   .then((res) => {
+        //     console.log('Registration response: ', res.data);
+        //     this.status(res.data);
+        //   })
+        //   .catch((error) => {
+        //     console.log('Error in registration: ', error.message);
+        //   });
+
+        let config = {
+          method: 'post',
+          url: `${BASE_URL}${END_POINTS.REGISTRATION_API}`,
+          headers: {
+            'Content-type': 'application/x-www-form-urlencoded',
+          },
           data,
-        })
+        };
+        console.log("Config: ", config)
+
+        await axios(config)
           .then((res) => {
             console.log('Registration response: ', res.data);
             this.status(res.data);
@@ -243,8 +259,9 @@ class CreateAnAccount extends Component {
             <View style={styles.extras}>
               <Text style={styles.extrasText}>
                 {' '}
-                Your password must be minimum 8 characters to 16 characters and must contain one
-                uppercase, one digit and special character '?!@#$%^&*'{' '}
+                Your password must be minimum 8 characters to 16 characters and
+                must contain one uppercase, one digit and special character
+                '?!@#$%^&*'{' '}
               </Text>
             </View>
           )}

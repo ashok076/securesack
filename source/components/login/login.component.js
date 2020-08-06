@@ -191,7 +191,7 @@ class LoginComponent extends Component {
     const {username, password, clientid} = this.state;
     console.log('Login api client id: ', clientid);
     if (this.validation(username, password)) {
-      // if (this.savePasswordError(password)) {
+      if (this.savePasswordError(password)) {
         let data = qs.stringify({
           email: username,
           password,
@@ -224,9 +224,9 @@ class LoginComponent extends Component {
             });
             this.setState({isLoader: false});
           });
-      // } else {
-      //   this.setState({isLoader: false});
-      // }
+      } else {
+        this.setState({isLoader: false});
+      }
     }
   };
 

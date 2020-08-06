@@ -9,7 +9,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: StatusBar.currentHeight
+    marginTop: StatusBar.currentHeight + 30
   },
   title: {
     color: '#FFFFFF',
@@ -61,7 +61,11 @@ const styles = StyleSheet.create({
   },
   modalImageView: {
     alignItems: 'center',
-    marginTop: 20
+    marginTop: 20,
+  },
+  imageStyle:{
+    height: 50,
+    width: 50
   },
   mainContentView: {
     marginTop: 30

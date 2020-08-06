@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   AppState,
   Image,
+  ScrollView
 } from 'react-native';
 import BackgroundTimer from 'react-native-background-timer';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -155,6 +156,7 @@ class Home extends Component {
               <View style={styles.modalImageView}>
                 <Image
                   source={require('../../assets/png-images/fingerprint.png')}
+                  style={styles.imageStyle}
                 />
               </View>
               <View style={styles.modalButtonView}>
@@ -198,14 +200,14 @@ class Home extends Component {
     return (
       <SafeAreaView style={styles.container}>
         {this.fingerPrintPopup(isFingerPrintSettings, isSensorAvailable)}
-        <View>
+        <ScrollView>
           <View>
             <InputTextSearch placeholder="Search" onChange={this.handleSearch} value={search}/>
           </View>
           <View style={styles.mainContentView}>
             <MainContent />
           </View>
-        </View>
+        </ScrollView>
       </SafeAreaView>
     );
   }
