@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   AppState,
   Image,
-  ScrollView
+  ScrollView,
 } from 'react-native';
 import BackgroundTimer from 'react-native-background-timer';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -19,6 +19,7 @@ import {connect} from 'react-redux';
 import {END_POINTS, BASE_URL} from '../../configuration/api/api.types';
 import MainContent from '../../components/main-content/main-content.component';
 import InputTextSearch from '../../components/input-text-search/input-text-search.component';
+import Header from '../../components/header/header.component';
 
 import styles from './home.style';
 
@@ -30,14 +31,14 @@ class Home extends Component {
       isSensorAvailable: false,
       enable_fingerprint: false,
       showPopup: true,
-      search: ''
+      search: '',
     };
   }
 
   componentDidMount() {
-    BackgroundTimer.runBackgroundTimer(() => {
-      this.checkLoginStatus();
-    }, 30000);
+    // BackgroundTimer.runBackgroundTimer(() => {
+    //   this.checkLoginStatus();
+    // }, 30000);
     this.checkSession();
   }
 
@@ -190,24 +191,32 @@ class Home extends Component {
     </View>
   );
 
-  handleSearch = ({nativeEvent: {eventCount, target, text}}) => {
-
-  }
+  handleSearch = ({nativeEvent: {eventCount, target, text}}) => {};
 
   render() {
-    const {search} = this.state;
-    const {isFingerPrintSettings, isSensorAvailable} = this.state;
+    const {isFingerPrintSettings, isSensorAvailable, search} = this.state;
+    const {navigation} = this.props;
     return (
       <SafeAreaView style={styles.container}>
-        {this.fingerPrintPopup(isFingerPrintSettings, isSensorAvailable)}
-        <ScrollView>
+        <View style={styles.innerContainer}>
+          {this.fingerPrintPopup(isFingerPrintSettings, isSensorAvailable)}
           <View>
-            <InputTextSearch placeholder="Search" onChange={this.handleSearch} value={search}/>
+            <Header navigation={navigation}/>
           </View>
-          <View style={styles.mainContentView}>
+          <View style={styles.grettingView}>
+            <Text style={styles.grettingText}>Good morning</Text>
+          </View>
+          <View style={styles.searchView}>
+            <InputTextSearch
+              placeholder="Search"
+              onChange={this.handleSearch}
+              value={search}
+            />
+          </View>
+          <View style={styles.mainContent}>
             <MainContent />
           </View>
-        </ScrollView>
+        </View>
       </SafeAreaView>
     );
   }

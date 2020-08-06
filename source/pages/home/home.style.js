@@ -5,11 +5,9 @@ const width = Dimensions.get('window').width;
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     backgroundColor: '#FFFFFF',
-    justifyContent: 'center',
     alignItems: 'center',
-    marginTop: StatusBar.currentHeight + 30
+    paddingTop: StatusBar.HEIGHT
   },
   title: {
     color: '#FFFFFF',
@@ -68,6 +66,18 @@ const styles = StyleSheet.create({
     width: 50
   },
   mainContentView: {
+  },
+  innerContainer: {
+    width: '90%'
+  },
+  grettingText: {
+    fontSize: 28,
+    fontFamily: 'PublicSans-Regular',
+  },
+  grettingView: {
+    marginTop: 33
+  },
+  searchView: {
     marginTop: 30
   }
 });
