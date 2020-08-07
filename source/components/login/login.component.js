@@ -227,6 +227,8 @@ class LoginComponent extends Component {
       } else {
         this.setState({isLoader: false});
       }
+    } else {
+      this.setState({isLoader: false});
     }
   };
 
@@ -262,7 +264,7 @@ class LoginComponent extends Component {
     }
     switch (status) {
       case 'IncorrectPassword':
-        this.showToast(message, 'danger', true);
+        this.showToast(message, 'warning', true);
         break;
       case 'UserUnconfirmedPasswordOk':
         this.showToast(message, 'warning', false);

@@ -7,4 +7,5 @@ export const END_POINTS = {
     AUTH_STATUS: "/api/authStatus",
     START_RESET_PASSWORD: "/actions/resetPassword/startReset",
     DO_RESET_PASSWORD: "/actions/resetPassword/doPasswordReset",
+    LOGOUT: "/actions/logout"
 }

@@ -195,7 +195,11 @@ class Home extends Component {
 
   render() {
     const {isFingerPrintSettings, isSensorAvailable, search} = this.state;
-    const {navigation} = this.props;
+    const {navigation, userData} = this.props;
+    let name = '';
+    if (userData && userData.userData){
+      name = userData.userData.fullname
+    }
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.innerContainer}>
@@ -204,7 +208,7 @@ class Home extends Component {
             <Header navigation={navigation}/>
           </View>
           <View style={styles.grettingView}>
-            <Text style={styles.grettingText}>Good morning</Text>
+            <Text style={styles.grettingText}>Good morning {name}</Text>
           </View>
           <View style={styles.searchView}>
             <InputTextSearch
@@ -214,8 +218,9 @@ class Home extends Component {
             />
           </View>
           <View style={styles.mainContent}>
-            <MainContent />
+            <MainContent navigation={navigation}/>
           </View>
+
         </View>
       </SafeAreaView>
     );

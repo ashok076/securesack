@@ -51,7 +51,7 @@ const styles = StyleSheet.create({
   userInfoView: {
       marginLeft: 15,
       flexDirection: 'column'
-  }
+  },
 });
 
 export default styles;

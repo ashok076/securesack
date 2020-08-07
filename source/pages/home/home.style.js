@@ -7,7 +7,7 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: '#FFFFFF',
     alignItems: 'center',
-    paddingTop: StatusBar.HEIGHT
+    paddingTop: StatusBar.HEIGHT,
   },
   title: {
     color: '#FFFFFF',
@@ -28,12 +28,11 @@ const styles = StyleSheet.create({
   modelTextView: {
     justifyContent: 'center',
     alignItems: 'center',
-
   },
   modalButtonView: {
     justifyContent: 'center',
     flexDirection: 'row',
-    marginTop: 20
+    marginTop: 20,
   },
   modalButton: {
     backgroundColor: '#FB9337',
@@ -42,7 +41,7 @@ const styles = StyleSheet.create({
     height: 50,
     justifyContent: 'center',
     alignItems: 'center',
-    margin: 5
+    margin: 5,
   },
   modalButtonTitle: {
     color: '#FFFFFF',
@@ -55,31 +54,33 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'space-around',
     backgroundColor: '#00000040',
-    padding: 15
+    padding: 15,
   },
   modalImageView: {
     alignItems: 'center',
     marginTop: 20,
   },
-  imageStyle:{
+  imageStyle: {
     height: 50,
-    width: 50
-  },
-  mainContentView: {
+    width: 50,
   },
   innerContainer: {
-    width: '90%'
+    width: '90%',
   },
   grettingText: {
     fontSize: 28,
     fontFamily: 'PublicSans-Regular',
   },
   grettingView: {
-    marginTop: 33
+    marginTop: 23,
   },
   searchView: {
-    marginTop: 30
-  }
+    marginTop: 20,
+  },
+  mainContent: {
+    alignItems: 'center',
+    marginTop: 20
+  },
 });
 
 export default styles;
