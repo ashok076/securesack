@@ -8,7 +8,7 @@ const Block = ({item, navigation}) => (
     <ImageBackground
       source={item.background}
       imageStyle={styles.imageStyle}
-      style={styles.imageBackgroundStyle}>
+      style={[styles.imageBackgroundStyle, {alignItems: 'flex-start'}]}>
       <Image source={item.icon} style={styles.icon} />
       <Text style={[styles.title, {color: item.titleColor}]}>{item.title}</Text>
     </ImageBackground>

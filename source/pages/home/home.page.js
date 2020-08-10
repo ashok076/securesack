@@ -197,18 +197,20 @@ class Home extends Component {
     const {isFingerPrintSettings, isSensorAvailable, search} = this.state;
     const {navigation, userData} = this.props;
     let name = '';
-    if (userData && userData.userData){
-      name = userData.userData.fullname
+    if (userData && userData.userData) {
+      name = userData.userData.fullname;
     }
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.innerContainer}>
           {this.fingerPrintPopup(isFingerPrintSettings, isSensorAvailable)}
           <View>
-            <Header navigation={navigation}/>
+            <Header navigation={navigation} />
           </View>
           <View style={styles.grettingView}>
-            <Text style={styles.grettingText}>Good morning {name}</Text>
+            <Text style={styles.grettingText}>
+              Good morning,<Text style={styles.name}> {name} </Text>
+            </Text>
           </View>
           <View style={styles.searchView}>
             <InputTextSearch
@@ -218,9 +220,8 @@ class Home extends Component {
             />
           </View>
           <View style={styles.mainContent}>
-            <MainContent navigation={navigation}/>
+            <MainContent navigation={navigation} />
           </View>
-
         </View>
       </SafeAreaView>
     );

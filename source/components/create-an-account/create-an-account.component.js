@@ -8,7 +8,7 @@ import axios from 'axios';
 import InputText from '../input-text/input-text.component.js';
 import InputTextIcon from '../input-text-icon/input-text-icon.component.js';
 import Button from '../button/button.component';
-import {BASE_URL,END_POINTS} from '../../configuration/api/api.types';
+import {BASE_URL, END_POINTS} from '../../configuration/api/api.types';
 import {postApi} from '../../configuration/api/api.functions';
 
 import styles from './create-an-account.style';
@@ -77,7 +77,7 @@ class CreateAnAccount extends Component {
           },
           data,
         };
-        console.log("Config: ", config)
+        console.log('Config: ', config);
 
         await axios(config)
           .then((res) => {
@@ -114,7 +114,17 @@ class CreateAnAccount extends Component {
           type: 'success',
         });
         this.saveClientid(clientid);
+        this.saveEmail();
         break;
+    }
+  };
+
+  saveEmail = async () => {
+    const {username} = this.state;
+    try {
+      await AsyncStorage.setItem('email', username);
+    } catch (error) {
+      console.log('Error while storing email in login: ', error);
     }
   };
 

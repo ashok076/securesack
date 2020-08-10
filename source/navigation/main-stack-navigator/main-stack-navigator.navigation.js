@@ -16,7 +16,7 @@ import SettingsPage from '../../pages/settings/settings.page';
 const Stack = createStackNavigator();
 
 const MainStackNavigator = () => (
-  <Stack.Navigator screenOptions={{headerShown: false}}>
+  <Stack.Navigator screenOptions={{headerShown: false}} initialRouteName='Home'>
     <Stack.Screen name="Login" component={Login} />
     <Stack.Screen name="AuthCode" component={AuthCode} />
     <Stack.Screen name="Home" component={DrawerNavigator} />

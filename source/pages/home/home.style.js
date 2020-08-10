@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
   },
   grettingText: {
     fontSize: 28,
-    fontFamily: 'PublicSans-Regular',
+    fontFamily: 'PublicSans-ExtraLight',
   },
   grettingView: {
     marginTop: 23,
@@ -79,7 +79,16 @@ const styles = StyleSheet.create({
   },
   mainContent: {
     alignItems: 'center',
-    marginTop: 20
+    marginTop: 20,
+  },
+  name: {
+    fontFamily: 'PublicSans-Bold',
+  },
+  fab: {
+    position: 'absolute',
+    margin: 16,
+    right: 0,
+    bottom: 0,
   },
 });
 

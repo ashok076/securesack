@@ -163,11 +163,13 @@ class LoginComponent extends Component {
         'clientid',
         'access_token',
         'enable_fingerprint',
+        'email',
       ]);
       if (value !== null) {
         let clientid = value[0][1];
         let access_token = value[1][1];
         let enableFingerprint = JSON.parse(value[2][1]);
+        let username = value[3][1];
         if (clientid !== null) {
           this.setState({clientid});
         }
@@ -176,6 +178,9 @@ class LoginComponent extends Component {
         }
         if (enableFingerprint !== null) {
           this.setState({enableFingerprint});
+        }
+        if (username !== null) {
+          this.setState({username});
         }
       }
     } catch (error) {
@@ -257,6 +262,15 @@ class LoginComponent extends Component {
     }
   };
 
+  saveEmail = async () => {
+    const {username} = this.state;
+    try {
+      await AsyncStorage.setItem('email', username);
+    } catch (error) {
+      console.log('Error while storing email in login: ', error);
+    }
+  };
+
   status = ({status, message, clientid}) => {
     const {navigation, email} = this.state;
     if (status === undefined) {
@@ -283,10 +297,12 @@ class LoginComponent extends Component {
         break;
       case 'Success':
         this.showToast(message, 'success', true);
+        this.saveEmail();
         navigation.navigate('Home');
         break;
       case 'MFACodeRequired':
         this.saveClientId(clientid);
+        this.saveEmail();
         navigation.navigate('AuthCode', {email: email});
         break;
       default:
