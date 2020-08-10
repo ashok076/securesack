@@ -1,27 +1,32 @@
 import React, {Component} from 'react';
-import {View, Text, SafeAreaView} from 'react-native';
+import {View, Text, SafeAreaView, ImageBackground} from 'react-native';
 
-import styles from './financial-data.style.js';
+import FinancialDataType from '../../components/financial-data-type/financial-data-type.component';
 
-class FinancialData extends Component{
-    constructor(props){
-        super(props);
-        this.state = {
-            isLogin: true
-        }
-    }
+import styles from './financial-data.style';
 
-    render(){
-        return(
-            <SafeAreaView>
-                <View style={styles.outerView}>
-                    <View style={styles.outerContainer}>
+class FinancialData extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      isLogin: true,
+    };
+  }
 
-                    </View>
-                </View>
-            </SafeAreaView>
-        )
-    }
+  render() {
+    return (
+      <SafeAreaView style={styles.outerView}>
+        <ImageBackground
+          source={require('../../assets/jpg-images/Financial-Data-Background/financial-data-background.jpg')}
+          style={styles.backgroundImage}>
+          <View style={styles.titleView}></View>
+          <View style={styles.outerContainerView}>
+            <FinancialDataType />
+          </View>
+        </ImageBackground>
+      </SafeAreaView>
+    );
+  }
 }
 
 export default FinancialData;
