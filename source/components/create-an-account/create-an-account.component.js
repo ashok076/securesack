@@ -98,6 +98,7 @@ class CreateAnAccount extends Component {
           text: 'Password too short',
           position: 'bottom',
           type: 'warning',
+          duration: 7000
         });
         break;
       case 'UserEmailExists':
@@ -105,6 +106,7 @@ class CreateAnAccount extends Component {
           text: 'Email already exists',
           position: 'bottom',
           type: 'danger',
+          duration: 7000
         });
         break;
       case 'MFACodeRequired':
@@ -112,6 +114,7 @@ class CreateAnAccount extends Component {
           text: 'You have successfully registered',
           position: 'bottom',
           type: 'success',
+          duration: 7000
         });
         this.saveClientid(clientid);
         this.saveEmail();
@@ -186,7 +189,7 @@ class CreateAnAccount extends Component {
         buttonText: 'DISMISS',
         type: 'danger',
         position: 'bottom',
-        duration: 3000,
+        duration: 7000,
         textStyle: styles.toastText,
       });
     } else {

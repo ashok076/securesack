@@ -135,7 +135,7 @@ class AuthCode extends Component {
         buttonText: 'DISMISS',
         type: 'danger',
         position: 'bottom',
-        duration: 3000,
+        duration: 7000,
         textStyle: styles.toastText,
       });
     } else {

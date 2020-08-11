@@ -67,11 +67,11 @@ class Home extends Component {
     const {userInfo} = this.props;
     try {
       let userInfo = await AsyncStorage.getItem('user_info');
-      userInfo(userInfo);
+      if (userInfo !== null) userInfo(userInfo);
     } catch (error) {
-      console.log("Error in getting user info: ", error)
+      console.log('Error in getting user info: ', error);
     }
-  }
+  };
 
   detectFingerprintAvailable = () => {
     const {showPopup} = this.state;

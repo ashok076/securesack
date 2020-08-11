@@ -112,6 +112,7 @@ signout = async (navigation, access_token) => {
           text: error.message,
           position: 'bottom',
           type: 'danger',
+          duration: 7000
         });
       });
   }
