@@ -5,12 +5,11 @@ const height = Dimensions.get('window').height;
 
 const styles = StyleSheet.create({
   imageBackgroundStyle: {
-    width: 164,
-    height: 144,
+    width: width / 2.5,
+    height: height / 4.5,
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    margin: 10,
   },
   title: {
     color: 'black',
@@ -28,6 +27,9 @@ const styles = StyleSheet.create({
   },
   imageStyle: {
     borderRadius: 19
+  },
+  container: {
+    padding: 10
   }
 });
 

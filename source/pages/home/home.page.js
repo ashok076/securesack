@@ -20,6 +20,7 @@ import {END_POINTS, BASE_URL} from '../../configuration/api/api.types';
 import MainContent from '../../components/main-content/main-content.component';
 import InputTextSearch from '../../components/input-text-search/input-text-search.component';
 import Header from '../../components/header/header.component';
+import {userInfo} from '../../redux/user-info/actions/user-info.action';
 
 import styles from './home.style';
 
@@ -40,6 +41,7 @@ class Home extends Component {
     //   this.checkLoginStatus();
     // }, 30000);
     this.checkSession();
+    this.getUserInfo();
   }
 
   componentWillUnmount() {
@@ -60,6 +62,16 @@ class Home extends Component {
       console.log(error);
     }
   };
+
+  getUserInfo = async () => {
+    const {userInfo} = this.props;
+    try {
+      let userInfo = await AsyncStorage.getItem('user_info');
+      userInfo(userInfo);
+    } catch (error) {
+      console.log("Error in getting user info: ", error)
+    }
+  }
 
   detectFingerprintAvailable = () => {
     const {showPopup} = this.state;
@@ -202,7 +214,7 @@ class Home extends Component {
     }
     return (
       <SafeAreaView style={styles.container}>
-        <View style={styles.innerContainer}>
+        <ScrollView style={styles.innerContainer}>
           {this.fingerPrintPopup(isFingerPrintSettings, isSensorAvailable)}
           <View>
             <Header navigation={navigation} />
@@ -222,7 +234,7 @@ class Home extends Component {
           <View style={styles.mainContent}>
             <MainContent navigation={navigation} />
           </View>
-        </View>
+        </ScrollView>
       </SafeAreaView>
     );
   }
@@ -232,4 +244,8 @@ const mapStateToProps = ({userData}) => ({
   userData,
 });
 
-export default connect(mapStateToProps)(Home);
+const mapDispatchToProps = (dispatch) => ({
+  userInfo: (userData) => dispatch(userInfo(userData)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Home);

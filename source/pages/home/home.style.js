@@ -8,6 +8,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     alignItems: 'center',
     paddingTop: StatusBar.HEIGHT,
+    flex: 1
   },
   title: {
     color: '#FFFFFF',
@@ -79,7 +80,7 @@ const styles = StyleSheet.create({
   },
   mainContent: {
     alignItems: 'center',
-    marginTop: 20,
+    marginTop: 15,
   },
   name: {
     fontFamily: 'PublicSans-Bold',

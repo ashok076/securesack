@@ -8,11 +8,12 @@ import styles from './main-content.style';
 
 const MainContent = ({navigation}) => {
   return (
-    <View style={styles.container}>
+    <View>
       <FlatList
         data={mainContentList}
         renderItem={({item}) => <Block item={item} navigation={navigation}/>}
         numColumns={2}
+        contentContainerStyle={{ paddingBottom: 20}}
       />
     </View>
   );

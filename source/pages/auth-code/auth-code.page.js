@@ -78,6 +78,7 @@ class AuthCode extends Component {
           if (response.data !== null) {
             this.saveSession(response.data.access_token);
             userInfo(response.data);
+            this.saveUserInfo(response.data);
             navigation.reset({
               index: 0,
               routes: [{name: 'Home'}],
@@ -91,11 +92,19 @@ class AuthCode extends Component {
     }
   };
 
+  saveUserInfo = async (data) => {
+    try {
+      await AsyncStorage.setItem('user_info', data);
+    } catch (error) {
+      console.log('Error in user info: ', error);
+    }
+  }
+
   saveSession = async (access_token) => {
     try {
       await AsyncStorage.setItem('access_token', access_token);
     } catch (error) {
-      console.log('Error in user info: ', error);
+      console.log('Error in access token: ', error);
     }
   };
 

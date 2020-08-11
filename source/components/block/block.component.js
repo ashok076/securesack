@@ -4,7 +4,7 @@ import {TouchableOpacity, ImageBackground, Text, Image} from 'react-native';
 import styles from './block.style';
 
 const Block = ({item, navigation}) => (
-  <TouchableOpacity onPress={() => navigation.navigate(item.navigation)}>
+  <TouchableOpacity onPress={() => navigation.navigate(item.navigation)}  style={styles.container}>
     <ImageBackground
       source={item.background}
       imageStyle={styles.imageStyle}
