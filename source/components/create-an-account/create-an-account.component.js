@@ -10,6 +10,7 @@ import InputTextIcon from '../input-text-icon/input-text-icon.component.js';
 import Button from '../button/button.component';
 import {BASE_URL, END_POINTS} from '../../configuration/api/api.types';
 import {postApi} from '../../configuration/api/api.functions';
+import Loader from '../loader/loader.component';
 
 import styles from './create-an-account.style';
 
@@ -26,6 +27,7 @@ class CreateAnAccount extends Component {
       navigation: props.navigation,
       isShowPasswordError: false,
       passwordMessage: '',
+      isLoader: false,
     };
   }
 
@@ -47,6 +49,7 @@ class CreateAnAccount extends Component {
 
   handleClick = async () => {
     console.log('Clicked on registration button');
+    this.setState({isLoader: true});
     const {firstname, lastname, email, password} = this.state;
     if (this.validation(firstname, lastname, email, password)) {
       if (this.savePasswordError(password)) {
@@ -56,18 +59,6 @@ class CreateAnAccount extends Component {
           email: email,
           password: password,
         });
-
-        // postApi({
-        //   endpoint: END_POINTS.REGISTRATION_API,
-        //   data,
-        // })
-        //   .then((res) => {
-        //     console.log('Registration response: ', res.data);
-        //     this.status(res.data);
-        //   })
-        //   .catch((error) => {
-        //     console.log('Error in registration: ', error.message);
-        //   });
 
         let config = {
           method: 'post',
@@ -82,12 +73,18 @@ class CreateAnAccount extends Component {
         await axios(config)
           .then((res) => {
             console.log('Registration response: ', res.data);
+            this.setState({isLoader: false});
             this.status(res.data);
           })
           .catch((error) => {
             console.log('Error in registration: ', error.message);
+            this.setState({isLoader: false});
           });
+      } else {
+        this.setState({isLoader: false});
       }
+    } else {
+      this.setState({isLoader: false});
     }
   };
 
@@ -98,7 +95,7 @@ class CreateAnAccount extends Component {
           text: 'Password too short',
           position: 'bottom',
           type: 'warning',
-          duration: 7000
+          duration: 7000,
         });
         break;
       case 'UserEmailExists':
@@ -106,7 +103,7 @@ class CreateAnAccount extends Component {
           text: 'Email already exists',
           position: 'bottom',
           type: 'danger',
-          duration: 7000
+          duration: 7000,
         });
         break;
       case 'MFACodeRequired':
@@ -114,7 +111,7 @@ class CreateAnAccount extends Component {
           text: 'You have successfully registered',
           position: 'bottom',
           type: 'success',
-          duration: 7000
+          duration: 7000,
         });
         this.saveClientid(clientid);
         this.saveEmail();
@@ -229,6 +226,7 @@ class CreateAnAccount extends Component {
       lastname,
       password,
       isShowPasswordError,
+      isLoader
     } = this.state;
     return (
       <View>
@@ -283,6 +281,7 @@ class CreateAnAccount extends Component {
         <View style={styles.buttonContainer}>
           <Button onPress={this.handleClick} title="Create an account" />
         </View>
+        <Loader isLoader={isLoader} />
       </View>
     );
   }

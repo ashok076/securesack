@@ -10,6 +10,7 @@ import InputTextIcon from '../../components/input-text-icon/input-text-icon.comp
 import Button from '../../components/button/button.component.js';
 import {END_POINTS, BASE_URL} from '../../configuration/api/api.types';
 import {postApi} from '../../configuration/api/api.functions';
+import Loader from '../../components/loader/loader.component';
 
 import {userInfo} from '../../redux/user-info/actions/user-info.action';
 
@@ -22,6 +23,7 @@ class AuthCode extends Component {
       authcode: '',
       clientid: '',
       email: props.route.params.email,
+      isLoader: false,
     };
   }
 
@@ -57,6 +59,7 @@ class AuthCode extends Component {
   handleClick = async () => {
     const {authcode, clientid, email} = this.state;
     const {navigation, userInfo} = this.props;
+    this.setState({isLoader: true});
     console.log(this.props);
     if (this.fieldVerification(authcode)) {
       var data = qs.stringify({
@@ -83,12 +86,16 @@ class AuthCode extends Component {
               index: 0,
               routes: [{name: 'Home'}],
             });
+            this.setState({isLoader: false});
           }
         })
         .catch((error) => {
           if (error !== undefined) this.showMessage(error.response);
           console.log(error);
+          this.setState({isLoader: false});
         });
+    } else {
+      this.setState({isLoader: true});
     }
   };
 
@@ -98,7 +105,7 @@ class AuthCode extends Component {
     } catch (error) {
       console.log('Error in user info: ', error);
     }
-  }
+  };
 
   saveSession = async (access_token) => {
     try {
@@ -145,7 +152,7 @@ class AuthCode extends Component {
   };
 
   render() {
-    const {authcode} = this.state;
+    const {authcode, isLoader} = this.state;
     return (
       <Root>
         <View style={styles.background}>
@@ -172,6 +179,7 @@ class AuthCode extends Component {
           <View style={styles.buttonContainer}>
             <Button onPress={this.handleClick} title="Verify Auth Code" />
           </View>
+          <Loader isLoader={isLoader} />
         </SafeAreaView>
       </Root>
     );
