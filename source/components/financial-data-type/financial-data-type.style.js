@@ -41,6 +41,12 @@ const styles = StyleSheet.create({
     right: 0,
     alignItems: 'center',
   },
+  view: {
+    padding: 15
+  },
+  contentContainerStyle: {
+    paddingVertical: 20
+  }
 });
 
 export default styles;

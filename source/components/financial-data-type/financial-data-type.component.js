@@ -1,5 +1,12 @@
 import React, {Component} from 'react';
-import {View, FlatList, Image, Text, TouchableOpacity} from 'react-native';
+import {
+  View,
+  FlatList,
+  Image,
+  Text,
+  TouchableOpacity,
+  ScrollView,
+} from 'react-native';
 import Icon from 'react-native-vector-icons/AntDesign';
 import {connect} from 'react-redux';
 import {Title, Caption, TouchableRipple} from 'react-native-paper';
@@ -8,7 +15,6 @@ import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 
 import {financialDataTypeList, getDataAsType} from './financial-data-type.list';
 import {BASE_URL} from '../../configuration/api/api.types';
-// import FinancialDataCategory from '../financial-data-categories/financial-data-categories.component.js';
 
 import styles from './financial-data-type.style';
 
@@ -29,42 +35,7 @@ class FinancialDataType extends Component {
     getDataAsType.map((type) => this.getData(type));
   };
 
-  renderTitleSubtitle = () => {
-    const {type, items} = this.state;
-    return items.map(item => {
-      switch (type) {
-      case 'BankAccounts':
-        return (
-          <TouchableRipple rippleColor="rgba(0, 0, 0, .32)">
-            <View>
-              <View style={styles.titleSubTitle}>
-                <Title style={styles.catTitle}>{item.AccountName}</Title>
-                <Caption>{item.AccountNumber}</Caption>
-                <View style={styles.arrowView}>
-                  <SimpleLineIcons
-                    name="arrow-right"
-                    color="rgb(33, 47, 60)"
-                    size={15}
-                  />
-                </View>
-              </View>
-            </View>
-          </TouchableRipple>
-        );
-        break;
-      case 'CreditCard':
-        break;
-      case 'BrokerageAccount':
-        break;
-      case 'Mortgage':
-        break;
-      case 'ConsumerLoan':
-        break;
-    }
-    })
-  };
-
-  getData = async (type) => {
+  getData = (type) => {
     const {userData} = this.props;
     console.log('User data access token: ', userData.userData.access_token);
 
@@ -79,19 +50,86 @@ class FinancialDataType extends Component {
         Authorization: 'Bearer ' + userData.userData.access_token,
       },
     };
-    await axios(config)
+    axios(config)
       .then((res) => {
-        console.log('res: ', res);
-        this.filterTitleAndSubtitle(type, res.data.data.items);
+        console.log('res: ', res.data.datatype.name);
+        this.updateArray(res.data.data.items, res.data.datatype.name);
       })
       .catch((error) => console.log('Bank account error: ', error));
   };
 
-  filterTitleAndSubtitle = (type, items) => {
-    this.setState({items, type});
+  updateArray = (items, type) => {
+    financialDataTypeList.map((value) => {
+      if (value.type.includes(type)) {
+        value.category = items;
+      }
+    });
+    console.log(financialDataTypeList);
+    this.forceUpdate();
   };
 
-  category = ({title, icon, key}) => {
+  renderTitleSubtitle = (item, type) => {
+    console.log(item);
+    return (
+      <TouchableRipple rippleColor="rgba(0, 0, 0, .32)">
+        <View>
+          <View style={styles.titleSubTitle}>
+            <Title style={styles.catTitle}>{this.getTitle(type, item)}</Title>
+            <Caption>{this.getSubTitle(type, item)}</Caption>
+            <View style={styles.arrowView}>
+              <SimpleLineIcons
+                name="arrow-right"
+                color="rgb(33, 47, 60)"
+                size={15}
+              />
+            </View>
+          </View>
+        </View>
+      </TouchableRipple>
+    );
+  };
+
+  getTitle = (type, item) => {
+    switch (type) {
+      case 'BankAccounts':
+        return item.AccountName;
+      case 'CreditCard':
+        return item.CardNumber;
+        break;
+      case 'BrokerageAccount':
+        return item.BrokerageName;
+        break;
+      case 'Mortgage':
+        return item.Name;
+        break;
+      case 'ConsumerLoan':
+        console.log('loannsss ', item.Name);
+        return item.Name;
+        break;
+    }
+  };
+
+  getSubTitle = (type, item) => {
+    switch (type) {
+      case 'BankAccounts':
+        return item.AccountNumber;
+      case 'CreditCard':
+        console.log('valuesssss ', item.Name);
+        return item.Name;
+        break;
+      case 'BrokerageAccount':
+        return item.AccountNumber;
+        break;
+      case 'Mortgage':
+        return item.LoanNumber;
+        break;
+      case 'ConsumerLoan':
+        return item.LoanNumber;
+        break;
+    }
+  };
+
+  category = ({title, icon, id, category, type}) => {
     return (
       <View style={styles.container}>
         <View style={styles.titleIcon}>
@@ -101,18 +139,22 @@ class FinancialDataType extends Component {
             <Icon name="plus" color="rgb(33, 47, 60)" size={20} />
           </TouchableOpacity>
         </View>
-        {this.renderTitleSubtitle()}
+        <FlatList
+          data={category}
+          renderItem={({item}) => this.renderTitleSubtitle(item, type)}
+        />
       </View>
     );
   };
 
   render() {
     return (
-      <View>
+      <View style={styles.view}>
         <FlatList
           data={financialDataTypeList}
           renderItem={({item}) => this.category(item)}
-          keyExtractor={(item) => item.key.toString()}
+          keyExtractor={(item, index) => index.toString()}
+          contentContainerStyle={styles.contentContainer}
         />
       </View>
     );
