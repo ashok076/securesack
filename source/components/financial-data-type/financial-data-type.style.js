@@ -10,18 +10,37 @@ const styles = StyleSheet.create({
   },
   titleIcon: {
     flexDirection: 'row',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   title: {
     fontSize: 16,
     marginLeft: 15,
     fontFamily: 'PublicSans-Regular',
-    color: 'rgb(33, 47, 60)'
+    color: 'rgb(33, 47, 60)',
   },
   addView: {
-      position: 'absolute',
-      right: 0
-  }
+    position: 'absolute',
+    right: 0,
+  },
+  subTitle: {
+    fontSize: 14,
+    lineHeight: 14,
+  },
+  titleSubTitle: {
+    flexDirection: 'column',
+    padding: 5,
+    justifyContent: 'center',
+  },
+  catTitle: {
+    fontSize: 16,
+    marginTop: 3,
+    alignItems: 'center',
+  },
+  arrowView: {
+    position: 'absolute',
+    right: 0,
+    alignItems: 'center',
+  },
 });
 
 export default styles;
