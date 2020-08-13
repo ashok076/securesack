@@ -174,7 +174,6 @@ class FinancialDataType extends Component {
           data={financialDataTypeList}
           renderItem={({item}) => this.category(item)}
           keyExtractor={(item, index) => index.toString()}
-          contentContainerStyle={styles.contentContainer}
         />
       </View>
     );
