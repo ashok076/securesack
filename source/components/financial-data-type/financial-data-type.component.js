@@ -5,7 +5,6 @@ import {
   Image,
   Text,
   TouchableOpacity,
-  ScrollView,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/AntDesign';
 import {connect} from 'react-redux';
@@ -37,25 +36,27 @@ class FinancialDataType extends Component {
 
   getData = (type) => {
     const {userData} = this.props;
-    console.log('User data access token: ', userData.userData.access_token);
+    if (userData !== null) {
+      console.log('User data access token: ', userData.userData.access_token);
 
-    let config = {
-      method: 'get',
-      url: `${BASE_URL}/data/${type}`,
-      params: {
-        archive: true,
-      },
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        Authorization: 'Bearer ' + userData.userData.access_token,
-      },
-    };
-    axios(config)
-      .then((res) => {
-        console.log('res: ', res.data.datatype.name);
-        this.updateArray(res.data.data.items, res.data.datatype.name);
-      })
-      .catch((error) => console.log('Bank account error: ', error));
+      let config = {
+        method: 'get',
+        url: `${BASE_URL}/data/${type}`,
+        params: {
+          archive: true,
+        },
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          Authorization: 'Bearer ' + userData.userData.access_token,
+        },
+      };
+      axios(config)
+        .then((res) => {
+          console.log('res: ', res.data.datatype.name);
+          this.updateArray(res.data.data.items, res.data.datatype.name);
+        })
+        .catch((error) => console.log('Bank account error: ', error));
+    }
   };
 
   updateArray = (items, type) => {
@@ -135,7 +136,9 @@ class FinancialDataType extends Component {
         <View style={styles.titleIcon}>
           <Image source={icon} />
           <Text style={styles.title}>{title}</Text>
-          <TouchableOpacity style={styles.addView} onPress={() => alert(title)}>
+          <TouchableOpacity
+            style={styles.addView}
+            onPress={() => this.navigation(type)}>
             <Icon name="plus" color="rgb(33, 47, 60)" size={20} />
           </TouchableOpacity>
         </View>
@@ -145,6 +148,23 @@ class FinancialDataType extends Component {
         />
       </View>
     );
+  };
+
+  navigation = (type) => {
+    const {navigation} = this.props;
+    switch (type) {
+      case 'BankAccounts':
+        navigation.navigate(type);
+        break;
+      case 'CreditCard':
+        break;
+      case 'BrokerageAccount':
+        break;
+      case 'Mortgage':
+        break;
+      case 'ConsumerLoan':
+        break;
+    }
   };
 
   render() {

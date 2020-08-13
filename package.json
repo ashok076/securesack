@@ -7,7 +7,9 @@
     "ios": "react-native run-ios",
     "start": "react-native start",
     "test": "jest",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "build": "(cd android/ && ./gradlew assembleDebug)",
+    "bundle-android": "react-native bundle --platform android --dev false --entry-file index.android.js --bundle-output android/app/src/main/assets/index.android.bundle --sourcemap-output android/app/src/main/assets/index.android.map --assets-dest android/app/src/main/res/"
   },
   "dependencies": {
     "@react-native-community/async-storage": "^1.11.0",
@@ -22,6 +24,7 @@
     "react": "^16.13.1",
     "react-native": "0.63.0",
     "react-native-background-timer": "^2.3.1",
+    "react-native-dots-pagination": "^0.1.10",
     "react-native-fingerprint-scanner": "^6.0.0",
     "react-native-gesture-handler": "^1.6.1",
     "react-native-paper": "^4.0.1",
