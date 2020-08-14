@@ -1,22 +1,29 @@
 export const governmentRecordsDataTypeList = [
   {
     id: 1,
-    title: 'Website & Password',
+    title: 'Driving License',
+    type: 'DriverLicense'
   },
   {
     id: 2,
-    title: 'Notes',
+    title: 'Passport',
+    type: 'Passport'
   },
   {
     id: 3,
-    title: 'Recipes',
+    title: 'Tax & SSN',
+    type: 'TaxIdentification'
+  },
+  {
+    id: 4,
+    title: `ID's`,
+    type: 'IdentificationCards'
   },
 ];
 
 export const getDataAsType = [
-  'BankAccounts',
-  'CreditCard',
-  'BrokerageAccount',
-  'Mortgage',
-  'ConsumerLoan',
+  'DriverLicense',
+  'Passport',
+  'TaxIdentification',
+  'IdentificationCards',
 ];

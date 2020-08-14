@@ -1,26 +1,23 @@
 export const personalOrganisationDataTypeList = [
   {
     id: 1,
-    title: 'Driving License',
+    title: 'Website & Password',
+    type: 'WebSiteAccount'
   },
   {
     id: 2,
-    title: 'Passport',
+    title: 'Notes',
+    type: 'Notes'
   },
   {
     id: 3,
-    title: 'Tax & SSN',
-  },
-  {
-    id: 4,
-    title: `ID's`,
+    title: 'Recipes',
+    type: 'Recipies'
   },
 ];
 
 export const getDataAsType = [
-  'BankAccounts',
-  'CreditCard',
-  'BrokerageAccount',
-  'Mortgage',
-  'ConsumerLoan',
+  'WebSiteAccount',
+  'Notes',
+  'Recipies',
 ];

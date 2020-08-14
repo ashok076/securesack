@@ -1,11 +1,5 @@
 import React, {Component} from 'react';
-import {
-  View,
-  FlatList,
-  Image,
-  Text,
-  TouchableOpacity,
-} from 'react-native';
+import {View, FlatList, Image, Text, TouchableOpacity} from 'react-native';
 import Icon from 'react-native-vector-icons/AntDesign';
 import {connect} from 'react-redux';
 import {Title, Caption, TouchableRipple} from 'react-native-paper';
@@ -21,8 +15,7 @@ class FinancialDataType extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      items: [],
-      type: '',
+      dataType: financialDataTypeList,
     };
   }
 
@@ -38,7 +31,6 @@ class FinancialDataType extends Component {
     const {userData} = this.props;
     if (userData !== null) {
       console.log('User data access token: ', userData.userData.access_token);
-
       let config = {
         method: 'get',
         url: `${BASE_URL}/data/${type}`,
@@ -60,13 +52,14 @@ class FinancialDataType extends Component {
   };
 
   updateArray = (items, type) => {
-    financialDataTypeList.map((value) => {
+    const {dataType} = this.state;
+    dataType.map((value) => {
       if (value.type.includes(type)) {
         value.category = items;
       }
     });
-    console.log(financialDataTypeList);
-    this.forceUpdate();
+    console.log('dataType');
+    this.setState({dataType});
   };
 
   renderTitleSubtitle = (item, type) => {
@@ -131,6 +124,7 @@ class FinancialDataType extends Component {
   };
 
   category = ({title, icon, id, category, type}) => {
+    console.log('category', category);
     return (
       <View style={styles.container}>
         <View style={styles.titleIcon}>
@@ -143,8 +137,9 @@ class FinancialDataType extends Component {
           </TouchableOpacity>
         </View>
         <FlatList
-          data={category}
+          data={category === undefined ? category : category.slice(0, 2)}
           renderItem={({item}) => this.renderTitleSubtitle(item, type)}
+          maxToRenderPerBatch={2}
         />
       </View>
     );
@@ -168,10 +163,11 @@ class FinancialDataType extends Component {
   };
 
   render() {
+    const {dataType} = this.state;
     return (
       <View style={styles.view}>
         <FlatList
-          data={financialDataTypeList}
+          data={dataType}
           renderItem={({item}) => this.category(item)}
           keyExtractor={(item, index) => index.toString()}
         />
