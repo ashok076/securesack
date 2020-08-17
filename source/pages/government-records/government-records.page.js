@@ -24,7 +24,7 @@ class GovernmentRecords extends Component {
             <Title style={styles.title}>Government Records</Title>
           </View>
           <ScrollView style={styles.outerContainerView}>
-            <GovernmentRecordsData />
+            <GovernmentRecordsData navigation={navigation}/>
           </ScrollView>
         </ImageBackground>
       </SafeAreaView>

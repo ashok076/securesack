@@ -2,7 +2,7 @@ export const serviceDataTypeList = [
   {
     id: 1,
     title: 'Services',
-    type: '',
+    type: 'ServiceAccount',
   },
   {
     id: 2,

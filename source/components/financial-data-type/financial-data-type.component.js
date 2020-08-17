@@ -16,6 +16,8 @@ class FinancialDataType extends Component {
     super(props);
     this.state = {
       dataType: financialDataTypeList,
+      viewAll: 2,
+      isExpanded: false,
     };
   }
 
@@ -125,6 +127,7 @@ class FinancialDataType extends Component {
 
   category = ({title, icon, id, category, type}) => {
     console.log('category', category);
+    const {viewAll} = this.state;
     return (
       <View style={styles.container}>
         <View style={styles.titleIcon}>
@@ -132,34 +135,59 @@ class FinancialDataType extends Component {
           <Text style={styles.title}>{title}</Text>
           <TouchableOpacity
             style={styles.addView}
-            onPress={() => this.navigation(type)}>
+            onPress={() => this.navigation(type, title)}>
             <Icon name="plus" color="rgb(33, 47, 60)" size={20} />
           </TouchableOpacity>
         </View>
         <FlatList
-          data={category === undefined ? category : category.slice(0, 2)}
+          data={category === undefined ? category : category.slice(0, viewAll)}
           renderItem={({item}) => this.renderTitleSubtitle(item, type)}
-          maxToRenderPerBatch={2}
+          maxToRenderPerBatch={viewAll}
         />
+        {this.viewAll(category)}
       </View>
     );
   };
 
-  navigation = (type) => {
-    const {navigation} = this.props;
-    switch (type) {
-      case 'BankAccounts':
-        navigation.navigate(type);
-        break;
-      case 'CreditCard':
-        break;
-      case 'BrokerageAccount':
-        break;
-      case 'Mortgage':
-        break;
-      case 'ConsumerLoan':
-        break;
+  viewAll = (category) => {
+    const {isExpanded} = this.state;
+    if (category !== undefined) {
+      if (category.length > 2) return this.viewAllComponent(category);
     }
+  };
+
+  viewAllComponent = (category) => {
+    const {isExpanded, viewAll} = this.state;
+    return (
+      <TouchableRipple
+        rippleColor="rgba(0, 0, 0, .32)"
+        onPress={() =>
+          this.setState({
+            viewAll: viewAll === 2 ? category.length : 2,
+            isExpanded: !isExpanded,
+          })
+        }>
+        {isExpanded ? (
+          <View style={styles.viewAll}>
+            <Text style={styles.viewAllText}> Close </Text>
+          </View>
+        ) : (
+          <View style={styles.viewAll}>
+            <Text style={styles.viewAllText}> View all </Text>
+          </View>
+        )}
+      </TouchableRipple>
+    );
+  };
+
+  navigation = (type, title) => {
+    const {navigation} = this.props;
+    navigation.navigate('CommonView', {
+      type: type,
+      category: 'Financial Data',
+      title: title,
+      background: require('../../assets/jpg-images/Financial-Data-Background/financial-data-background.jpg')
+    });
   };
 
   render() {

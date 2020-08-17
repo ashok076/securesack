@@ -24,7 +24,7 @@ class PersonalOrganisation extends Component {
             <Title style={styles.title}>Personal Organisation</Title>
           </View>
           <ScrollView style={styles.outerContainerView}>
-            <PersonalOrganisationData />
+            <PersonalOrganisationData navigation={navigation} />
           </ScrollView>
         </ImageBackground>
       </SafeAreaView>

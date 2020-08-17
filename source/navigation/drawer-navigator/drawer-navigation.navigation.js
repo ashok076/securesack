@@ -10,7 +10,7 @@ import Insurance from '../../pages/insurance/insurance.page';
 import PersonalAssets from '../../pages/personal-assets/personal-assets.page';
 import GovernmentRecords from '../../pages/government-records/government-records.page';
 import PersonalOrganisation from '../../pages/personal-organisation/personal-organisation.page.js';
-import BankAccounts from '../../categories/financial-data/bank-account/bank-account.category';
+import CommonView from '../../categories/component/common-view/common-view.component';
 
 const Drawer = createDrawerNavigator();
 
@@ -25,7 +25,7 @@ const DrawerNavigator = () => {
       <Drawer.Screen name="PersonalAssets" component={PersonalAssets} />
       <Drawer.Screen name="GovernmentRecords" component={GovernmentRecords} />
       <Drawer.Screen name="PersonalOrganisation" component={PersonalOrganisation} />
-      <Drawer.Screen name="BankAccounts" component={BankAccounts}/>
+      <Drawer.Screen name="CommonView" component={CommonView}/>
     </Drawer.Navigator>
   );
 };

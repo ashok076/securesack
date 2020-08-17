@@ -23,7 +23,7 @@ class ServiceRewards extends Component {
             <Title style={styles.title}>Service and Rewards</Title>
           </View>
           <ScrollView style={styles.outerContainerView}>
-            <ServiceDataType />
+            <ServiceDataType navigation={navigation}/>
           </ScrollView>
         </ImageBackground>
       </SafeAreaView>

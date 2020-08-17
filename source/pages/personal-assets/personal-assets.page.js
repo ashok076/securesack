@@ -24,7 +24,7 @@ class PersonalAssets extends Component {
             <Title style={styles.title}>Personal Assets</Title>
           </View>
           <ScrollView style={styles.outerContainerView}>
-            <PersonalAssetsData />
+            <PersonalAssetsData navigation={navigation}/>
           </ScrollView>
         </ImageBackground>
       </SafeAreaView>

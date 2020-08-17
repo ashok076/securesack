@@ -1,7 +1,7 @@
 export const financialDataTypeList = [
   {
     id: 1,
-    title: 'Banks Accounts',
+    title: 'Bank Accounts',
     icon: require('../../assets/png-images/Bank-Account-Icon/bank-account-icon.png'),
     type: 'BankAccounts'
   },

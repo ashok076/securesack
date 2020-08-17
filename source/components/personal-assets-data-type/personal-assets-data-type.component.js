@@ -61,6 +61,7 @@ class PersonalAssetsData extends Component {
       }
     });
     console.log(dataType);
+    this.setState({dataType});
   };
 
   category = ({title, id, category, type}) => {
@@ -69,7 +70,9 @@ class PersonalAssetsData extends Component {
         <View style={styles.titleIcon}>
           {/* <Image source={icon} /> */}
           <Text style={styles.title}>{title}</Text>
-          <TouchableOpacity style={styles.addView}>
+          <TouchableOpacity
+            style={styles.addView}
+            onPress={() => this.navigation(type, title)}>
             <Icon name="plus" color="rgb(33, 47, 60)" size={20} />
           </TouchableOpacity>
         </View>
@@ -79,6 +82,16 @@ class PersonalAssetsData extends Component {
         />
       </View>
     );
+  };
+
+  navigation = (type, title) => {
+    const {navigation} = this.props;
+    navigation.navigate('CommonView', {
+      type: type,
+      category: 'Personal Assets',
+      title: title,
+      background: require('../../assets/jpg-images/Personal-Assets-Background/personal-assets-background.jpg'),
+    });
   };
 
   renderTitleSubtitle = (item, type) => {

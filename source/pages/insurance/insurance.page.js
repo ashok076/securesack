@@ -24,7 +24,7 @@ class Insurance extends Component {
             <Title style={styles.title}>Insurance</Title>
           </View>
           <ScrollView style={styles.outerContainerView}>
-            <InsuranceDataType />
+            <InsuranceDataType navigation={navigation}/>
           </ScrollView>
         </ImageBackground>
       </SafeAreaView>

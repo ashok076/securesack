@@ -58,6 +58,7 @@ class InsuranceDataType extends Component {
       }
     });
     console.log(dataType);
+    this.setState({dataType});
   };
 
   category = ({title, id, category, type}) => {
@@ -66,7 +67,8 @@ class InsuranceDataType extends Component {
         <View style={styles.titleIcon}>
           {/* <Image source={icon} /> */}
           <Text style={styles.title}>{title}</Text>
-          <TouchableOpacity style={styles.addView}>
+          <TouchableOpacity style={styles.addView}
+          onPress={() => this.navigation(type, title)}>
             <Icon name="plus" color="rgb(33, 47, 60)" size={20} />
           </TouchableOpacity>
         </View>
@@ -76,6 +78,16 @@ class InsuranceDataType extends Component {
         />
       </View>
     );
+  };
+
+  navigation = (type, title) => {
+    const {navigation} = this.props;
+    navigation.navigate('CommonView', {
+      type: type,
+      category: 'Insurance',
+      title: title,
+      background: require('../../assets/jpg-images/Insurance-Background/insurance-background.jpg'),
+    });
   };
 
   renderTitleSubtitle = (item, type) => {
