@@ -10,7 +10,7 @@ import Insurance from '../../pages/insurance/insurance.page';
 import PersonalAssets from '../../pages/personal-assets/personal-assets.page';
 import GovernmentRecords from '../../pages/government-records/government-records.page';
 import PersonalOrganisation from '../../pages/personal-organisation/personal-organisation.page.js';
-import CommonView from '../../categories/component/common-view/common-view.component';
+import CommonView from '../../categories/common-view/common-view.component';
 
 const Drawer = createDrawerNavigator();
 
