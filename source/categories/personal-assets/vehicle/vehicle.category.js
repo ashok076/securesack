@@ -18,6 +18,11 @@ class Vehicle extends Component {
     };
   }
 
+    handleClick = () => {
+    const {active} = this.state;
+    this.setState({active: active + 1});
+  };
+
   subComponet = () => {
     const {active} = this.state;
     switch (active) {
@@ -26,8 +31,6 @@ class Vehicle extends Component {
         break;
       case 1:
         return this.additionalInformation();
-        break;
-      case 2:
         break;
     }
   };
@@ -62,9 +65,6 @@ class Vehicle extends Component {
       </View>
       <View style={styles.inputContainer}>
         <ModalPicker label="Is still owned?" onPress={() => alert('Type')} />
-      </View>
-      <View style={styles.buttonContainer}>
-        <Button onPress={this.handleClick} title="Proceed to next" />
       </View>
     </View>
   );
@@ -111,9 +111,6 @@ class Vehicle extends Component {
           <ModalPicker label="Vehicle Type" onPress={() => alert('Type')} />
         </View>
       </View>
-      <View style={styles.buttonContainer}>
-        <Button onPress={this.handleClick} title="Proceed to next" />
-      </View>
     </View>
   );
 
@@ -134,9 +131,12 @@ class Vehicle extends Component {
       <View style={styles.container}>
         <Text style={styles.title}>{this.title(active)}</Text>
         {this.subComponet()}
+        <View style={styles.buttonContainer}>
+          <Button onPress={this.handleClick} title="Proceed to next" />
+        </View>
         <View style={styles.inputContainer}>
           <Dots
-            length={3}
+            length={2}
             active={active}
             passiveColor="rgba(52, 105, 244, 0.2)"
             activeColor="rgb(52,105,244)"

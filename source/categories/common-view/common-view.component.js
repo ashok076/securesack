@@ -4,6 +4,7 @@ import {Title} from 'react-native-paper';
 
 //financial-data
 import BankAccounts from '../financial-data/bank-account/bank-account.category';
+import CreditCard from '../financial-data/credit-card/credit-card.category.js'
 import Brokerages from '../financial-data/brokerages/brokerages.category';
 import Mortgages from '../financial-data/mortgages/mortgages.category.js';
 import Loans from '../financial-data/loans/loans.category.js';
@@ -15,7 +16,7 @@ import RewardsPrograms from '../services-and-rewards/reward-programs/rewards-pro
 //insurance
 import Auto from '../insurance/auto/auto.category.js';
 import HealthCare from '../insurance/health-care/health-care.category.js';
-import Life from '../insurance/property/property.category.js';
+import Life from '../insurance/life/life.category.js';
 import PropertyInsurance from '../insurance/property/property.category.js';
 
 //personal assets
@@ -57,6 +58,7 @@ const subView = (type) => {
       return <BankAccounts />;
       break;
     case 'CreditCard':
+    return <CreditCard />
       break;
     case 'BrokerageAccount':
       return <Brokerages />;

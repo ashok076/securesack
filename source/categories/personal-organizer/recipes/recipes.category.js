@@ -60,6 +60,13 @@ class Recipes extends Component {
           keyboardType="default"
         />
       </View>
+      <View style={styles.inputContainer}>
+        <InputTextDynamic
+          placeholder="Recipe"
+          onChangeText={this.handleFirstNaame}
+          keyboardType="default"
+        />
+      </View>
       <View style={styles.buttonContainer}>
         <Button onPress={this.handleClick} title="Proceed to next" />
       </View>
@@ -80,19 +87,6 @@ class Recipes extends Component {
       <View style={styles.container}>
         <Text style={styles.title}>{this.title(active)}</Text>
         {this.subComponet()}
-        <View style={styles.inputContainer}>
-          <Dots
-            length={3}
-            active={active}
-            passiveColor="rgba(52, 105, 244, 0.2)"
-            activeColor="rgb(52,105,244)"
-            passiveDotWidth={8}
-            passiveDotHeight={8}
-            activeDotWidth={8}
-            activeDotHeight={8}
-            paddingVertical={10}
-          />
-        </View>
       </View>
     );
   }

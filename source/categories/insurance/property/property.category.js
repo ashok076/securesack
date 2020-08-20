@@ -18,20 +18,30 @@ class PropertyInsurance extends Component {
     };
   }
 
+  handleClick = () => {
+    const {active} = this.state;
+    this.setState({active: active + 1});
+  };
+
   subComponet = () => {
     const {active} = this.state;
     switch (active) {
       case 0:
-        return this.firstComponent();
+        return this.basicInformation();
         break;
       case 1:
+        return this.propertyDetails();
         break;
       case 2:
+        return this.insuranceDetails();
+        break;
+      case 3:
+        return this.additionalInfo();
         break;
     }
   };
 
-  firstComponent = () => (
+  basicInformation = () => (
     <View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
@@ -94,8 +104,131 @@ class PropertyInsurance extends Component {
           keyboardType="default"
         />
       </View>
-      <View style={styles.buttonContainer}>
-        <Button onPress={this.handleClick} title="Proceed to next" />
+    </View>
+  );
+
+  propertyDetails = () => (
+    <View>
+      <View style={styles.inputContainer}>
+        <InputTextDynamic
+          placeholder="County"
+          onChangeText={this.handleFirstNaame}
+          keyboardType="default"
+        />
+      </View>
+      <View style={styles.inputContainer}>
+        <InputTextDynamic
+          placeholder="Parcel Number"
+          onChangeText={this.handleFirstNaame}
+          keyboardType="default"
+        />
+      </View>
+      <View style={styles.miniContainer}>
+        <View style={[styles.miniInputContainer, {marginRight: 10}]}>
+          <InputTextDynamic
+            placeholder="Effective From"
+            onChangeText={this.handleFirstNaame}
+            keyboardType="default"
+          />
+        </View>
+        <View style={styles.miniInputContainer}>
+          <ModalPicker label="Owned Property" onPress={() => alert('Type')} />
+        </View>
+      </View>
+    </View>
+  );
+
+  insuranceDetails = () => (
+    <View>
+      <View style={styles.inputContainer}>
+        <InputTextIconDynamic
+          placeholder="Dwelling Coverage (A)"
+          icon="dollar-sign"
+          onChangeText={this.handlePasswordText}
+        />
+      </View>
+      <View style={styles.inputContainer}>
+        <InputTextIconDynamic
+          placeholder="Liability Coverage (B)"
+          icon="dollar-sign"
+          onChangeText={this.handlePasswordText}
+        />
+      </View>
+      <View style={styles.inputContainer}>
+        <InputTextIconDynamic
+          placeholder="Medical Payment Coverage (C)"
+          icon="dollar-sign"
+          onChangeText={this.handlePasswordText}
+        />
+      </View>
+      <View style={styles.inputContainer}>
+        <InputTextIconDynamic
+          placeholder="Dwelling Coverage Deductible"
+          icon="dollar-sign"
+          onChangeText={this.handlePasswordText}
+        />
+      </View>
+      <View style={styles.inputContainer}>
+        <InputTextIconDynamic
+          placeholder="Loss of Use Coverage (F)"
+          icon="dollar-sign"
+          onChangeText={this.handlePasswordText}
+        />
+      </View>
+      <View style={styles.miniContainer}>
+        <View style={[styles.miniInputContainer, {marginRight: 10}]}>
+          <ModalPicker
+            label="Replacement of Contents Coverage"
+            onPress={() => alert('Type')}
+          />
+        </View>
+        <View style={styles.miniInputContainer}>
+          <ModalPicker
+            label="Loss Assessment Coverage"
+            onPress={() => alert('Type')}
+          />
+        </View>
+      </View>
+      <View style={styles.miniContainer}>
+        <View style={[styles.miniInputContainer, {marginRight: 10}]}>
+          <ModalPicker
+            label="Sewer Backup Coverage"
+            onPress={() => alert('Type')}
+          />
+        </View>
+        <View style={styles.miniInputContainer}>
+          <InputTextIconDynamic
+            placeholder="Ordiance/Legal Coverage"
+            icon="dollar-sign"
+            onChangeText={this.handlePasswordText}
+          />
+        </View>
+      </View>
+      <View style={styles.inputContainer}>
+        <InputTextIconDynamic
+          placeholder="Personal Items Insured"
+          icon="dollar-sign"
+          onChangeText={this.handlePasswordText}
+        />
+      </View>
+    </View>
+  );
+
+  additionalInfo = () => (
+    <View>
+      <View style={styles.inputContainer}>
+        <InputTextDynamic
+          placeholder="Joint Policy Holder 2"
+          onChangeText={this.handleFirstNaame}
+          keyboardType="default"
+        />
+      </View>
+      <View style={styles.inputContainer}>
+        <InputTextDynamic
+          placeholder="Joint Policy Holder 3"
+          onChangeText={this.handleFirstNaame}
+          keyboardType="default"
+        />
       </View>
     </View>
   );
@@ -104,6 +237,15 @@ class PropertyInsurance extends Component {
     switch (active) {
       case 0:
         return 'Basic Information';
+        break;
+      case 1:
+        return 'Property Details';
+        break;
+      case 2:
+        return 'Insurance Details';
+        break;
+      case 3:
+        return 'Additional Information';
         break;
     }
   };
@@ -114,9 +256,12 @@ class PropertyInsurance extends Component {
       <View style={styles.container}>
         <Text style={styles.title}>{this.title(active)}</Text>
         {this.subComponet()}
+        <View style={styles.buttonContainer}>
+          <Button onPress={this.handleClick} title="Proceed to next" />
+        </View>
         <View style={styles.inputContainer}>
           <Dots
-            length={3}
+            length={4}
             active={active}
             passiveColor="rgba(52, 105, 244, 0.2)"
             activeColor="rgb(52,105,244)"

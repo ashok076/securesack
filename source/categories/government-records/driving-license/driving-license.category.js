@@ -18,6 +18,11 @@ class DriverLicense extends Component {
     };
   }
 
+  handleClick = () => {
+    const {active} = this.state;
+    this.setState({active: active + 1});
+  };
+
   subComponet = () => {
     const {active} = this.state;
     switch (active) {
@@ -25,14 +30,14 @@ class DriverLicense extends Component {
         return this.basicInformation();
         break;
       case 1:
-        return this.additionalInformation();
+        return this.drivingVoilations();
         break;
       case 2:
         break;
     }
   };
 
-  additionalInformation = () => (
+  drivingVoilations = () => (
     <View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
@@ -48,8 +53,12 @@ class DriverLicense extends Component {
           keyboardType="default"
         />
       </View>
-      <View style={styles.buttonContainer}>
-        <Button onPress={this.handleClick} title="Proceed to next" />
+      <View style={styles.inputContainer}>
+        <InputTextDynamic
+          placeholder="Driving Violation Type"
+          onChangeText={this.handleFirstNaame}
+          keyboardType="default"
+        />
       </View>
     </View>
   );
@@ -73,6 +82,13 @@ class DriverLicense extends Component {
           keyboardType="default"
         />
       </View>
+      <View style={styles.inputContainer}>
+        <InputTextDynamic
+          placeholder="License #"
+          onChangeText={this.handleFirstNaame}
+          keyboardType="default"
+        />
+      </View>
       <View style={styles.miniContainer}>
         <View style={[styles.miniInputContainer, {marginRight: 10}]}>
           <InputTextDynamic
@@ -88,9 +104,6 @@ class DriverLicense extends Component {
             keyboardType="default"
           />
         </View>
-      </View>
-      <View style={styles.buttonContainer}>
-        <Button onPress={this.handleClick} title="Proceed to next" />
       </View>
     </View>
   );
@@ -112,9 +125,12 @@ class DriverLicense extends Component {
       <View style={styles.container}>
         <Text style={styles.title}>{this.title(active)}</Text>
         {this.subComponet()}
+        <View style={styles.buttonContainer}>
+          <Button onPress={this.handleClick} title="Proceed to next" />
+        </View>
         <View style={styles.inputContainer}>
           <Dots
-            length={3}
+            length={2}
             active={active}
             passiveColor="rgba(52, 105, 244, 0.2)"
             activeColor="rgb(52,105,244)"

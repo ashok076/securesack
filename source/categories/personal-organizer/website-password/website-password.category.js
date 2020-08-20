@@ -18,11 +18,19 @@ class WebsitePassword extends Component {
     };
   }
 
+  handleClick = () => {
+    const {active} = this.state;
+    this.setState({active: active + 1});
+  };
+
   subComponet = () => {
     const {active} = this.state;
     switch (active) {
       case 0:
         return this.basicInformation();
+        break;
+      case 1:
+        return this.securityQuestions();
         break;
     }
   };
@@ -57,8 +65,52 @@ class WebsitePassword extends Component {
           keyboardType="default"
         />
       </View>
-      <View style={styles.buttonContainer}>
-        <Button onPress={this.handleClick} title="Proceed to next" />
+    </View>
+  );
+
+  securityQuestions = () => (
+    <View>
+      <View style={styles.inputContainer}>
+        <InputTextDynamic
+          placeholder="Security Question 1"
+          onChangeText={this.handleFirstNaame}
+          keyboardType="default"
+        />
+      </View>
+      <View style={styles.inputContainer}>
+        <InputTextDynamic
+          placeholder="Answer 1"
+          onChangeText={this.handleFirstNaame}
+          keyboardType="default"
+        />
+      </View>
+      <View style={styles.inputContainer}>
+        <InputTextDynamic
+          placeholder="Security Question 2"
+          onChangeText={this.handleFirstNaame}
+          keyboardType="default"
+        />
+      </View>
+      <View style={styles.inputContainer}>
+        <InputTextDynamic
+          placeholder="Answer 2"
+          onChangeText={this.handleFirstNaame}
+          keyboardType="default"
+        />
+      </View>
+      <View style={styles.inputContainer}>
+        <InputTextDynamic
+          placeholder="Security Question 3"
+          onChangeText={this.handleFirstNaame}
+          keyboardType="default"
+        />
+      </View>
+      <View style={styles.inputContainer}>
+        <InputTextDynamic
+          placeholder="Answer 3"
+          onChangeText={this.handleFirstNaame}
+          keyboardType="default"
+        />
       </View>
     </View>
   );
@@ -67,6 +119,9 @@ class WebsitePassword extends Component {
     switch (active) {
       case 0:
         return 'Basic Information';
+        break;
+      case 1:
+        return 'Security Questions';
         break;
     }
   };
@@ -77,9 +132,12 @@ class WebsitePassword extends Component {
       <View style={styles.container}>
         <Text style={styles.title}>{this.title(active)}</Text>
         {this.subComponet()}
+        <View style={styles.buttonContainer}>
+          <Button onPress={this.handleClick} title="Proceed to next" />
+        </View>
         <View style={styles.inputContainer}>
           <Dots
-            length={3}
+            length={2}
             active={active}
             passiveColor="rgba(52, 105, 244, 0.2)"
             activeColor="rgb(52,105,244)"

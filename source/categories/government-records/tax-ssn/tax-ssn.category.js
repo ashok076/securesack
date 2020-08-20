@@ -18,6 +18,11 @@ class TaxSSN extends Component {
     };
   }
 
+  handleClick = () => {
+    const {active} = this.state;
+    this.setState({active: active + 1});
+  };
+
   subComponet = () => {
     const {active} = this.state;
     switch (active) {
@@ -28,7 +33,7 @@ class TaxSSN extends Component {
         return this.taxDetails();
         break;
       case 2:
-      return this.birthDetails();
+        return this.birthDetails();
         break;
     }
   };
@@ -141,9 +146,6 @@ class TaxSSN extends Component {
       <View style={styles.inputContainer}>
         <ModalPicker label="Gender" onPress={() => alert('Type')} />
       </View>
-      <View style={styles.buttonContainer}>
-        <Button onPress={this.handleClick} title="Proceed to next" />
-      </View>
     </View>
   );
 
@@ -167,6 +169,9 @@ class TaxSSN extends Component {
       <View style={styles.container}>
         <Text style={styles.title}>{this.title(active)}</Text>
         {this.subComponet()}
+        <View style={styles.buttonContainer}>
+          <Button onPress={this.handleClick} title="Proceed to next" />
+        </View>
         <View style={styles.inputContainer}>
           <Dots
             length={3}

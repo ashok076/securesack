@@ -18,20 +18,30 @@ class HealthCare extends Component {
     };
   }
 
+  handleClick = () => {
+    const {active} = this.state;
+    this.setState({ active: active + 1 })
+  }
+
   subComponet = () => {
     const {active} = this.state;
     switch (active) {
       case 0:
-        return this.firstComponent();
+        return this.baiscInformation();
         break;
       case 1:
+        return this.additionalInformation();
         break;
       case 2:
+      return this.claimMailingAddress();
+        break;
+      case 3:
+      return this.dependentInfo();
         break;
     }
   };
 
-  firstComponent = () => (
+  baiscInformation = () => (
     <View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
@@ -64,7 +74,7 @@ class HealthCare extends Component {
         <InputTextIconDynamic
           placeholder="Deductible"
           onChangeText={this.handleFirstNaame}
-          icon='percent'
+          icon="percent"
           keyboardType="default"
         />
       </View>
@@ -89,16 +99,168 @@ class HealthCare extends Component {
           keyboardType="default"
         />
       </View>
-      <View style={styles.buttonContainer}>
-        <Button onPress={this.handleClick} title="Proceed to next" />
+    </View>
+  );
+
+  additionalInformation = () => (
+    <View>
+      <View style={styles.inputContainer}>
+        <InputTextDynamic
+          placeholder="Customer Service Number"
+          onChangeText={this.handleFirstNaame}
+          keyboardType="default"
+        />
+      </View>
+      <View style={styles.inputContainer}>
+        <InputTextDynamic
+          placeholder="Email Provided"
+          onChangeText={this.handleFirstNaame}
+          keyboardType="default"
+        />
+      </View>
+      <View style={styles.miniContainer}>
+        <View style={[styles.miniInputContainer, {marginRight: 10}]}>
+          <InputTextDynamic
+            placeholder="Effective From"
+            onChangeText={this.handleFirstNaame}
+            keyboardType="default"
+          />
+        </View>
+        <View style={styles.miniInputContainer}>
+          <InputTextDynamic
+            placeholder="Expiration"
+            onChangeText={this.handleFirstNaame}
+            keyboardType="default"
+          />
+        </View>
+      </View>
+      <View style={styles.inputContainer}>
+        <InputTextIconDynamic
+          placeholder="Installment"
+          icon="dollar-sign"
+          onChangeText={this.handlePasswordText}
+        />
+      </View>
+      <View style={[styles.inputContainer, {marginRight: 10}]}>
+        <ModalPicker label="Due" onPress={() => alert('Type')} />
+      </View>
+      <View style={styles.inputContainer}>
+        <InputTextDynamic
+          placeholder="From"
+          icon="dollar-sign"
+          onChangeText={this.handlePasswordText}
+        />
+      </View>
+      <View style={styles.inputContainer}>
+        <InputTextDynamic
+          placeholder="To"
+          icon="dollar-sign"
+          onChangeText={this.handlePasswordText}
+        />
+      </View>
+      <View style={styles.inputContainer}>
+        <InputTextIconDynamic
+          placeholder="Total"
+          icon="dollar-sign"
+          onChangeText={this.handlePasswordText}
+        />
       </View>
     </View>
   );
+
+  claimMailingAddress = () => (
+    <View>
+      <View style={styles.inputContainer}>
+        <InputTextDynamic
+          placeholder="Address Line 1"
+          onChangeText={this.handleFirstNaame}
+          keyboardType="default"
+        />
+      </View>
+      <View style={styles.inputContainer}>
+        <InputTextDynamic
+          placeholder="Address Line 2"
+          onChangeText={this.handleFirstNaame}
+          keyboardType="default"
+        />
+      </View>
+      <View style={styles.inputContainer}>
+        <InputTextDynamic
+          placeholder="City"
+          onChangeText={this.handleFirstNaame}
+          keyboardType="default"
+        />
+      </View>
+      <View style={styles.inputContainer}>
+        <InputTextDynamic
+          placeholder="State"
+          onChangeText={this.handleFirstNaame}
+          keyboardType="default"
+        />
+      </View>
+      <View style={styles.inputContainer}>
+        <InputTextDynamic
+          placeholder="Zip/Postal"
+          onChangeText={this.handleFirstNaame}
+          keyboardType="default"
+        />
+      </View>
+      <View style={styles.inputContainer}>
+        <ModalPicker label="Account Type" onPress={() => alert('Type')} />
+      </View>
+    </View>
+  );
+
+  dependentInfo = () => (
+    <View>
+      <View style={styles.inputContainer}>
+        <InputTextIconDynamic
+          placeholder="Dependent 1"
+          onChangeText={this.handleFirstNaame}
+          icon="dollar-sign"
+          keyboardType="default"
+        />
+      </View>
+      <View style={styles.inputContainer}>
+        <InputTextIconDynamic
+          placeholder="Dependent 2"
+          onChangeText={this.handleFirstNaame}
+          icon="dollar-sign"
+          keyboardType="default"
+        />
+      </View>
+      <View style={styles.inputContainer}>
+        <InputTextIconDynamic
+          placeholder="Dependent 3"
+          onChangeText={this.handleFirstNaame}
+          icon="dollar-sign"
+          keyboardType="default"
+        />
+      </View>
+      <View style={styles.inputContainer}>
+        <InputTextIconDynamic
+          placeholder="Dependent 4"
+          onChangeText={this.handleFirstNaame}
+          icon="dollar-sign"
+          keyboardType="default"
+        />
+      </View>
+    </View>
+  )
 
   title = (active) => {
     switch (active) {
       case 0:
         return 'Basic Information';
+        break;
+      case 1:
+        return 'Additional Information';
+        break;
+      case 2:
+      return 'Claims Mailing Address';
+        break;
+      case 3:
+      return 'Dependent Information';
         break;
     }
   };
@@ -109,9 +271,12 @@ class HealthCare extends Component {
       <View style={styles.container}>
         <Text style={styles.title}>{this.title(active)}</Text>
         {this.subComponet()}
+      <View style={styles.buttonContainer}>
+        <Button onPress={this.handleClick} title="Proceed to next" />
+      </View>
         <View style={styles.inputContainer}>
           <Dots
-            length={3}
+            length={4}
             active={active}
             passiveColor="rgba(52, 105, 244, 0.2)"
             activeColor="rgb(52,105,244)"

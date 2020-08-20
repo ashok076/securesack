@@ -18,20 +18,30 @@ class Services extends Component {
     };
   }
 
+  handleClick = () => {
+    const {active} = this.state;
+    this.setState({ active: active + 1 })
+  }
+
   subComponet = () => {
     const {active} = this.state;
     switch (active) {
       case 0:
-        return this.firstComponent();
+        return this.basicInformation();
         break;
       case 1:
+        return this.paymentMailingAddress();
         break;
       case 2:
+        return this.securityQuestions();
+        break;
+      case 3:
+        return this.additionalInformation();
         break;
     }
   };
 
-  firstComponent = () => (
+  basicInformation = () => (
     <View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
@@ -78,8 +88,155 @@ class Services extends Component {
           keyboardType="default"
         />
       </View>
-      <View style={styles.buttonContainer}>
-        <Button onPress={this.handleClick} title="Proceed to next" />
+      <View style={styles.inputContainer}>
+        <InputTextIconDynamic
+          placeholder="Installment"
+          onChangeText={this.handleFirstNaame}
+          icon="dollar-sign"
+          keyboardType="default"
+        />
+      </View>
+      <View style={styles.inputContainer}>
+        <ModalPicker label="Due" onPress={() => alert('Type')} />
+      </View>
+      <View style={styles.miniContainer}>
+        <View style={[styles.miniInputContainer, {marginRight: 10}]}>
+          <InputTextDynamic
+            placeholder="From"
+            onChangeText={this.handleFirstNaame}
+            keyboardType="default"
+          />
+        </View>
+        <View style={styles.miniInputContainer}>
+          <InputTextDynamic
+            placeholder="To"
+            onChangeText={this.handleFirstNaame}
+            keyboardType="default"
+          />
+        </View>
+      </View>
+        <View style={styles.inputContainer}>
+          <InputTextIconDynamic
+            placeholder="Total"
+            onChangeText={this.handleFirstNaame}
+            icon="dollar-sign"
+            keyboardType="default"
+          />
+        </View>
+    </View>
+  );
+
+  paymentMailingAddress = () => (
+    <View>
+      <View style={styles.inputContainer}>
+        <InputTextDynamic
+          placeholder="Address Line 1"
+          onChangeText={this.handleFirstNaame}
+          keyboardType="default"
+        />
+      </View>
+      <View style={styles.inputContainer}>
+        <InputTextDynamic
+          placeholder="Address Line 2"
+          onChangeText={this.handleFirstNaame}
+          keyboardType="default"
+        />
+      </View>
+      <View style={styles.inputContainer}>
+        <InputTextDynamic
+          placeholder="City"
+          onChangeText={this.handleFirstNaame}
+          keyboardType="default"
+        />
+      </View>
+      <View style={styles.inputContainer}>
+        <InputTextDynamic
+          placeholder="State"
+          onChangeText={this.handleFirstNaame}
+          keyboardType="default"
+        />
+      </View>
+      <View style={styles.inputContainer}>
+        <InputTextDynamic
+          placeholder="Zip/Postal"
+          onChangeText={this.handleFirstNaame}
+          keyboardType="default"
+        />
+      </View>
+      <View style={styles.inputContainer}>
+        <ModalPicker label="Country" onPress={() => alert('Type')} />
+      </View>
+    </View>
+  );
+
+  securityQuestions = () => (
+    <View>
+      <View style={styles.inputContainer}>
+        <InputTextDynamic
+          placeholder="Security Question 1"
+          onChangeText={this.handleFirstNaame}
+          keyboardType="default"
+        />
+      </View>
+      <View style={styles.inputContainer}>
+        <InputTextDynamic
+          placeholder="Answer 1"
+          onChangeText={this.handleFirstNaame}
+          keyboardType="default"
+        />
+      </View>
+      <View style={styles.inputContainer}>
+        <InputTextDynamic
+          placeholder="Security Question 2"
+          onChangeText={this.handleFirstNaame}
+          keyboardType="default"
+        />
+      </View>
+      <View style={styles.inputContainer}>
+        <InputTextDynamic
+          placeholder="Answer 2"
+          onChangeText={this.handleFirstNaame}
+          keyboardType="default"
+        />
+      </View>
+      <View style={styles.inputContainer}>
+        <InputTextDynamic
+          placeholder="Security Question 3"
+          onChangeText={this.handleFirstNaame}
+          keyboardType="default"
+        />
+      </View>
+      <View style={styles.inputContainer}>
+        <InputTextDynamic
+          placeholder="Answer 3"
+          onChangeText={this.handleFirstNaame}
+          keyboardType="default"
+        />
+      </View>
+    </View>
+  );
+
+  additionalInformation = () => (
+    <View>
+      <View style={styles.inputContainer}>
+        <InputTextDynamic
+          placeholder="Additional Account Holder 1"
+          onChangeText={this.handleFirstNaame}
+          keyboardType="default"
+        />
+      </View>
+      <View style={styles.inputContainer}>
+        <InputTextDynamic
+          placeholder="Additional Account Holder 2"
+          onChangeText={this.handleFirstNaame}
+          keyboardType="default"
+        />
+      </View>
+      <View style={styles.inputContainer}>
+        <ModalPicker
+          label="Is Credit Card Provided?"
+          onPress={() => alert('Type')}
+        />
       </View>
     </View>
   );
@@ -88,6 +245,15 @@ class Services extends Component {
     switch (active) {
       case 0:
         return 'Basic Information';
+        break;
+      case 1:
+        return 'Payment Mailing Address';
+        break;
+      case 2:
+        return 'Security Questions';
+        break;
+      case 3:
+        return 'Additional Information';
         break;
     }
   };
@@ -98,6 +264,9 @@ class Services extends Component {
       <View style={styles.container}>
         <Text style={styles.title}>{this.title(active)}</Text>
         {this.subComponet()}
+        <View style={styles.buttonContainer}>
+          <Button onPress={this.handleClick} title="Proceed to next" />
+        </View>
         <View style={styles.inputContainer}>
           <Dots
             length={3}

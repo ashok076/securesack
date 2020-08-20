@@ -18,6 +18,11 @@ class Passport extends Component {
     };
   }
 
+  handleClick = () => {
+    const {active} = this.state;
+    this.setState({active: active + 1});
+  };
+
   subComponet = () => {
     const {active} = this.state;
     switch (active) {
@@ -25,8 +30,10 @@ class Passport extends Component {
         return this.basicInformation();
         break;
       case 1:
+        return this.additionalInfo();
         break;
       case 2:
+        return this.previousPassports();
         break;
     }
   };
@@ -66,8 +73,113 @@ class Passport extends Component {
           />
         </View>
       </View>
-      <View style={styles.buttonContainer}>
-        <Button onPress={this.handleClick} title="Proceed to next" />
+    </View>
+  );
+
+  additionalInfo = () => (
+    <View>
+      <View style={styles.inputContainer}>
+        <InputTextDynamic
+          placeholder="Address Line 1"
+          onChangeText={this.handleFirstNaame}
+          keyboardType="default"
+        />
+      </View>
+      <View style={styles.inputContainer}>
+        <InputTextDynamic
+          placeholder="Address Line 2"
+          onChangeText={this.handleFirstNaame}
+          keyboardType="default"
+        />
+      </View>
+      <View style={styles.inputContainer}>
+        <InputTextDynamic
+          placeholder="City"
+          onChangeText={this.handleFirstNaame}
+          keyboardType="default"
+        />
+      </View>
+      <View style={styles.inputContainer}>
+        <InputTextDynamic
+          placeholder="State"
+          onChangeText={this.handleFirstNaame}
+          keyboardType="default"
+        />
+      </View>
+      <View style={styles.inputContainer}>
+        <InputTextDynamic
+          placeholder="Zip/Postal"
+          onChangeText={this.handleFirstNaame}
+          keyboardType="default"
+        />
+      </View>
+      <View style={styles.inputContainer}>
+        <ModalPicker label="Country Type" onPress={() => alert('Type')} />
+      </View>
+    </View>
+  );
+
+  previousPassports = () => (
+    <View>
+      <View style={styles.inputContainer}>
+        <InputTextDynamic
+          placeholder="Old Passport Number 1"
+          onChangeText={this.handleFirstNaame}
+          keyboardType="default"
+        />
+      </View>
+      <View style={styles.inputContainer}>
+        <InputTextDynamic
+          placeholder="Place of Issue"
+          onChangeText={this.handleFirstNaame}
+          keyboardType="default"
+        />
+      </View>
+      <View style={styles.miniContainer}>
+        <View style={[styles.miniInputContainer, {marginRight: 10}]}>
+          <InputTextDynamic
+            placeholder="Date of Issue"
+            onChangeText={this.handleFirstNaame}
+            keyboardType="default"
+          />
+        </View>
+        <View style={styles.miniInputContainer}>
+          <InputTextDynamic
+            placeholder="Expired On"
+            onChangeText={this.handleFirstNaame}
+            keyboardType="default"
+          />
+        </View>
+      </View>
+      <View style={styles.inputContainer}>
+        <InputTextDynamic
+          placeholder="Old Passport Number 2"
+          onChangeText={this.handleFirstNaame}
+          keyboardType="default"
+        />
+      </View>
+      <View style={styles.inputContainer}>
+        <InputTextDynamic
+          placeholder="Place of Issue"
+          onChangeText={this.handleFirstNaame}
+          keyboardType="default"
+        />
+      </View>
+      <View style={styles.miniContainer}>
+        <View style={[styles.miniInputContainer, {marginRight: 10}]}>
+          <InputTextDynamic
+            placeholder="Date of Issue"
+            onChangeText={this.handleFirstNaame}
+            keyboardType="default"
+          />
+        </View>
+        <View style={styles.miniInputContainer}>
+          <InputTextDynamic
+            placeholder="Expired On"
+            onChangeText={this.handleFirstNaame}
+            keyboardType="default"
+          />
+        </View>
       </View>
     </View>
   );
@@ -78,7 +190,10 @@ class Passport extends Component {
         return 'Basic Information';
         break;
       case 1:
-        return 'Driving Violations';
+        return 'Additional Information';
+        break;
+      case 1:
+        return 'Previous Passports';
         break;
     }
   };
@@ -89,6 +204,9 @@ class Passport extends Component {
       <View style={styles.container}>
         <Text style={styles.title}>{this.title(active)}</Text>
         {this.subComponet()}
+        <View style={styles.buttonContainer}>
+          <Button onPress={this.handleClick} title="Proceed to next" />
+        </View>
         <View style={styles.inputContainer}>
           <Dots
             length={3}

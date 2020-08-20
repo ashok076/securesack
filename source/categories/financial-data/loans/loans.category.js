@@ -18,20 +18,27 @@ class Loans extends Component {
     };
   }
 
+  handleClick = () => {
+    const {active} = this.state;
+    this.setState({active: active + 1});
+  };
+
   subComponet = () => {
     const {active} = this.state;
     switch (active) {
       case 0:
-        return this.firstComponent();
+        return this.basicInformation();
         break;
       case 1:
+        return this.paymentMailingAddress();
         break;
       case 2:
+        return this.refiance();
         break;
     }
   };
 
-  firstComponent = () => (
+  basicInformation = () => (
     <View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
@@ -57,7 +64,7 @@ class Loans extends Component {
       <View style={styles.inputContainer}>
         <InputTextIconDynamic
           placeholder="Loan Amount"
-          icon='dollar-sign'
+          icon="dollar-sign"
           onChangeText={this.handlePasswordText}
         />
       </View>
@@ -65,7 +72,7 @@ class Loans extends Component {
         <InputTextIconDynamic
           placeholder="Interest Rate"
           onChangeText={this.handleFirstNaame}
-          icon='percent'
+          icon="percent"
           keyboardType="default"
         />
       </View>
@@ -90,8 +97,72 @@ class Loans extends Component {
           keyboardType="default"
         />
       </View>
-      <View style={styles.buttonContainer}>
-        <Button onPress={this.handleClick} title="Proceed to next" />
+    </View>
+  );
+
+  paymentMailingAddress = () => (
+    <View>
+      <View style={styles.inputContainer}>
+        <InputTextDynamic
+          placeholder="Address Line 1"
+          onChangeText={this.handleFirstNaame}
+          keyboardType="default"
+        />
+      </View>
+      <View style={styles.inputContainer}>
+        <InputTextDynamic
+          placeholder="Address Line 2"
+          onChangeText={this.handleFirstNaame}
+          keyboardType="default"
+        />
+      </View>
+      <View style={styles.inputContainer}>
+        <InputTextDynamic
+          placeholder="City"
+          onChangeText={this.handleFirstNaame}
+          keyboardType="default"
+        />
+      </View>
+      <View style={styles.inputContainer}>
+        <InputTextDynamic
+          placeholder="State"
+          onChangeText={this.handleFirstNaame}
+          keyboardType="default"
+        />
+      </View>
+      <View style={styles.inputContainer}>
+        <InputTextDynamic
+          placeholder="Zip/Postal"
+          onChangeText={this.handleFirstNaame}
+          keyboardType="default"
+        />
+      </View>
+      <View style={styles.inputContainer}>
+        <ModalPicker label="Account Type" onPress={() => alert('Type')} />
+      </View>
+    </View>
+  );
+
+  refiance = () => (
+    <View>
+      <View style={[styles.miniInputContainer, {marginRight: 10}]}>
+        <ModalPicker label="Refinanced" onPress={() => alert('Type')} />
+      </View>
+      <View style={styles.miniContainer}>
+        <View style={[styles.miniInputContainer, {marginRight: 10}]}>
+          <InputTextDynamic
+            placeholder="Effective From"
+            onChangeText={this.handleFirstNaame}
+            keyboardType="default"
+          />
+        </View>
+        <View style={styles.miniInputContainer}>
+          <InputTextDynamic
+            placeholder="Ends On"
+            onChangeText={this.handleFirstNaame}
+            keyboardType="default"
+          />
+        </View>
       </View>
     </View>
   );
@@ -100,6 +171,12 @@ class Loans extends Component {
     switch (active) {
       case 0:
         return 'Basic Information';
+        break;
+      case 1:
+        return 'Payment mailing address';
+        break;
+      case 2:
+        return 'Refiance';
         break;
     }
   };
@@ -110,6 +187,9 @@ class Loans extends Component {
       <View style={styles.container}>
         <Text style={styles.title}>{this.title(active)}</Text>
         {this.subComponet()}
+        <View style={styles.buttonContainer}>
+          <Button onPress={this.handleClick} title="Proceed to next" />
+        </View>
         <View style={styles.inputContainer}>
           <Dots
             length={3}

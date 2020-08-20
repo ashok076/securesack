@@ -5,8 +5,8 @@ const height = Dimensions.get('window').height;
 
 const styles = StyleSheet.create({
   imageBackgroundStyle: {
-    width: width / 2.5,
-    height: height / 4.5,
+    width: width / 2.8,
+    height: height / 4.8,
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
