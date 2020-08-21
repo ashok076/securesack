@@ -20,7 +20,7 @@ class Life extends Component {
 
   handleClick = () => {
     const {active} = this.state;
-    this.setState({active: active + 1});
+    if (active < 3) this.setState({active: active + 1});
   };
 
   subComponet = () => {

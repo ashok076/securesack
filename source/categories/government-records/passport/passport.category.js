@@ -20,7 +20,7 @@ class Passport extends Component {
 
   handleClick = () => {
     const {active} = this.state;
-    this.setState({active: active + 1});
+    if (active < 2) this.setState({active: active + 1});
   };
 
   subComponet = () => {

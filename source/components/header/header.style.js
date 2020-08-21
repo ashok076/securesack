@@ -12,8 +12,8 @@ const styles = StyleSheet.create({
   },
   logo: {
     justifyContent: 'flex-end',
-    height: 28,
-    width: 28
+    height: 25,
+    width: 25
   },
 });
 export default styles

@@ -20,7 +20,7 @@ class Services extends Component {
 
   handleClick = () => {
     const {active} = this.state;
-    this.setState({ active: active + 1 })
+    if (active < 3) this.setState({active: active + 1});
   }
 
   subComponet = () => {
@@ -269,7 +269,7 @@ class Services extends Component {
         </View>
         <View style={styles.inputContainer}>
           <Dots
-            length={3}
+            length={4}
             active={active}
             passiveColor="rgba(52, 105, 244, 0.2)"
             activeColor="rgb(52,105,244)"

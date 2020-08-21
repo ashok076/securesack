@@ -20,7 +20,7 @@ class PropertyInsurance extends Component {
 
   handleClick = () => {
     const {active} = this.state;
-    this.setState({active: active + 1});
+    if (active < 3) this.setState({active: active + 1});
   };
 
   subComponet = () => {
@@ -143,35 +143,30 @@ class PropertyInsurance extends Component {
       <View style={styles.inputContainer}>
         <InputTextIconDynamic
           placeholder="Dwelling Coverage (A)"
-          icon="dollar-sign"
           onChangeText={this.handlePasswordText}
         />
       </View>
       <View style={styles.inputContainer}>
         <InputTextIconDynamic
           placeholder="Liability Coverage (B)"
-          icon="dollar-sign"
           onChangeText={this.handlePasswordText}
         />
       </View>
       <View style={styles.inputContainer}>
         <InputTextIconDynamic
           placeholder="Medical Payment Coverage (C)"
-          icon="dollar-sign"
           onChangeText={this.handlePasswordText}
         />
       </View>
       <View style={styles.inputContainer}>
         <InputTextIconDynamic
           placeholder="Dwelling Coverage Deductible"
-          icon="dollar-sign"
           onChangeText={this.handlePasswordText}
         />
       </View>
       <View style={styles.inputContainer}>
         <InputTextIconDynamic
           placeholder="Loss of Use Coverage (F)"
-          icon="dollar-sign"
           onChangeText={this.handlePasswordText}
         />
       </View>
@@ -199,7 +194,6 @@ class PropertyInsurance extends Component {
         <View style={styles.miniInputContainer}>
           <InputTextIconDynamic
             placeholder="Ordiance/Legal Coverage"
-            icon="dollar-sign"
             onChangeText={this.handlePasswordText}
           />
         </View>
@@ -207,7 +201,6 @@ class PropertyInsurance extends Component {
       <View style={styles.inputContainer}>
         <InputTextIconDynamic
           placeholder="Personal Items Insured"
-          icon="dollar-sign"
           onChangeText={this.handlePasswordText}
         />
       </View>

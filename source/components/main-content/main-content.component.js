@@ -13,7 +13,6 @@ const MainContent = ({navigation}) => {
         data={mainContentList}
         renderItem={({item}) => <Block item={item} navigation={navigation}/>}
         numColumns={2}
-        contentContainerStyle={{ paddingBottom: 20}}
       />
     </View>
   );
