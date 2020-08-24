@@ -49,74 +49,74 @@ const CommonView = ({navigation, route, userData}) => {
           <Title style={styles.title}>Add {title}</Title>
         </View>
         <ScrollView style={styles.outerContainerView}>
-          {subView(type, access_token)}
+          {subView(type, access_token, navigation)}
         </ScrollView>
       </ImageBackground>
     </SafeAreaView>
   );
 };
 
-const subView = (type, access_token) => {
+const subView = (type, access_token, navigation) => {
   switch (type) {
     case 'BankAccounts':
-      return <BankAccounts access_token={access_token} />;
+      return <BankAccounts access_token={access_token} navigation={navigation}/>;
       break;
     case 'CreditCard':
-      return <CreditCard access_token={access_token} />;
+      return <CreditCard access_token={access_token} navigation={navigation}/>;
       break;
     case 'BrokerageAccount':
-      return <Brokerages access_token={access_token} />;
+      return <Brokerages access_token={access_token} navigation={navigation}/>;
       break;
     case 'Mortgage':
-      return <Mortgages access_token={access_token} />;
+      return <Mortgages access_token={access_token} navigation={navigation}/>;
       break;
     case 'ConsumerLoan':
-      return <Loans access_token={access_token} />;
+      return <Loans access_token={access_token} navigation={navigation}/>;
       break;
     case 'ServiceAccount':
-      return <Services access_token={access_token} />;
+      return <Services access_token={access_token} navigation={navigation}/>;
       break;
     case 'RewardProgram':
-      return <RewardsPrograms access_token={access_token} />;
+      return <RewardsPrograms access_token={access_token} navigation={navigation}/>;
       break;
     case 'AutoInsurance':
-      return <Auto access_token={access_token} />;
+      return <Auto access_token={access_token} navigation={navigation}/>;
       break;
     case 'HealthCareProvider':
-      return <HealthCare access_token={access_token} />;
+      return <HealthCare access_token={access_token} navigation={navigation}/>;
       break;
     case 'PropertyInsurance':
-      return <PropertyInsurance access_token={access_token} />;
+      return <PropertyInsurance access_token={access_token} navigation={navigation}/>;
       break;
     case 'LifeInsurance':
-      return <Life access_token={access_token} />;
+      return <Life access_token={access_token} navigation={navigation}/>;
       break;
     case 'Vehicle':
-      return <Vehicle access_token={access_token} />;
+      return <Vehicle access_token={access_token} navigation={navigation}/>;
       break;
     case 'Property':
-      return <Property access_token={access_token} />;
+      return <Property access_token={access_token} navigation={navigation}/>;
       break;
     case 'WebSiteAccount':
-      return <WebsitePassword access_token={access_token} />;
+      return <WebsitePassword access_token={access_token} navigation={navigation}/>;
       break;
     case 'Notes':
-      return <Notes access_token={access_token} />;
+      return <Notes access_token={access_token} navigation={navigation}/>;
       break;
     case 'Recipies':
-      return <Recipes access_token={access_token} />;
+      return <Recipes access_token={access_token} navigation={navigation}/>;
       break;
     case 'DriverLicense':
-      return <DriverLicense access_token={access_token} />;
+      return <DriverLicense access_token={access_token} navigation={navigation}/>;
       break;
     case 'Passport':
-      return <Passport access_token={access_token} />;
+      return <Passport access_token={access_token} navigation={navigation}/>;
       break;
     case 'TaxIdentification':
-      return <TaxSSN access_token={access_token} />;
+      return <TaxSSN access_token={access_token} navigation={navigation}/>;
       break;
     case 'IdentificationCards':
-      return <Identity access_token={access_token} />;
+      return <Identity access_token={access_token} navigation={navigation}/>;
       break;
   }
 };

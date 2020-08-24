@@ -8,8 +8,8 @@ import InputTextDynamic from '../../../components/input-text-dynamic/input-text-
 import InputTextIconDynamic from '../../../components/input-text-icon-dynamic/input-text-icon-dynamic.component.js';
 import ModalPicker from '../../../components/modal-picker/modal-picker.component.js';
 import Button from '../../../components/button/button.component';
+import Loader from '../../../components/loader/loader.component';
 import {createOrUpdateRecord} from '../../../configuration/api/api.functions';
-import DataTypeModal from '../../../components/data-type-modal/data-type-modal.component';
 
 import styles from './bank-account.style';
 
@@ -20,6 +20,8 @@ class BankAccounts extends Component {
       active: 0,
       access_token: props.access_token,
       countryModal: false,
+      navigation: props.navigation,
+      isLoader: false,
       title: '',
       dataType: '',
       name: '',
@@ -430,10 +432,7 @@ class BankAccounts extends Component {
         />
       </View>
       <View style={styles.inputContainer}>
-        <ModalPicker
-          label="Country"
-          onPress={() => this.setState({countryModal: true, dataType: 'RefCountry', title: 'Country'})}
-        />
+        <ModalPicker label="Country" onPress={() => alert('Country')} />
       </View>
     </View>
   );
@@ -475,8 +474,10 @@ class BankAccounts extends Component {
   };
 
   submit = async () => {
+    this.setState({isLoader: true});
     const {
       access_token,
+      navigation,
       name,
       issuingBank,
       accountNumber,
@@ -547,20 +548,26 @@ class BankAccounts extends Component {
       SecurityAnswer2: securityA2,
       SecurityQuestion3: securityQ3,
       SecurityAnswer3: securityA3,
-      boxNumber1,
-      openedOn1,
-      interestRate1,
-      boxNumber2,
-      openedOn2,
-      interestRate2,
-      address1,
-      address2,
-      city,
-      state,
-      zip,
+      'SafetyDepositBox1-BoxNumber': boxNumber1,
+      'SafetyDepositBox1-BoxOpeningDate': openedOn1,
+      'SafetyDepositBox1-Fee': interestRate1,
+      'SafetyDepositBox2-BoxNumber': boxNumber2,
+      'SafetyDepositBox2-BoxOpeningDate': openedOn2,
+      'SafetyDepositBox2-Fee': interestRate2,
+      'BankBranchAddress-Line1': address1,
+      'BankBranchAddress-Line2': address2,
+      'BankBranchAddress-City': city,
+      'BankBranchAddress-State': state,
+      'BankBranchAddress-Zip': zip,
     });
-    console.log('Checking bank account data: ', data);
-    // await createOrUpdateRecord('BankAccounts', `__NEW__`, data ,access_token)
+    await createOrUpdateRecord('BankAccounts', `__NEW__`, data, access_token)
+      .then((response) => {
+        this.setState({isLoader: false});
+        navigation.goBack();
+      })
+      .catch((error) => {
+        this.setState({isLoader: false});
+      });
   };
 
   buttonTitle = (active) => {
@@ -569,11 +576,10 @@ class BankAccounts extends Component {
   };
 
   render() {
-    const {active, countryModal, dataType, title, access_token} = this.state;
+    const {active, isLoader} = this.state;
     return (
       <View style={styles.container}>
         <Text style={styles.title}>{this.title(active)}</Text>
-          {countryModal && <DataTypeModal visible={countryModal} type={dataType} title={title} access_token={access_token}/>}
         {this.subComponet()}
         <View style={styles.buttonContainer}>
           <Button onPress={this.handleClick} title={this.buttonTitle(active)} />
@@ -591,6 +597,7 @@ class BankAccounts extends Component {
             paddingVertical={10}
           />
         </View>
+        <Loader isLoader={isLoader} />
       </View>
     );
   }

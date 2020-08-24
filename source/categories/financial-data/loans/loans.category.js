@@ -1,12 +1,15 @@
 import React, {Component} from 'react';
 import {View, ScrollView, Modal} from 'react-native';
 import {Text} from 'react-native-paper';
+import Dots from 'react-native-dots-pagination';
+import qs from 'qs';
 
 import InputTextDynamic from '../../../components/input-text-dynamic/input-text-dynamic.component.js';
 import InputTextIconDynamic from '../../../components/input-text-icon-dynamic/input-text-icon-dynamic.component.js';
 import ModalPicker from '../../../components/modal-picker/modal-picker.component.js';
 import Button from '../../../components/button/button.component';
-import Dots from 'react-native-dots-pagination';
+import Loader from '../../../components/loader/loader.component';
+import {createOrUpdateRecord} from '../../../configuration/api/api.functions';
 
 import styles from './loans.style';
 
@@ -15,12 +18,80 @@ class Loans extends Component {
     super(props);
     this.state = {
       active: 0,
+      isLoader: false,
+      navigation: props.navigation,
+      access_token: props.access_token,
+      name: '',
+      loanNo: '',
+      issuer: '',
+      loanAmnt: '',
+      interestRate: '',
+      url: '',
+      username: '',
+      password: '',
+      address1: '',
+      address2: '',
+      city: '',
+      state: '',
+      zip: '',
+      effectiveFrom: '',
+      endsOn: '',
     };
   }
 
   handleClick = () => {
     const {active} = this.state;
     if (active < 2) this.setState({active: active + 1});
+    else if (active === 2) this.submit();
+  };
+
+  submit = async () => {
+    this.setState({isLoader: true});
+    const {
+      navigation,
+      access_token,
+      name,
+      loanNo,
+      issuer,
+      loanAmnt,
+      interestRate,
+      url,
+      username,
+      password,
+      address1,
+      address2,
+      city,
+      state,
+      zip,
+      effectiveFrom,
+      endsOn,
+    } = this.state;
+
+    let data = qs.stringify({
+      Name: name,
+      LoanNumber: loanNo,
+      Issuer: issuer,
+      LoanAmount: loanAmnt,
+      InterestRate: interestRate,
+      URL: url,
+      WebSiteUsername: username,
+      WebSitePassword: password,
+      'PaymentMailingAddress-Line1': address1,
+      'PaymentMailingAddress-Line2': address2,
+      'PaymentMailingAddress-City': city,
+      'PaymentMailingAddress-State': state,
+      'PaymentMailingAddress-Zip': zip,
+      StartDate: effectiveFrom,
+      EndDate: endsOn,
+    });
+    await createOrUpdateRecord('ConsumerLoan', `__NEW__`, data, access_token)
+      .then((response) => {
+        this.setState({isLoader: false});
+        navigation.goBack();
+      })
+      .catch((error) => {
+        this.setState({isLoader: false});
+      });
   };
 
   subComponet = () => {
@@ -43,21 +114,21 @@ class Loans extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Name"
-          onChangeText={this.handleFirstNaame}
+          onChangeText={(name) => this.setState({name})}
           keyboardType="default"
         />
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Loan Number"
-          onChangeText={this.handleFirstNaame}
+          onChangeText={(loanNo) => this.setState({loanNo})}
           keyboardType="default"
         />
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Issuer"
-          onChangeText={this.handleFirstNaame}
+          onChangeText={(issuer) => this.setState({issuer})}
           keyboardType="default"
         />
       </View>
@@ -65,13 +136,13 @@ class Loans extends Component {
         <InputTextIconDynamic
           placeholder="Loan Amount"
           icon="dollar-sign"
-          onChangeText={this.handlePasswordText}
+          onChangeText={(loanAmnt) => this.setState({loanAmnt})}
         />
       </View>
       <View style={styles.inputContainer}>
         <InputTextIconDynamic
           placeholder="Interest Rate"
-          onChangeText={this.handleFirstNaame}
+          onChangeText={(interestRate) => this.setState({interestRate})}
           icon="percent"
           keyboardType="default"
         />
@@ -79,21 +150,21 @@ class Loans extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="URL"
-          onChangeText={this.handleFirstNaame}
+          onChangeText={(url) => this.setState({url})}
           keyboardType="default"
         />
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="User Name"
-          onChangeText={this.handleFirstNaame}
+          onChangeText={(username) => this.setState({username})}
           keyboardType="default"
         />
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Password"
-          onChangeText={this.handleFirstNaame}
+          onChangeText={(password) => this.setState({password})}
           keyboardType="default"
         />
       </View>
@@ -105,35 +176,35 @@ class Loans extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Address Line 1"
-          onChangeText={this.handleFirstNaame}
+          onChangeText={(address1) => this.setState({address1})}
           keyboardType="default"
         />
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Address Line 2"
-          onChangeText={this.handleFirstNaame}
+          onChangeText={(address2) => this.setState({address2})}
           keyboardType="default"
         />
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="City"
-          onChangeText={this.handleFirstNaame}
+          onChangeText={(city) => this.setState({city})}
           keyboardType="default"
         />
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="State"
-          onChangeText={this.handleFirstNaame}
+          onChangeText={(state) => this.setState({state})}
           keyboardType="default"
         />
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Zip/Postal"
-          onChangeText={this.handleFirstNaame}
+          onChangeText={(zip) => this.setState({zip})}
           keyboardType="default"
         />
       </View>
@@ -152,14 +223,14 @@ class Loans extends Component {
         <View style={[styles.miniInputContainer, {marginRight: 10}]}>
           <InputTextDynamic
             placeholder="Effective From"
-            onChangeText={this.handleFirstNaame}
+            onChangeText={(effectiveFrom) => this.setState({effectiveFrom})}
             keyboardType="default"
           />
         </View>
         <View style={styles.miniInputContainer}>
           <InputTextDynamic
             placeholder="Ends On"
-            onChangeText={this.handleFirstNaame}
+            onChangeText={(endsOn) => this.setState({endsOn})}
             keyboardType="default"
           />
         </View>
@@ -182,7 +253,7 @@ class Loans extends Component {
   };
 
   render() {
-    const {active} = this.state;
+    const {active, isLoader} = this.state;
     return (
       <View style={styles.container}>
         <Text style={styles.title}>{this.title(active)}</Text>
@@ -203,6 +274,7 @@ class Loans extends Component {
             paddingVertical={10}
           />
         </View>
+        <Loader isLoader={isLoader} />
       </View>
     );
   }

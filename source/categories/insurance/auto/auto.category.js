@@ -1,12 +1,15 @@
 import React, {Component} from 'react';
 import {View, ScrollView, Modal} from 'react-native';
 import {Text} from 'react-native-paper';
+import Dots from 'react-native-dots-pagination';
+import qs from 'qs';
 
 import InputTextDynamic from '../../../components/input-text-dynamic/input-text-dynamic.component.js';
 import InputTextIconDynamic from '../../../components/input-text-icon-dynamic/input-text-icon-dynamic.component.js';
 import ModalPicker from '../../../components/modal-picker/modal-picker.component.js';
 import Button from '../../../components/button/button.component';
-import Dots from 'react-native-dots-pagination';
+import Loader from '../../../components/loader/loader.component';
+import {createOrUpdateRecord} from '../../../configuration/api/api.functions';
 
 import styles from './auto.style';
 
@@ -15,12 +18,107 @@ class Auto extends Component {
     super(props);
     this.state = {
       active: 0,
+      isLoader: false,
+      navigation: props.navigation,
+      access_token: props.access_token,
+      name: '',
+      primaryPolicyHolder: '',
+      policyNumber: '',
+      issuer: '',
+      premium: '',
+      installment: '',
+      from: '',
+      to: '',
+      total: '',
+      url: '',
+      username: '',
+      password: '',
+      effectiveFrom: '',
+      endsOn: '',
+      additionalPolicyHolder1: '',
+      additionalPolicyHolder2: '',
+      additionalPolicyHolder3: '',
+      additionalPolicyHolder4: '',
+      securityQ1: '',
+      securityA1: '',
+      securityQ2: '',
+      securityA2: '',
+      securityQ3: '',
+      securityA3: '',
     };
   }
 
   handleClick = () => {
     const {active} = this.state;
     if (active < 3) this.setState({active: active + 1});
+    else if (active === 3) this.submit();
+  };
+
+  submit = async () => {
+    this.setState({isLoader: true});
+    const {
+      navigation,
+      access_token,
+      name,
+      primaryPolicyHolder,
+      policyNumber,
+      issuer,
+      premium,
+      installment,
+      from,
+      to,
+      total,
+      url,
+      username,
+      password,
+      effectiveFrom,
+      endsOn,
+      additionalPolicyHolder1,
+      additionalPolicyHolder2,
+      additionalPolicyHolder3,
+      additionalPolicyHolder4,
+      securityQ1,
+      securityA1,
+      securityQ2,
+      securityA2,
+      securityQ3,
+      securityA3,
+    } = this.state;
+
+    let data = qs.stringify({
+      Name: name,
+      PrimaryPolicyHolder: primaryPolicyHolder,
+      PolicyNumber: policyNumber,
+      Issuer: issuer,
+      PolicyPremium: premium,
+      'PaymentSchedule-InstallmentAmount': installment,
+      'PaymentSchedule-InstallmentStartDate': from,
+      'PaymentSchedule-InstallmentEndDate': to,
+      'PaymentSchedule-TotalAmount': total,
+      URL: url,
+      username,
+      password,
+      StartDate: effectiveFrom,
+      EndDate: endsOn,
+      AdditionalPolicyHolder1: additionalPolicyHolder1,
+      AdditionalPolicyHolder2: additionalPolicyHolder2,
+      AdditionalPolicyHolder3: additionalPolicyHolder3,
+      SecurityQuestion1: securityQ1,
+      SecurityAnswer1: securityA1,
+      SecurityQuestion2: securityQ2,
+      SecurityAnswer2: securityA2,
+      SecurityQuestion3: securityQ3,
+      SecurityAnswer3: securityA3,
+    });
+
+    await createOrUpdateRecord('AutoInsurance', `__NEW__`, data, access_token)
+      .then((response) => {
+        this.setState({isLoader: false});
+        navigation.goBack();
+      })
+      .catch((error) => {
+        this.setState({isLoader: false});
+      });
   };
 
   subComponet = () => {
@@ -46,28 +144,30 @@ class Auto extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Name"
-          onChangeText={this.handleFirstNaame}
+          onChangeText={(name) => this.setState({name})}
           keyboardType="default"
         />
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Primary Policy Holder"
-          onChangeText={this.handleFirstNaame}
+          onChangeText={(primaryPolicyHolder) =>
+            this.setState({primaryPolicyHolder})
+          }
           keyboardType="default"
         />
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Policy Number"
-          onChangeText={this.handleFirstNaame}
+          onChangeText={(policyNumber) => this.setState({policyNumber})}
           keyboardType="default"
         />
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Issuer"
-          onChangeText={this.handlePasswordText}
+          onChangeText={(issuer) => this.setState({issuer})}
           keyboardType="default"
         />
       </View>
@@ -75,14 +175,14 @@ class Auto extends Component {
         <InputTextIconDynamic
           placeholder="Premium"
           icon="dollar-sign"
-          onChangeText={this.handlePasswordText}
+          onChangeText={(premium) => this.setState({premium})}
         />
       </View>
       <View style={styles.inputContainer}>
         <InputTextIconDynamic
           placeholder="Installment"
           icon="dollar-sign"
-          onChangeText={this.handlePasswordText}
+          onChangeText={(installment) => this.setState({installment})}
         />
       </View>
       <View style={[styles.inputContainer, {marginRight: 10}]}>
@@ -92,21 +192,21 @@ class Auto extends Component {
         <InputTextDynamic
           placeholder="From"
           icon="dollar-sign"
-          onChangeText={this.handlePasswordText}
+          onChangeText={(from) => this.setState({from})}
         />
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="To"
           icon="dollar-sign"
-          onChangeText={this.handlePasswordText}
+          onChangeText={(to) => this.setState({to})}
         />
       </View>
       <View style={styles.inputContainer}>
         <InputTextIconDynamic
           placeholder="Total"
           icon="dollar-sign"
-          onChangeText={this.handlePasswordText}
+          onChangeText={(total) => this.setState({total})}
         />
       </View>
     </View>
@@ -117,14 +217,14 @@ class Auto extends Component {
       <View style={[styles.miniInputContainer, {marginRight: 10}]}>
         <InputTextDynamic
           placeholder="Effective From"
-          onChangeText={this.handleFirstNaame}
+          onChangeText={(effectiveFrom) => this.setState({effectiveFrom})}
           keyboardType="default"
         />
       </View>
       <View style={styles.miniInputContainer}>
         <InputTextDynamic
           placeholder="Ends On"
-          onChangeText={this.handleFirstNaame}
+          onChangeText={(endsOn) => this.setState({endsOn})}
           keyboardType="default"
         />
       </View>
@@ -136,21 +236,36 @@ class Auto extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Additional Policy Holder 1"
-          onChangeText={this.handleFirstNaame}
+          onChangeText={(additionalPolicyHolder1) =>
+            this.setState({additionalPolicyHolder1})
+          }
           keyboardType="default"
         />
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Additional Policy Holder 2"
-          onChangeText={this.handleFirstNaame}
+          onChangeText={(additionalPolicyHolder2) =>
+            this.setState({additionalPolicyHolder2})
+          }
           keyboardType="default"
         />
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
-          placeholder="Additional Policy Holder 2"
-          onChangeText={this.handleFirstNaame}
+          placeholder="Additional Policy Holder 3"
+          onChangeText={(additionalPolicyHolder3) =>
+            this.setState({additionalPolicyHolder3})
+          }
+          keyboardType="default"
+        />
+      </View>
+      <View style={styles.inputContainer}>
+        <InputTextDynamic
+          placeholder="Additional Policy Holder 4"
+          onChangeText={(additionalPolicyHolder4) =>
+            this.setState({additionalPolicyHolder4})
+          }
           keyboardType="default"
         />
       </View>
@@ -162,42 +277,42 @@ class Auto extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Security Question 1"
-          onChangeText={this.handleFirstNaame}
+          onChangeText={(securityQ1) => this.setState({securityQ1})}
           keyboardType="default"
         />
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Answer 1"
-          onChangeText={this.handleFirstNaame}
+          onChangeText={(securityA1) => this.setState({securityA1})}
           keyboardType="default"
         />
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Security Question 2"
-          onChangeText={this.handleFirstNaame}
+          onChangeText={(securityQ2) => this.setState({securityQ2})}
           keyboardType="default"
         />
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Answer 2"
-          onChangeText={this.handleFirstNaame}
+          onChangeText={(securityA2) => this.setState({securityA2})}
           keyboardType="default"
         />
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Security Question 3"
-          onChangeText={this.handleFirstNaame}
+          onChangeText={(securityQ3) => this.setState({securityQ3})}
           keyboardType="default"
         />
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Answer 3"
-          onChangeText={this.handleFirstNaame}
+          onChangeText={(securityA3) => this.setState({securityA3})}
           keyboardType="default"
         />
       </View>
@@ -210,19 +325,19 @@ class Auto extends Component {
         return 'Basic Information';
         break;
       case 1:
-        return "Additional Information";
+        return 'Additional Information';
         break;
       case 2:
-        return "Additional Policy Holder";
+        return 'Additional Policy Holder';
         break;
       case 3:
-        return "Security Questions";
+        return 'Security Questions';
         break;
     }
   };
 
   render() {
-    const {active} = this.state;
+    const {active, isLoader} = this.state;
     return (
       <View style={styles.container}>
         <Text style={styles.title}>{this.title(active)}</Text>
@@ -243,6 +358,7 @@ class Auto extends Component {
             paddingVertical={10}
           />
         </View>
+        <Loader isLoader={isLoader}/>
       </View>
     );
   }

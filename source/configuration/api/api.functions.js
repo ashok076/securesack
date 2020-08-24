@@ -13,5 +13,7 @@ export const createOrUpdateRecord = async (datatype, recid, payload, access_toke
     data: payload,
   })
     .then((response) => response.data)
-    .catch((error) => error);
+    .catch((error) => {
+      throw error
+    });
 };

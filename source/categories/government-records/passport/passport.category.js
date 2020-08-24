@@ -1,12 +1,15 @@
 import React, {Component} from 'react';
 import {View, ScrollView, Modal} from 'react-native';
 import {Text} from 'react-native-paper';
+import Dots from 'react-native-dots-pagination';
+import qs from 'qs';
 
 import InputTextDynamic from '../../../components/input-text-dynamic/input-text-dynamic.component.js';
 import InputTextIconDynamic from '../../../components/input-text-icon-dynamic/input-text-icon-dynamic.component.js';
 import ModalPicker from '../../../components/modal-picker/modal-picker.component.js';
 import Button from '../../../components/button/button.component';
-import Dots from 'react-native-dots-pagination';
+import Loader from '../../../components/loader/loader.component';
+import {createOrUpdateRecord} from '../../../configuration/api/api.functions';
 
 import styles from './passport.style';
 
@@ -15,12 +18,87 @@ class Passport extends Component {
     super(props);
     this.state = {
       active: 0,
+      isLoader: false,
+      navigation: props.navigation,
+      access_token: props.access_token,
+      name: '',
+      passportNo: '',
+      dateOfIssue: '',
+      expirationDate: '',
+      address1: '',
+      address2: '',
+      city: '',
+      state: '',
+      zip: '',
+      oldPassportNo1: '',
+      placeOfIssue1: '',
+      dateOfIssue1: '',
+      expiredOn2: '',
+      oldPassportNo2: '',
+      placeOfIssue2: '',
+      dateOfIssue2: '',
+      expiredOn2: '',
     };
   }
 
   handleClick = () => {
     const {active} = this.state;
     if (active < 2) this.setState({active: active + 1});
+    else if (active === 2) this.submit();
+  };
+
+  submit = async () => {
+    this.setState({isLoader: true});
+    const {
+      name,
+      passportNo,
+      dateOfIssue,
+      expirationDate,
+      address1,
+      address2,
+      city,
+      state,
+      zip,
+      oldPassportNo1,
+      placeOfIssue1,
+      dateOfIssue1,
+      expiredOn1,
+      oldPassportNo2,
+      placeOfIssue2,
+      dateOfIssue2,
+      expiredOn2,
+      access_token,
+      navigation
+    } = this.state;
+
+    let data = qs.stringify({
+      Name: name,
+      PassportNumber: passportNo,
+      DateOfIssue: dateOfIssue,
+      ExpirationDate: expirationDate,
+      'HomeAddressOnPassport-Line1': address1,
+      'HomeAddressOnPassport-Line2': address2,
+      'HomeAddressOnPassport-City': city,
+      'HomeAddressOnPassport-State': state,
+      'HomeAddressOnPassport-Zip': zip,
+      PreviousPassportNumber1: oldPassportNo1,
+      PreviousPlaceOfIssue1: placeOfIssue1,
+      PreviousDateOfIssue1: dateOfIssue1,
+      PreviousExpirationDate1: expiredOn2,
+      PreviousPassportNumber2: oldPassportNo2,
+      PreviousPlaceOfIssue2: placeOfIssue2,
+      PreviousDateOfIssue2: dateOfIssue2,
+      PreviousExpirationDate2: expiredOn2,
+    });
+
+    await createOrUpdateRecord('Passport', `__NEW__`, data, access_token)
+      .then((response) => {
+        this.setState({isLoader: false});
+        navigation.goBack();
+      })
+      .catch((error) => {
+        this.setState({isLoader: false});
+      });
   };
 
   subComponet = () => {
@@ -43,7 +121,7 @@ class Passport extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Name"
-          onChangeText={this.handleFirstNaame}
+          onChangeText={(name) => this.setState({name})}
           keyboardType="default"
         />
       </View>
@@ -53,7 +131,7 @@ class Passport extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Passport Number"
-          onChangeText={this.handleFirstNaame}
+          onChangeText={(passportNo) => this.setState({passportNo})}
           keyboardType="default"
         />
       </View>
@@ -61,14 +139,14 @@ class Passport extends Component {
         <View style={[styles.miniInputContainer, {marginRight: 10}]}>
           <InputTextDynamic
             placeholder="Date of Issue"
-            onChangeText={this.handleFirstNaame}
+            onChangeText={(dateOfIssue) => this.setState({dateOfIssue})}
             keyboardType="default"
           />
         </View>
         <View style={styles.miniInputContainer}>
           <InputTextDynamic
             placeholder="Expiration Date"
-            onChangeText={this.handleFirstNaame}
+            onChangeText={(expirationDate) => this.setState({expirationDate})}
             keyboardType="default"
           />
         </View>
@@ -81,35 +159,35 @@ class Passport extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Address Line 1"
-          onChangeText={this.handleFirstNaame}
+          onChangeText={(address1) => this.setState({address1})}
           keyboardType="default"
         />
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Address Line 2"
-          onChangeText={this.handleFirstNaame}
+          onChangeText={(address2) => this.setState({address2})}
           keyboardType="default"
         />
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="City"
-          onChangeText={this.handleFirstNaame}
+          onChangeText={(city) => this.setState({city})}
           keyboardType="default"
         />
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="State"
-          onChangeText={this.handleFirstNaame}
+          onChangeText={(state) => this.setState({state})}
           keyboardType="default"
         />
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Zip/Postal"
-          onChangeText={this.handleFirstNaame}
+          onChangeText={(zip) => this.setState({zip})}
           keyboardType="default"
         />
       </View>
@@ -124,14 +202,14 @@ class Passport extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Old Passport Number 1"
-          onChangeText={this.handleFirstNaame}
+          onChangeText={(oldPassportNo1) => this.setState({oldPassportNo1})}
           keyboardType="default"
         />
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Place of Issue"
-          onChangeText={this.handleFirstNaame}
+          onChangeText={(placeOfIssue1) => this.setState({placeOfIssue1})}
           keyboardType="default"
         />
       </View>
@@ -139,14 +217,14 @@ class Passport extends Component {
         <View style={[styles.miniInputContainer, {marginRight: 10}]}>
           <InputTextDynamic
             placeholder="Date of Issue"
-            onChangeText={this.handleFirstNaame}
+            onChangeText={(dateOfIssue1) => this.setState({dateOfIssue1})}
             keyboardType="default"
           />
         </View>
         <View style={styles.miniInputContainer}>
           <InputTextDynamic
             placeholder="Expired On"
-            onChangeText={this.handleFirstNaame}
+            onChangeText={(expiredOn2) => this.setState({expiredOn2})}
             keyboardType="default"
           />
         </View>
@@ -154,14 +232,14 @@ class Passport extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Old Passport Number 2"
-          onChangeText={this.handleFirstNaame}
+          onChangeText={(oldPassportNo2) => this.setState({oldPassportNo2})}
           keyboardType="default"
         />
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Place of Issue"
-          onChangeText={this.handleFirstNaame}
+          onChangeText={(placeOfIssue2) => this.setState({placeOfIssue2})}
           keyboardType="default"
         />
       </View>
@@ -169,14 +247,14 @@ class Passport extends Component {
         <View style={[styles.miniInputContainer, {marginRight: 10}]}>
           <InputTextDynamic
             placeholder="Date of Issue"
-            onChangeText={this.handleFirstNaame}
+            onChangeText={(dateOfIssue2) => this.setState({dateOfIssue2})}
             keyboardType="default"
           />
         </View>
         <View style={styles.miniInputContainer}>
           <InputTextDynamic
             placeholder="Expired On"
-            onChangeText={this.handleFirstNaame}
+            onChangeText={(expiredOn2) => this.setState({expiredOn2})}
             keyboardType="default"
           />
         </View>
@@ -199,7 +277,7 @@ class Passport extends Component {
   };
 
   render() {
-    const {active} = this.state;
+    const {active, isLoader} = this.state;
     return (
       <View style={styles.container}>
         <Text style={styles.title}>{this.title(active)}</Text>
@@ -220,6 +298,7 @@ class Passport extends Component {
             paddingVertical={10}
           />
         </View>
+        <Loader isLoader={isLoader} />
       </View>
     );
   }

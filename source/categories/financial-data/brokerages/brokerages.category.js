@@ -1,13 +1,15 @@
 import React, {Component} from 'react';
 import {View, ScrollView, Modal} from 'react-native';
 import {Text} from 'react-native-paper';
+import Dots from 'react-native-dots-pagination';
+import qs from 'qs';
 
 import InputTextDynamic from '../../../components/input-text-dynamic/input-text-dynamic.component.js';
 import InputTextIconDynamic from '../../../components/input-text-icon-dynamic/input-text-icon-dynamic.component.js';
 import ModalPicker from '../../../components/modal-picker/modal-picker.component.js';
 import Button from '../../../components/button/button.component';
-import Dots from 'react-native-dots-pagination';
-import createOrUpdateRecord from '../../../configuration/api/api.functions';
+import Loader from '../../../components/loader/loader.component';
+import {createOrUpdateRecord} from '../../../configuration/api/api.functions';
 
 import styles from './brokerages.style';
 
@@ -16,6 +18,9 @@ class Brokerages extends Component {
     super(props);
     this.state = {
       active: 0,
+      isLoader: false,
+      navigation: props.navigation,
+      access_token: props.access_token,
       name: '',
       financialInstitution: '',
       acNumber: '',
@@ -25,12 +30,82 @@ class Brokerages extends Component {
       primaryAcHolder: '',
       joinAcHolderOne: '',
       joinAcHolderTwo: '',
+      securityQ1: '',
+      securityA1: '',
+      securityQ2: '',
+      securityA2: '',
+      securityQ3: '',
+      securityA3: '',
+      stockTransactionFee: '',
+      openedOn: '',
+      closedOn: '',
     };
   }
 
   handleClick = () => {
     const {active} = this.state;
     if (active < 2) this.setState({active: active + 1});
+    else if (active === 2) this.submit();
+  };
+
+  submit = async () => {
+    this.setState({isLoader: true});
+    const {
+      name,
+      financialInstitution,
+      acNumber,
+      username,
+      password,
+      url,
+      primaryAcHolder,
+      joinAcHolderOne,
+      joinAcHolderTwo,
+      securityQ1,
+      securityA1,
+      securityQ2,
+      securityA2,
+      securityQ3,
+      securityA3,
+      stockTransactionFee,
+      openedOn,
+      closedOn,
+      access_token,
+      navigation
+    } = this.state;
+
+    let data = qs.stringify({
+      BrokerageName: name,
+      FinancialInstitution: financialInstitution,
+      AccountNumber: acNumber,
+      WebSiteAccountNumber: username,
+      WebSitePassword: password,
+      URL: url,
+      PrimaryAccountHolder: primaryAcHolder,
+      AdditionalAccountHolder1: joinAcHolderOne,
+      AdditionalAccountHolder2: joinAcHolderTwo,
+      SecurityQuestion1: securityQ1,
+      SecurityAnswer1: securityA1,
+      SecurityQuestion2: securityQ2,
+      SecurityAnswer2: securityA2,
+      SecurityQuestion3: securityQ3,
+      SecurityAnswer3: securityA3,
+      StockTransactionFee: stockTransactionFee,
+      AccountOpeningDate: openedOn,
+      AccountClosingDate: closedOn,
+    });
+    await createOrUpdateRecord(
+      'BrokerageAccount',
+      `__NEW__`,
+      data,
+      access_token,
+    )
+      .then((response) => {
+        this.setState({isLoader: false});
+        navigation.goBack();
+      })
+      .catch((error) => {
+        this.setState({isLoader: false});
+      });
   };
 
   subComponet = () => {
@@ -53,63 +128,65 @@ class Brokerages extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Name"
-          onChangeText={this.handleFirstNaame}
+          onChangeText={(name) => this.setState({name})}
           keyboardType="default"
         />
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Financial Institution"
-          onChangeText={this.handleFirstNaame}
+          onChangeText={(financialInstitution) =>
+            this.setState({financialInstitution})
+          }
           keyboardType="default"
         />
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Account Number"
-          onChangeText={this.handleFirstNaame}
+          onChangeText={(acNumber) => this.setState({acNumber})}
           keyboardType="default"
         />
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Username"
-          onChangeText={this.handleFirstNaame}
+          onChangeText={(username) => this.setState({username})}
           keyboardType="default"
         />
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Password"
-          onChangeText={this.handleFirstNaame}
+          onChangeText={(password) => this.setState({password})}
           keyboardType="default"
         />
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="URL"
-          onChangeText={this.handleFirstNaame}
+          onChangeText={(url) => this.setState({url})}
           keyboardType="default"
         />
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Primary Account Holder"
-          onChangeText={this.handleFirstNaame}
+          onChangeText={(primaryAcHolder) => this.setState({primaryAcHolder})}
           keyboardType="default"
         />
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Joint Account Holder 1"
-          onChangeText={this.handleFirstNaame}
+          onChangeText={(joinAcHolderOne) => this.setState({joinAcHolderOne})}
           keyboardType="default"
         />
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Joint Account Holder 2"
-          onChangeText={this.handleFirstNaame}
+          onChangeText={(joinAcHolderTwo) => this.setState({joinAcHolderTwo})}
           keyboardType="default"
         />
       </View>
@@ -121,42 +198,42 @@ class Brokerages extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Security Question 1"
-          onChangeText={this.handleFirstNaame}
+          onChangeText={(securityQ1) => this.setState({securityQ1})}
           keyboardType="default"
         />
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Answer 1"
-          onChangeText={this.handleFirstNaame}
+          onChangeText={(securityA1) => this.setState({securityA1})}
           keyboardType="default"
         />
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Security Question 2"
-          onChangeText={this.handleFirstNaame}
+          onChangeText={(securityQ2) => this.setState({securityQ2})}
           keyboardType="default"
         />
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Answer 2"
-          onChangeText={this.handleFirstNaame}
+          onChangeText={(securityA2) => this.setState({securityA2})}
           keyboardType="default"
         />
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Security Question 3"
-          onChangeText={this.handleFirstNaame}
+          onChangeText={(securityQ3) => this.setState({securityQ3})}
           keyboardType="default"
         />
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Answer 3"
-          onChangeText={this.handleFirstNaame}
+          onChangeText={(securityA3) => this.setState({securityA3})}
           keyboardType="default"
         />
       </View>
@@ -168,7 +245,9 @@ class Brokerages extends Component {
       <View style={styles.inputContainer}>
         <InputTextIconDynamic
           placeholder="Stock Transaction Fee"
-          onChangeText={this.handleFirstNaame}
+          onChangeText={(stockTransactionFee) =>
+            this.setState({stockTransactionFee})
+          }
           icon="dollar-sign"
           keyboardType="default"
         />
@@ -177,14 +256,14 @@ class Brokerages extends Component {
         <View style={[styles.miniInputContainer, {marginRight: 10}]}>
           <InputTextDynamic
             placeholder="Opened On"
-            onChangeText={this.handleFirstNaame}
+            onChangeText={(openedOn) => this.setState({openedOn})}
             keyboardType="default"
           />
         </View>
         <View style={styles.miniInputContainer}>
           <InputTextDynamic
             placeholder="Closed On"
-            onChangeText={this.handleFirstNaame}
+            onChangeText={(closedOn) => this.setState({closedOn})}
             keyboardType="default"
           />
         </View>
@@ -207,7 +286,7 @@ class Brokerages extends Component {
   };
 
   render() {
-    const {active} = this.state;
+    const {active, isLoader} = this.state;
     return (
       <View style={styles.container}>
         <Text style={styles.title}>{this.title(active)}</Text>
@@ -228,6 +307,7 @@ class Brokerages extends Component {
             paddingVertical={10}
           />
         </View>
+        <Loader isLoader={isLoader} />
       </View>
     );
   }

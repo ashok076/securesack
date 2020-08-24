@@ -1,12 +1,15 @@
 import React, {Component} from 'react';
 import {View, ScrollView, Modal} from 'react-native';
 import {Text} from 'react-native-paper';
+import Dots from 'react-native-dots-pagination';
+import qs from 'qs';
 
 import InputTextDynamic from '../../../components/input-text-dynamic/input-text-dynamic.component.js';
 import InputTextIconDynamic from '../../../components/input-text-icon-dynamic/input-text-icon-dynamic.component.js';
 import ModalPicker from '../../../components/modal-picker/modal-picker.component.js';
 import Button from '../../../components/button/button.component';
-import Dots from 'react-native-dots-pagination';
+import Loader from '../../../components/loader/loader.component';
+import {createOrUpdateRecord} from '../../../configuration/api/api.functions';
 
 import styles from './health-care.style';
 
@@ -15,13 +18,109 @@ class HealthCare extends Component {
     super(props);
     this.state = {
       active: 0,
+      isLoader: false,
+      navigation: props.navigation,
+      access_token: props.access_token,
+      insuranceProvider: '',
+      groupIdNumber: '',
+      planCoverage: '',
+      deductible: '',
+      url: '',
+      username: '',
+      password: '',
+      customerServiceNo: '',
+      emailProvided: '',
+      effectiveFrom: '',
+      expiration: '',
+      installment: '',
+      from: '',
+      to: '',
+      total: '',
+      address1: '',
+      address2: '',
+      city: '',
+      state: '',
+      zip: '',
+      dependent1: '',
+      dependent2: '',
+      dependent3: '',
+      dependent4: '',
     };
   }
 
   handleClick = () => {
     const {active} = this.state;
     if (active < 3) this.setState({active: active + 1});
-  }
+    else if (active === 3) this.submit();
+  };
+
+  submit = async () => {
+    this.setState({isLoader: true});
+    const {
+      navigation,
+      access_token,
+      insuranceProvider,
+      groupIdNumber,
+      planCoverage,
+      deductible,
+      url,
+      username,
+      password,
+      customerServiceNo,
+      emailProvided,
+      effectiveFrom,
+      expiration,
+      installment,
+      from,
+      to,
+      total,
+      address1,
+      address2,
+      city,
+      state,
+      zip,
+      dependent1,
+      dependent2,
+      dependent3,
+      dependent4,
+    } = this.state;
+
+    let data = qs.stringify({
+      ProviderName: insuranceProvider,
+      GroupID: groupIdNumber,
+      PlanCoverage: planCoverage,
+      Deductible: deductible,
+      URL: url,
+      WebsiteUserName: username,
+      WebsitePassword: password,
+      Phone: customerServiceNo,
+      EmailAddress: emailProvided,
+      ServiceEffectiveDate: effectiveFrom,
+      ServiceTerminationDate: expiration,
+      'PaymentSchedule-InstallmentAmount': installment,
+      'PaymentSchedule-InstallmentStartDate': from,
+      'PaymentSchedule-InstallmentEndDate': to,
+      'PaymentSchedule-TotalAmount': total,
+      'ClaimsMailingAddress-Line1': address1,
+      'ClaimsMailingAddress-Line2': address2,
+      'ClaimsMailingAddress-City': city,
+      'ClaimsMailingAddress-State': state,
+      'ClaimsMailingAddress-Zip': zip,
+      Dependent1: dependent1,
+      Dependent2: dependent2,
+      Dependent3: dependent3,
+      Dependent4: dependent4,
+    });
+
+    await createOrUpdateRecord('HealthCareProvider', `__NEW__`, data, access_token)
+      .then((response) => {
+        this.setState({isLoader: false});
+        navigation.goBack();
+      })
+      .catch((error) => {
+        this.setState({isLoader: false});
+      });
+  };
 
   subComponet = () => {
     const {active} = this.state;
@@ -33,10 +132,10 @@ class HealthCare extends Component {
         return this.additionalInformation();
         break;
       case 2:
-      return this.claimMailingAddress();
+        return this.claimMailingAddress();
         break;
       case 3:
-      return this.dependentInfo();
+        return this.dependentInfo();
         break;
     }
   };
@@ -46,7 +145,9 @@ class HealthCare extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Insurance Provider"
-          onChangeText={this.handleFirstNaame}
+          onChangeText={(insuranceProvider) =>
+            this.setState({insuranceProvider})
+          }
           keyboardType="default"
         />
       </View>
@@ -59,21 +160,21 @@ class HealthCare extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Group ID Number"
-          onChangeText={this.handleFirstNaame}
+          onChangeText={(groupIdNumber) => this.setState({groupIdNumber})}
           keyboardType="default"
         />
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Plan Coverage"
-          onChangeText={this.handleFirstNaame}
+          onChangeText={(planCoverage) => this.setState({planCoverage})}
           keyboardType="default"
         />
       </View>
       <View style={styles.inputContainer}>
         <InputTextIconDynamic
           placeholder="Deductible"
-          onChangeText={this.handleFirstNaame}
+          onChangeText={(deductible) => this.setState({deductible})}
           icon="percent"
           keyboardType="default"
         />
@@ -81,21 +182,21 @@ class HealthCare extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="URL"
-          onChangeText={this.handlePasswordText}
+          onChangeText={(url) => this.setState({url})}
           keyboardType="default"
         />
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Username"
-          onChangeText={this.handlePasswordText}
+          onChangeText={(username) => this.setState({username})}
           keyboardType="default"
         />
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Password"
-          onChangeText={this.handlePasswordText}
+          onChangeText={(password) => this.setState({password})}
           keyboardType="default"
         />
       </View>
@@ -107,14 +208,16 @@ class HealthCare extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Customer Service Number"
-          onChangeText={this.handleFirstNaame}
+          onChangeText={(customerServiceNo) =>
+            this.setState({customerServiceNo})
+          }
           keyboardType="default"
         />
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Email Provided"
-          onChangeText={this.handleFirstNaame}
+          onChangeText={(emailProvided) => this.setState({emailProvided})}
           keyboardType="default"
         />
       </View>
@@ -122,14 +225,14 @@ class HealthCare extends Component {
         <View style={[styles.miniInputContainer, {marginRight: 10}]}>
           <InputTextDynamic
             placeholder="Effective From"
-            onChangeText={this.handleFirstNaame}
+            onChangeText={(effectiveFrom) => this.setState({effectiveFrom})}
             keyboardType="default"
           />
         </View>
         <View style={styles.miniInputContainer}>
           <InputTextDynamic
             placeholder="Expiration"
-            onChangeText={this.handleFirstNaame}
+            onChangeText={(expiration) => this.setState({expiration})}
             keyboardType="default"
           />
         </View>
@@ -138,7 +241,7 @@ class HealthCare extends Component {
         <InputTextIconDynamic
           placeholder="Installment"
           icon="dollar-sign"
-          onChangeText={this.handlePasswordText}
+          onChangeText={(installment) => this.setState({installment})}
         />
       </View>
       <View style={[styles.inputContainer, {marginRight: 10}]}>
@@ -148,21 +251,21 @@ class HealthCare extends Component {
         <InputTextDynamic
           placeholder="From"
           icon="dollar-sign"
-          onChangeText={this.handlePasswordText}
+          onChangeText={(from) => this.setState({from})}
         />
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="To"
           icon="dollar-sign"
-          onChangeText={this.handlePasswordText}
+          onChangeText={(to) => this.setState({to})}
         />
       </View>
       <View style={styles.inputContainer}>
         <InputTextIconDynamic
           placeholder="Total"
           icon="dollar-sign"
-          onChangeText={this.handlePasswordText}
+          onChangeText={(total) => this.setState({total})}
         />
       </View>
     </View>
@@ -173,35 +276,35 @@ class HealthCare extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Address Line 1"
-          onChangeText={this.handleFirstNaame}
+          onChangeText={(address1) => this.setState({address1})}
           keyboardType="default"
         />
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Address Line 2"
-          onChangeText={this.handleFirstNaame}
+          onChangeText={(address2) => this.setState({address2})}
           keyboardType="default"
         />
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="City"
-          onChangeText={this.handleFirstNaame}
+          onChangeText={(city) => this.setState({city})}
           keyboardType="default"
         />
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="State"
-          onChangeText={this.handleFirstNaame}
+          onChangeText={(state) => this.setState({state})}
           keyboardType="default"
         />
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Zip/Postal"
-          onChangeText={this.handleFirstNaame}
+          onChangeText={(zip) => this.setState({zip})}
           keyboardType="default"
         />
       </View>
@@ -216,33 +319,33 @@ class HealthCare extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Dependent 1"
-          onChangeText={this.handleFirstNaame}
+          onChangeText={(dependent1) => this.setState({dependent1})}
           keyboardType="default"
         />
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Dependent 2"
-          onChangeText={this.handleFirstNaame}
+          onChangeText={(dependent2) => this.setState({dependent2})}
           keyboardType="default"
         />
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Dependent 3"
-          onChangeText={this.handleFirstNaame}
+          onChangeText={(dependent3) => this.setState({dependent3})}
           keyboardType="default"
         />
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Dependent 4"
-          onChangeText={this.handleFirstNaame}
+          onChangeText={(dependent4) => this.setState({dependent4})}
           keyboardType="default"
         />
       </View>
     </View>
-  )
+  );
 
   title = (active) => {
     switch (active) {
@@ -253,23 +356,23 @@ class HealthCare extends Component {
         return 'Additional Information';
         break;
       case 2:
-      return 'Claims Mailing Address';
+        return 'Claims Mailing Address';
         break;
       case 3:
-      return 'Dependent Information';
+        return 'Dependent Information';
         break;
     }
   };
 
   render() {
-    const {active} = this.state;
+    const {active, isLoader} = this.state;
     return (
       <View style={styles.container}>
         <Text style={styles.title}>{this.title(active)}</Text>
         {this.subComponet()}
-      <View style={styles.buttonContainer}>
-        <Button onPress={this.handleClick} title="Proceed to next" />
-      </View>
+        <View style={styles.buttonContainer}>
+          <Button onPress={this.handleClick} title="Proceed to next" />
+        </View>
         <View style={styles.inputContainer}>
           <Dots
             length={4}
@@ -283,6 +386,7 @@ class HealthCare extends Component {
             paddingVertical={10}
           />
         </View>
+        <Loader isLoader={isLoader} />
       </View>
     );
   }
