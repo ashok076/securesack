@@ -27,6 +27,11 @@ const styles = StyleSheet.create({
     fontFamily: 'PublicSans-Bold',
     fontSize: 20,
     color: '#FFFFFF',
+    marginLeft: 15,
+  },
+  rowObject: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
 });
 export default styles;

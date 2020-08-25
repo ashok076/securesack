@@ -21,12 +21,17 @@ const styles = StyleSheet.create({
       width: '100%',
       height: 100,
       justifyContent: 'center',
-      padding: 15
+      padding: 15,
   },
   title: {
       fontFamily: 'PublicSans-Bold',
       fontSize: 20,
-      color: '#FFFFFF'
+      color: '#FFFFFF',
+      marginLeft: 15
   },
+  rowObject: {
+    flexDirection: 'row',
+      alignItems: 'center',
+  }
 });
 export default styles;

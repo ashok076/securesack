@@ -26,7 +26,12 @@ const styles = StyleSheet.create({
   title: {
       fontFamily: 'PublicSans-Bold',
       fontSize: 20,
-      color: 'rgb(33, 47, 60)'
+      color: 'rgb(33, 47, 60)',
+      marginLeft: 15
+  },
+  rowObject: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
 });
 export default styles;

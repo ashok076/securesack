@@ -2,6 +2,7 @@ import React from 'react';
 import {View, ImageBackground, SafeAreaView, ScrollView} from 'react-native';
 import {Title} from 'react-native-paper';
 import {connect} from 'react-redux';
+import Icons from 'react-native-vector-icons/MaterialIcons';
 
 //financial-data
 import BankAccounts from '../financial-data/bank-account/bank-account.category';
@@ -46,7 +47,12 @@ const CommonView = ({navigation, route, userData}) => {
     <SafeAreaView style={styles.outerView}>
       <ImageBackground source={background} style={styles.backgroundImage}>
         <View style={styles.titleView}>
-          <Title style={styles.title}>Add {title}</Title>
+          <View style={styles.rowObject}>
+            <TouchableOpacity onPress={() => navigation.goBack()}>
+              <Icons name="arrow-back" color="rgb(255, 255, 255)" size={24} />
+            </TouchableOpacity>
+            <Title style={styles.title}>Add {title}</Title>
+          </View>
         </View>
         <ScrollView style={styles.outerContainerView}>
           {subView(type, access_token, navigation)}
@@ -59,64 +65,77 @@ const CommonView = ({navigation, route, userData}) => {
 const subView = (type, access_token, navigation) => {
   switch (type) {
     case 'BankAccounts':
-      return <BankAccounts access_token={access_token} navigation={navigation}/>;
+      return (
+        <BankAccounts access_token={access_token} navigation={navigation} />
+      );
       break;
     case 'CreditCard':
-      return <CreditCard access_token={access_token} navigation={navigation}/>;
+      return <CreditCard access_token={access_token} navigation={navigation} />;
       break;
     case 'BrokerageAccount':
-      return <Brokerages access_token={access_token} navigation={navigation}/>;
+      return <Brokerages access_token={access_token} navigation={navigation} />;
       break;
     case 'Mortgage':
-      return <Mortgages access_token={access_token} navigation={navigation}/>;
+      return <Mortgages access_token={access_token} navigation={navigation} />;
       break;
     case 'ConsumerLoan':
-      return <Loans access_token={access_token} navigation={navigation}/>;
+      return <Loans access_token={access_token} navigation={navigation} />;
       break;
     case 'ServiceAccount':
-      return <Services access_token={access_token} navigation={navigation}/>;
+      return <Services access_token={access_token} navigation={navigation} />;
       break;
     case 'RewardProgram':
-      return <RewardsPrograms access_token={access_token} navigation={navigation}/>;
+      return (
+        <RewardsPrograms access_token={access_token} navigation={navigation} />
+      );
       break;
     case 'AutoInsurance':
-      return <Auto access_token={access_token} navigation={navigation}/>;
+      return <Auto access_token={access_token} navigation={navigation} />;
       break;
     case 'HealthCareProvider':
-      return <HealthCare access_token={access_token} navigation={navigation}/>;
+      return <HealthCare access_token={access_token} navigation={navigation} />;
       break;
     case 'PropertyInsurance':
-      return <PropertyInsurance access_token={access_token} navigation={navigation}/>;
+      return (
+        <PropertyInsurance
+          access_token={access_token}
+          navigation={navigation}
+        />
+      );
       break;
     case 'LifeInsurance':
-      return <Life access_token={access_token} navigation={navigation}/>;
+      return <Life access_token={access_token} navigation={navigation} />;
       break;
     case 'Vehicle':
-      return <Vehicle access_token={access_token} navigation={navigation}/>;
+      return <Vehicle access_token={access_token} navigation={navigation} />;
       break;
     case 'Property':
-      return <Property access_token={access_token} navigation={navigation}/>;
+      return <Property access_token={access_token} navigation={navigation} />;
       break;
     case 'WebSiteAccount':
-      return <WebsitePassword access_token={access_token} navigation={navigation}/>;
+      return (
+        <WebsitePassword access_token={access_token} navigation={navigation} />
+      );
       break;
     case 'Notes':
-      return <Notes access_token={access_token} navigation={navigation}/>;
+      return <Notes access_token={access_token} navigation={navigation} />;
       break;
     case 'Recipies':
-      return <Recipes access_token={access_token} navigation={navigation}/>;
+      return <Recipes access_token={access_token} navigation={navigation} />;
       break;
     case 'DriverLicense':
-      return <DriverLicense access_token={access_token} navigation={navigation}/>;
+      return (
+        <DriverLicense access_token={access_token} navigation={navigation} />
+      );
       break;
     case 'Passport':
-      return <Passport access_token={access_token} navigation={navigation}/>;
+      return <Passport access_token={access_token} navigation={navigation} />;
       break;
     case 'TaxIdentification':
-      return <TaxSSN access_token={access_token} navigation={navigation}/>;
+      return <TaxSSN access_token={access_token} navigation={navigation} />;
       break;
     case 'IdentificationCards':
-      return <Identity access_token={access_token} navigation={navigation}/>;
+      return <Identity access_token={access_token} navigation={navigation} />;
       break;
   }
 };

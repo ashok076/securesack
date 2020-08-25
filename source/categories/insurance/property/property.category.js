@@ -1,12 +1,15 @@
 import React, {Component} from 'react';
 import {View, ScrollView, Modal} from 'react-native';
 import {Text} from 'react-native-paper';
+import Dots from 'react-native-dots-pagination';
+import qs from 'qs';
 
 import InputTextDynamic from '../../../components/input-text-dynamic/input-text-dynamic.component.js';
 import InputTextIconDynamic from '../../../components/input-text-icon-dynamic/input-text-icon-dynamic.component.js';
 import ModalPicker from '../../../components/modal-picker/modal-picker.component.js';
 import Button from '../../../components/button/button.component';
-import Dots from 'react-native-dots-pagination';
+import Loader from '../../../components/loader/loader.component';
+import {createOrUpdateRecord} from '../../../configuration/api/api.functions';
 
 import styles from './property.style';
 
@@ -15,12 +18,94 @@ class PropertyInsurance extends Component {
     super(props);
     this.state = {
       active: 0,
+      isLoader: false,
+      navigation: props.navigation,
+      access_token: props.access_token,
+      name: '',
+      policyNo: '',
+      policyHolder: '',
+      issuer: '',
+      installmentAmnt: '',
+      url: '',
+      username: '',
+      password: '',
+      county: '',
+      parcelNo: '',
+      effectiveFrom: '',
+      dwellingCoverage: '',
+      liabilityCoverage: '',
+      medicalPayment: '',
+      dwellingCoverageDeductoble: '',
+      lossOfCoverage: '',
+      ordianceCoverage: '',
+      personalItemInsured: '',
+      jointPolicyHolderTwo: '',
+      jointPolicyHolderThree: '',
     };
   }
 
   handleClick = () => {
     const {active} = this.state;
     if (active < 3) this.setState({active: active + 1});
+    else if (active === 3) this.submit();
+  };
+
+  submit = async () => {
+    this.setState({isLoader: true});
+    const {
+      name,
+      policyNo,
+      policyHolder,
+      issuer,
+      installmentAmnt,
+      url,
+      username,
+      password,
+      county,
+      parcelNo,
+      effectiveFrom,
+      dwellingCoverage,
+      liabilityCoverage,
+      medicalPayment,
+      dwellingCoverageDeductoble,
+      lossOfCoverage,
+      ordianceCoverage,
+      personalItemInsured,
+      jointPolicyHolderTwo,
+      jointPolicyHolderThree,
+    } = this.state;
+
+    let data = qs.stringify({
+      Name: name,
+      PolicyNumber: policyNo,
+      PrimaryPolicyHolder: policyHolder,
+      Issuer: issuer,
+      InstallmentAccount: installmentAmnt,
+      URL: url,
+      WebSiteUserName: username,
+      WebSitePassword: password,
+      County: county,
+      PropertyParcelNumber: parcelNo,
+      StartDate: effectiveFrom,
+      DwellingCoverage: dwellingCoverage,
+      LiabilityCoverage: liabilityCoverage,
+      MedicalPaymentCoverage: medicalPayment,
+      DwellingCoverageDeductible: dwellingCoverageDeductoble,
+      LossOfUseCoverage: lossOfCoverage,
+      OrdianceAndLawCoverage: ordianceCoverage,
+      PersonalItemsInsured: personalItemInsured,
+      AdditionalPolicyHolder1: jointPolicyHolderTwo,
+      AdditionalPolicyHolder2: jointPolicyHolderThree,
+    });
+
+    await createOrUpdateRecord('PropertyInsurance', `__NEW__`, data, access_token)
+      .then((response) => {
+        this.setState({isLoader: false});
+        navigation.goBack();
+      })
+      .catch((error) => {
+        this.setState({isLoader: false});
+      });
   };
 
   subComponet = () => {
@@ -46,28 +131,28 @@ class PropertyInsurance extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Name"
-          onChangeText={this.handleFirstNaame}
+          onChangeText={(name) => this.setState({name})}
           keyboardType="default"
         />
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Policy Number"
-          onChangeText={this.handleFirstNaame}
+          onChangeText={(policyNo) => this.setState({policyNo})}
           keyboardType="default"
         />
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Policy Holder"
-          onChangeText={this.handleFirstNaame}
+          onChangeText={(policyHolder) => this.setState({policyHolder})}
           keyboardType="default"
         />
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Issuer"
-          onChangeText={this.handleFirstNaame}
+          onChangeText={(issuer) => this.setState({issuer})}
           keyboardType="default"
         />
       </View>
@@ -75,7 +160,7 @@ class PropertyInsurance extends Component {
         <View style={[styles.miniInputContainer, {marginRight: 10}]}>
           <InputTextDynamic
             placeholder="Installment Amount"
-            onChangeText={this.handleFirstNaame}
+            onChangeText={(installmentAmnt) => this.setState({installmentAmnt})}
             keyboardType="default"
           />
         </View>
@@ -86,21 +171,21 @@ class PropertyInsurance extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="URL"
-          onChangeText={this.handlePasswordText}
+          onChangeText={(url) => this.setState({url})}
           keyboardType="default"
         />
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Username"
-          onChangeText={this.handlePasswordText}
+          onChangeText={(username) => this.setState({username})}
           keyboardType="default"
         />
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Password"
-          onChangeText={this.handlePasswordText}
+          onChangeText={(password) => this.setState({password})}
           keyboardType="default"
         />
       </View>
@@ -112,14 +197,14 @@ class PropertyInsurance extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="County"
-          onChangeText={this.handleFirstNaame}
+          onChangeText={(county) => this.setState({county})}
           keyboardType="default"
         />
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Parcel Number"
-          onChangeText={this.handleFirstNaame}
+          onChangeText={(parcelNo) => this.setState({parcelNo})}
           keyboardType="default"
         />
       </View>
@@ -127,7 +212,7 @@ class PropertyInsurance extends Component {
         <View style={[styles.miniInputContainer, {marginRight: 10}]}>
           <InputTextDynamic
             placeholder="Effective From"
-            onChangeText={this.handleFirstNaame}
+            onChangeText={(effectiveFrom) => this.setState({effectiveFrom})}
             keyboardType="default"
           />
         </View>
@@ -143,31 +228,35 @@ class PropertyInsurance extends Component {
       <View style={styles.inputContainer}>
         <InputTextIconDynamic
           placeholder="Dwelling Coverage (A)"
-          onChangeText={this.handlePasswordText}
+          onChangeText={(dwellingCoverage) => this.setState({dwellingCoverage})}
         />
       </View>
       <View style={styles.inputContainer}>
         <InputTextIconDynamic
           placeholder="Liability Coverage (B)"
-          onChangeText={this.handlePasswordText}
+          onChangeText={(liabilityCoverage) =>
+            this.setState({liabilityCoverage})
+          }
         />
       </View>
       <View style={styles.inputContainer}>
         <InputTextIconDynamic
           placeholder="Medical Payment Coverage (C)"
-          onChangeText={this.handlePasswordText}
+          onChangeText={(medicalPayment) => this.setState({medicalPayment})}
         />
       </View>
       <View style={styles.inputContainer}>
         <InputTextIconDynamic
           placeholder="Dwelling Coverage Deductible"
-          onChangeText={this.handlePasswordText}
+          onChangeText={(dwellingCoverageDeductoble) =>
+            this.setState({dwellingCoverageDeductoble})
+          }
         />
       </View>
       <View style={styles.inputContainer}>
         <InputTextIconDynamic
           placeholder="Loss of Use Coverage (F)"
-          onChangeText={this.handlePasswordText}
+          onChangeText={(lossOfCoverage) => this.setState({lossOfCoverage})}
         />
       </View>
       <View style={styles.miniContainer}>
@@ -194,14 +283,18 @@ class PropertyInsurance extends Component {
         <View style={styles.miniInputContainer}>
           <InputTextIconDynamic
             placeholder="Ordiance/Legal Coverage"
-            onChangeText={this.handlePasswordText}
+            onChangeText={(ordianceCoverage) =>
+              this.setState({ordianceCoverage})
+            }
           />
         </View>
       </View>
       <View style={styles.inputContainer}>
         <InputTextIconDynamic
           placeholder="Personal Items Insured"
-          onChangeText={this.handlePasswordText}
+          onChangeText={(personalItemInsured) =>
+            this.setState({personalItemInsured})
+          }
         />
       </View>
     </View>
@@ -212,14 +305,18 @@ class PropertyInsurance extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Joint Policy Holder 2"
-          onChangeText={this.handleFirstNaame}
+          onChangeText={(jointPolicyHolderTwo) =>
+            this.setState({jointPolicyHolderTwo})
+          }
           keyboardType="default"
         />
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Joint Policy Holder 3"
-          onChangeText={this.handleFirstNaame}
+          onChangeText={(jointPolicyHolderThree) =>
+            this.setState({jointPolicyHolderThree})
+          }
           keyboardType="default"
         />
       </View>
@@ -244,7 +341,7 @@ class PropertyInsurance extends Component {
   };
 
   render() {
-    const {active} = this.state;
+    const {active, isLoader} = this.state;
     return (
       <View style={styles.container}>
         <Text style={styles.title}>{this.title(active)}</Text>
@@ -265,6 +362,7 @@ class PropertyInsurance extends Component {
             paddingVertical={10}
           />
         </View>
+        <Loader isLoader={isLoader} />
       </View>
     );
   }

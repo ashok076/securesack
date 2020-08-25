@@ -1,12 +1,15 @@
 import React, {Component} from 'react';
 import {View, ScrollView, Modal} from 'react-native';
 import {Text} from 'react-native-paper';
+import Dots from 'react-native-dots-pagination';
+import qs from 'qs';
 
 import InputTextDynamic from '../../../components/input-text-dynamic/input-text-dynamic.component.js';
 import InputTextIconDynamic from '../../../components/input-text-icon-dynamic/input-text-icon-dynamic.component.js';
 import ModalPicker from '../../../components/modal-picker/modal-picker.component.js';
 import Button from '../../../components/button/button.component';
-import Dots from 'react-native-dots-pagination';
+import Loader from '../../../components/loader/loader.component';
+import {createOrUpdateRecord} from '../../../configuration/api/api.functions';
 
 import styles from './life.style';
 
@@ -15,12 +18,114 @@ class Life extends Component {
     super(props);
     this.state = {
       active: 0,
+      isLoader: false,
+      navigation: props.navigation,
+      access_token: props.access_token,
+      name: '',
+      policyNo: '',
+      policyHolder: '',
+      issuer: '',
+      premiumAmnt: '',
+      insuredAmnt: '',
+      url: '',
+      username: '',
+      password: '',
+      customerServiceNo: '',
+      emailProvided: '',
+      effectiveFrom: '',
+      endsOn: '',
+      installment: '',
+      from: '',
+      to: '',
+      total: '',
+      address1: '',
+      address2: '',
+      city: '',
+      state: '',
+      zip: '',
+      beneficiaries1: '',
+      beneficiaries2: '',
+      beneficiaries3: '',
+      beneficiaries4: '',
     };
   }
 
   handleClick = () => {
     const {active} = this.state;
     if (active < 3) this.setState({active: active + 1});
+    else if (active === 3) this.submit();
+  };
+
+  submit = async () => {
+    this.setState({isLoader: true});
+    const {
+      navigation,
+      access_token,
+      name,
+      policyNo,
+      policyHolder,
+      issuer,
+      premiumAmnt,
+      insuredAmnt,
+      url,
+      username,
+      password,
+      customerServiceNo,
+      emailProvided,
+      effectiveFrom,
+      endsOn,
+      installment,
+      from,
+      to,
+      total,
+      address1,
+      address2,
+      city,
+      state,
+      zip,
+      beneficiaries1,
+      beneficiaries2,
+      beneficiaries3,
+      beneficiaries4,
+    } = this.state;
+
+    let data = qs.stringify({
+      Name: name,
+      PolicyNumber: policyNo,
+      PolicyHolder: policyHolder,
+      Issuer: issuer,
+      PremiumAmount: premiumAmnt,
+      InsuranceAmount: insuredAmnt,
+      URL: url,
+      WebSiteUserName: username,
+      WebSitePassword: password,
+      Phone: customerServiceNo,
+      EmailAddress: emailProvided,
+      StartDate: effectiveFrom,
+      EndDate: endsOn,
+      'PaymentSchedule-InstallmentAmount': installment,
+      'PaymentSchedule-InstallmentStartDate': from,
+      'PaymentSchedule-InstallmentEndDate': to,
+      'PaymentSchedule-TotalAmount': total,
+      'ClaimsMailingAddress-Line1': address1,
+      'ClaimsMailingAddress-Line2': address2,
+      'ClaimsMailingAddress-City': city,
+      'ClaimsMailingAddress-State': state,
+      'ClaimsMailingAddress-Zip': zip,
+      Beneficiary1: beneficiaries1,
+      Beneficiary2: beneficiaries2,
+      Beneficiary3: beneficiaries3,
+      Beneficiary4: beneficiaries4,
+    });
+
+    await createOrUpdateRecord('LifeInsurance', `__NEW__`, data, access_token)
+      .then((response) => {
+        this.setState({isLoader: false});
+        navigation.goBack();
+      })
+      .catch((error) => {
+        this.setState({isLoader: false});
+      });
   };
 
   subComponet = () => {
@@ -46,28 +151,28 @@ class Life extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Name"
-          onChangeText={this.handleFirstNaame}
+          onChangeText={(name) => this.setState({name})}
           keyboardType="default"
         />
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Policy Number"
-          onChangeText={this.handleFirstNaame}
+          onChangeText={(policyNo) => this.setState({policyNo})}
           keyboardType="default"
         />
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Policy Holder"
-          onChangeText={this.handleFirstNaame}
+          onChangeText={(policyHolder) => this.setState({policyHolder})}
           keyboardType="default"
         />
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Issuer"
-          onChangeText={this.handleFirstNaame}
+          onChangeText={(issuer) => this.setState({issuer})}
           keyboardType="default"
         />
       </View>
@@ -75,7 +180,7 @@ class Life extends Component {
         <View style={[styles.miniInputContainer, {marginRight: 10}]}>
           <InputTextIconDynamic
             placeholder="Premium Amount"
-            onChangeText={this.handleFirstNaame}
+            onChangeText={(premiumAmnt) => this.setState({premiumAmnt})}
             icon="dollar-sign"
             keyboardType="default"
           />
@@ -83,7 +188,7 @@ class Life extends Component {
         <View style={styles.miniInputContainer}>
           <InputTextIconDynamic
             placeholder="Insured Amount"
-            onChangeText={this.handleFirstNaame}
+            onChangeText={(insuredAmnt) => this.setState({insuredAmnt})}
             icon="dollar-sign"
             keyboardType="default"
           />
@@ -92,21 +197,21 @@ class Life extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="URL"
-          onChangeText={this.handlePasswordText}
+          onChangeText={(url) => this.setState({url})}
           keyboardType="default"
         />
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Username"
-          onChangeText={this.handlePasswordText}
+          onChangeText={(username) => this.setState({username})}
           keyboardType="default"
         />
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Password"
-          onChangeText={this.handlePasswordText}
+          onChangeText={(password) => this.setState({password})}
           keyboardType="default"
         />
       </View>
@@ -118,14 +223,16 @@ class Life extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Customer Service Number"
-          onChangeText={this.handleFirstNaame}
+          onChangeText={(customerServiceNo) =>
+            this.setState({customerServiceNo})
+          }
           keyboardType="default"
         />
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Email Provided"
-          onChangeText={this.handleFirstNaame}
+          onChangeText={(emailProvided) => this.setState({emailProvided})}
           keyboardType="default"
         />
       </View>
@@ -133,14 +240,14 @@ class Life extends Component {
         <View style={[styles.miniInputContainer, {marginRight: 10}]}>
           <InputTextDynamic
             placeholder="Effective From"
-            onChangeText={this.handleFirstNaame}
+            onChangeText={(effectiveFrom) => this.setState({effectiveFrom})}
             keyboardType="default"
           />
         </View>
         <View style={styles.miniInputContainer}>
           <InputTextDynamic
             placeholder="Expiration"
-            onChangeText={this.handleFirstNaame}
+            onChangeText={(endsOn) => this.setState({endsOn})}
             keyboardType="default"
           />
         </View>
@@ -149,7 +256,7 @@ class Life extends Component {
         <InputTextIconDynamic
           placeholder="Installment"
           icon="dollar-sign"
-          onChangeText={this.handlePasswordText}
+          onChangeText={(installment) => this.setState({installment})}
         />
       </View>
       <View style={[styles.inputContainer]}>
@@ -159,21 +266,21 @@ class Life extends Component {
         <InputTextDynamic
           placeholder="From"
           icon="dollar-sign"
-          onChangeText={this.handlePasswordText}
+          onChangeText={(from) => this.setState({from})}
         />
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="To"
           icon="dollar-sign"
-          onChangeText={this.handlePasswordText}
+          onChangeText={(to) => this.setState({to})}
         />
       </View>
       <View style={styles.inputContainer}>
         <InputTextIconDynamic
           placeholder="Total"
           icon="dollar-sign"
-          onChangeText={this.handlePasswordText}
+          onChangeText={(total) => this.setState({total})}
         />
       </View>
     </View>
@@ -184,35 +291,35 @@ class Life extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Address Line 1"
-          onChangeText={this.handleFirstNaame}
+          onChangeText={(address1) => this.setState({address1})}
           keyboardType="default"
         />
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Address Line 2"
-          onChangeText={this.handleFirstNaame}
+          onChangeText={(address2) => this.setState({address2})}
           keyboardType="default"
         />
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="City"
-          onChangeText={this.handleFirstNaame}
+          onChangeText={(city) => this.setState({city})}
           keyboardType="default"
         />
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="State"
-          onChangeText={this.handleFirstNaame}
+          onChangeText={(state) => this.setState({state})}
           keyboardType="default"
         />
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Zip/Postal"
-          onChangeText={this.handleFirstNaame}
+          onChangeText={(zip) => this.setState({zip})}
           keyboardType="default"
         />
       </View>
@@ -227,7 +334,7 @@ class Life extends Component {
       <View style={styles.inputContainer}>
         <InputTextIconDynamic
           placeholder="Beneficiary 1"
-          onChangeText={this.handleFirstNaame}
+          onChangeText={(beneficiaries1) => this.setState({beneficiaries1})}
           icon="dollar-sign"
           keyboardType="default"
         />
@@ -235,7 +342,7 @@ class Life extends Component {
       <View style={styles.inputContainer}>
         <InputTextIconDynamic
           placeholder="Beneficiary 2"
-          onChangeText={this.handleFirstNaame}
+          onChangeText={(beneficiaries2) => this.setState({beneficiaries2})}
           icon="dollar-sign"
           keyboardType="default"
         />
@@ -243,7 +350,7 @@ class Life extends Component {
       <View style={styles.inputContainer}>
         <InputTextIconDynamic
           placeholder="Beneficiary 3"
-          onChangeText={this.handleFirstNaame}
+          onChangeText={(beneficiaries3) => this.setState({beneficiaries3})}
           icon="dollar-sign"
           keyboardType="default"
         />
@@ -251,7 +358,7 @@ class Life extends Component {
       <View style={styles.inputContainer}>
         <InputTextIconDynamic
           placeholder="Beneficiary 4"
-          onChangeText={this.handleFirstNaame}
+          onChangeText={(beneficiaries4) => this.setState({beneficiaries4})}
           icon="dollar-sign"
           keyboardType="default"
         />
@@ -277,7 +384,7 @@ class Life extends Component {
   };
 
   render() {
-    const {active} = this.state;
+    const {active, isLoader} = this.state;
     return (
       <View style={styles.container}>
         <Text style={styles.title}>{this.title(active)}</Text>

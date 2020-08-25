@@ -1,12 +1,14 @@
 import React, {Component} from 'react';
 import {View, ScrollView, Modal} from 'react-native';
 import {Text} from 'react-native-paper';
+import qs from 'qs';
 
 import InputTextDynamic from '../../../components/input-text-dynamic/input-text-dynamic.component.js';
 import InputTextIconDynamic from '../../../components/input-text-icon-dynamic/input-text-icon-dynamic.component.js';
 import ModalPicker from '../../../components/modal-picker/modal-picker.component.js';
 import Button from '../../../components/button/button.component';
-import Dots from 'react-native-dots-pagination';
+import Loader from '../../../components/loader/loader.component';
+import {createOrUpdateRecord} from '../../../configuration/api/api.functions';
 
 import styles from './notes.style';
 
@@ -15,8 +17,36 @@ class Notes extends Component {
     super(props);
     this.state = {
       active: 0,
+      isLoader: false,
+      navigation: props.navigation,
+      access_token: props.access_token,
+      name: '',
+      notes: '',
     };
   }
+
+  handleClick = () => {
+    this.submit();
+  };
+
+  submit = async () => {
+    this.setState({isLoader: true});
+    const {name, notes} = this.state;
+
+    let data = qs.stringify({
+      Name: name,
+      Note: notes,
+    });
+
+    await createOrUpdateRecord('Notes', `__NEW__`, data, access_token)
+      .then((response) => {
+        this.setState({isLoader: false});
+        navigation.goBack();
+      })
+      .catch((error) => {
+        this.setState({isLoader: false});
+      });
+  };
 
   subComponet = () => {
     const {active} = this.state;
@@ -32,19 +62,19 @@ class Notes extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Name"
-          onChangeText={this.handleFirstNaame}
+          onChangeText={(name) => this.setState({name})}
           keyboardType="default"
         />
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Notes"
-          onChangeText={this.handleFirstNaame}
+          onChangeText={(notes) => this.setState({notes})}
           keyboardType="default"
         />
       </View>
       <View style={styles.buttonContainer}>
-        <Button onPress={this.handleClick} title="Proceed to next" />
+        <Button onPress={this.handleClick} title="Submit" />
       </View>
     </View>
   );

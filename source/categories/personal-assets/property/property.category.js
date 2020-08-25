@@ -1,12 +1,15 @@
 import React, {Component} from 'react';
 import {View, ScrollView, Modal} from 'react-native';
 import {Text} from 'react-native-paper';
+import Dots from 'react-native-dots-pagination';
+import qs from 'qs';
 
 import InputTextDynamic from '../../../components/input-text-dynamic/input-text-dynamic.component.js';
 import InputTextIconDynamic from '../../../components/input-text-icon-dynamic/input-text-icon-dynamic.component.js';
 import ModalPicker from '../../../components/modal-picker/modal-picker.component.js';
 import Button from '../../../components/button/button.component';
-import Dots from 'react-native-dots-pagination';
+import Loader from '../../../components/loader/loader.component';
+import {createOrUpdateRecord} from '../../../configuration/api/api.functions';
 
 import styles from './property.style';
 
@@ -15,12 +18,96 @@ class Property extends Component {
     super(props);
     this.state = {
       active: 0,
+      isLoader: false,
+      navigation: props.navigation,
+      access_token: props.access_token,
+      name: '',
+      address1: '',
+      address2: '',
+      city: '',
+      state: '',
+      zip: '',
+      boughtOn: '',
+      houseSize: '',
+      lotSize: '',
+      county: '',
+      schoolDistrict: '',
+      apn: '',
+      propertyTaxAmnt: '',
+      yearOfConstruction: '',
+      age: '',
+      numberOfLevels: '',
+      garageSize: '',
+      respondingFireDepartment: '',
+      distanceToFireDepartment: '',
+      soldOn: '',
     };
   }
 
   handleClick = () => {
     const {active} = this.state;
     if (active < 2) this.setState({active: active + 1});
+    else if (active === 2) this.submit();
+  };
+
+  submit = async () => {
+    this.setState({isLoader: true});
+    const {
+      navigation,
+      access_token,
+      name,
+      address1,
+      address2,
+      city,
+      state,
+      zip,
+      boughtOn,
+      houseSize,
+      lotSize,
+      county,
+      schoolDistrict,
+      apn,
+      propertyTaxAmnt,
+      yearOfConstruction,
+      age,
+      numberOfLevels,
+      garageSize,
+      respondingFireDepartment,
+      distanceToFireDepartment,
+      soldOn,
+    } = this.state;
+
+    let data = qs.stringify({
+      Name: name,
+      'Address-Line1': address1,
+      'Address-Line2': address2,
+      'Address-City': city,
+      'Address-State': state,
+      'Address-Zip': zip,
+      StartDate: boughtOn,
+      HouseSize: houseSize,
+      LotSize: lotSize,
+      County: county,
+      SchoolDistrict: schoolDistrict,
+      APN: apn,
+      PropertyTaxAmount: propertyTaxAmnt,
+      YearOfConstruction: yearOfConstruction,
+      Age: age,
+      NumberOfLevels: numberOfLevels,
+      GarageSize: garageSize,
+      RespondingFireDepartment: respondingFireDepartment,
+      DistanceToNearestFireDepartment: distanceToFireDepartment,
+      EndDate: soldOn,
+    });
+
+    await createOrUpdateRecord('Property', `__NEW__`, data, access_token)
+      .then((response) => {
+        this.setState({isLoader: false});
+        navigation.goBack();
+      })
+      .catch((error) => {
+        this.setState({isLoader: false});
+      });
   };
 
   subComponet = () => {
@@ -62,14 +149,18 @@ class Property extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Responding Fire Department"
-          onChangeText={this.handleFirstNaame}
+          onChangeText={(respondingFireDepartment) =>
+            this.setState({respondingFireDepartment})
+          }
           keyboardType="default"
         />
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Distance To Fire Department"
-          onChangeText={this.handleFirstNaame}
+          onChangeText={(distanceToFireDepartment) =>
+            this.setState({distanceToFireDepartment})
+          }
           keyboardType="default"
         />
       </View>
@@ -83,7 +174,7 @@ class Property extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Sold On"
-          onChangeText={this.handleFirstNaame}
+          onChangeText={(soldOn) => this.setState({soldOn})}
           keyboardType="default"
         />
       </View>
@@ -95,7 +186,7 @@ class Property extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Name"
-          onChangeText={this.handleFirstNaame}
+          onChangeText={(name) => this.setState({name})}
           keyboardType="default"
         />
       </View>
@@ -108,35 +199,35 @@ class Property extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Address Line 1"
-          onChangeText={this.handleFirstNaame}
+          onChangeText={(address1) => this.setState({address1})}
           keyboardType="default"
         />
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Address Line 2"
-          onChangeText={this.handleFirstNaame}
+          onChangeText={(address2) => this.setState({address2})}
           keyboardType="default"
         />
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="City"
-          onChangeText={this.handleFirstNaame}
+          onChangeText={(city) => this.setState({city})}
           keyboardType="default"
         />
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="State"
-          onChangeText={this.handleFirstNaame}
+          onChangeText={(state) => this.setState({state})}
           keyboardType="default"
         />
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Zip/Postal"
-          onChangeText={this.handleFirstNaame}
+          onChangeText={(zip) => this.setState({zip})}
           keyboardType="default"
         />
       </View>
@@ -146,42 +237,42 @@ class Property extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Bought On"
-          onChangeText={this.handleFirstNaame}
+          onChangeText={(boughtOn) => this.setState({boughtOn})}
           keyboardType="default"
         />
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="House Size"
-          onChangeText={this.handleFirstNaame}
+          onChangeText={(houseSize) => this.setState({houseSize})}
           keyboardType="default"
         />
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Lot Size"
-          onChangeText={this.handleFirstNaame}
+          onChangeText={(lotSize) => this.setState({lotSize})}
           keyboardType="default"
         />
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="County"
-          onChangeText={this.handleFirstNaame}
+          onChangeText={(county) => this.setState({county})}
           keyboardType="default"
         />
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="School District"
-          onChangeText={this.handleFirstNaame}
+          onChangeText={(schoolDistrict) => this.setState({schoolDistrict})}
           keyboardType="default"
         />
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="APN #"
-          onChangeText={this.handleFirstNaame}
+          onChangeText={(apn) => this.setState({apn})}
           keyboardType="default"
         />
       </View>
@@ -193,28 +284,30 @@ class Property extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Property Tax Amount"
-          onChangeText={this.handleFirstNaame}
+          onChangeText={(propertyTaxAmnt) => this.setState({propertyTaxAmnt})}
           keyboardType="default"
         />
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Year of Construction"
-          onChangeText={this.handleFirstNaame}
+          onChangeText={(yearOfConstruction) =>
+            this.setState({yearOfConstruction})
+          }
           keyboardType="default"
         />
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Age"
-          onChangeText={this.handleFirstNaame}
+          onChangeText={(age) => this.setState({age})}
           keyboardType="default"
         />
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Number of Levels"
-          onChangeText={this.handleFirstNaame}
+          onChangeText={(numberOfLevels) => this.setState({numberOfLevels})}
           keyboardType="default"
         />
       </View>
@@ -224,7 +317,7 @@ class Property extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Garage Size"
-          onChangeText={this.handleFirstNaame}
+          onChangeText={(garageSize) => this.setState({garageSize})}
           keyboardType="default"
         />
       </View>
@@ -249,7 +342,7 @@ class Property extends Component {
   };
 
   render() {
-    const {active} = this.state;
+    const {active, isLoader} = this.state;
     return (
       <View style={styles.container}>
         <Text style={styles.title}>{this.title(active)}</Text>
@@ -270,6 +363,7 @@ class Property extends Component {
             paddingVertical={10}
           />
         </View>
+        <Loader isLoader={isLoader} />
       </View>
     );
   }
