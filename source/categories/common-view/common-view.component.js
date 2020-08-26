@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, ImageBackground, SafeAreaView, ScrollView} from 'react-native';
+import {View, ImageBackground, SafeAreaView, ScrollView, TouchableOpacity} from 'react-native';
 import {Title} from 'react-native-paper';
 import {connect} from 'react-redux';
 import Icons from 'react-native-vector-icons/MaterialIcons';

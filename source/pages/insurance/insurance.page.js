@@ -5,6 +5,7 @@ import {
   SafeAreaView,
   ImageBackground,
   ScrollView,
+  TouchableOpacity
 } from 'react-native';
 import {Title} from 'react-native-paper';
 import Icons from 'react-native-vector-icons/MaterialIcons';
