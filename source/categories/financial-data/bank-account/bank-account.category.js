@@ -9,7 +9,9 @@ import InputTextIconDynamic from '../../../components/input-text-icon-dynamic/in
 import ModalPicker from '../../../components/modal-picker/modal-picker.component.js';
 import Button from '../../../components/button/button.component';
 import Loader from '../../../components/loader/loader.component';
+import ModalScreen from '../../../components/modal/modal.component';
 import {createOrUpdateRecord} from '../../../configuration/api/api.functions';
+import {account_type, size, payment_due_type} from './bank-account.list';
 
 import styles from './bank-account.style';
 
@@ -22,6 +24,9 @@ class BankAccounts extends Component {
       countryModal: false,
       navigation: props.navigation,
       isLoader: false,
+      modal: false,
+      array: [],
+      key: '',
       title: '',
       dataType: '',
       name: '',
@@ -63,6 +68,11 @@ class BankAccounts extends Component {
       city: '',
       state: '',
       zip: '',
+      accountType: '',
+      size1: '',
+      size2: '',
+      paymentDueType1: '',
+      paymentDueType2: '',
     };
   }
 
@@ -109,7 +119,20 @@ class BankAccounts extends Component {
         />
       </View>
       <View style={styles.inputContainer}>
-        <ModalPicker label="Account Type" onPress={() => alert('Type')} />
+        <ModalPicker
+          label={
+            this.state.accountType.length === 0
+              ? 'Account Type'
+              : this.state.accountType
+          }
+          onPress={() =>
+            this.setState({
+              modal: true,
+              array: account_type,
+              key: 'accountType',
+            })
+          }
+        />
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
@@ -336,7 +359,12 @@ class BankAccounts extends Component {
           />
         </View>
         <View style={styles.miniInputContainer}>
-          <ModalPicker label="Size" onPress={() => alert('Type')} />
+          <ModalPicker
+            label={this.state.size1.length === 0 ? 'Size' : this.state.size1}
+            onPress={() =>
+              this.setState({modal: true, array: size, key: 'size1'})
+            }
+          />
         </View>
       </View>
       <View style={styles.miniContainer}>
@@ -357,7 +385,20 @@ class BankAccounts extends Component {
         </View>
       </View>
       <View style={styles.inputContainer}>
-        <ModalPicker label="" onPress={() => alert('Type')} />
+        <ModalPicker
+          label={
+            this.state.paymentDueType1.length === 0
+              ? 'Payment Due Type'
+              : this.state.paymentDueType1
+          }
+          onPress={() =>
+            this.setState({
+              modal: true,
+              array: payment_due_type,
+              key: 'paymentDueType1',
+            })
+          }
+        />
       </View>
       <View style={styles.miniContainer}>
         <View style={[styles.miniInputContainer, {marginRight: 10}]}>
@@ -368,7 +409,12 @@ class BankAccounts extends Component {
           />
         </View>
         <View style={styles.miniInputContainer}>
-          <ModalPicker label="Size" onPress={() => alert('Type')} />
+          <ModalPicker
+            label={this.state.size2.length === 0 ? 'Size' : this.state.size2}
+            onPress={() =>
+              this.setState({modal: true, array: size, key: 'size2'})
+            }
+          />
         </View>
       </View>
       <View style={styles.miniContainer}>
@@ -389,7 +435,20 @@ class BankAccounts extends Component {
         </View>
       </View>
       <View style={styles.inputContainer}>
-        <ModalPicker label="" onPress={() => alert('Type')} />
+        <ModalPicker
+          label={
+            this.state.paymentDueType2.length === 0
+              ? 'Payment Due Type'
+              : this.state.paymentDueType2
+          }
+          onPress={() =>
+            this.setState({
+              modal: true,
+              array: payment_due_type,
+              key: 'paymentDueType2',
+            })
+          }
+        />
       </View>
     </View>
   );
@@ -517,6 +576,11 @@ class BankAccounts extends Component {
       city,
       state,
       zip,
+      accountType,
+      size1,
+      size2,
+      paymentDueType1,
+      paymentDueType2,
     } = this.state;
 
     let data = qs.stringify({
@@ -551,18 +615,23 @@ class BankAccounts extends Component {
       'SafetyDepositBox1-BoxNumber': boxNumber1,
       'SafetyDepositBox1-BoxOpeningDate': openedOn1,
       'SafetyDepositBox1-Fee': interestRate1,
+      'SafetyDepositBox1-BoxSize': size1,
+      'SafetyDepositBox1-FeeDuration': paymentDueType1,
       'SafetyDepositBox2-BoxNumber': boxNumber2,
       'SafetyDepositBox2-BoxOpeningDate': openedOn2,
       'SafetyDepositBox2-Fee': interestRate2,
+      'SafetyDepositBox2-BoxSize': size2,
+      'SafetyDepositBox2-FeeDuration': paymentDueType2,
       'BankBranchAddress-Line1': address1,
       'BankBranchAddress-Line2': address2,
       'BankBranchAddress-City': city,
       'BankBranchAddress-State': state,
       'BankBranchAddress-Zip': zip,
+      AccountType: accountType,
     });
     await createOrUpdateRecord('BankAccounts', `__NEW__`, data, access_token)
       .then((response) => {
-        this.setState({isLoader: false});
+        this.setState({isLoader: false, active: 0});
         navigation.goBack();
       })
       .catch((error) => {
@@ -575,8 +644,16 @@ class BankAccounts extends Component {
     else return 'Proceed to next account';
   };
 
+  changeModalVisibility = (bool) => {
+    this.setState({modal: bool});
+  };
+
+  changeState = (key, value) => {
+    this.setState({[key]: value});
+  };
+
   render() {
-    const {active, isLoader} = this.state;
+    const {active, isLoader, modal, array, key} = this.state;
     return (
       <View style={styles.container}>
         <Text style={styles.title}>{this.title(active)}</Text>
@@ -598,6 +675,13 @@ class BankAccounts extends Component {
           />
         </View>
         <Loader isLoader={isLoader} />
+        <ModalScreen
+          isModalVisible={modal}
+          list={array}
+          changeModalVisibility={this.changeModalVisibility}
+          id={key}
+          changeState={this.changeState}
+        />
       </View>
     );
   }

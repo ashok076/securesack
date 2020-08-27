@@ -1,7 +1,10 @@
 import React from 'react';
-import {View, Text, ScrollView} from 'react-native';
+import {View, Text, ScrollView, Modal} from 'react-native';
 import Icon from 'react-native-vector-icons/SimpleLineIcons';
 import {TouchableRipple} from 'react-native-paper';
+
+import ModalScreen from '../modal/modal.component';
+
 import styles from './modal-picker.style';
 
 const ModalPicker = ({label, onPress}) => (

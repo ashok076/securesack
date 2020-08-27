@@ -9,7 +9,9 @@ import InputTextIconDynamic from '../../../components/input-text-icon-dynamic/in
 import ModalPicker from '../../../components/modal-picker/modal-picker.component.js';
 import Button from '../../../components/button/button.component';
 import Loader from '../../../components/loader/loader.component';
+import ModalScreen from '../../../components/modal/modal.component';
 import {createOrUpdateRecord} from '../../../configuration/api/api.functions';
+import {reward_type} from './rewards-programs.list';
 
 import styles from './rewards-programs.style';
 
@@ -19,6 +21,9 @@ class RewardsPrograms extends Component {
     this.state = {
       active: 0,
       isLoader: false,
+      modal: false,
+      array: [],
+      key: '',
       navigation: props.navigation,
       access_token: props.access_token,
       name: '',
@@ -34,6 +39,7 @@ class RewardsPrograms extends Component {
       securityA2: '',
       securityQ3: '',
       securityA3: '',
+      programType: '',
     };
   }
 
@@ -61,6 +67,7 @@ class RewardsPrograms extends Component {
       securityA2,
       securityQ3,
       securityA3,
+      programType
     } = this.state;
 
     let data = qs.stringify({
@@ -77,6 +84,7 @@ class RewardsPrograms extends Component {
       SecurityAnswer2: securityA2,
       SecurityQuestion3: securityQ3,
       SecurityAnswer3: securityA3,
+      ProgramType: programType
     });
 
     await createOrUpdateRecord('RewardProgram', `__NEW__`, data, access_token)
@@ -132,7 +140,20 @@ class RewardsPrograms extends Component {
         />
       </View>
       <View style={styles.inputContainer}>
-        <ModalPicker label="Type" onPress={() => alert('Type')} />
+        <ModalPicker
+          label={
+            this.state.programType.length === 0
+              ? 'Type'
+              : this.state.programType
+          }
+          onPress={() =>
+            this.setState({
+              modal: true,
+              array: reward_type,
+              key: 'programType',
+            })
+          }
+        />
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
@@ -216,8 +237,17 @@ class RewardsPrograms extends Component {
     }
   };
 
+
+  changeModalVisibility = (bool) => {
+    this.setState({modal: bool});
+  };
+
+  changeState = (key, value) => {
+    this.setState({[key]: value});
+  };
+
   render() {
-    const {active, isLoader} = this.state;
+    const {active, isLoader, modal, array, key} = this.state;
     return (
       <View style={styles.container}>
         <Text style={styles.title}>{this.title(active)}</Text>
@@ -239,6 +269,13 @@ class RewardsPrograms extends Component {
           />
         </View>
         <Loader isLoader={isLoader} />
+        <ModalScreen
+          isModalVisible={modal}
+          list={array}
+          changeModalVisibility={this.changeModalVisibility}
+          id={key}
+          changeState={this.changeState}
+        />
       </View>
     );
   }

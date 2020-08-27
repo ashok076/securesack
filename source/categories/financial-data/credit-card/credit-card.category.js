@@ -9,7 +9,9 @@ import InputTextIconDynamic from '../../../components/input-text-icon-dynamic/in
 import ModalPicker from '../../../components/modal-picker/modal-picker.component.js';
 import Button from '../../../components/button/button.component';
 import Loader from '../../../components/loader/loader.component';
+import ModalScreen from '../../../components/modal/modal.component';
 import {createOrUpdateRecord} from '../../../configuration/api/api.functions';
+import {credit_card_type} from './credit-card.category';
 
 import styles from './credit-card.style';
 
@@ -19,6 +21,9 @@ class CreditCard extends Component {
     this.state = {
       active: 0,
       isLoader: false,
+      modal: false,
+      array: [],
+      key: '',
       navigation: props.navigation,
       access_token: props.access_token,
       name: '',
@@ -44,6 +49,7 @@ class CreditCard extends Component {
       city: '',
       state: '',
       zip: '',
+      creditCardType: '',
     };
   }
 
@@ -81,6 +87,7 @@ class CreditCard extends Component {
       zip,
       access_token,
       navigation,
+      creditCardType,
     } = this.state;
 
     let data = qs.stringify({
@@ -107,10 +114,11 @@ class CreditCard extends Component {
       'PaymentMailingAddress-City': city,
       'PaymentMailingAddress-State': state,
       'PaymentMailingAddress-Zip': zip,
+      CreditCardType: creditCardType,
     });
     await createOrUpdateRecord('CreditCard', `__NEW__`, data, access_token)
       .then((response) => {
-        this.setState({isLoader: false});
+        this.setState({isLoader: false, active: 0});
         navigation.goBack();
       })
       .catch((error) => {
@@ -136,8 +144,6 @@ class CreditCard extends Component {
       case 4:
         return this.additionalInformation();
         break;
-      default:
-        break;
     }
   };
 
@@ -158,7 +164,20 @@ class CreditCard extends Component {
         />
       </View>
       <View style={styles.inputContainer}>
-        <ModalPicker label="Type" onPress={() => alert('Type')} />
+        <ModalPicker
+          label={
+            this.state.creditCardType.length === 0
+              ? 'Type'
+              : this.state.creditCardType
+          }
+          onPress={() =>
+            this.setState({
+              modal: true,
+              array: credit_card_type,
+              key: 'creditCardType',
+            })
+          }
+        />
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
@@ -380,8 +399,16 @@ class CreditCard extends Component {
     }
   };
 
+  changeModalVisibility = (bool) => {
+    this.setState({modal: bool});
+  };
+
+  changeState = (key, value) => {
+    this.setState({[key]: value});
+  };
+
   render() {
-    const {active, isLoader} = this.state;
+    const {active, isLoader, modal, array, key} = this.state;
     return (
       <View style={styles.container}>
         <Text style={styles.title}>{this.title(active)}</Text>
@@ -403,6 +430,13 @@ class CreditCard extends Component {
           />
         </View>
         <Loader isLoader={isLoader} />
+        <ModalScreen
+          isModalVisible={modal}
+          list={array}
+          changeModalVisibility={this.changeModalVisibility}
+          id={key}
+          changeState={this.changeState}
+        />
       </View>
     );
   }

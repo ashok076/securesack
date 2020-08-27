@@ -9,7 +9,9 @@ import InputTextIconDynamic from '../../../components/input-text-icon-dynamic/in
 import ModalPicker from '../../../components/modal-picker/modal-picker.component.js';
 import Button from '../../../components/button/button.component';
 import Loader from '../../../components/loader/loader.component';
+import ModalScreen from '../../../components/modal/modal.component';
 import {createOrUpdateRecord} from '../../../configuration/api/api.functions';
+import {term, refiance_repayment} from './mortgages.list';
 
 import styles from './mortgages.style';
 
@@ -19,6 +21,9 @@ class Mortgages extends Component {
     this.state = {
       active: 0,
       isLoader: false,
+      modal: false,
+      array: [],
+      key: '',
       navigation: props.navigation,
       access_token: props.access_token,
       name: '',
@@ -42,6 +47,9 @@ class Mortgages extends Component {
       city: '',
       state: '',
       zip: '',
+      term: '',
+      refiance: '',
+      repayment: '',
     };
   }
 
@@ -77,6 +85,9 @@ class Mortgages extends Component {
       zip,
       access_token,
       navigation,
+      term,
+      refiance,
+      repayment,
     } = this.state;
 
     let data = qs.stringify({
@@ -101,11 +112,14 @@ class Mortgages extends Component {
       'PaymentMailingAddress-City': city,
       'PaymentMailingAddress-State': state,
       'PaymentMailingAddress-Zip': zip,
+      Term: term,
+      Refinanced: refiance === 'Yes' ? true : false,
+      repayment: repayment === 'Yes' ? true : false,
     });
 
     await createOrUpdateRecord('Mortgage', `__NEW__`, data, access_token)
       .then((response) => {
-        this.setState({isLoader: false});
+        this.setState({isLoader: false, active: 0});
         navigation.goBack();
       })
       .catch((error) => {
@@ -155,7 +169,16 @@ class Mortgages extends Component {
         />
       </View>
       <View style={styles.inputContainer}>
-        <ModalPicker label="Term" onPress={() => alert('Type')} />
+        <ModalPicker
+          label={this.state.term.length === 0 ? 'Term' : this.state.term}
+          onPress={() =>
+            this.setState({
+              modal: true,
+              array: term,
+              key: 'term',
+            })
+          }
+        />
       </View>
       <View style={styles.inputContainer}>
         <InputTextIconDynamic
@@ -306,12 +329,35 @@ class Mortgages extends Component {
     <View>
       <View style={styles.miniContainer}>
         <View style={[styles.miniInputContainer, {marginRight: 10}]}>
-          <ModalPicker label="Refinanced" onPress={() => alert('Type')} />
+          <ModalPicker
+            label={
+              this.state.refiance.length === 0
+                ? 'Refianced'
+                : this.state.refiance
+            }
+            onPress={() =>
+              this.setState({
+                modal: true,
+                array: refiance_repayment,
+                key: 'refiance',
+              })
+            }
+          />
         </View>
         <View style={styles.miniInputContainer}>
           <ModalPicker
-            label="Prepayment Penalty"
-            onPress={() => alert('Type')}
+            label={
+              this.state.repayment.length === 0
+                ? 'Prepayment Penalty'
+                : this.state.repayment
+            }
+            onPress={() =>
+              this.setState({
+                modal: true,
+                array: refiance_repayment,
+                key: 'refiance',
+              })
+            }
           />
         </View>
       </View>
@@ -335,8 +381,16 @@ class Mortgages extends Component {
     }
   };
 
+  changeModalVisibility = (bool) => {
+    this.setState({modal: bool});
+  };
+
+  changeState = (key, value) => {
+    this.setState({[key]: value});
+  };
+
   render() {
-    const {active, isLoader} = this.state;
+    const {active, isLoader, modal, array, key} = this.state;
     return (
       <View style={styles.container}>
         <Text style={styles.title}>{this.title(active)}</Text>
@@ -358,6 +412,13 @@ class Mortgages extends Component {
           />
         </View>
         <Loader isLoader={isLoader} />
+        <ModalScreen
+          isModalVisible={modal}
+          list={array}
+          changeModalVisibility={this.changeModalVisibility}
+          id={key}
+          changeState={this.changeState}
+        />
       </View>
     );
   }

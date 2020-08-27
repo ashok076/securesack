@@ -8,7 +8,9 @@ import InputTextIconDynamic from '../../../components/input-text-icon-dynamic/in
 import ModalPicker from '../../../components/modal-picker/modal-picker.component.js';
 import Button from '../../../components/button/button.component';
 import Loader from '../../../components/loader/loader.component';
+import ModalScreen from '../../../components/modal/modal.component';
 import {createOrUpdateRecord} from '../../../configuration/api/api.functions';
+import {cuisine} from './recipes.list';
 
 import styles from './recipes.style';
 
@@ -18,6 +20,9 @@ class Recipes extends Component {
     this.state = {
       active: 0,
       isLoader: false,
+      modal: false,
+      array: [],
+      key: '',
       navigation: props.navigation,
       access_token: props.access_token,
       name: '',
@@ -25,6 +30,7 @@ class Recipes extends Component {
       username: '',
       passwrd: '',
       recipe: '',
+      cuisine: '',
     };
   }
 
@@ -43,7 +49,7 @@ class Recipes extends Component {
 
   submit = async () => {
     this.setState({isLoader: true});
-    const {name, url, username, password, recipe} = this.state;
+    const {name, url, username, password, recipe, cuisine} = this.state;
     let data = qs.stringify({
       Name: name,
       URL: url,
@@ -72,7 +78,18 @@ class Recipes extends Component {
         />
       </View>
       <View style={styles.inputContainer}>
-        <ModalPicker label="Cuisine" onPress={() => alert('Type')} />
+        <ModalPicker
+          label={
+            this.state.cuisine.length === 0 ? 'Cuisine' : this.state.cuisine
+          }
+          onPress={() =>
+            this.setState({
+              modal: true,
+              array: cuisine,
+              key: 'cuisine',
+            })
+          }
+        />
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
@@ -116,12 +133,28 @@ class Recipes extends Component {
     }
   };
 
+  changeModalVisibility = (bool) => {
+    this.setState({modal: bool});
+  };
+
+  changeState = (key, value) => {
+    this.setState({[key]: value});
+  };
+
   render() {
-    const {active} = this.state;
+    const {active, isLoader, modal, array, key} = this.state;
     return (
       <View style={styles.container}>
         <Text style={styles.title}>{this.title(active)}</Text>
         {this.subComponet()}
+        <Loader isLoader={isLoader} />
+        <ModalScreen
+          isModalVisible={modal}
+          list={array}
+          changeModalVisibility={this.changeModalVisibility}
+          id={key}
+          changeState={this.changeState}
+        />
       </View>
     );
   }

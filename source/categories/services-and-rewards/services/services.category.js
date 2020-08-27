@@ -8,7 +8,13 @@ import InputTextIconDynamic from '../../../components/input-text-icon-dynamic/in
 import ModalPicker from '../../../components/modal-picker/modal-picker.component.js';
 import Button from '../../../components/button/button.component';
 import Loader from '../../../components/loader/loader.component';
+import ModalScreen from '../../../components/modal/modal.component';
 import {createOrUpdateRecord} from '../../../configuration/api/api.functions';
+import {
+  serviceType,
+  payment_due_type,
+  is_credit_card_provided,
+} from './services.list';
 
 import styles from './services.style';
 
@@ -18,6 +24,9 @@ class Services extends Component {
     this.state = {
       active: 0,
       isLoader: false,
+      modal: false,
+      array: [],
+      key: '',
       navigation: props.navigation,
       access_token: props.access_token,
       name: '',
@@ -43,6 +52,9 @@ class Services extends Component {
       securityA3: '',
       additionalAcHolder1: '',
       additionalAcHolder2: '',
+      type: '',
+      paymentDueType: '',
+      isCreditCardProvided: '',
     };
   }
 
@@ -79,7 +91,10 @@ class Services extends Component {
       additionalAcHolder1,
       additionalAcHolder2,
       access_token,
-      navigation
+      navigation,
+      type,
+      paymentDueType,
+      isCreditCardProvided,
     } = this.state;
 
     let data = qs.stringify({
@@ -93,6 +108,7 @@ class Services extends Component {
       'PaymentSchedule-InstallmentStartDate': from,
       'PaymentSchedule-InstallmentEndDate': to,
       'PaymentSchedule-TotalAmount': total,
+      'PaymentSchedule-PaymentDueDay': paymentDueType,
       'MailingAddress-Line1': address1,
       'MailingAddress-Line2': address2,
       'MailingAddress-City': city,
@@ -106,6 +122,8 @@ class Services extends Component {
       SecurityAnswer3: securityA3,
       AdditionalAccountHolder1: additionalAcHolder1,
       AdditionalAccountHolder2: additionalAcHolder2,
+      ProgramType: type
+      IsCreditCardProvided: isCreditCardProvided
     });
 
     await createOrUpdateRecord('ServiceAccount', `__NEW__`, data, access_token)
@@ -167,7 +185,16 @@ class Services extends Component {
         />
       </View>
       <View style={styles.inputContainer}>
-        <ModalPicker label="Type" onPress={() => alert('Type')} />
+        <ModalPicker
+          label={this.state.type.length === 0 ? 'Type' : this.state.type}
+          onPress={() =>
+            this.setState({
+              modal: true,
+              array: serviceType,
+              key: 'type',
+            })
+          }
+        />
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
@@ -192,7 +219,20 @@ class Services extends Component {
         />
       </View>
       <View style={styles.inputContainer}>
-        <ModalPicker label="Due" onPress={() => alert('Type')} />
+        <ModalPicker
+          label={
+            this.state.paymentDueType.length === 0
+              ? 'Due'
+              : this.state.paymentDueType
+          }
+          onPress={() =>
+            this.setState({
+              modal: true,
+              array: payment_due_type,
+              key: 'paymentDueType',
+            })
+          }
+        />
       </View>
       <View style={styles.miniContainer}>
         <View style={[styles.miniInputContainer, {marginRight: 10}]}>
@@ -333,8 +373,18 @@ class Services extends Component {
       </View>
       <View style={styles.inputContainer}>
         <ModalPicker
-          label="Is Credit Card Provided?"
-          onPress={() => alert('Type')}
+          label={
+            this.state.isCreditCardProvided.length === 0
+              ? 'Is Credit Card Provided?'
+              : this.state.isCreditCardProvided
+          }
+          onPress={() =>
+            this.setState({
+              modal: true,
+              array: is_credit_card_provided,
+              key: 'isCreditCardProvided',
+            })
+          }
         />
       </View>
     </View>
@@ -357,8 +407,16 @@ class Services extends Component {
     }
   };
 
+  changeModalVisibility = (bool) => {
+    this.setState({modal: bool});
+  };
+
+  changeState = (key, value) => {
+    this.setState({[key]: value});
+  };
+
   render() {
-    const {active, isLoader} = this.state;
+    const {active, isLoader, modal, array, key} = this.state;
     return (
       <View style={styles.container}>
         <Text style={styles.title}>{this.title(active)}</Text>
@@ -380,6 +438,13 @@ class Services extends Component {
           />
         </View>
         <Loader isLoader={isLoader} />
+        <ModalScreen
+          isModalVisible={modal}
+          list={array}
+          changeModalVisibility={this.changeModalVisibility}
+          id={key}
+          changeState={this.changeState}
+        />
       </View>
     );
   }

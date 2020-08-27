@@ -9,7 +9,9 @@ import InputTextIconDynamic from '../../../components/input-text-icon-dynamic/in
 import ModalPicker from '../../../components/modal-picker/modal-picker.component.js';
 import Button from '../../../components/button/button.component';
 import Loader from '../../../components/loader/loader.component';
+import ModalScreen from '../../../components/modal/modal.component';
 import {createOrUpdateRecord} from '../../../configuration/api/api.functions';
+import {refianced} from './loans.list';
 
 import styles from './loans.style';
 
@@ -19,6 +21,9 @@ class Loans extends Component {
     this.state = {
       active: 0,
       isLoader: false,
+      modal: false,
+      array: [],
+      key: '',
       navigation: props.navigation,
       access_token: props.access_token,
       name: '',
@@ -36,6 +41,7 @@ class Loans extends Component {
       zip: '',
       effectiveFrom: '',
       endsOn: '',
+      refiance: '',
     };
   }
 
@@ -65,6 +71,7 @@ class Loans extends Component {
       zip,
       effectiveFrom,
       endsOn,
+      refiance,
     } = this.state;
 
     let data = qs.stringify({
@@ -83,10 +90,11 @@ class Loans extends Component {
       'PaymentMailingAddress-Zip': zip,
       StartDate: effectiveFrom,
       EndDate: endsOn,
+      Refinanced: refiance,
     });
     await createOrUpdateRecord('ConsumerLoan', `__NEW__`, data, access_token)
       .then((response) => {
-        this.setState({isLoader: false});
+        this.setState({isLoader: false, active: 0});
         navigation.goBack();
       })
       .catch((error) => {
@@ -217,7 +225,18 @@ class Loans extends Component {
   refiance = () => (
     <View>
       <View style={[styles.miniInputContainer, {marginRight: 10}]}>
-        <ModalPicker label="Refinanced" onPress={() => alert('Type')} />
+        <ModalPicker
+          label={
+            this.state.refiance.length === 0 ? 'Refianced' : this.state.refiance
+          }
+          onPress={() =>
+            this.setState({
+              modal: true,
+              array: refianced,
+              key: 'refiance',
+            })
+          }
+        />
       </View>
       <View style={styles.miniContainer}>
         <View style={[styles.miniInputContainer, {marginRight: 10}]}>
@@ -252,8 +271,16 @@ class Loans extends Component {
     }
   };
 
+  changeModalVisibility = (bool) => {
+    this.setState({modal: bool});
+  };
+
+  changeState = (key, value) => {
+    this.setState({[key]: value === 'Yes' ? true : false});
+  };
+
   render() {
-    const {active, isLoader} = this.state;
+    const {active, isLoader, modal, array, key} = this.state;
     return (
       <View style={styles.container}>
         <Text style={styles.title}>{this.title(active)}</Text>
@@ -275,6 +302,13 @@ class Loans extends Component {
           />
         </View>
         <Loader isLoader={isLoader} />
+        <ModalScreen
+          isModalVisible={modal}
+          list={array}
+          changeModalVisibility={this.changeModalVisibility}
+          id={key}
+          changeState={this.changeState}
+        />
       </View>
     );
   }
