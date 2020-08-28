@@ -122,7 +122,7 @@ class Services extends Component {
       SecurityAnswer3: securityA3,
       AdditionalAccountHolder1: additionalAcHolder1,
       AdditionalAccountHolder2: additionalAcHolder2,
-      ProgramType: type
+      ProgramType: type,
       IsCreditCardProvided: isCreditCardProvided
     });
 

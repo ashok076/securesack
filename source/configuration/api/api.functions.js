@@ -23,7 +23,7 @@ export const createOrUpdateRecord = async (
     });
 };
 
-export const city = async (access_token, lookupType) => {
+export const country = async (access_token, lookupType) => {
   return axios(`${BASE_URL}/actions/lookup/${lookupType}`, {
     method: 'GET',
     headers: {

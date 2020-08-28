@@ -33,6 +33,7 @@ class Home extends Component {
       enable_fingerprint: false,
       showPopup: true,
       search: '',
+      access_token: '',
     };
   }
 
@@ -67,11 +68,18 @@ class Home extends Component {
     const {userInfo} = this.props;
     try {
       let userInfo = await AsyncStorage.getItem('user_info');
-      if (userInfo !== null) userInfo(userInfo);
+      if (userInfo !== null) {
+        userInfo(userInfo);
+        console.log("Access Token: ", userInfo.access_token)
+      }else {
+        console.log("HI")
+      }
     } catch (error) {
       console.log('Error in getting user info: ', error);
     }
   };
+
+
 
   detectFingerprintAvailable = () => {
     const {showPopup} = this.state;
@@ -121,9 +129,6 @@ class Home extends Component {
           index: 0,
           routes: [{name: 'Login'}],
         });
-        break;
-
-      default:
         break;
     }
   };

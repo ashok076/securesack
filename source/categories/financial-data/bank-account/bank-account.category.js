@@ -21,8 +21,8 @@ class BankAccounts extends Component {
     this.state = {
       active: 0,
       access_token: props.access_token,
-      countryModal: false,
       navigation: props.navigation,
+      countries: props.countries,
       isLoader: false,
       modal: false,
       array: [],
@@ -68,6 +68,7 @@ class BankAccounts extends Component {
       city: '',
       state: '',
       zip: '',
+      country: '',
       accountType: '',
       size1: '',
       size2: '',
@@ -491,7 +492,20 @@ class BankAccounts extends Component {
         />
       </View>
       <View style={styles.inputContainer}>
-        <ModalPicker label="Country" onPress={() => alert('Country')} />
+        <ModalPicker
+          label={
+            this.state.country.length === 0
+              ? 'Account Type'
+              : this.state.country
+          }
+          onPress={() =>
+            this.setState({
+              modal: true,
+              array: this.state.countries,
+              key: 'country',
+            })
+          }
+        />
       </View>
     </View>
   );

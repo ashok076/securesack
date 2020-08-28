@@ -11,7 +11,7 @@ import Button from '../../../components/button/button.component';
 import Loader from '../../../components/loader/loader.component';
 import ModalScreen from '../../../components/modal/modal.component';
 import {createOrUpdateRecord} from '../../../configuration/api/api.functions';
-import {payment_due_type} from './auto.ist';
+import {payment_due_type} from './auto.list';
 
 import styles from './auto.style';
 

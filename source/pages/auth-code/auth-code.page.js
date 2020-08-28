@@ -11,8 +11,9 @@ import Button from '../../components/button/button.component.js';
 import {END_POINTS, BASE_URL} from '../../configuration/api/api.types';
 import {postApi} from '../../configuration/api/api.functions';
 import Loader from '../../components/loader/loader.component';
-
 import {userInfo} from '../../redux/user-info/actions/user-info.action';
+import {countries} from '../../redux/countries/actions/countries.action';
+import {country} from '../../configuration/api/api.functions';
 
 import styles from './auth-code.style.js';
 
@@ -24,6 +25,7 @@ class AuthCode extends Component {
       clientid: '',
       email: props.route.params.email,
       isLoader: false,
+      access_token: '',
     };
   }
 
@@ -108,6 +110,7 @@ class AuthCode extends Component {
   };
 
   saveSession = async (access_token) => {
+    this.setState({access_token}, () => this.country());
     try {
       await AsyncStorage.setItem('access_token', access_token);
     } catch (error) {
@@ -133,6 +136,19 @@ class AuthCode extends Component {
           break;
       }
     }
+  };
+
+  country = async () => {
+    const {access_token} = this.state;
+    let arr = [];
+    await country(access_token, 'RefCountry').then((res) => {
+      res.map((country) => {
+        arr.push(country.label);
+      });
+      if (arr.length !== 0) {
+        countries(arr);
+      }
+    });
   };
 
   fieldVerification = (authcode) => {
@@ -188,5 +204,6 @@ class AuthCode extends Component {
 
 const mapDispatchToProps = (dispatch) => ({
   userInfo: (userData) => dispatch(userInfo(userData)),
+  countries: (countries_list) => dispatch(countries(countries_list)),
 });
 export default connect(null, mapDispatchToProps)(AuthCode);

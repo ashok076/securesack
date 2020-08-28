@@ -11,7 +11,7 @@ import Button from '../../../components/button/button.component';
 import ModalScreen from '../../../components/modal/modal.component';
 import Loader from '../../../components/loader/loader.component';
 import {createOrUpdateRecord} from '../../../configuration/api/api.functions';
-import {boolean_value} from './life.list';
+import {boolean_value} from './property.list';
 
 import styles from './property.style';
 

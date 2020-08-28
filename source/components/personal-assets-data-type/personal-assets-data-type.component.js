@@ -64,11 +64,11 @@ class PersonalAssetsData extends Component {
     this.setState({dataType});
   };
 
-  category = ({title, id, category, type}) => {
+  category = ({title, id, category, type, icon}) => {
     return (
       <View style={styles.container}>
         <View style={styles.titleIcon}>
-          {/* <Image source={icon} /> */}
+          <Image source={icon} />
           <Text style={styles.title}>{title}</Text>
           <TouchableOpacity
             style={styles.addView}

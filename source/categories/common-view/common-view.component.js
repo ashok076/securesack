@@ -38,7 +38,8 @@ import Recipes from '../personal-organizer/recipes/recipes.category.js';
 
 import styles from './common-view.style';
 
-const CommonView = ({navigation, route, userData}) => {
+const CommonView = ({navigation, route, userData, countries_list}) => {
+  console.log("YOOO", JSON.stringify(countries_list))
   const {title, type, background} = route.params;
   let access_token = null;
   if (userData && userData.userData)
@@ -55,34 +56,34 @@ const CommonView = ({navigation, route, userData}) => {
           </View>
         </View>
         <ScrollView style={styles.outerContainerView}>
-          {subView(type, access_token, navigation)}
+          {subView(type, access_token, navigation, countries_list)}
         </ScrollView>
       </ImageBackground>
     </SafeAreaView>
   );
 };
 
-const subView = (type, access_token, navigation) => {
+const subView = (type, access_token, navigation, countries_list) => {
   switch (type) {
     case 'BankAccounts':
       return (
-        <BankAccounts access_token={access_token} navigation={navigation} />
+        <BankAccounts access_token={access_token} navigation={navigation} countries={countries_list}/>
       );
       break;
     case 'CreditCard':
-      return <CreditCard access_token={access_token} navigation={navigation} />;
+      return <CreditCard access_token={access_token} navigation={navigation} countries={countries_list}/>;
       break;
     case 'BrokerageAccount':
       return <Brokerages access_token={access_token} navigation={navigation} />;
       break;
     case 'Mortgage':
-      return <Mortgages access_token={access_token} navigation={navigation} />;
+      return <Mortgages access_token={access_token} navigation={navigation} countries={countries_list}/>;
       break;
     case 'ConsumerLoan':
-      return <Loans access_token={access_token} navigation={navigation} />;
+      return <Loans access_token={access_token} navigation={navigation} countries={countries_list}/>;
       break;
     case 'ServiceAccount':
-      return <Services access_token={access_token} navigation={navigation} />;
+      return <Services access_token={access_token} navigation={navigation} countries={countries_list}/>;
       break;
     case 'RewardProgram':
       return (
@@ -93,7 +94,7 @@ const subView = (type, access_token, navigation) => {
       return <Auto access_token={access_token} navigation={navigation} />;
       break;
     case 'HealthCareProvider':
-      return <HealthCare access_token={access_token} navigation={navigation} />;
+      return <HealthCare access_token={access_token} navigation={navigation} countries={countries_list}/>;
       break;
     case 'PropertyInsurance':
       return (
@@ -104,13 +105,13 @@ const subView = (type, access_token, navigation) => {
       );
       break;
     case 'LifeInsurance':
-      return <Life access_token={access_token} navigation={navigation} />;
+      return <Life access_token={access_token} navigation={navigation} countries={countries_list}/>;
       break;
     case 'Vehicle':
       return <Vehicle access_token={access_token} navigation={navigation} />;
       break;
     case 'Property':
-      return <Property access_token={access_token} navigation={navigation} />;
+      return <Property access_token={access_token} navigation={navigation} countries={countries_list}/>;
       break;
     case 'WebSiteAccount':
       return (
@@ -125,23 +126,24 @@ const subView = (type, access_token, navigation) => {
       break;
     case 'DriverLicense':
       return (
-        <DriverLicense access_token={access_token} navigation={navigation} />
+        <DriverLicense access_token={access_token} navigation={navigation} countries={countries_list}/>
       );
       break;
     case 'Passport':
-      return <Passport access_token={access_token} navigation={navigation} />;
+      return <Passport access_token={access_token} navigation={navigation} countries={countries_list}/>;
       break;
     case 'TaxIdentification':
-      return <TaxSSN access_token={access_token} navigation={navigation} />;
+      return <TaxSSN access_token={access_token} navigation={navigation} countries={countries_list}/>;
       break;
     case 'IdentificationCards':
-      return <Identity access_token={access_token} navigation={navigation} />;
+      return <Identity access_token={access_token} navigation={navigation} countries={countries_list}/>;
       break;
   }
 };
 
-const mapStateToProps = ({userData}) => ({
+const mapStateToProps = ({userData, countries_list}) => ({
   userData,
+  countries_list
 });
 
 export default connect(mapStateToProps)(CommonView);
