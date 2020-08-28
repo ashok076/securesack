@@ -9,7 +9,9 @@ import InputTextIconDynamic from '../../../components/input-text-icon-dynamic/in
 import ModalPicker from '../../../components/modal-picker/modal-picker.component.js';
 import Button from '../../../components/button/button.component';
 import Loader from '../../../components/loader/loader.component';
+import ModalScreen from '../../../components/modal/modal.component';
 import {createOrUpdateRecord} from '../../../configuration/api/api.functions';
+import {payment_due_type} from './auto.ist';
 
 import styles from './auto.style';
 
@@ -21,6 +23,9 @@ class Auto extends Component {
       isLoader: false,
       navigation: props.navigation,
       access_token: props.access_token,
+      modal: '',
+      array: [],
+      key: '',
       name: '',
       primaryPolicyHolder: '',
       policyNumber: '',
@@ -30,6 +35,7 @@ class Auto extends Component {
       from: '',
       to: '',
       total: '',
+      paymentDueType: '',
       url: '',
       username: '',
       password: '',
@@ -68,6 +74,7 @@ class Auto extends Component {
       from,
       to,
       total,
+      paymentDueType,
       url,
       username,
       password,
@@ -95,6 +102,7 @@ class Auto extends Component {
       'PaymentSchedule-InstallmentStartDate': from,
       'PaymentSchedule-InstallmentEndDate': to,
       'PaymentSchedule-TotalAmount': total,
+      'PaymentSchedule-PaymentDueType': paymentDueType,
       URL: url,
       username,
       password,
@@ -113,7 +121,7 @@ class Auto extends Component {
 
     await createOrUpdateRecord('AutoInsurance', `__NEW__`, data, access_token)
       .then((response) => {
-        this.setState({isLoader: false});
+        this.setState({isLoader: false, active: 0});
         navigation.goBack();
       })
       .catch((error) => {
@@ -186,7 +194,20 @@ class Auto extends Component {
         />
       </View>
       <View style={[styles.inputContainer, {marginRight: 10}]}>
-        <ModalPicker label="Due" onPress={() => alert('Type')} />
+        <ModalPicker
+          label={
+            this.state.paymentDueType.length === 0
+              ? 'Due'
+              : this.state.paymentDueType
+          }
+          onPress={() =>
+            this.setState({
+              modal: true,
+              array: payment_due_type,
+              key: 'paymentDueType',
+            })
+          }
+        />
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
@@ -336,8 +357,16 @@ class Auto extends Component {
     }
   };
 
+  changeModalVisibility = (bool) => {
+    this.setState({modal: bool});
+  };
+
+  changeState = (key, value) => {
+    this.setState({[key]: value});
+  };
+
   render() {
-    const {active, isLoader} = this.state;
+    const {active, isLoader, modal, array, key} = this.state;
     return (
       <View style={styles.container}>
         <Text style={styles.title}>{this.title(active)}</Text>
@@ -358,7 +387,14 @@ class Auto extends Component {
             paddingVertical={10}
           />
         </View>
-        <Loader isLoader={isLoader}/>
+        <Loader isLoader={isLoader} />
+        <ModalScreen
+          isModalVisible={modal}
+          list={array}
+          changeModalVisibility={this.changeModalVisibility}
+          id={key}
+          changeState={this.changeState}
+        />
       </View>
     );
   }

@@ -9,7 +9,9 @@ import InputTextIconDynamic from '../../../components/input-text-icon-dynamic/in
 import ModalPicker from '../../../components/modal-picker/modal-picker.component.js';
 import Button from '../../../components/button/button.component';
 import Loader from '../../../components/loader/loader.component';
+import ModalScreen from '../../../components/modal/modal.component';
 import {createOrUpdateRecord} from '../../../configuration/api/api.functions';
+import {vehicle_type, engine_type, is_still_owned} from './vehicle.list';
 
 import styles from './vehicle.style';
 
@@ -21,15 +23,21 @@ class Vehicle extends Component {
       isLoader: false,
       navigation: props.navigation,
       access_token: props.access_token,
+      modal: '',
+      array: [],
+      key: '',
       make: '',
       modal: '',
       licensePlate: '',
       vin: '',
+      vehicleType: '',
       renewalDate: '',
+      engineType: '',
       color: '',
       numOfDoors: '',
       boughtOn: '',
       soldOn: '',
+      isStillOwned: '',
     };
   }
 
@@ -48,11 +56,14 @@ class Vehicle extends Component {
       model,
       licensePlate,
       vin,
+      vehicleType,
       renewalDate,
+      engineType,
       color,
       numOfDoors,
       boughtOn,
       soldOn,
+      isStillOwned,
     } = this.state;
 
     let data = qs.stringify({
@@ -60,16 +71,19 @@ class Vehicle extends Component {
       Model: model,
       LicensePlateNumber: licensePlate,
       VehicleID: vin,
+      AutomobileType: vehicleType,
       RegistrationValidTill: renewalDate,
+      EngineType: engineType,
       Color: color,
       NumberOfDoors: numOfDoors,
       DateAcquired: boughtOn,
       DateReleased: soldOn,
+      IsOwned: isStillOwned,
     });
 
     await createOrUpdateRecord('Vehicle', `__NEW__`, data, access_token)
       .then((response) => {
-        this.setState({isLoader: false});
+        this.setState({isLoader: false, active: 0});
         navigation.goBack();
       })
       .catch((error) => {
@@ -92,7 +106,20 @@ class Vehicle extends Component {
   additionalInformation = () => (
     <View>
       <View style={styles.inputContainer}>
-        <ModalPicker label="Engine Type" onPress={() => alert('Type')} />
+        <ModalPicker
+          label={
+            this.state.engineType.length === 0
+              ? 'Engine Type'
+              : this.state.engineType
+          }
+          onPress={() =>
+            this.setState({
+              modal: true,
+              array: engine_type,
+              key: 'engineType',
+            })
+          }
+        />
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
@@ -125,7 +152,20 @@ class Vehicle extends Component {
         </View>
       </View>
       <View style={styles.inputContainer}>
-        <ModalPicker label="Is still owned?" onPress={() => alert('Type')} />
+        <ModalPicker
+          label={
+            this.state.isStillOwned.length === 0
+              ? 'Is still owned?'
+              : this.state.isStillOwned
+          }
+          onPress={() =>
+            this.setState({
+              modal: true,
+              array: is_still_owned,
+              key: 'isStillOwned',
+            })
+          }
+        />
       </View>
     </View>
   );
@@ -169,7 +209,20 @@ class Vehicle extends Component {
           />
         </View>
         <View style={styles.miniInputContainer}>
-          <ModalPicker label="Vehicle Type" onPress={() => alert('Type')} />
+          <ModalPicker
+            label={
+              this.state.vehicleType.length === 0
+                ? 'Vehicle Type'
+                : this.state.vehicleType
+            }
+            onPress={() =>
+              this.setState({
+                modal: true,
+                array: vehicle_type,
+                key: 'vehicleType',
+              })
+            }
+          />
         </View>
       </View>
     </View>
@@ -186,8 +239,16 @@ class Vehicle extends Component {
     }
   };
 
+  changeModalVisibility = (bool) => {
+    this.setState({modal: bool});
+  };
+
+  changeState = (key, value) => {
+    this.setState({[key]: value});
+  };
+
   render() {
-    const {active, isLoader} = this.state;
+    const {active, isLoader, modal, array, key} = this.state;
     return (
       <View style={styles.container}>
         <Text style={styles.title}>{this.title(active)}</Text>
@@ -209,6 +270,13 @@ class Vehicle extends Component {
           />
         </View>
         <Loader isLoader={isLoader} />
+        <ModalScreen
+          isModalVisible={modal}
+          list={array}
+          changeModalVisibility={this.changeModalVisibility}
+          id={key}
+          changeState={this.changeState}
+        />
       </View>
     );
   }

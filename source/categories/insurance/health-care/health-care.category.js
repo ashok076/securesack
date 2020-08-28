@@ -9,7 +9,9 @@ import InputTextIconDynamic from '../../../components/input-text-icon-dynamic/in
 import ModalPicker from '../../../components/modal-picker/modal-picker.component.js';
 import Button from '../../../components/button/button.component';
 import Loader from '../../../components/loader/loader.component';
+import ModalScreen from '../../../components/modal/modal.component';
 import {createOrUpdateRecord} from '../../../configuration/api/api.functions';
+import {insurance_type, plan_type, payment_due_type} from './health-care.list';
 
 import styles from './health-care.style';
 
@@ -21,7 +23,12 @@ class HealthCare extends Component {
       isLoader: false,
       navigation: props.navigation,
       access_token: props.access_token,
+      modal: '',
+      array: [],
+      key: '',
       insuranceProvider: '',
+      insuranceType: '',
+      planType: '',
       groupIdNumber: '',
       planCoverage: '',
       deductible: '',
@@ -36,6 +43,7 @@ class HealthCare extends Component {
       from: '',
       to: '',
       total: '',
+      paymentDueType: '',
       address1: '',
       address2: '',
       city: '',
@@ -60,6 +68,8 @@ class HealthCare extends Component {
       navigation,
       access_token,
       insuranceProvider,
+      insuranceType,
+      planType,
       groupIdNumber,
       planCoverage,
       deductible,
@@ -74,6 +84,7 @@ class HealthCare extends Component {
       from,
       to,
       total,
+      paymentDueType,
       address1,
       address2,
       city,
@@ -91,6 +102,8 @@ class HealthCare extends Component {
       PlanCoverage: planCoverage,
       Deductible: deductible,
       URL: url,
+      ProviderType: insuranceType,
+      PlanType: planType,
       WebsiteUserName: username,
       WebsitePassword: password,
       Phone: customerServiceNo,
@@ -101,6 +114,7 @@ class HealthCare extends Component {
       'PaymentSchedule-InstallmentStartDate': from,
       'PaymentSchedule-InstallmentEndDate': to,
       'PaymentSchedule-TotalAmount': total,
+      'PaymentSchedule-PaymentDueType': paymentDueType,
       'ClaimsMailingAddress-Line1': address1,
       'ClaimsMailingAddress-Line2': address2,
       'ClaimsMailingAddress-City': city,
@@ -112,9 +126,14 @@ class HealthCare extends Component {
       Dependent4: dependent4,
     });
 
-    await createOrUpdateRecord('HealthCareProvider', `__NEW__`, data, access_token)
+    await createOrUpdateRecord(
+      'HealthCareProvider',
+      `__NEW__`,
+      data,
+      access_token,
+    )
       .then((response) => {
-        this.setState({isLoader: false});
+        this.setState({isLoader: false, active: 0});
         navigation.goBack();
       })
       .catch((error) => {
@@ -152,10 +171,34 @@ class HealthCare extends Component {
         />
       </View>
       <View style={styles.inputContainer}>
-        <ModalPicker label="Insurance Type" onPress={() => alert('Type')} />
+        <ModalPicker
+          label={
+            this.state.insuranceType.length === 0
+              ? 'Insurance Type'
+              : this.state.insuranceType
+          }
+          onPress={() =>
+            this.setState({
+              modal: true,
+              array: insurance_type,
+              key: 'insuranceType',
+            })
+          }
+        />
       </View>
       <View style={styles.inputContainer}>
-        <ModalPicker label="Plan Type" onPress={() => alert('Type')} />
+        <ModalPicker
+          label={
+            this.state.planType.length === 0 ? 'Plan Type' : this.state.planType
+          }
+          onPress={() =>
+            this.setState({
+              modal: true,
+              array: plan_type,
+              key: 'planType',
+            })
+          }
+        />
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
@@ -245,7 +288,20 @@ class HealthCare extends Component {
         />
       </View>
       <View style={[styles.inputContainer, {marginRight: 10}]}>
-        <ModalPicker label="Due" onPress={() => alert('Type')} />
+        <ModalPicker
+          label={
+            this.state.paymentDueType.length === 0
+              ? 'Due'
+              : this.state.paymentDueType
+          }
+          onPress={() =>
+            this.setState({
+              modal: true,
+              array: payment_due_type,
+              key: 'paymentDueType',
+            })
+          }
+        />
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
@@ -364,8 +420,16 @@ class HealthCare extends Component {
     }
   };
 
+  changeModalVisibility = (bool) => {
+    this.setState({modal: bool});
+  };
+
+  changeState = (key, value) => {
+    this.setState({[key]: value});
+  };
+
   render() {
-    const {active, isLoader} = this.state;
+    const {active, isLoader, modal, array, key} = this.state;
     return (
       <View style={styles.container}>
         <Text style={styles.title}>{this.title(active)}</Text>
@@ -387,6 +451,13 @@ class HealthCare extends Component {
           />
         </View>
         <Loader isLoader={isLoader} />
+        <ModalScreen
+          isModalVisible={modal}
+          list={array}
+          changeModalVisibility={this.changeModalVisibility}
+          id={key}
+          changeState={this.changeState}
+        />
       </View>
     );
   }

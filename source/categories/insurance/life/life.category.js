@@ -9,7 +9,9 @@ import InputTextIconDynamic from '../../../components/input-text-icon-dynamic/in
 import ModalPicker from '../../../components/modal-picker/modal-picker.component.js';
 import Button from '../../../components/button/button.component';
 import Loader from '../../../components/loader/loader.component';
+import ModalScreen from '../../../components/modal/modal.component';
 import {createOrUpdateRecord} from '../../../configuration/api/api.functions';
+import {payment_due_type} from './life.list';
 
 import styles from './life.style';
 
@@ -21,6 +23,9 @@ class Life extends Component {
       isLoader: false,
       navigation: props.navigation,
       access_token: props.access_token,
+      modal: '',
+      array: [],
+      key: '',
       name: '',
       policyNo: '',
       policyHolder: '',
@@ -38,6 +43,7 @@ class Life extends Component {
       from: '',
       to: '',
       total: '',
+      paymentDueType: '',
       address1: '',
       address2: '',
       city: '',
@@ -78,6 +84,7 @@ class Life extends Component {
       from,
       to,
       total,
+      paymentDueType,
       address1,
       address2,
       city,
@@ -107,6 +114,7 @@ class Life extends Component {
       'PaymentSchedule-InstallmentStartDate': from,
       'PaymentSchedule-InstallmentEndDate': to,
       'PaymentSchedule-TotalAmount': total,
+      'PaymentSchedule-PaymentDueType': paymentDueType,
       'ClaimsMailingAddress-Line1': address1,
       'ClaimsMailingAddress-Line2': address2,
       'ClaimsMailingAddress-City': city,
@@ -120,7 +128,7 @@ class Life extends Component {
 
     await createOrUpdateRecord('LifeInsurance', `__NEW__`, data, access_token)
       .then((response) => {
-        this.setState({isLoader: false});
+        this.setState({isLoader: false, active: 0});
         navigation.goBack();
       })
       .catch((error) => {
@@ -260,7 +268,20 @@ class Life extends Component {
         />
       </View>
       <View style={[styles.inputContainer]}>
-        <ModalPicker label="Due" onPress={() => alert('Type')} />
+        <ModalPicker
+          label={
+            this.state.paymentDueType.length === 0
+              ? 'Due'
+              : this.state.paymentDueType
+          }
+          onPress={() =>
+            this.setState({
+              modal: true,
+              array: payment_due_type,
+              key: 'paymentDueType',
+            })
+          }
+        />
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
@@ -383,8 +404,16 @@ class Life extends Component {
     }
   };
 
+  changeModalVisibility = (bool) => {
+    this.setState({modal: bool});
+  };
+
+  changeState = (key, value) => {
+    this.setState({[key]: value});
+  };
+
   render() {
-    const {active, isLoader} = this.state;
+    const {active, isLoader, modal, array, key} = this.state;
     return (
       <View style={styles.container}>
         <Text style={styles.title}>{this.title(active)}</Text>
@@ -405,6 +434,13 @@ class Life extends Component {
             paddingVertical={10}
           />
         </View>
+        <ModalScreen
+          isModalVisible={modal}
+          list={array}
+          changeModalVisibility={this.changeModalVisibility}
+          id={key}
+          changeState={this.changeState}
+        />
       </View>
     );
   }

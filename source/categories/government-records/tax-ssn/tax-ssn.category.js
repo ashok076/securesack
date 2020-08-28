@@ -9,7 +9,9 @@ import InputTextIconDynamic from '../../../components/input-text-icon-dynamic/in
 import ModalPicker from '../../../components/modal-picker/modal-picker.component.js';
 import Button from '../../../components/button/button.component';
 import Loader from '../../../components/loader/loader.component';
+import ModalScreen from '../../../components/modal/modal.component';
 import {createOrUpdateRecord} from '../../../configuration/api/api.functions';
+import {gender, martial_status, software_used} from './tax-ssn.list';
 
 import styles from './tax-ssn.style';
 
@@ -21,9 +23,15 @@ class TaxSSN extends Component {
       isLoader: false,
       navigation: props.navigation,
       access_token: props.access_token,
+      modal: '',
+      array: [],
+      key: '',
       name: '',
       ssn: '',
+      gender: '',
       taxFillingNumber: '',
+      martialStatus: '',
+      softwareUsed: '',
       softwareName: '',
       url: '',
       username: '',
@@ -47,7 +55,10 @@ class TaxSSN extends Component {
     const {
       name,
       ssn,
+      gender,
       taxFillingNumber,
+      martialStatus,
+      softwareUsed,
       softwareName,
       url,
       username,
@@ -62,7 +73,10 @@ class TaxSSN extends Component {
     let data = qs.stringify({
       Name: name,
       StateIdentificationNumber: ssn,
+      Gender: gender,
       TaxFilingNumber: taxFillingNumber,
+      MaritalStatus: martialStatus,
+      SoftwareUsed: softwareUsed === 'Yes' ? true : false,
       SoftwareName: softwareName,
       URL: url,
       WebsiteUserName: username,
@@ -76,7 +90,7 @@ class TaxSSN extends Component {
 
     await createOrUpdateRecord('Passport', `__NEW__`, data, access_token)
       .then((response) => {
-        this.setState({isLoader: false});
+        this.setState({isLoader: false, active: 0});
         navigation.goBack();
       })
       .catch((error) => {
@@ -109,10 +123,36 @@ class TaxSSN extends Component {
         />
       </View>
       <View style={styles.inputContainer}>
-        <ModalPicker label="Marital Status" onPress={() => alert('Type')} />
+        <ModalPicker
+          label={
+            this.state.martialStatus.length === 0
+              ? 'Martial Status'
+              : this.state.martialStatus
+          }
+          onPress={() =>
+            this.setState({
+              modal: true,
+              array: gender,
+              key: 'martialStatus',
+            })
+          }
+        />
       </View>
       <View style={styles.inputContainer}>
-        <ModalPicker label="Software Used" onPress={() => alert('Type')} />
+        <ModalPicker
+          label={
+            this.state.softwareUsed.length === 0
+              ? 'Software Used'
+              : this.state.softwareUsed
+          }
+          onPress={() =>
+            this.setState({
+              modal: true,
+              array: software_used,
+              key: 'softwareUsed',
+            })
+          }
+        />
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
@@ -205,7 +245,16 @@ class TaxSSN extends Component {
         />
       </View>
       <View style={styles.inputContainer}>
-        <ModalPicker label="Gender" onPress={() => alert('Type')} />
+        <ModalPicker
+          label={this.state.gender.length === 0 ? 'Gender' : this.state.gender}
+          onPress={() =>
+            this.setState({
+              modal: true,
+              array: gender,
+              key: 'gender',
+            })
+          }
+        />
       </View>
     </View>
   );
@@ -224,8 +273,16 @@ class TaxSSN extends Component {
     }
   };
 
+  changeModalVisibility = (bool) => {
+    this.setState({modal: bool});
+  };
+
+  changeState = (key, value) => {
+    this.setState({[key]: value});
+  };
+
   render() {
-    const {active, isLoader} = this.state;
+    const {active, isLoader, modal, array, key} = this.state;
     return (
       <View style={styles.container}>
         <Text style={styles.title}>{this.title(active)}</Text>
@@ -247,6 +304,13 @@ class TaxSSN extends Component {
           />
         </View>
         <Loader isLoader={isLoader} />
+        <ModalScreen
+          isModalVisible={modal}
+          list={array}
+          changeModalVisibility={this.changeModalVisibility}
+          id={key}
+          changeState={this.changeState}
+        />
       </View>
     );
   }

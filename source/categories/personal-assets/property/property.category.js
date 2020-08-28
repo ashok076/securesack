@@ -9,7 +9,17 @@ import InputTextIconDynamic from '../../../components/input-text-icon-dynamic/in
 import ModalPicker from '../../../components/modal-picker/modal-picker.component.js';
 import Button from '../../../components/button/button.component';
 import Loader from '../../../components/loader/loader.component';
+import ModalScreen from '../../../components/modal/modal.component';
 import {createOrUpdateRecord} from '../../../configuration/api/api.functions';
+import {
+  purpose,
+  residence_type,
+  construction_type,
+  garage_type,
+  sprinkler_type,
+  alarm_type,
+  boolean_value,
+} from './property.list';
 
 import styles from './property.style';
 
@@ -21,6 +31,9 @@ class Property extends Component {
       isLoader: false,
       navigation: props.navigation,
       access_token: props.access_token,
+      modal: '',
+      array: [],
+      key: '',
       name: '',
       address1: '',
       address2: '',
@@ -41,6 +54,15 @@ class Property extends Component {
       respondingFireDepartment: '',
       distanceToFireDepartment: '',
       soldOn: '',
+      purpose: '',
+      residenceType: '',
+      constructionType: '',
+      garageType: '',
+      sprinklerType: '',
+      fireAlarmType: '',
+      burgularAlarmType: '',
+      smokeDetector: '',
+      isFireHydrant: '',
     };
   }
 
@@ -75,6 +97,15 @@ class Property extends Component {
       respondingFireDepartment,
       distanceToFireDepartment,
       soldOn,
+      purpose,
+      residenceType,
+      constructionType,
+      garageType,
+      sprinklerType,
+      fireAlarmType,
+      burgularAlarmType,
+      smokeDetector,
+      isFireHydrant,
     } = this.state;
 
     let data = qs.stringify({
@@ -98,11 +129,20 @@ class Property extends Component {
       RespondingFireDepartment: respondingFireDepartment,
       DistanceToNearestFireDepartment: distanceToFireDepartment,
       EndDate: soldOn,
+      PropertyType: purpose,
+      ResidenceType: residenceType,
+      ConstructionType: constructionType,
+      GarageType: garageType,
+      SprinklerType: sprinklerType,
+      FireAlarmType: fireAlarmType,
+      BurglarAlarmType: burgularAlarmType,
+      HasSmokeDetectors: smokeDetector,
+      IsFireHydrantWithinThousandFeet: isFireHydrant,
     });
 
     await createOrUpdateRecord('Property', `__NEW__`, data, access_token)
       .then((response) => {
-        this.setState({isLoader: false});
+        this.setState({isLoader: false, active: 0});
         navigation.goBack();
       })
       .catch((error) => {
@@ -129,21 +169,70 @@ class Property extends Component {
     <View>
       <View style={styles.miniContainer}>
         <View style={[styles.miniInputContainer, {marginRight: 10}]}>
-          <ModalPicker label="Sprinkler Type" onPress={() => alert('Type')} />
+          <ModalPicker
+            label={
+              this.state.sprinklerType.length === 0
+                ? 'Sprinkler Type'
+                : this.state.sprinklerType
+            }
+            onPress={() =>
+              this.setState({
+                modal: true,
+                array: sprinkler_type,
+                key: 'sprinklerType',
+              })
+            }
+          />
         </View>
         <View style={styles.miniInputContainer}>
-          <ModalPicker label="Fire Alarm Type" onPress={() => alert('Type')} />
+          <ModalPicker
+            label={
+              this.state.fireAlarmType.length === 0
+                ? 'Fire Alarm Type'
+                : this.state.fireAlarmType
+            }
+            onPress={() =>
+              this.setState({
+                modal: true,
+                array: alarm_type,
+                key: 'fireAlarmType',
+              })
+            }
+          />
         </View>
       </View>
       <View style={styles.miniContainer}>
         <View style={[styles.miniInputContainer, {marginRight: 10}]}>
           <ModalPicker
-            label="Burglar Alarm Type"
-            onPress={() => alert('Type')}
+            label={
+              this.state.burgularAlarmType.length === 0
+                ? 'Burglar Alarm Type'
+                : this.state.burgularAlarmType
+            }
+            onPress={() =>
+              this.setState({
+                modal: true,
+                array: alarm_type,
+                key: 'burgularAlarmType',
+              })
+            }
           />
         </View>
         <View style={styles.miniInputContainer}>
-          <ModalPicker label="Smoke Detectors" onPress={() => alert('Type')} />
+          <ModalPicker
+            label={
+              this.state.smokeDetector.length === 0
+                ? 'Smoke Detectors'
+                : this.state.smokeDetector
+            }
+            onPress={() =>
+              this.setState({
+                modal: true,
+                array: boolean_value,
+                key: 'smokeDetector',
+              })
+            }
+          />
         </View>
       </View>
       <View style={styles.inputContainer}>
@@ -165,10 +254,19 @@ class Property extends Component {
         />
       </View>
       <View style={styles.inputContainer}>
-        <InputTextDynamic
-          placeholder="Is the Fire Hydrant Within 1000 Feet?"
-          onChangeText={this.handleFirstNaame}
-          keyboardType="default"
+        <ModalPicker
+          label={
+            this.state.isFireHydrant.length === 0
+              ? 'Is the Fire Hydrant Within 1000 Feet?'
+              : this.state.isFireHydrant
+          }
+          onPress={() =>
+            this.setState({
+              modal: true,
+              array: boolean_value,
+              key: 'isFireHydrant',
+            })
+          }
         />
       </View>
       <View style={styles.inputContainer}>
@@ -191,10 +289,32 @@ class Property extends Component {
         />
       </View>
       <View style={styles.inputContainer}>
-        <ModalPicker label="Purpose" onPress={() => alert('Type')} />
+        <ModalPicker
+          label={
+            this.state.purpose.length === 0 ? 'Purpose' : this.state.purpose
+          }
+          onPress={() =>
+            this.setState({
+              modal: true,
+              array: purpose,
+              key: 'purpose',
+            })
+          }
+        />
       </View>
       <View style={styles.inputContainer}>
-        <ModalPicker label="Residence Type" onPress={() => alert('Type')} />
+        <ModalPicker
+          label={
+            this.state.residenceType.length === 0 ? 'Residance Type' : this.state.residenceType
+          }
+          onPress={() =>
+            this.setState({
+              modal: true,
+              array: residence_type,
+              key: 'residenceType',
+            })
+          }
+        />
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
@@ -232,7 +352,7 @@ class Property extends Component {
         />
       </View>
       <View style={styles.inputContainer}>
-        <ModalPicker label="Account Type" onPress={() => alert('Type')} />
+        <ModalPicker label="Country" onPress={() => alert('Type')} />
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
@@ -312,7 +432,16 @@ class Property extends Component {
         />
       </View>
       <View style={styles.inputContainer}>
-        <ModalPicker label="Construction Type" onPress={() => alert('Type')} />
+        <ModalPicker label={
+            this.state.constructionType.length === 0 ? 'Construction Type' : this.state.constructionType
+          }
+          onPress={() =>
+            this.setState({
+              modal: true,
+              array: construction_type,
+              key: 'constructionType',
+            })
+          } />
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
@@ -322,7 +451,16 @@ class Property extends Component {
         />
       </View>
       <View style={styles.inputContainer}>
-        <ModalPicker label="Garage Type" onPress={() => alert('Type')} />
+        <ModalPicker label={
+            this.state.garageType.length === 0 ? 'Garage Type' : this.state.garageType
+          }
+          onPress={() =>
+            this.setState({
+              modal: true,
+              array: garage_type,
+              key: 'garageType',
+            })
+          } />
       </View>
     </View>
   );
@@ -341,8 +479,16 @@ class Property extends Component {
     }
   };
 
+    changeModalVisibility = (bool) => {
+    this.setState({modal: bool});
+  };
+
+  changeState = (key, value) => {
+    this.setState({[key]: value});
+  };
+
   render() {
-    const {active, isLoader} = this.state;
+    const {active, isLoader, modal, array, key} = this.state;
     return (
       <View style={styles.container}>
         <Text style={styles.title}>{this.title(active)}</Text>
@@ -364,6 +510,13 @@ class Property extends Component {
           />
         </View>
         <Loader isLoader={isLoader} />
+        <ModalScreen
+          isModalVisible={modal}
+          list={array}
+          changeModalVisibility={this.changeModalVisibility}
+          id={key}
+          changeState={this.changeState}
+        />
       </View>
     );
   }

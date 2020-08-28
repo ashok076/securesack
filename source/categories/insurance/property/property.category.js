@@ -8,8 +8,10 @@ import InputTextDynamic from '../../../components/input-text-dynamic/input-text-
 import InputTextIconDynamic from '../../../components/input-text-icon-dynamic/input-text-icon-dynamic.component.js';
 import ModalPicker from '../../../components/modal-picker/modal-picker.component.js';
 import Button from '../../../components/button/button.component';
+import ModalScreen from '../../../components/modal/modal.component';
 import Loader from '../../../components/loader/loader.component';
 import {createOrUpdateRecord} from '../../../configuration/api/api.functions';
+import {boolean_value} from './life.list';
 
 import styles from './property.style';
 
@@ -41,6 +43,10 @@ class PropertyInsurance extends Component {
       personalItemInsured: '',
       jointPolicyHolderTwo: '',
       jointPolicyHolderThree: '',
+      escrowAccount: '',
+      replacementContentCoverage: '',
+      lossAssessmentCoverage: '',
+      sewerBackupCoverage: '',
     };
   }
 
@@ -73,6 +79,10 @@ class PropertyInsurance extends Component {
       personalItemInsured,
       jointPolicyHolderTwo,
       jointPolicyHolderThree,
+      escrowAccount,
+      replacementContentCoverage,
+      lossAssessmentCoverage,
+      sewerBackupCoverage,
     } = this.state;
 
     let data = qs.stringify({
@@ -96,11 +106,21 @@ class PropertyInsurance extends Component {
       PersonalItemsInsured: personalItemInsured,
       AdditionalPolicyHolder1: jointPolicyHolderTwo,
       AdditionalPolicyHolder2: jointPolicyHolderThree,
+      EscrowAccount: escrowAccount === 'Yes' ? true : false,
+      ReplacementOfContentsCoverage:
+        replacementContentCoverage === 'Yes' ? true : false,
+      LossAssessmentCoverage: lossAssessmentCoverage === 'Yes' ? true : false,
+      SewerWaterBackupCoverage: sewerBackupCoverage === 'Yes' ? true : false,
     });
 
-    await createOrUpdateRecord('PropertyInsurance', `__NEW__`, data, access_token)
+    await createOrUpdateRecord(
+      'PropertyInsurance',
+      `__NEW__`,
+      data,
+      access_token,
+    )
       .then((response) => {
-        this.setState({isLoader: false});
+        this.setState({isLoader: false, active: 0});
         navigation.goBack();
       })
       .catch((error) => {
@@ -165,7 +185,20 @@ class PropertyInsurance extends Component {
           />
         </View>
         <View style={styles.miniInputContainer}>
-          <ModalPicker label="Escrow Account" onPress={() => alert('Type')} />
+          <ModalPicker
+            label={
+              this.state.escrowAccount.length === 0
+                ? 'Escrow Account'
+                : this.state.escrowAccount
+            }
+            onPress={() =>
+              this.setState({
+                modal: true,
+                array: boolean_value,
+                key: 'escrowAccount',
+              })
+            }
+          />
         </View>
       </View>
       <View style={styles.inputContainer}>
@@ -262,22 +295,53 @@ class PropertyInsurance extends Component {
       <View style={styles.miniContainer}>
         <View style={[styles.miniInputContainer, {marginRight: 10}]}>
           <ModalPicker
-            label="Replacement of Contents Coverage"
+            label={
+              this.state.replacementContentCoverage.length === 0
+                ? 'Replacement of Contents Coverage'
+                : this.state.replacementContentCoverage
+            }
+            onPress={() =>
+              this.setState({
+                modal: true,
+                array: boolean_value,
+                key: 'replacementContentCoverage',
+              })
+            }
             onPress={() => alert('Type')}
           />
         </View>
         <View style={styles.miniInputContainer}>
           <ModalPicker
-            label="Loss Assessment Coverage"
-            onPress={() => alert('Type')}
+            label={
+              this.state.lossAssessmentCoverage.length === 0
+                ? 'Loss Assessment Coverage'
+                : this.state.lossAssessmentCoverage
+            }
+            onPress={() =>
+              this.setState({
+                modal: true,
+                array: boolean_value,
+                key: 'lossAssessmentCoverage',
+              })
+            }
           />
         </View>
       </View>
       <View style={styles.miniContainer}>
         <View style={[styles.miniInputContainer, {marginRight: 10}]}>
           <ModalPicker
-            label="Sewer Backup Coverage"
-            onPress={() => alert('Type')}
+            label={
+              this.state.sewerBackupCoverage.length === 0
+                ? 'Sewer Backup Coverage'
+                : this.state.sewerBackupCoverage
+            }
+            onPress={() =>
+              this.setState({
+                modal: true,
+                array: boolean_value,
+                key: 'sewerBackupCoverage',
+              })
+            }
           />
         </View>
         <View style={styles.miniInputContainer}>
@@ -340,8 +404,16 @@ class PropertyInsurance extends Component {
     }
   };
 
+  changeModalVisibility = (bool) => {
+    this.setState({modal: bool});
+  };
+
+  changeState = (key, value) => {
+    this.setState({[key]: value});
+  };
+
   render() {
-    const {active, isLoader} = this.state;
+    const {active, isLoader, modal, array, key} = this.state;
     return (
       <View style={styles.container}>
         <Text style={styles.title}>{this.title(active)}</Text>
@@ -363,6 +435,13 @@ class PropertyInsurance extends Component {
           />
         </View>
         <Loader isLoader={isLoader} />
+        <ModalScreen
+          isModalVisible={modal}
+          list={array}
+          changeModalVisibility={this.changeModalVisibility}
+          id={key}
+          changeState={this.changeState}
+        />
       </View>
     );
   }
