@@ -29,6 +29,7 @@ class Services extends Component {
       key: '',
       navigation: props.navigation,
       access_token: props.access_token,
+      countries: props.countries.country,
       name: '',
       accNo: '',
       primaryAcHolder: '',
@@ -82,6 +83,7 @@ class Services extends Component {
       city,
       state,
       zip,
+      country,
       securityQ1,
       securityA1,
       securityQ2,
@@ -114,6 +116,7 @@ class Services extends Component {
       'MailingAddress-City': city,
       'MailingAddress-State': state,
       'MailingAddress-Zip': zip,
+      'MailingAddress-Country': country,
       SecurityQuestion1: securityQ1,
       SecurityAnswer1: securityA1,
       SecurityQuestion2: securityQ2,
@@ -123,7 +126,7 @@ class Services extends Component {
       AdditionalAccountHolder1: additionalAcHolder1,
       AdditionalAccountHolder2: additionalAcHolder2,
       ProgramType: type,
-      IsCreditCardProvided: isCreditCardProvided
+      IsCreditCardProvided: isCreditCardProvided,
     });
 
     await createOrUpdateRecord('ServiceAccount', `__NEW__`, data, access_token)
@@ -299,7 +302,18 @@ class Services extends Component {
         />
       </View>
       <View style={styles.inputContainer}>
-        <ModalPicker label="Country" onPress={() => alert('Type')} />
+        <ModalPicker
+          label={
+            this.state.country.length === 0 ? 'Country' : this.state.country
+          }
+          onPress={() =>
+            this.setState({
+              modal: true,
+              array: this.state.countries,
+              key: 'country',
+            })
+          }
+        />
       </View>
     </View>
   );

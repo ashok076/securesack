@@ -23,6 +23,7 @@ class Life extends Component {
       isLoader: false,
       navigation: props.navigation,
       access_token: props.access_token,
+      countries: props.countries.country,
       modal: '',
       array: [],
       key: '',
@@ -49,6 +50,7 @@ class Life extends Component {
       city: '',
       state: '',
       zip: '',
+      country: '',
       beneficiaries1: '',
       beneficiaries2: '',
       beneficiaries3: '',
@@ -90,6 +92,7 @@ class Life extends Component {
       city,
       state,
       zip,
+      country,
       beneficiaries1,
       beneficiaries2,
       beneficiaries3,
@@ -120,6 +123,7 @@ class Life extends Component {
       'ClaimsMailingAddress-City': city,
       'ClaimsMailingAddress-State': state,
       'ClaimsMailingAddress-Zip': zip,
+      'ClaimsMailingAddress-Country': country,
       Beneficiary1: beneficiaries1,
       Beneficiary2: beneficiaries2,
       Beneficiary3: beneficiaries3,
@@ -345,7 +349,18 @@ class Life extends Component {
         />
       </View>
       <View style={styles.inputContainer}>
-        <ModalPicker label="Account Type" onPress={() => alert('Type')} />
+        <ModalPicker
+          label={
+            this.state.country.length === 0 ? 'Country' : this.state.country
+          }
+          onPress={() =>
+            this.setState({
+              modal: true,
+              array: this.state.countries,
+              key: 'country',
+            })
+          }
+        />
       </View>
     </View>
   );

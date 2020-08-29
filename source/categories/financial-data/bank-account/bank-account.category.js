@@ -22,7 +22,7 @@ class BankAccounts extends Component {
       active: 0,
       access_token: props.access_token,
       navigation: props.navigation,
-      countries: props.countries,
+      countries: props.countries.country,
       isLoader: false,
       modal: false,
       array: [],
@@ -495,7 +495,7 @@ class BankAccounts extends Component {
         <ModalPicker
           label={
             this.state.country.length === 0
-              ? 'Account Type'
+              ? 'Country'
               : this.state.country
           }
           onPress={() =>
@@ -590,6 +590,7 @@ class BankAccounts extends Component {
       city,
       state,
       zip,
+      country,
       accountType,
       size1,
       size2,
@@ -641,6 +642,7 @@ class BankAccounts extends Component {
       'BankBranchAddress-City': city,
       'BankBranchAddress-State': state,
       'BankBranchAddress-Zip': zip,
+      'BankBranchAddress-Country': country,
       AccountType: accountType,
     });
     await createOrUpdateRecord('BankAccounts', `__NEW__`, data, access_token)

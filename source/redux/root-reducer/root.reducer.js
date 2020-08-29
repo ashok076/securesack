@@ -3,7 +3,7 @@ import thunk from 'redux-thunk';
 import {createLogger} from 'redux-logger';
 
 import userInfo from '../user-info/reducer/user-info.reducer';
-import countries from '../countries/reducer/countries.reducer.js'
+import countryList from '../countries-list/reducer/countries-list.reducer.js'
 
 const logger = createLogger({
   predicate: (getState, action) => __DEV__,
@@ -13,7 +13,7 @@ const createStoreWithMiddleware = applyMiddleware(thunk, logger)(createStore);
 
 const rootReducer = combineReducers({
     userData: userInfo,
-    countries_list: countries
+    country: countryList
 })
 
 const store = createStoreWithMiddleware(rootReducer);

@@ -38,8 +38,8 @@ import Recipes from '../personal-organizer/recipes/recipes.category.js';
 
 import styles from './common-view.style';
 
-const CommonView = ({navigation, route, userData, countries_list}) => {
-  console.log("YOOO", JSON.stringify(countries_list))
+const CommonView = ({navigation, route, userData, country}) => {
+  console.log("YOOO", JSON.stringify(country))
   const {title, type, background} = route.params;
   let access_token = null;
   if (userData && userData.userData)
@@ -56,7 +56,7 @@ const CommonView = ({navigation, route, userData, countries_list}) => {
           </View>
         </View>
         <ScrollView style={styles.outerContainerView}>
-          {subView(type, access_token, navigation, countries_list)}
+          {subView(type, access_token, navigation, country)}
         </ScrollView>
       </ImageBackground>
     </SafeAreaView>
@@ -141,9 +141,9 @@ const subView = (type, access_token, navigation, countries_list) => {
   }
 };
 
-const mapStateToProps = ({userData, countries_list}) => ({
+const mapStateToProps = ({userData, country}) => ({
   userData,
-  countries_list
+  country
 });
 
 export default connect(mapStateToProps)(CommonView);

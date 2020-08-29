@@ -21,7 +21,9 @@ class DriverLicense extends Component {
       isLoader: false,
       navigation: props.navigation,
       access_token: props.access_token,
+      countries: props.countries.country,
       name: '',
+      countryOfIssue: '',
       stateOfIssue: '',
       license: '',
       dateOfIssue: '',
@@ -42,6 +44,7 @@ class DriverLicense extends Component {
     this.setState({isLoader: true});
     const {
       name,
+      countryOfIssue,
       stateOfIssue,
       license,
       dateOfIssue,
@@ -53,6 +56,7 @@ class DriverLicense extends Component {
 
     let data = qs.stringify({
       Name: name,
+      CountryOfIssue: countryOfIssue,
       StateOfIssue: stateOfIssue,
       LicenseNumber: license,
       DateOfIssue: dateOfIssue,
@@ -128,7 +132,18 @@ class DriverLicense extends Component {
         />
       </View>
       <View style={styles.inputContainer}>
-        <ModalPicker label="Country of Issue" onPress={() => alert('Type')} />
+        <ModalPicker
+          label={
+            this.state.countryOfIssue.length === 0 ? 'Country of Issue' : this.state.countryOfIssue
+          }
+          onPress={() =>
+            this.setState({
+              modal: true,
+              array: this.state.countries,
+              key: 'countryOfIssue',
+            })
+          }
+        />
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic

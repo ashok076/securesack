@@ -23,6 +23,7 @@ class HealthCare extends Component {
       isLoader: false,
       navigation: props.navigation,
       access_token: props.access_token,
+      countries: props.countries.country,
       modal: '',
       array: [],
       key: '',
@@ -49,6 +50,7 @@ class HealthCare extends Component {
       city: '',
       state: '',
       zip: '',
+      country: '',
       dependent1: '',
       dependent2: '',
       dependent3: '',
@@ -90,6 +92,7 @@ class HealthCare extends Component {
       city,
       state,
       zip,
+      country,
       dependent1,
       dependent2,
       dependent3,
@@ -120,6 +123,7 @@ class HealthCare extends Component {
       'ClaimsMailingAddress-City': city,
       'ClaimsMailingAddress-State': state,
       'ClaimsMailingAddress-Zip': zip,
+      'ClaimsMailingAddress-Country': country,
       Dependent1: dependent1,
       Dependent2: dependent2,
       Dependent3: dependent3,
@@ -365,7 +369,18 @@ class HealthCare extends Component {
         />
       </View>
       <View style={styles.inputContainer}>
-        <ModalPicker label="Account Type" onPress={() => alert('Type')} />
+        <ModalPicker
+          label={
+            this.state.country.length === 0 ? 'Country' : this.state.country
+          }
+          onPress={() =>
+            this.setState({
+              modal: true,
+              array: this.state.countries,
+              key: 'country',
+            })
+          }
+        />
       </View>
     </View>
   );

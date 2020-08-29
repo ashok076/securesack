@@ -26,6 +26,7 @@ class Loans extends Component {
       key: '',
       navigation: props.navigation,
       access_token: props.access_token,
+      countries: props.countries.country,
       name: '',
       loanNo: '',
       issuer: '',
@@ -39,6 +40,7 @@ class Loans extends Component {
       city: '',
       state: '',
       zip: '',
+      country: '',
       effectiveFrom: '',
       endsOn: '',
       refiance: '',
@@ -69,6 +71,7 @@ class Loans extends Component {
       city,
       state,
       zip,
+      country,
       effectiveFrom,
       endsOn,
       refiance,
@@ -88,6 +91,7 @@ class Loans extends Component {
       'PaymentMailingAddress-City': city,
       'PaymentMailingAddress-State': state,
       'PaymentMailingAddress-Zip': zip,
+      'PaymentMailingAddress-Country': country,
       StartDate: effectiveFrom,
       EndDate: endsOn,
       Refinanced: refiance,
@@ -217,7 +221,18 @@ class Loans extends Component {
         />
       </View>
       <View style={styles.inputContainer}>
-        <ModalPicker label="Account Type" onPress={() => alert('Type')} />
+        <ModalPicker
+          label={
+            this.state.country.length === 0 ? 'Country' : this.state.country
+          }
+          onPress={() =>
+            this.setState({
+              modal: true,
+              array: this.state.countries,
+              key: 'country',
+            })
+          }
+        />
       </View>
     </View>
   );

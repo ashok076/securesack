@@ -26,6 +26,7 @@ class CreditCard extends Component {
       key: '',
       navigation: props.navigation,
       access_token: props.access_token,
+      countries: props.countries.country,
       name: '',
       cardHolderName: '',
       cardNo: '',
@@ -49,6 +50,7 @@ class CreditCard extends Component {
       city: '',
       state: '',
       zip: '',
+      country: '',
       creditCardType: '',
     };
   }
@@ -85,6 +87,7 @@ class CreditCard extends Component {
       city,
       state,
       zip,
+      country,
       access_token,
       navigation,
       creditCardType,
@@ -114,6 +117,7 @@ class CreditCard extends Component {
       'PaymentMailingAddress-City': city,
       'PaymentMailingAddress-State': state,
       'PaymentMailingAddress-Zip': zip,
+      'PaymentMailingAddress-Country': country,
       CreditCardType: creditCardType,
     });
     await createOrUpdateRecord('CreditCard', `__NEW__`, data, access_token)
@@ -346,7 +350,18 @@ class CreditCard extends Component {
         />
       </View>
       <View style={styles.inputContainer}>
-        <ModalPicker label="Country" onPress={() => alert('Type')} />
+        <ModalPicker
+          label={
+            this.state.country.length === 0 ? 'Country' : this.state.country
+          }
+          onPress={() =>
+            this.setState({
+              modal: true,
+              array: this.state.countries,
+              key: 'country',
+            })
+          }
+        />
       </View>
     </View>
   );

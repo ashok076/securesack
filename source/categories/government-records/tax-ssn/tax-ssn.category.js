@@ -23,6 +23,7 @@ class TaxSSN extends Component {
       isLoader: false,
       navigation: props.navigation,
       access_token: props.access_token,
+      countries: props.countries.country,
       modal: '',
       array: [],
       key: '',
@@ -39,6 +40,7 @@ class TaxSSN extends Component {
       dob: '',
       citizenship: '',
       tob: '',
+      cuntryofbirth: '',
       sob: '',
       cob: '',
     };
@@ -66,6 +68,7 @@ class TaxSSN extends Component {
       dob,
       citizenship,
       tob,
+      countryofbirth,
       sob,
       cob,
     } = this.state;
@@ -84,6 +87,7 @@ class TaxSSN extends Component {
       DateOfBirth: dob,
       Citizenship: citizenship,
       TimeOfBirth: tob,
+      CountryOfBirth: countryofbirth,
       StateOfBirth: sob,
       CityOfBirth: cob,
     });
@@ -209,7 +213,18 @@ class TaxSSN extends Component {
         />
       </View>
       <View style={styles.inputContainer}>
-        <ModalPicker label="Country of Birth" onPress={() => alert('Type')} />
+        <ModalPicker
+          label={
+            this.state.countryofbirth.length === 0 ? 'Country of Birth' : this.state.countryofbirth
+          }
+          onPress={() =>
+            this.setState({
+              modal: true,
+              array: this.state.countries,
+              key: 'countryofbirth',
+            })
+          }
+        />
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic

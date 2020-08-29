@@ -26,6 +26,7 @@ class Mortgages extends Component {
       key: '',
       navigation: props.navigation,
       access_token: props.access_token,
+      countries: props.countries.country,
       name: '',
       loanNo: '',
       issuer: '',
@@ -47,6 +48,7 @@ class Mortgages extends Component {
       city: '',
       state: '',
       zip: '',
+      country: '',
       term: '',
       refiance: '',
       repayment: '',
@@ -112,6 +114,7 @@ class Mortgages extends Component {
       'PaymentMailingAddress-City': city,
       'PaymentMailingAddress-State': state,
       'PaymentMailingAddress-Zip': zip,
+      'PaymentMailingAddress-Country': country,
       Term: term,
       Refinanced: refiance === 'Yes' ? true : false,
       repayment: repayment === 'Yes' ? true : false,
@@ -320,7 +323,18 @@ class Mortgages extends Component {
         />
       </View>
       <View style={styles.inputContainer}>
-        <ModalPicker label="Account Type" onPress={() => alert('Type')} />
+        <ModalPicker
+          label={
+            this.state.country.length === 0 ? 'Country' : this.state.country
+          }
+          onPress={() =>
+            this.setState({
+              modal: true,
+              array: this.state.countries,
+              key: 'country',
+            })
+          }
+        />
       </View>
     </View>
   );

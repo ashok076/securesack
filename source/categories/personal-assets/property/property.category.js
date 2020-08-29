@@ -31,6 +31,7 @@ class Property extends Component {
       isLoader: false,
       navigation: props.navigation,
       access_token: props.access_token,
+      countries: props.countries.country,
       modal: '',
       array: [],
       key: '',
@@ -40,6 +41,7 @@ class Property extends Component {
       city: '',
       state: '',
       zip: '',
+      country: '',
       boughtOn: '',
       houseSize: '',
       lotSize: '',
@@ -83,6 +85,7 @@ class Property extends Component {
       city,
       state,
       zip,
+      country,
       boughtOn,
       houseSize,
       lotSize,
@@ -115,6 +118,7 @@ class Property extends Component {
       'Address-City': city,
       'Address-State': state,
       'Address-Zip': zip,
+      'Address-Country': country,
       StartDate: boughtOn,
       HouseSize: houseSize,
       LotSize: lotSize,
@@ -305,7 +309,9 @@ class Property extends Component {
       <View style={styles.inputContainer}>
         <ModalPicker
           label={
-            this.state.residenceType.length === 0 ? 'Residance Type' : this.state.residenceType
+            this.state.residenceType.length === 0
+              ? 'Residance Type'
+              : this.state.residenceType
           }
           onPress={() =>
             this.setState({
@@ -352,7 +358,18 @@ class Property extends Component {
         />
       </View>
       <View style={styles.inputContainer}>
-        <ModalPicker label="Country" onPress={() => alert('Type')} />
+        <ModalPicker
+          label={
+            this.state.country.length === 0 ? 'Country' : this.state.country
+          }
+          onPress={() =>
+            this.setState({
+              modal: true,
+              array: this.state.countries,
+              key: 'country',
+            })
+          }
+        />
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
@@ -432,8 +449,11 @@ class Property extends Component {
         />
       </View>
       <View style={styles.inputContainer}>
-        <ModalPicker label={
-            this.state.constructionType.length === 0 ? 'Construction Type' : this.state.constructionType
+        <ModalPicker
+          label={
+            this.state.constructionType.length === 0
+              ? 'Construction Type'
+              : this.state.constructionType
           }
           onPress={() =>
             this.setState({
@@ -441,7 +461,8 @@ class Property extends Component {
               array: construction_type,
               key: 'constructionType',
             })
-          } />
+          }
+        />
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
@@ -451,8 +472,11 @@ class Property extends Component {
         />
       </View>
       <View style={styles.inputContainer}>
-        <ModalPicker label={
-            this.state.garageType.length === 0 ? 'Garage Type' : this.state.garageType
+        <ModalPicker
+          label={
+            this.state.garageType.length === 0
+              ? 'Garage Type'
+              : this.state.garageType
           }
           onPress={() =>
             this.setState({
@@ -460,7 +484,8 @@ class Property extends Component {
               array: garage_type,
               key: 'garageType',
             })
-          } />
+          }
+        />
       </View>
     </View>
   );
@@ -479,7 +504,7 @@ class Property extends Component {
     }
   };
 
-    changeModalVisibility = (bool) => {
+  changeModalVisibility = (bool) => {
     this.setState({modal: bool});
   };
 

@@ -21,6 +21,7 @@ class Identity extends Component {
       isLoader: false,
       navigation: props.navigation,
       access_token: props.access_token,
+      countries: props.countries.country,
       name: '',
       idNo: '',
       issuer: '',
@@ -32,6 +33,7 @@ class Identity extends Component {
       city: '',
       state: '',
       zip: '',
+      country: '',
     };
   }
 
@@ -55,8 +57,9 @@ class Identity extends Component {
       city,
       state,
       zip,
+      country,
       access_token,
-      navigation
+      navigation,
     } = this.state;
     let data = qs.stringify({
       IDName: name,
@@ -70,6 +73,7 @@ class Identity extends Component {
       'AddressGiven-City': city,
       'AddressGiven-State': state,
       'AddressGiven-Zip': zip,
+      'AddressGiven-Country': country,
     });
 
     await createOrUpdateRecord(
@@ -144,7 +148,18 @@ class Identity extends Component {
         />
       </View>
       <View style={styles.inputContainer}>
-        <ModalPicker label="Country Type" onPress={() => alert('Type')} />
+        <ModalPicker
+          label={
+            this.state.country.length === 0 ? 'Country' : this.state.country
+          }
+          onPress={() =>
+            this.setState({
+              modal: true,
+              array: this.state.countries,
+              key: 'country',
+            })
+          }
+        />
       </View>
     </View>
   );

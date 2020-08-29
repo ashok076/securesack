@@ -21,7 +21,9 @@ class Passport extends Component {
       isLoader: false,
       navigation: props.navigation,
       access_token: props.access_token,
+      countries: props.countries.country,
       name: '',
+      countryofIssue: '',
       passportNo: '',
       dateOfIssue: '',
       expirationDate: '',
@@ -30,6 +32,7 @@ class Passport extends Component {
       city: '',
       state: '',
       zip: '',
+      country: '',
       oldPassportNo1: '',
       placeOfIssue1: '',
       dateOfIssue1: '',
@@ -51,6 +54,7 @@ class Passport extends Component {
     this.setState({isLoader: true});
     const {
       name,
+      countryofIssue,
       passportNo,
       dateOfIssue,
       expirationDate,
@@ -59,6 +63,7 @@ class Passport extends Component {
       city,
       state,
       zip,
+      country,
       oldPassportNo1,
       placeOfIssue1,
       dateOfIssue1,
@@ -68,11 +73,12 @@ class Passport extends Component {
       dateOfIssue2,
       expiredOn2,
       access_token,
-      navigation
+      navigation,
     } = this.state;
 
     let data = qs.stringify({
       Name: name,
+      CountryOfIssue: countryofIssue,
       PassportNumber: passportNo,
       DateOfIssue: dateOfIssue,
       ExpirationDate: expirationDate,
@@ -81,6 +87,7 @@ class Passport extends Component {
       'HomeAddressOnPassport-City': city,
       'HomeAddressOnPassport-State': state,
       'HomeAddressOnPassport-Zip': zip,
+      'HomeAddressOnPassport-Country': country,
       PreviousPassportNumber1: oldPassportNo1,
       PreviousPlaceOfIssue1: placeOfIssue1,
       PreviousDateOfIssue1: dateOfIssue1,
@@ -126,7 +133,20 @@ class Passport extends Component {
         />
       </View>
       <View style={styles.inputContainer}>
-        <ModalPicker label="Country of Issue" onPress={() => alert('Type')} />
+        <ModalPicker
+          label={
+            this.state.countryofIssue.length === 0
+              ? 'Country of Issue'
+              : this.state.countryofIssue
+          }
+          onPress={() =>
+            this.setState({
+              modal: true,
+              array: this.state.countries,
+              key: 'countryofIssue',
+            })
+          }
+        />
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
@@ -192,7 +212,18 @@ class Passport extends Component {
         />
       </View>
       <View style={styles.inputContainer}>
-        <ModalPicker label="Country Type" onPress={() => alert('Type')} />
+        <ModalPicker
+          label={
+            this.state.country.length === 0 ? 'Country' : this.state.country
+          }
+          onPress={() =>
+            this.setState({
+              modal: true,
+              array: this.state.countries,
+              key: 'country',
+            })
+          }
+        />
       </View>
     </View>
   );
