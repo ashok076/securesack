@@ -24,6 +24,7 @@ class TaxSSN extends Component {
       navigation: props.navigation,
       access_token: props.access_token,
       countries: props.countries.country,
+      recid: props.recid,
       modal: '',
       array: [],
       key: '',
@@ -71,6 +72,9 @@ class TaxSSN extends Component {
       countryofbirth,
       sob,
       cob,
+      access_token,
+      navigation,
+      recid
     } = this.state;
 
     let data = qs.stringify({
@@ -92,7 +96,7 @@ class TaxSSN extends Component {
       CityOfBirth: cob,
     });
 
-    await createOrUpdateRecord('Passport', `__NEW__`, data, access_token)
+    await createOrUpdateRecord('Passport',recid, data, access_token)
       .then((response) => {
         this.setState({isLoader: false, active: 0});
         navigation.goBack();

@@ -23,6 +23,7 @@ class Auto extends Component {
       isLoader: false,
       navigation: props.navigation,
       access_token: props.access_token,
+      recid: props.recid,
       modal: '',
       array: [],
       key: '',
@@ -65,6 +66,7 @@ class Auto extends Component {
     const {
       navigation,
       access_token,
+      recid,
       name,
       primaryPolicyHolder,
       policyNumber,
@@ -119,7 +121,7 @@ class Auto extends Component {
       SecurityAnswer3: securityA3,
     });
 
-    await createOrUpdateRecord('AutoInsurance', `__NEW__`, data, access_token)
+    await createOrUpdateRecord('AutoInsurance', recid, data, access_token)
       .then((response) => {
         this.setState({isLoader: false, active: 0});
         navigation.goBack();

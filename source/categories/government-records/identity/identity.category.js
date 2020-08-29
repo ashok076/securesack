@@ -22,6 +22,7 @@ class Identity extends Component {
       navigation: props.navigation,
       access_token: props.access_token,
       countries: props.countries.country,
+      recid: props.recid,
       name: '',
       idNo: '',
       issuer: '',
@@ -60,6 +61,7 @@ class Identity extends Component {
       country,
       access_token,
       navigation,
+      recid
     } = this.state;
     let data = qs.stringify({
       IDName: name,
@@ -78,7 +80,7 @@ class Identity extends Component {
 
     await createOrUpdateRecord(
       'IdentificationCards',
-      `__NEW__`,
+      recid,
       data,
       access_token,
     )

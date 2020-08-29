@@ -23,6 +23,7 @@ class Vehicle extends Component {
       isLoader: false,
       navigation: props.navigation,
       access_token: props.access_token,
+      recid: props.recid,
       modal: '',
       array: [],
       key: '',
@@ -52,6 +53,7 @@ class Vehicle extends Component {
     const {
       navigation,
       access_token,
+      recid,
       make,
       model,
       licensePlate,
@@ -81,7 +83,7 @@ class Vehicle extends Component {
       IsOwned: isStillOwned,
     });
 
-    await createOrUpdateRecord('Vehicle', `__NEW__`, data, access_token)
+    await createOrUpdateRecord('Vehicle', recid, data, access_token)
       .then((response) => {
         this.setState({isLoader: false, active: 0});
         navigation.goBack();

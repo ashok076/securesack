@@ -20,6 +20,7 @@ class Notes extends Component {
       isLoader: false,
       navigation: props.navigation,
       access_token: props.access_token,
+      recid: props.recid,
       name: '',
       notes: '',
     };
@@ -31,14 +32,14 @@ class Notes extends Component {
 
   submit = async () => {
     this.setState({isLoader: true});
-    const {name, notes} = this.state;
+    const {name, notes, recid, access_token, navigation} = this.state;
 
     let data = qs.stringify({
       Name: name,
       Note: notes,
     });
 
-    await createOrUpdateRecord('Notes', `__NEW__`, data, access_token)
+    await createOrUpdateRecord('Notes', recid, data, access_token)
       .then((response) => {
         this.setState({isLoader: false});
         navigation.goBack();

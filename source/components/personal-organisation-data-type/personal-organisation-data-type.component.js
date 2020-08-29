@@ -73,7 +73,7 @@ class PersonalOrganisationData extends Component {
           <Text style={styles.title}>{title}</Text>
           <TouchableOpacity
             style={styles.addView}
-            onPress={() => this.navigation(type, title)}>
+            onPress={() => this.navigation(type, title, `__NEW__`)}>
             <Icon name="plus" color="rgb(33, 47, 60)" size={20} />
           </TouchableOpacity>
         </View>
@@ -85,7 +85,7 @@ class PersonalOrganisationData extends Component {
     );
   };
 
-  navigation = (type, title) => {
+  navigation = (type, title, recid) => {
     const {navigation} = this.props;
     console.log("Personal: ", navigation, this.props)
     navigation.navigate('CommonView', {
@@ -93,6 +93,7 @@ class PersonalOrganisationData extends Component {
       category: 'Personal Organisation',
       title: title,
       background: require('../../assets/jpg-images/Personal-Organisation-Background/personal-organisation-background.jpg'),
+      recid: recid
     });
   };
 

@@ -22,6 +22,7 @@ class DriverLicense extends Component {
       navigation: props.navigation,
       access_token: props.access_token,
       countries: props.countries.country,
+      recid: props.recid,
       name: '',
       countryOfIssue: '',
       stateOfIssue: '',
@@ -52,6 +53,9 @@ class DriverLicense extends Component {
       noOfDrivingVoilation,
       drivingViolationType1,
       drivingViolationType2,
+      access_token,
+      navigation,
+      recid
     } = this.state;
 
     let data = qs.stringify({
@@ -66,7 +70,7 @@ class DriverLicense extends Component {
       DrivingViolationType2: drivingViolationType2,
     });
 
-    await createOrUpdateRecord('DriverLicense', `__NEW__`, data, access_token)
+    await createOrUpdateRecord('DriverLicense', recid, data, access_token)
       .then((response) => {
         this.setState({isLoader: false});
         navigation.goBack();

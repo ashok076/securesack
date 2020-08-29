@@ -68,7 +68,7 @@ class InsuranceDataType extends Component {
           <Image source={icon} />
           <Text style={styles.title}>{title}</Text>
           <TouchableOpacity style={styles.addView}
-          onPress={() => this.navigation(type, title)}>
+          onPress={() => this.navigation(type, title, `__NEW__`)}>
             <Icon name="plus" color="rgb(33, 47, 60)" size={20} />
           </TouchableOpacity>
         </View>
@@ -80,13 +80,14 @@ class InsuranceDataType extends Component {
     );
   };
 
-  navigation = (type, title) => {
+  navigation = (type, title, recid) => {
     const {navigation} = this.props;
     navigation.navigate('CommonView', {
       type: type,
       category: 'Insurance',
       title: title,
       background: require('../../assets/jpg-images/Insurance-Background/insurance-background.jpg'),
+      recid: recid
     });
   };
 

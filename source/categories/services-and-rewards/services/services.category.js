@@ -30,6 +30,7 @@ class Services extends Component {
       navigation: props.navigation,
       access_token: props.access_token,
       countries: props.countries.country,
+      recid: props.recid,
       name: '',
       accNo: '',
       primaryAcHolder: '',
@@ -94,6 +95,7 @@ class Services extends Component {
       additionalAcHolder2,
       access_token,
       navigation,
+      recid,
       type,
       paymentDueType,
       isCreditCardProvided,
@@ -129,7 +131,7 @@ class Services extends Component {
       IsCreditCardProvided: isCreditCardProvided,
     });
 
-    await createOrUpdateRecord('ServiceAccount', `__NEW__`, data, access_token)
+    await createOrUpdateRecord('ServiceAccount', recid, data, access_token)
       .then((response) => {
         this.setState({isLoader: false});
         navigation.goBack();

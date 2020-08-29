@@ -23,6 +23,7 @@ class BankAccounts extends Component {
       access_token: props.access_token,
       navigation: props.navigation,
       countries: props.countries.country,
+      recid: props.recid,
       isLoader: false,
       modal: false,
       array: [],
@@ -551,6 +552,7 @@ class BankAccounts extends Component {
     const {
       access_token,
       navigation,
+      recid,
       name,
       issuingBank,
       accountNumber,
@@ -645,7 +647,7 @@ class BankAccounts extends Component {
       'BankBranchAddress-Country': country,
       AccountType: accountType,
     });
-    await createOrUpdateRecord('BankAccounts', `__NEW__`, data, access_token)
+    await createOrUpdateRecord('BankAccounts', recid , data, access_token)
       .then((response) => {
         this.setState({isLoader: false, active: 0});
         navigation.goBack();

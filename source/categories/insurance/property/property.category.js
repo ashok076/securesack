@@ -23,6 +23,7 @@ class PropertyInsurance extends Component {
       isLoader: false,
       navigation: props.navigation,
       access_token: props.access_token,
+      recid: props.recid,
       name: '',
       policyNo: '',
       policyHolder: '',
@@ -83,6 +84,9 @@ class PropertyInsurance extends Component {
       replacementContentCoverage,
       lossAssessmentCoverage,
       sewerBackupCoverage,
+      access_token,
+      navigation,
+      recid,
     } = this.state;
 
     let data = qs.stringify({
@@ -115,7 +119,7 @@ class PropertyInsurance extends Component {
 
     await createOrUpdateRecord(
       'PropertyInsurance',
-      `__NEW__`,
+      recid,
       data,
       access_token,
     )

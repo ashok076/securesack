@@ -27,6 +27,7 @@ class CreditCard extends Component {
       navigation: props.navigation,
       access_token: props.access_token,
       countries: props.countries.country,
+      recid: props.recid,
       name: '',
       cardHolderName: '',
       cardNo: '',
@@ -90,6 +91,7 @@ class CreditCard extends Component {
       country,
       access_token,
       navigation,
+      recid,
       creditCardType,
     } = this.state;
 
@@ -120,7 +122,7 @@ class CreditCard extends Component {
       'PaymentMailingAddress-Country': country,
       CreditCardType: creditCardType,
     });
-    await createOrUpdateRecord('CreditCard', `__NEW__`, data, access_token)
+    await createOrUpdateRecord('CreditCard', recid, data, access_token)
       .then((response) => {
         this.setState({isLoader: false, active: 0});
         navigation.goBack();

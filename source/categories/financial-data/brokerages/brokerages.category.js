@@ -20,6 +20,7 @@ class Brokerages extends Component {
       isLoader: false,
       navigation: props.navigation,
       access_token: props.access_token,
+      recid: props.recid,
       name: '',
       financialInstitution: '',
       acNumber: '',
@@ -51,6 +52,7 @@ class Brokerages extends Component {
     this.setState({isLoader: true});
     const {
       name,
+      recid,
       financialInstitution,
       acNumber,
       username,
@@ -94,7 +96,7 @@ class Brokerages extends Component {
     });
     await createOrUpdateRecord(
       'BrokerageAccount',
-      `__NEW__`,
+      recid,
       data,
       access_token,
     )

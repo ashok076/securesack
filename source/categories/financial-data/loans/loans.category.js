@@ -27,6 +27,7 @@ class Loans extends Component {
       navigation: props.navigation,
       access_token: props.access_token,
       countries: props.countries.country,
+      recid: props.recid,
       name: '',
       loanNo: '',
       issuer: '',
@@ -58,6 +59,7 @@ class Loans extends Component {
     const {
       navigation,
       access_token,
+      recid,
       name,
       loanNo,
       issuer,
@@ -96,7 +98,7 @@ class Loans extends Component {
       EndDate: endsOn,
       Refinanced: refiance,
     });
-    await createOrUpdateRecord('ConsumerLoan', `__NEW__`, data, access_token)
+    await createOrUpdateRecord('ConsumerLoan', recid, data, access_token)
       .then((response) => {
         this.setState({isLoader: false, active: 0});
         navigation.goBack();

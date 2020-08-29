@@ -1,5 +1,11 @@
 import React from 'react';
-import {View, ImageBackground, SafeAreaView, ScrollView, TouchableOpacity} from 'react-native';
+import {
+  View,
+  ImageBackground,
+  SafeAreaView,
+  ScrollView,
+  TouchableOpacity,
+} from 'react-native';
 import {Title} from 'react-native-paper';
 import {connect} from 'react-redux';
 import Icons from 'react-native-vector-icons/MaterialIcons';
@@ -39,8 +45,7 @@ import Recipes from '../personal-organizer/recipes/recipes.category.js';
 import styles from './common-view.style';
 
 const CommonView = ({navigation, route, userData, country}) => {
-  console.log("YOOO", JSON.stringify(country))
-  const {title, type, background} = route.params;
+  const {title, type, background, recid} = route.params;
   let access_token = null;
   if (userData && userData.userData)
     access_token = userData.userData.access_token;
@@ -56,7 +61,7 @@ const CommonView = ({navigation, route, userData, country}) => {
           </View>
         </View>
         <ScrollView style={styles.outerContainerView}>
-          {subView(type, access_token, navigation, country)}
+          {subView(type, access_token, navigation, country, recid)}
         </ScrollView>
       </ImageBackground>
     </SafeAreaView>
@@ -67,83 +72,202 @@ const subView = (type, access_token, navigation, countries_list) => {
   switch (type) {
     case 'BankAccounts':
       return (
-        <BankAccounts access_token={access_token} navigation={navigation} countries={countries_list}/>
+        <BankAccounts
+          access_token={access_token}
+          navigation={navigation}
+          countries={countries_list}
+          recid={recid}
+        />
       );
       break;
     case 'CreditCard':
-      return <CreditCard access_token={access_token} navigation={navigation} countries={countries_list}/>;
+      return (
+        <CreditCard
+          access_token={access_token}
+          navigation={navigation}
+          countries={countries_list}
+          recid={recid}
+        />
+      );
       break;
     case 'BrokerageAccount':
-      return <Brokerages access_token={access_token} navigation={navigation} />;
+      return (
+        <Brokerages
+          access_token={access_token}
+          navigation={navigation}
+          recid={recid}
+        />
+      );
       break;
     case 'Mortgage':
-      return <Mortgages access_token={access_token} navigation={navigation} countries={countries_list}/>;
+      return (
+        <Mortgages
+          access_token={access_token}
+          navigation={navigation}
+          countries={countries_list}
+          recid={recid}
+        />
+      );
       break;
     case 'ConsumerLoan':
-      return <Loans access_token={access_token} navigation={navigation} countries={countries_list}/>;
+      return (
+        <Loans
+          access_token={access_token}
+          navigation={navigation}
+          countries={countries_list}
+          recid={recid}
+        />
+      );
       break;
     case 'ServiceAccount':
-      return <Services access_token={access_token} navigation={navigation} countries={countries_list}/>;
+      return (
+        <Services
+          access_token={access_token}
+          navigation={navigation}
+          countries={countries_list}
+          recid={recid}
+        />
+      );
       break;
     case 'RewardProgram':
       return (
-        <RewardsPrograms access_token={access_token} navigation={navigation} />
+        <RewardsPrograms
+          access_token={access_token}
+          navigation={navigation}
+          recid={recid}
+        />
       );
       break;
     case 'AutoInsurance':
-      return <Auto access_token={access_token} navigation={navigation} />;
+      return (
+        <Auto
+          access_token={access_token}
+          navigation={navigation}
+          recid={recid}
+        />
+      );
       break;
     case 'HealthCareProvider':
-      return <HealthCare access_token={access_token} navigation={navigation} countries={countries_list}/>;
+      return (
+        <HealthCare
+          access_token={access_token}
+          navigation={navigation}
+          countries={countries_list}
+          recid={recid}
+        />
+      );
       break;
     case 'PropertyInsurance':
       return (
         <PropertyInsurance
           access_token={access_token}
           navigation={navigation}
+          recid={recid}
         />
       );
       break;
     case 'LifeInsurance':
-      return <Life access_token={access_token} navigation={navigation} countries={countries_list}/>;
+      return (
+        <Life
+          access_token={access_token}
+          navigation={navigation}
+          countries={countries_list}
+          recid={recid}
+        />
+      );
       break;
     case 'Vehicle':
-      return <Vehicle access_token={access_token} navigation={navigation} />;
+      return (
+        <Vehicle
+          access_token={access_token}
+          navigation={navigation}
+          recid={recid}
+        />
+      );
       break;
     case 'Property':
-      return <Property access_token={access_token} navigation={navigation} countries={countries_list}/>;
+      return (
+        <Property
+          access_token={access_token}
+          navigation={navigation}
+          countries={countries_list}
+          recid={recid}
+        />
+      );
       break;
     case 'WebSiteAccount':
       return (
-        <WebsitePassword access_token={access_token} navigation={navigation} />
+        <WebsitePassword
+          access_token={access_token}
+          navigation={navigation}
+          recid={recid}
+        />
       );
       break;
     case 'Notes':
-      return <Notes access_token={access_token} navigation={navigation} />;
+      return (
+        <Notes
+          access_token={access_token}
+          navigation={navigation}
+          recid={recid}
+        />
+      );
       break;
     case 'Recipies':
-      return <Recipes access_token={access_token} navigation={navigation} />;
+      return (
+        <Recipes
+          access_token={access_token}
+          navigation={navigation}
+          recid={recid}
+        />
+      );
       break;
     case 'DriverLicense':
       return (
-        <DriverLicense access_token={access_token} navigation={navigation} countries={countries_list}/>
+        <DriverLicense
+          access_token={access_token}
+          navigation={navigation}
+          countries={countries_list}
+          recid={recid}
+        />
       );
       break;
     case 'Passport':
-      return <Passport access_token={access_token} navigation={navigation} countries={countries_list}/>;
+      return (
+        <Passport
+          access_token={access_token}
+          navigation={navigation}
+          countries={countries_list}
+          recid={recid}
+        />
+      );
       break;
     case 'TaxIdentification':
-      return <TaxSSN access_token={access_token} navigation={navigation} countries={countries_list}/>;
+      return (
+        <TaxSSN
+          access_token={access_token}
+          navigation={navigation}
+          countries={countries_list}
+          recid={recid}
+        />
+      );
       break;
     case 'IdentificationCards':
-      return <Identity access_token={access_token} navigation={navigation} countries={countries_list}/>;
+      return (
+        <Identity
+          access_token={access_token}
+          navigation={navigation}
+          countries={countries_list}
+          recid={recid}
+        />
+      );
       break;
   }
 };
 
 const mapStateToProps = ({userData, country}) => ({
   userData,
-  country
+  country,
 });
 
 export default connect(mapStateToProps)(CommonView);

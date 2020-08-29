@@ -71,7 +71,7 @@ class GovernmentRecordsData extends Component {
           {/* <Image source={icon} /> */}
           <Text style={styles.title}>{title}</Text>
           <TouchableOpacity style={styles.addView}
-          onPress={() => this.navigation(type, title)}>
+          onPress={() => this.navigation(type, title, `__NEW__`)}>
             <Icon name="plus" color="rgb(33, 47, 60)" size={20} />
           </TouchableOpacity>
         </View>
@@ -83,13 +83,14 @@ class GovernmentRecordsData extends Component {
     );
   };
 
-  navigation = (type, title) => {
+  navigation = (type, title, recid) => {
     const {navigation} = this.props;
     navigation.navigate('CommonView', {
       type: type,
       category: 'Government Records',
       title: title,
       background: require('../../assets/jpg-images/Government-Record-Background/government-records-background.jpg'),
+      recid: recid
     });
   };
 

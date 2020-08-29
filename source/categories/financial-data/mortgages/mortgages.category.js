@@ -27,6 +27,7 @@ class Mortgages extends Component {
       navigation: props.navigation,
       access_token: props.access_token,
       countries: props.countries.country,
+      recid: props.recid,
       name: '',
       loanNo: '',
       issuer: '',
@@ -87,6 +88,7 @@ class Mortgages extends Component {
       zip,
       access_token,
       navigation,
+      recid,
       term,
       refiance,
       repayment,
@@ -120,7 +122,7 @@ class Mortgages extends Component {
       repayment: repayment === 'Yes' ? true : false,
     });
 
-    await createOrUpdateRecord('Mortgage', `__NEW__`, data, access_token)
+    await createOrUpdateRecord('Mortgage', recid, data, access_token)
       .then((response) => {
         this.setState({isLoader: false, active: 0});
         navigation.goBack();

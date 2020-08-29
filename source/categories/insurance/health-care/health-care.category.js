@@ -24,6 +24,7 @@ class HealthCare extends Component {
       navigation: props.navigation,
       access_token: props.access_token,
       countries: props.countries.country,
+      recid: props.recid,
       modal: '',
       array: [],
       key: '',
@@ -69,6 +70,7 @@ class HealthCare extends Component {
     const {
       navigation,
       access_token,
+      recid,
       insuranceProvider,
       insuranceType,
       planType,
@@ -132,7 +134,7 @@ class HealthCare extends Component {
 
     await createOrUpdateRecord(
       'HealthCareProvider',
-      `__NEW__`,
+      recid,
       data,
       access_token,
     )

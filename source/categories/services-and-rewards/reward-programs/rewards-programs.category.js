@@ -26,6 +26,7 @@ class RewardsPrograms extends Component {
       key: '',
       navigation: props.navigation,
       access_token: props.access_token,
+      recid: props.recid,
       name: '',
       issuer: '',
       accountNo: '',
@@ -54,6 +55,7 @@ class RewardsPrograms extends Component {
     const {
       navigation,
       access_token,
+      recid,
       name,
       issuer,
       accountNo,
@@ -87,7 +89,7 @@ class RewardsPrograms extends Component {
       ProgramType: programType
     });
 
-    await createOrUpdateRecord('RewardProgram', `__NEW__`, data, access_token)
+    await createOrUpdateRecord('RewardProgram', recid, data, access_token)
       .then((response) => {
         this.setState({isLoader: false});
         navigation.goBack();
