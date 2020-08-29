@@ -93,7 +93,8 @@ class PersonalOrganisationData extends Component {
       category: 'Personal Organisation',
       title: title,
       background: require('../../assets/jpg-images/Personal-Organisation-Background/personal-organisation-background.jpg'),
-      recid: recid
+      recid: recid,
+      theme: 'light'
     });
   };
 

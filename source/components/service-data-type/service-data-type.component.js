@@ -88,7 +88,8 @@ class ServiceDataType extends Component {
       category: 'Services and Rewards',
       title: title,
       background: require('../../assets/jpg-images/Service-Reward-Background/service-and-reward-background.jpg'),
-      recid: recid
+      recid: recid,
+      theme: 'dark'
     });
   };
 

@@ -45,7 +45,8 @@ import Recipes from '../personal-organizer/recipes/recipes.category.js';
 import styles from './common-view.style';
 
 const CommonView = ({navigation, route, userData, country}) => {
-  const {title, type, background, recid} = route.params;
+  const {title, type, background, recid, theme} = route.params;
+  console.log("Themeee: ", theme)
   let access_token = null;
   if (userData && userData.userData)
     access_token = userData.userData.access_token;
@@ -55,9 +56,24 @@ const CommonView = ({navigation, route, userData, country}) => {
         <View style={styles.titleView}>
           <View style={styles.rowObject}>
             <TouchableOpacity onPress={() => navigation.goBack()}>
-              <Icons name="arrow-back" color="rgb(255, 255, 255)" size={24} />
+              <Icons
+                name="arrow-back"
+                color={
+                  theme !== 'dark' ? 'rgb(255, 255, 255)' : 'rgb(33, 47, 60)'
+                }
+                size={24}
+              />
             </TouchableOpacity>
-            <Title style={styles.title}>Add {title}</Title>
+            <Title
+              style={[
+                styles.title,
+                {
+                  color:
+                    theme !== 'dark' ? 'rgb(255, 255, 255)' : 'rgb(33, 47, 60)',
+                },
+              ]}>
+              Add {title}
+            </Title>
           </View>
         </View>
         <ScrollView style={styles.outerContainerView}>
@@ -68,7 +84,7 @@ const CommonView = ({navigation, route, userData, country}) => {
   );
 };
 
-const subView = (type, access_token, navigation, countries_list) => {
+const subView = (type, access_token, navigation, countries_list, recid) => {
   switch (type) {
     case 'BankAccounts':
       return (

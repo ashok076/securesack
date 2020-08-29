@@ -87,7 +87,8 @@ class InsuranceDataType extends Component {
       category: 'Insurance',
       title: title,
       background: require('../../assets/jpg-images/Insurance-Background/insurance-background.jpg'),
-      recid: recid
+      recid: recid,
+      theme: 'dark'
     });
   };
 

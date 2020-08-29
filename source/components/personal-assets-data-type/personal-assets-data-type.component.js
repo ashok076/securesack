@@ -91,7 +91,8 @@ class PersonalAssetsData extends Component {
       category: 'Personal Assets',
       title: title,
       background: require('../../assets/jpg-images/Personal-Assets-Background/personal-assets-background.jpg'),
-      recid: recid
+      recid: recid,
+      theme: 'light'
     });
   };
 

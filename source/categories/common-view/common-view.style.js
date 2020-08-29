@@ -26,7 +26,6 @@ const styles = StyleSheet.create({
   title: {
     fontFamily: 'PublicSans-Bold',
     fontSize: 20,
-    color: '#FFFFFF',
     marginLeft: 15,
   },
   rowObject: {

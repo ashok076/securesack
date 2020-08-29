@@ -186,8 +186,9 @@ class FinancialDataType extends Component {
       type: type,
       category: 'Financial Data',
       title: title,
-      background: require('../../assets/jpg-images/Financial-Data-Background/financial-data-background.jpg')
-      recid: recid
+      background: require('../../assets/jpg-images/Financial-Data-Background/financial-data-background.jpg'),
+      recid: recid,
+      theme: 'light'
     });
   };
 
