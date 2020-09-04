@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import {View, ScrollView, Modal} from 'react-native';
 import {Text} from 'react-native-paper';
-import Dots from 'react-native-dots-pagination';
 import qs from 'qs';
 
 import InputTextDynamic from '../../../components/input-text-dynamic/input-text-dynamic.component.js';
@@ -12,6 +11,7 @@ import Loader from '../../../components/loader/loader.component';
 import ModalScreen from '../../../components/modal/modal.component';
 import {createOrUpdateRecord} from '../../../configuration/api/api.functions';
 import {refianced} from './loans.list';
+import {Color} from '../../../assets/color/color.js';
 
 import styles from './loans.style';
 
@@ -19,7 +19,6 @@ class Loans extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      active: 0,
       isLoader: false,
       modal: false,
       array: [],
@@ -49,9 +48,7 @@ class Loans extends Component {
   }
 
   handleClick = () => {
-    const {active} = this.state;
-    if (active < 2) this.setState({active: active + 1});
-    else if (active === 2) this.submit();
+    this.submit();
   };
 
   submit = async () => {
@@ -100,27 +97,12 @@ class Loans extends Component {
     });
     await createOrUpdateRecord('ConsumerLoan', recid, data, access_token)
       .then((response) => {
-        this.setState({isLoader: false, active: 0});
+        this.setState({isLoader: false});
         navigation.goBack();
       })
       .catch((error) => {
         this.setState({isLoader: false});
       });
-  };
-
-  subComponet = () => {
-    const {active} = this.state;
-    switch (active) {
-      case 0:
-        return this.basicInformation();
-        break;
-      case 1:
-        return this.paymentMailingAddress();
-        break;
-      case 2:
-        return this.refiance();
-        break;
-    }
   };
 
   basicInformation = () => (
@@ -130,6 +112,7 @@ class Loans extends Component {
           placeholder="Name"
           onChangeText={(name) => this.setState({name})}
           keyboardType="default"
+          color={Color.lightishBlue}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -137,6 +120,7 @@ class Loans extends Component {
           placeholder="Loan Number"
           onChangeText={(loanNo) => this.setState({loanNo})}
           keyboardType="default"
+          color={Color.lightishBlue}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -144,6 +128,7 @@ class Loans extends Component {
           placeholder="Issuer"
           onChangeText={(issuer) => this.setState({issuer})}
           keyboardType="default"
+          color={Color.lightishBlue}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -166,6 +151,7 @@ class Loans extends Component {
           placeholder="URL"
           onChangeText={(url) => this.setState({url})}
           keyboardType="default"
+          color={Color.lightishBlue}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -173,6 +159,7 @@ class Loans extends Component {
           placeholder="User Name"
           onChangeText={(username) => this.setState({username})}
           keyboardType="default"
+          color={Color.lightishBlue}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -180,6 +167,7 @@ class Loans extends Component {
           placeholder="Password"
           onChangeText={(password) => this.setState({password})}
           keyboardType="default"
+          color={Color.lightishBlue}
         />
       </View>
     </View>
@@ -192,6 +180,7 @@ class Loans extends Component {
           placeholder="Address Line 1"
           onChangeText={(address1) => this.setState({address1})}
           keyboardType="default"
+          color={Color.lightishBlue}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -199,6 +188,7 @@ class Loans extends Component {
           placeholder="Address Line 2"
           onChangeText={(address2) => this.setState({address2})}
           keyboardType="default"
+          color={Color.lightishBlue}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -206,6 +196,7 @@ class Loans extends Component {
           placeholder="City"
           onChangeText={(city) => this.setState({city})}
           keyboardType="default"
+          color={Color.lightishBlue}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -213,6 +204,7 @@ class Loans extends Component {
           placeholder="State"
           onChangeText={(state) => this.setState({state})}
           keyboardType="default"
+          color={Color.lightishBlue}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -220,6 +212,7 @@ class Loans extends Component {
           placeholder="Zip/Postal"
           onChangeText={(zip) => this.setState({zip})}
           keyboardType="default"
+          color={Color.lightishBlue}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -261,6 +254,7 @@ class Loans extends Component {
             placeholder="Effective From"
             onChangeText={(effectiveFrom) => this.setState({effectiveFrom})}
             keyboardType="default"
+            color={Color.lightishBlue}
           />
         </View>
         <View style={styles.miniInputContainer}>
@@ -268,25 +262,12 @@ class Loans extends Component {
             placeholder="Ends On"
             onChangeText={(endsOn) => this.setState({endsOn})}
             keyboardType="default"
+            color={Color.lightishBlue}
           />
         </View>
       </View>
     </View>
   );
-
-  title = (active) => {
-    switch (active) {
-      case 0:
-        return 'Basic Information';
-        break;
-      case 1:
-        return 'Payment mailing address';
-        break;
-      case 2:
-        return 'Refiance';
-        break;
-    }
-  };
 
   changeModalVisibility = (bool) => {
     this.setState({modal: bool});
@@ -297,26 +278,20 @@ class Loans extends Component {
   };
 
   render() {
-    const {active, isLoader, modal, array, key} = this.state;
+    const {isLoader, modal, array, key} = this.state;
     return (
       <View style={styles.container}>
-        <Text style={styles.title}>{this.title(active)}</Text>
-        {this.subComponet()}
+        <Text style={styles.title}>Basic Information</Text>
+        {this.basicInformation()}
+        <View style={styles.gap} />
+        <Text style={styles.title}>Payment mailing address</Text>
+        {this.paymentMailingAddress()}
+        <View style={styles.gap} />
+        <Text style={styles.title}>Refiance</Text>
+        {this.refiance()}
+        <View style={styles.gap} />
         <View style={styles.buttonContainer}>
-          <Button onPress={this.handleClick} title="Proceed to next" />
-        </View>
-        <View style={styles.inputContainer}>
-          <Dots
-            length={3}
-            active={active}
-            passiveColor="rgba(52, 105, 244, 0.2)"
-            activeColor="rgb(52,105,244)"
-            passiveDotWidth={8}
-            passiveDotHeight={8}
-            activeDotWidth={8}
-            activeDotHeight={8}
-            paddingVertical={10}
-          />
+          <Button onPress={this.handleClick} title="Next" />
         </View>
         <Loader isLoader={isLoader} />
         <ModalScreen

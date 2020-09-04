@@ -54,6 +54,18 @@ const DrawerComponent = ({navigation, userData}) => {
           />
           <DrawerItem
             icon={({color, size}) => (
+              <Icon name="key" color={color} size={size} />
+            )}
+            label="Key Ring"
+          />
+          <DrawerItem
+            icon={({color, size}) => (
+              <Icon name="credit-card" color={color} size={size} />
+            )}
+            label="Billing Plans"
+          />
+          <DrawerItem
+            icon={({color, size}) => (
               <Icon name="settings" color={color} size={size} />
             )}
             label="Settings"

@@ -65,9 +65,8 @@ class FinancialDataType extends Component {
   };
 
   renderTitleSubtitle = (item, type) => {
-    console.log(item);
     return (
-      <TouchableRipple rippleColor="rgba(0, 0, 0, .32)">
+      <TouchableRipple rippleColor="rgba(0, 0, 0, .32)" onPress={() => this.navigation('BankAccountView','Bank Accounts', '')}>
         <View>
           <View style={styles.titleSubTitle}>
             <Title style={styles.catTitle}>{this.getTitle(type, item)}</Title>

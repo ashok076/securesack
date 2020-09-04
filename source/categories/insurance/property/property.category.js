@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import {View, ScrollView, Modal} from 'react-native';
 import {Text} from 'react-native-paper';
-import Dots from 'react-native-dots-pagination';
 import qs from 'qs';
 
 import InputTextDynamic from '../../../components/input-text-dynamic/input-text-dynamic.component.js';
@@ -12,6 +11,7 @@ import ModalScreen from '../../../components/modal/modal.component';
 import Loader from '../../../components/loader/loader.component';
 import {createOrUpdateRecord} from '../../../configuration/api/api.functions';
 import {boolean_value} from './property.list';
+import {Color} from '../../../assets/color/color.js';
 
 import styles from './property.style';
 
@@ -19,7 +19,6 @@ class PropertyInsurance extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      active: 0,
       isLoader: false,
       navigation: props.navigation,
       access_token: props.access_token,
@@ -52,9 +51,7 @@ class PropertyInsurance extends Component {
   }
 
   handleClick = () => {
-    const {active} = this.state;
-    if (active < 3) this.setState({active: active + 1});
-    else if (active === 3) this.submit();
+    this.submit();
   };
 
   submit = async () => {
@@ -124,30 +121,12 @@ class PropertyInsurance extends Component {
       access_token,
     )
       .then((response) => {
-        this.setState({isLoader: false, active: 0});
+        this.setState({isLoader: false});
         navigation.goBack();
       })
       .catch((error) => {
         this.setState({isLoader: false});
       });
-  };
-
-  subComponet = () => {
-    const {active} = this.state;
-    switch (active) {
-      case 0:
-        return this.basicInformation();
-        break;
-      case 1:
-        return this.propertyDetails();
-        break;
-      case 2:
-        return this.insuranceDetails();
-        break;
-      case 3:
-        return this.additionalInfo();
-        break;
-    }
   };
 
   basicInformation = () => (
@@ -157,6 +136,7 @@ class PropertyInsurance extends Component {
           placeholder="Name"
           onChangeText={(name) => this.setState({name})}
           keyboardType="default"
+          color={Color.veryLightPink}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -164,6 +144,7 @@ class PropertyInsurance extends Component {
           placeholder="Policy Number"
           onChangeText={(policyNo) => this.setState({policyNo})}
           keyboardType="default"
+          color={Color.veryLightPink}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -171,6 +152,7 @@ class PropertyInsurance extends Component {
           placeholder="Policy Holder"
           onChangeText={(policyHolder) => this.setState({policyHolder})}
           keyboardType="default"
+          color={Color.veryLightPink}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -178,6 +160,7 @@ class PropertyInsurance extends Component {
           placeholder="Issuer"
           onChangeText={(issuer) => this.setState({issuer})}
           keyboardType="default"
+          color={Color.veryLightPink}
         />
       </View>
       <View style={styles.miniContainer}>
@@ -186,6 +169,7 @@ class PropertyInsurance extends Component {
             placeholder="Installment Amount"
             onChangeText={(installmentAmnt) => this.setState({installmentAmnt})}
             keyboardType="default"
+          color={Color.veryLightPink}
           />
         </View>
         <View style={styles.miniInputContainer}>
@@ -210,6 +194,7 @@ class PropertyInsurance extends Component {
           placeholder="URL"
           onChangeText={(url) => this.setState({url})}
           keyboardType="default"
+          color={Color.veryLightPink}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -217,6 +202,7 @@ class PropertyInsurance extends Component {
           placeholder="Username"
           onChangeText={(username) => this.setState({username})}
           keyboardType="default"
+          color={Color.veryLightPink}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -224,6 +210,7 @@ class PropertyInsurance extends Component {
           placeholder="Password"
           onChangeText={(password) => this.setState({password})}
           keyboardType="default"
+          color={Color.veryLightPink}
         />
       </View>
     </View>
@@ -236,6 +223,7 @@ class PropertyInsurance extends Component {
           placeholder="County"
           onChangeText={(county) => this.setState({county})}
           keyboardType="default"
+          color={Color.veryLightPink}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -243,6 +231,7 @@ class PropertyInsurance extends Component {
           placeholder="Parcel Number"
           onChangeText={(parcelNo) => this.setState({parcelNo})}
           keyboardType="default"
+          color={Color.veryLightPink}
         />
       </View>
       <View style={styles.miniContainer}>
@@ -251,6 +240,7 @@ class PropertyInsurance extends Component {
             placeholder="Effective From"
             onChangeText={(effectiveFrom) => this.setState({effectiveFrom})}
             keyboardType="default"
+          color={Color.veryLightPink}
           />
         </View>
         <View style={styles.miniInputContainer}>
@@ -377,6 +367,7 @@ class PropertyInsurance extends Component {
             this.setState({jointPolicyHolderTwo})
           }
           keyboardType="default"
+          color={Color.veryLightPink}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -386,27 +377,11 @@ class PropertyInsurance extends Component {
             this.setState({jointPolicyHolderThree})
           }
           keyboardType="default"
+          color={Color.veryLightPink}
         />
       </View>
     </View>
   );
-
-  title = (active) => {
-    switch (active) {
-      case 0:
-        return 'Basic Information';
-        break;
-      case 1:
-        return 'Property Details';
-        break;
-      case 2:
-        return 'Insurance Details';
-        break;
-      case 3:
-        return 'Additional Information';
-        break;
-    }
-  };
 
   changeModalVisibility = (bool) => {
     this.setState({modal: bool});
@@ -417,26 +392,23 @@ class PropertyInsurance extends Component {
   };
 
   render() {
-    const {active, isLoader, modal, array, key} = this.state;
+    const {isLoader, modal, array, key} = this.state;
     return (
       <View style={styles.container}>
-        <Text style={styles.title}>{this.title(active)}</Text>
-        {this.subComponet()}
+        <Text style={styles.title}>Basic Information</Text>
+        {this.basicInformation()}
+        <View style={styles.gap}/>
+        <Text style={styles.title}>Property Details</Text>
+        {this.propertyDetails()}
+        <View style={styles.gap}/>
+        <Text style={styles.title}>Insurance Details</Text>
+        {this.insuranceDetails()}
+        <View style={styles.gap}/>
+        <Text style={styles.title}>Additional Information</Text>
+        {this.additionalInfo()}
+        <View style={styles.gap}/>
         <View style={styles.buttonContainer}>
-          <Button onPress={this.handleClick} title="Proceed to next" />
-        </View>
-        <View style={styles.inputContainer}>
-          <Dots
-            length={4}
-            active={active}
-            passiveColor="rgba(52, 105, 244, 0.2)"
-            activeColor="rgb(52,105,244)"
-            passiveDotWidth={8}
-            passiveDotHeight={8}
-            activeDotWidth={8}
-            activeDotHeight={8}
-            paddingVertical={10}
-          />
+          <Button onPress={this.handleClick} title="Submit" />
         </View>
         <Loader isLoader={isLoader} />
         <ModalScreen

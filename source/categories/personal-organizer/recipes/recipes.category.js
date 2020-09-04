@@ -11,6 +11,7 @@ import Loader from '../../../components/loader/loader.component';
 import ModalScreen from '../../../components/modal/modal.component';
 import {createOrUpdateRecord} from '../../../configuration/api/api.functions';
 import {cuisine} from './recipes.list';
+import {Color} from '../../../assets/color/color.js';
 
 import styles from './recipes.style';
 
@@ -76,6 +77,7 @@ class Recipes extends Component {
           placeholder="Name"
           onChangeText={(name) => this.setState({name})}
           keyboardType="default"
+          color={Color.lightNavyBlue}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -97,6 +99,7 @@ class Recipes extends Component {
           placeholder="URL"
           onChangeText={(url) => this.setState({url})}
           keyboardType="default"
+          color={Color.lightNavyBlue}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -104,6 +107,7 @@ class Recipes extends Component {
           placeholder="Username"
           onChangeText={(username) => this.setState({username})}
           keyboardType="default"
+          color={Color.lightNavyBlue}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -111,6 +115,7 @@ class Recipes extends Component {
           placeholder="Password"
           onChangeText={(passwrd) => this.setState({passwrd})}
           keyboardType="default"
+          color={Color.lightNavyBlue}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -118,6 +123,7 @@ class Recipes extends Component {
           placeholder="Recipe"
           onChangeText={(recipe) => this.setState({recipe})}
           keyboardType="default"
+          color={Color.lightNavyBlue}
         />
       </View>
       <View style={styles.buttonContainer}>

@@ -64,11 +64,11 @@ class GovernmentRecordsData extends Component {
     this.setState({dataType});
   };
 
-  category = ({title, id, type, category}) => {
+  category = ({title, id, type, category, icon}) => {
     return (
       <View style={styles.container}>
         <View style={styles.titleIcon}>
-          {/* <Image source={icon} /> */}
+          <Image source={icon} />
           <Text style={styles.title}>{title}</Text>
           <TouchableOpacity style={styles.addView}
           onPress={() => this.navigation(type, title, `__NEW__`)}>

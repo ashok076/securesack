@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import {View, ScrollView, Modal} from 'react-native';
 import {Text} from 'react-native-paper';
-import Dots from 'react-native-dots-pagination';
 import qs from 'qs';
 
 import InputTextDynamic from '../../../components/input-text-dynamic/input-text-dynamic.component.js';
@@ -12,6 +11,7 @@ import Loader from '../../../components/loader/loader.component';
 import ModalScreen from '../../../components/modal/modal.component';
 import {createOrUpdateRecord} from '../../../configuration/api/api.functions';
 import {payment_due_type} from './life.list';
+import {Color} from '../../../assets/color/color.js';
 
 import styles from './life.style';
 
@@ -19,7 +19,6 @@ class Life extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      active: 0,
       isLoader: false,
       navigation: props.navigation,
       access_token: props.access_token,
@@ -60,9 +59,7 @@ class Life extends Component {
   }
 
   handleClick = () => {
-    const {active} = this.state;
-    if (active < 3) this.setState({active: active + 1});
-    else if (active === 3) this.submit();
+    this.submit();
   };
 
   submit = async () => {
@@ -134,30 +131,12 @@ class Life extends Component {
 
     await createOrUpdateRecord('LifeInsurance', recid, data, access_token)
       .then((response) => {
-        this.setState({isLoader: false, active: 0});
+        this.setState({isLoader: false});
         navigation.goBack();
       })
       .catch((error) => {
         this.setState({isLoader: false});
       });
-  };
-
-  subComponet = () => {
-    const {active} = this.state;
-    switch (active) {
-      case 0:
-        return this.basicInformation();
-        break;
-      case 1:
-        return this.additionalInformation();
-        break;
-      case 2:
-        return this.claimMailingAddress();
-        break;
-      case 3:
-        return this.beneficiaries();
-        break;
-    }
   };
 
   basicInformation = () => (
@@ -167,6 +146,7 @@ class Life extends Component {
           placeholder="Name"
           onChangeText={(name) => this.setState({name})}
           keyboardType="default"
+          color={Color.veryLightPink}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -174,6 +154,7 @@ class Life extends Component {
           placeholder="Policy Number"
           onChangeText={(policyNo) => this.setState({policyNo})}
           keyboardType="default"
+          color={Color.veryLightPink}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -181,6 +162,7 @@ class Life extends Component {
           placeholder="Policy Holder"
           onChangeText={(policyHolder) => this.setState({policyHolder})}
           keyboardType="default"
+          color={Color.veryLightPink}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -188,6 +170,7 @@ class Life extends Component {
           placeholder="Issuer"
           onChangeText={(issuer) => this.setState({issuer})}
           keyboardType="default"
+          color={Color.veryLightPink}
         />
       </View>
       <View style={styles.miniContainer}>
@@ -213,6 +196,7 @@ class Life extends Component {
           placeholder="URL"
           onChangeText={(url) => this.setState({url})}
           keyboardType="default"
+          color={Color.veryLightPink}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -220,6 +204,7 @@ class Life extends Component {
           placeholder="Username"
           onChangeText={(username) => this.setState({username})}
           keyboardType="default"
+          color={Color.veryLightPink}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -227,6 +212,7 @@ class Life extends Component {
           placeholder="Password"
           onChangeText={(password) => this.setState({password})}
           keyboardType="default"
+          color={Color.veryLightPink}
         />
       </View>
     </View>
@@ -241,6 +227,7 @@ class Life extends Component {
             this.setState({customerServiceNo})
           }
           keyboardType="default"
+          color={Color.veryLightPink}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -248,6 +235,7 @@ class Life extends Component {
           placeholder="Email Provided"
           onChangeText={(emailProvided) => this.setState({emailProvided})}
           keyboardType="default"
+          color={Color.veryLightPink}
         />
       </View>
       <View style={styles.miniContainer}>
@@ -256,6 +244,7 @@ class Life extends Component {
             placeholder="Effective From"
             onChangeText={(effectiveFrom) => this.setState({effectiveFrom})}
             keyboardType="default"
+          color={Color.veryLightPink}
           />
         </View>
         <View style={styles.miniInputContainer}>
@@ -263,6 +252,7 @@ class Life extends Component {
             placeholder="Expiration"
             onChangeText={(endsOn) => this.setState({endsOn})}
             keyboardType="default"
+          color={Color.veryLightPink}
           />
         </View>
       </View>
@@ -294,6 +284,7 @@ class Life extends Component {
           placeholder="From"
           icon="dollar-sign"
           onChangeText={(from) => this.setState({from})}
+          color={Color.veryLightPink}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -301,6 +292,7 @@ class Life extends Component {
           placeholder="To"
           icon="dollar-sign"
           onChangeText={(to) => this.setState({to})}
+          color={Color.veryLightPink}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -308,6 +300,7 @@ class Life extends Component {
           placeholder="Total"
           icon="dollar-sign"
           onChangeText={(total) => this.setState({total})}
+          color={Color.veryLightPink}
         />
       </View>
     </View>
@@ -320,6 +313,7 @@ class Life extends Component {
           placeholder="Address Line 1"
           onChangeText={(address1) => this.setState({address1})}
           keyboardType="default"
+          color={Color.veryLightPink}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -327,6 +321,7 @@ class Life extends Component {
           placeholder="Address Line 2"
           onChangeText={(address2) => this.setState({address2})}
           keyboardType="default"
+          color={Color.veryLightPink}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -334,6 +329,7 @@ class Life extends Component {
           placeholder="City"
           onChangeText={(city) => this.setState({city})}
           keyboardType="default"
+          color={Color.veryLightPink}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -341,6 +337,7 @@ class Life extends Component {
           placeholder="State"
           onChangeText={(state) => this.setState({state})}
           keyboardType="default"
+          color={Color.veryLightPink}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -348,6 +345,7 @@ class Life extends Component {
           placeholder="Zip/Postal"
           onChangeText={(zip) => this.setState({zip})}
           keyboardType="default"
+          color={Color.veryLightPink}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -375,6 +373,7 @@ class Life extends Component {
           onChangeText={(beneficiaries1) => this.setState({beneficiaries1})}
           icon="dollar-sign"
           keyboardType="default"
+          color={Color.veryLightPink}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -383,6 +382,7 @@ class Life extends Component {
           onChangeText={(beneficiaries2) => this.setState({beneficiaries2})}
           icon="dollar-sign"
           keyboardType="default"
+          color={Color.veryLightPink}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -391,6 +391,7 @@ class Life extends Component {
           onChangeText={(beneficiaries3) => this.setState({beneficiaries3})}
           icon="dollar-sign"
           keyboardType="default"
+          color={Color.veryLightPink}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -399,27 +400,11 @@ class Life extends Component {
           onChangeText={(beneficiaries4) => this.setState({beneficiaries4})}
           icon="dollar-sign"
           keyboardType="default"
+          color={Color.veryLightPink}
         />
       </View>
     </View>
   );
-
-  title = (active) => {
-    switch (active) {
-      case 0:
-        return 'Basic Information';
-        break;
-      case 1:
-        return 'Additional Information';
-        break;
-      case 2:
-        return 'Claims Mailing Address';
-        break;
-      case 3:
-        return 'Beneficiaries';
-        break;
-    }
-  };
 
   changeModalVisibility = (bool) => {
     this.setState({modal: bool});
@@ -430,26 +415,23 @@ class Life extends Component {
   };
 
   render() {
-    const {active, isLoader, modal, array, key} = this.state;
+    const {isLoader, modal, array, key} = this.state;
     return (
       <View style={styles.container}>
-        <Text style={styles.title}>{this.title(active)}</Text>
-        {this.subComponet()}
+        <Text style={styles.title}>Basic Information</Text>
+        {this.basicInformation()}
+        <View style={styles.gap}/>
+        <Text style={styles.title}>Additional Information</Text>
+        {this.additionalInformation()}
+        <View style={styles.gap}/>
+        <Text style={styles.title}>Claims Mailing Address</Text>
+        {this.claimMailingAddress()}
+        <View style={styles.gap}/>
+        <Text style={styles.title}>Beneficiaries</Text>
+        {this.beneficiaries()}
+        <View style={styles.gap}/>
         <View style={styles.buttonContainer}>
-          <Button onPress={this.handleClick} title="Proceed to next" />
-        </View>
-        <View style={styles.inputContainer}>
-          <Dots
-            length={4}
-            active={active}
-            passiveColor="rgba(52, 105, 244, 0.2)"
-            activeColor="rgb(52,105,244)"
-            passiveDotWidth={8}
-            passiveDotHeight={8}
-            activeDotWidth={8}
-            activeDotHeight={8}
-            paddingVertical={10}
-          />
+          <Button onPress={this.handleClick} title="Submit" />
         </View>
         <ModalScreen
           isModalVisible={modal}

@@ -46,7 +46,7 @@ import styles from './common-view.style';
 
 const CommonView = ({navigation, route, userData, country}) => {
   const {title, type, background, recid, theme} = route.params;
-  console.log("Themeee: ", theme)
+  console.log('Themeee: ', theme);
   let access_token = null;
   if (userData && userData.userData)
     access_token = userData.userData.access_token;
@@ -76,7 +76,7 @@ const CommonView = ({navigation, route, userData, country}) => {
             </Title>
           </View>
         </View>
-        <ScrollView style={styles.outerContainerView}>
+        <ScrollView style={[styles.outerContainerView, {backgroundColor: theme !== 'dark' ? 'rgb(255, 255, 255)' : 'rgb(33, 47, 60)'}]}>
           {subView(type, access_token, navigation, country, recid)}
         </ScrollView>
       </ImageBackground>

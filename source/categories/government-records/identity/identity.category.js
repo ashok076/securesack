@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import {View, ScrollView, Modal} from 'react-native';
 import {Text} from 'react-native-paper';
-import Dots from 'react-native-dots-pagination';
 import qs from 'qs';
 
 import InputTextDynamic from '../../../components/input-text-dynamic/input-text-dynamic.component.js';
@@ -10,6 +9,7 @@ import ModalPicker from '../../../components/modal-picker/modal-picker.component
 import Button from '../../../components/button/button.component';
 import Loader from '../../../components/loader/loader.component';
 import {createOrUpdateRecord} from '../../../configuration/api/api.functions';
+import {Color} from '../../../assets/color/color.js';
 
 import styles from './identity.style';
 
@@ -17,7 +17,6 @@ class Identity extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      active: 0,
       isLoader: false,
       navigation: props.navigation,
       access_token: props.access_token,
@@ -39,9 +38,7 @@ class Identity extends Component {
   }
 
   handleClick = () => {
-    const {active} = this.state;
-    if (active < 1) this.setState({active: active + 1});
-    else if (active === 1) this.submit();
+    this.submit();
   };
 
   submit = async () => {
@@ -93,18 +90,6 @@ class Identity extends Component {
       });
   };
 
-  subComponet = () => {
-    const {active} = this.state;
-    switch (active) {
-      case 0:
-        return this.basicInformation();
-        break;
-      case 1:
-        return this.additionalInfo();
-        break;
-    }
-  };
-
   additionalInfo = () => (
     <View>
       <View style={styles.inputContainer}>
@@ -112,6 +97,7 @@ class Identity extends Component {
           placeholder="Place of Issue"
           onChangeText={(placeOfIssue) => this.setState({placeOfIssue})}
           keyboardType="default"
+          color={Color.salmon}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -119,6 +105,7 @@ class Identity extends Component {
           placeholder="Address Line 1"
           onChangeText={(address1) => this.setState({address1})}
           keyboardType="default"
+          color={Color.salmon}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -126,6 +113,7 @@ class Identity extends Component {
           placeholder="Address Line 2"
           onChangeText={(address2) => this.setState({address2})}
           keyboardType="default"
+          color={Color.salmon}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -133,6 +121,7 @@ class Identity extends Component {
           placeholder="City"
           onChangeText={(city) => this.setState({city})}
           keyboardType="default"
+          color={Color.salmon}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -140,6 +129,7 @@ class Identity extends Component {
           placeholder="State"
           onChangeText={(state) => this.setState({state})}
           keyboardType="default"
+          color={Color.salmon}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -147,6 +137,7 @@ class Identity extends Component {
           placeholder="Zip/Postal"
           onChangeText={(zip) => this.setState({zip})}
           keyboardType="default"
+          color={Color.salmon}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -173,6 +164,7 @@ class Identity extends Component {
           placeholder="Name"
           onChangeText={(name) => this.setState({name})}
           keyboardType="default"
+          color={Color.salmon}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -180,6 +172,7 @@ class Identity extends Component {
           placeholder="ID Number"
           onChangeText={(idNo) => this.setState({idNo})}
           keyboardType="default"
+          color={Color.salmon}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -187,6 +180,7 @@ class Identity extends Component {
           placeholder="Issuer"
           onChangeText={(issuer) => this.setState({issuer})}
           keyboardType="default"
+          color={Color.salmon}
         />
       </View>
       <View style={styles.miniContainer}>
@@ -195,6 +189,7 @@ class Identity extends Component {
             placeholder="Date of Issue"
             onChangeText={(dateOfIssue) => this.setState({dateOfIssue})}
             keyboardType="default"
+          color={Color.salmon}
           />
         </View>
         <View style={styles.miniInputContainer}>
@@ -202,44 +197,25 @@ class Identity extends Component {
             placeholder="Expiration Date"
             onChangeText={(expirationDate) => this.setState({expirationDate})}
             keyboardType="default"
+          color={Color.salmon}
           />
         </View>
       </View>
     </View>
   );
 
-  title = (active) => {
-    switch (active) {
-      case 0:
-        return 'Basic Information';
-        break;
-      case 1:
-        return 'Additional Information';
-        break;
-    }
-  };
-
   render() {
-    const {active, isLoader} = this.state;
+    const {isLoader} = this.state;
     return (
       <View style={styles.container}>
-        <Text style={styles.title}>{this.title(active)}</Text>
-        {this.subComponet()}
+        <Text style={styles.title}>Basic Information</Text>
+        {this.basicInformation()}
+        <View style={styles.gap}/>
+        <Text style={styles.title}>Additional Information</Text>
+        {this.additionalInfo()}
+        <View style={styles.gap}/>
         <View style={styles.buttonContainer}>
-          <Button onPress={this.handleClick} title="Proceed to next" />
-        </View>
-        <View style={styles.inputContainer}>
-          <Dots
-            length={2}
-            active={active}
-            passiveColor="rgba(52, 105, 244, 0.2)"
-            activeColor="rgb(52,105,244)"
-            passiveDotWidth={8}
-            passiveDotHeight={8}
-            activeDotWidth={8}
-            activeDotHeight={8}
-            paddingVertical={10}
-          />
+          <Button onPress={this.handleClick} title="Submit" />
         </View>
         <Loader isLoader={isLoader} />
       </View>

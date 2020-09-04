@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {View, ScrollView, Modal} from 'react-native';
 import {Text} from 'react-native-paper';
-import Dots from 'react-native-dots-pagination';
+import qs from 'qs';
 
 import InputTextDynamic from '../../../components/input-text-dynamic/input-text-dynamic.component.js';
 import InputTextIconDynamic from '../../../components/input-text-icon-dynamic/input-text-icon-dynamic.component.js';
@@ -15,6 +15,7 @@ import {
   payment_due_type,
   is_credit_card_provided,
 } from './services.list';
+import {Color} from '../../../assets/color/color.js';
 
 import styles from './services.style';
 
@@ -22,7 +23,6 @@ class Services extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      active: 0,
       isLoader: false,
       modal: false,
       array: [],
@@ -46,6 +46,7 @@ class Services extends Component {
       city: '',
       state: '',
       zip: '',
+      country: '',
       securityQ1: '',
       securityA1: '',
       securityQ2: '',
@@ -61,9 +62,7 @@ class Services extends Component {
   }
 
   handleClick = () => {
-    const {active} = this.state;
-    if (active < 3) this.setState({active: active + 1});
-    else if (active === 3) this.submit();
+    this.submit();
   };
 
   submit = async () => {
@@ -141,24 +140,6 @@ class Services extends Component {
       });
   };
 
-  subComponet = () => {
-    const {active} = this.state;
-    switch (active) {
-      case 0:
-        return this.basicInformation();
-        break;
-      case 1:
-        return this.paymentMailingAddress();
-        break;
-      case 2:
-        return this.securityQuestions();
-        break;
-      case 3:
-        return this.additionalInformation();
-        break;
-    }
-  };
-
   basicInformation = () => (
     <View>
       <View style={styles.inputContainer}>
@@ -166,6 +147,7 @@ class Services extends Component {
           placeholder="Name"
           onChangeText={(name) => this.setState({name})}
           keyboardType="default"
+          color={Color.veryLightBlue}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -173,6 +155,7 @@ class Services extends Component {
           placeholder="Account Number"
           onChangeText={(accNo) => this.setState({accNo})}
           keyboardType="default"
+          color={Color.veryLightBlue}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -180,6 +163,7 @@ class Services extends Component {
           placeholder="Primary Account Holder"
           onChangeText={(primaryAcHolder) => this.setState({primaryAcHolder})}
           keyboardType="default"
+          color={Color.veryLightBlue}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -187,6 +171,7 @@ class Services extends Component {
           placeholder="Provider"
           onChangeText={(provider) => this.setState({provider})}
           keyboardType="default"
+          color={Color.veryLightBlue}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -206,6 +191,7 @@ class Services extends Component {
           placeholder="User Name"
           onChangeText={(username) => this.setState({username})}
           keyboardType="default"
+          color={Color.veryLightBlue}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -213,6 +199,7 @@ class Services extends Component {
           placeholder="Password"
           onChangeText={(password) => this.setState({password})}
           keyboardType="default"
+          color={Color.veryLightBlue}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -221,6 +208,7 @@ class Services extends Component {
           onChangeText={(installment) => this.setState({installment})}
           icon="dollar-sign"
           keyboardType="default"
+          color={Color.veryLightBlue}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -245,6 +233,7 @@ class Services extends Component {
             placeholder="From"
             onChangeText={(from) => this.setState({from})}
             keyboardType="default"
+            color={Color.veryLightBlue}
           />
         </View>
         <View style={styles.miniInputContainer}>
@@ -252,6 +241,7 @@ class Services extends Component {
             placeholder="To"
             onChangeText={(to) => this.setState({to})}
             keyboardType="default"
+            color={Color.veryLightBlue}
           />
         </View>
       </View>
@@ -273,6 +263,7 @@ class Services extends Component {
           placeholder="Address Line 1"
           onChangeText={(address1) => this.setState({address1})}
           keyboardType="default"
+          color={Color.veryLightBlue}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -280,6 +271,7 @@ class Services extends Component {
           placeholder="Address Line 2"
           onChangeText={(address2) => this.setState({address2})}
           keyboardType="default"
+          color={Color.veryLightBlue}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -287,6 +279,7 @@ class Services extends Component {
           placeholder="City"
           onChangeText={(city) => this.setState({city})}
           keyboardType="default"
+          color={Color.veryLightBlue}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -294,6 +287,7 @@ class Services extends Component {
           placeholder="State"
           onChangeText={(state) => this.setState({state})}
           keyboardType="default"
+          color={Color.veryLightBlue}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -301,6 +295,7 @@ class Services extends Component {
           placeholder="Zip/Postal"
           onChangeText={(zip) => this.setState({zip})}
           keyboardType="default"
+          color={Color.veryLightBlue}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -327,6 +322,7 @@ class Services extends Component {
           placeholder="Security Question 1"
           onChangeText={(securityQ1) => this.setState({securityQ1})}
           keyboardType="default"
+          color={Color.veryLightBlue}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -334,6 +330,7 @@ class Services extends Component {
           placeholder="Answer 1"
           onChangeText={(securityA1) => this.setState({securityA1})}
           keyboardType="default"
+          color={Color.veryLightBlue}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -341,6 +338,7 @@ class Services extends Component {
           placeholder="Security Question 2"
           onChangeText={(securityQ2) => this.setState({securityQ2})}
           keyboardType="default"
+          color={Color.veryLightBlue}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -348,6 +346,7 @@ class Services extends Component {
           placeholder="Answer 2"
           onChangeText={(securityA2) => this.setState({securityA2})}
           keyboardType="default"
+          color={Color.veryLightBlue}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -355,6 +354,7 @@ class Services extends Component {
           placeholder="Security Question 3"
           onChangeText={(securityQ3) => this.setState({securityQ3})}
           keyboardType="default"
+          color={Color.veryLightBlue}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -362,6 +362,7 @@ class Services extends Component {
           placeholder="Answer 3"
           onChangeText={(securityA3) => this.setState({securityA3})}
           keyboardType="default"
+          color={Color.veryLightBlue}
         />
       </View>
     </View>
@@ -376,6 +377,7 @@ class Services extends Component {
             this.setState({additionalAcHolder1})
           }
           keyboardType="default"
+          color={Color.veryLightBlue}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -385,6 +387,7 @@ class Services extends Component {
             this.setState({additionalAcHolder2})
           }
           keyboardType="default"
+          color={Color.veryLightBlue}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -406,23 +409,6 @@ class Services extends Component {
     </View>
   );
 
-  title = (active) => {
-    switch (active) {
-      case 0:
-        return 'Basic Information';
-        break;
-      case 1:
-        return 'Payment Mailing Address';
-        break;
-      case 2:
-        return 'Security Questions';
-        break;
-      case 3:
-        return 'Additional Information';
-        break;
-    }
-  };
-
   changeModalVisibility = (bool) => {
     this.setState({modal: bool});
   };
@@ -435,23 +421,20 @@ class Services extends Component {
     const {active, isLoader, modal, array, key} = this.state;
     return (
       <View style={styles.container}>
-        <Text style={styles.title}>{this.title(active)}</Text>
-        {this.subComponet()}
+        <Text style={styles.title}>Basic Information</Text>
+        {this.basicInformation()}
+        <View style={styles.gap} />
+        <Text style={styles.title}>Payment Mailing Address</Text>
+        {this.paymentMailingAddress()}
+        <View style={styles.gap} />
+        <Text style={styles.title}>Security Questions</Text>
+        {this.securityQuestions()}
+        <View style={styles.gap} />
+        <Text style={styles.title}>Additional Information</Text>
+        {this.additionalInformation()}
+        <View style={styles.gap} />
         <View style={styles.buttonContainer}>
-          <Button onPress={this.handleClick} title="Proceed to next" />
-        </View>
-        <View style={styles.inputContainer}>
-          <Dots
-            length={4}
-            active={active}
-            passiveColor="rgba(52, 105, 244, 0.2)"
-            activeColor="rgb(52,105,244)"
-            passiveDotWidth={8}
-            passiveDotHeight={8}
-            activeDotWidth={8}
-            activeDotHeight={8}
-            paddingVertical={10}
-          />
+          <Button onPress={this.handleClick} title="Submit" />
         </View>
         <Loader isLoader={isLoader} />
         <ModalScreen

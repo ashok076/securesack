@@ -1,19 +1,30 @@
 import React from 'react';
-import {TextInput, View} from 'react-native';
+import {View} from 'react-native';
+import {Content, Form, Item, Input, Label} from 'native-base';
 
-import styles from "./input-text-dynamic.style.js"
+import styles from './input-text-dynamic.style.js';
 
-const InputTextDynamic = ({placeholder, onChangeText, value, keyboardType}) => (
-  <View>
-    <TextInput 
-      style={styles.input}
-      underlineColorAndroid="transparent"
-      placeholder={placeholder}
-      onChangeText={onChangeText}
-      placeholderTextColor="rgb(33, 47, 60)"
-      value={value}
-      keyboardType={keyboardType}
-    />
-  </View>
+const InputTextDynamic = ({
+  placeholder,
+  onChangeText,
+  value,
+  keyboardType,
+  editable,
+  color,
+}) => (
+  <Form>
+    <Item floatingLabel style={{borderColor: color}}>
+      <Label style={{color: color}}>{placeholder}</Label>
+      <Input
+        onChangeText={onChangeText}
+        editable={editable}
+        value={value}
+        keyboardType={keyboardType}
+        inputHeightBase={10}
+        style={[styles.input]}
+        selectionColor={color}
+      />
+    </Item>
+  </Form>
 );
 export default InputTextDynamic;

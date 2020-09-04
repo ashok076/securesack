@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import {View, ScrollView, Modal} from 'react-native';
 import {Text} from 'react-native-paper';
-import Dots from 'react-native-dots-pagination';
 import qs from 'qs';
 
 import InputTextDynamic from '../../../components/input-text-dynamic/input-text-dynamic.component.js';
@@ -12,6 +11,7 @@ import Loader from '../../../components/loader/loader.component';
 import ModalScreen from '../../../components/modal/modal.component';
 import {createOrUpdateRecord} from '../../../configuration/api/api.functions';
 import {gender, martial_status, software_used} from './tax-ssn.list';
+import {Color} from '../../../assets/color/color.js';
 
 import styles from './tax-ssn.style';
 
@@ -19,7 +19,6 @@ class TaxSSN extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      active: 0,
       isLoader: false,
       navigation: props.navigation,
       access_token: props.access_token,
@@ -48,9 +47,7 @@ class TaxSSN extends Component {
   }
 
   handleClick = () => {
-    const {active} = this.state;
-    if (active < 2) this.setState({active: active + 1});
-    else if (active === 2) this.submit();
+    this.submit();
   };
 
   submit = async () => {
@@ -98,27 +95,12 @@ class TaxSSN extends Component {
 
     await createOrUpdateRecord('Passport',recid, data, access_token)
       .then((response) => {
-        this.setState({isLoader: false, active: 0});
+        this.setState({isLoader: false});
         navigation.goBack();
       })
       .catch((error) => {
         this.setState({isLoader: false});
       });
-  };
-
-  subComponet = () => {
-    const {active} = this.state;
-    switch (active) {
-      case 0:
-        return this.basicInformation();
-        break;
-      case 1:
-        return this.taxDetails();
-        break;
-      case 2:
-        return this.birthDetails();
-        break;
-    }
   };
 
   taxDetails = () => (
@@ -128,6 +110,7 @@ class TaxSSN extends Component {
           placeholder="Tax Filing Number"
           onChangeText={(taxFillingNumber) => this.setState({taxFillingNumber})}
           keyboardType="default"
+          color={Color.salmon}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -167,6 +150,7 @@ class TaxSSN extends Component {
           placeholder="Software Name"
           onChangeText={(softwareName) => this.setState({softwareName})}
           keyboardType="default"
+          color={Color.salmon}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -174,6 +158,7 @@ class TaxSSN extends Component {
           placeholder="URL"
           onChangeText={(url) => this.setState({url})}
           keyboardType="default"
+          color={Color.salmon}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -181,6 +166,7 @@ class TaxSSN extends Component {
           placeholder="Username"
           onChangeText={(username) => this.setState({username})}
           keyboardType="default"
+          color={Color.salmon}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -188,6 +174,7 @@ class TaxSSN extends Component {
           placeholder="Password"
           onChangeText={(password) => this.setState({password})}
           keyboardType="default"
+          color={Color.salmon}
         />
       </View>
     </View>
@@ -200,6 +187,7 @@ class TaxSSN extends Component {
           placeholder="Date Of Birth"
           onChangeText={(dob) => this.setState({dob})}
           keyboardType="default"
+          color={Color.salmon}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -207,6 +195,7 @@ class TaxSSN extends Component {
           placeholder="Citizenship"
           onChangeText={(citizenship) => this.setState({citizenship})}
           keyboardType="default"
+          color={Color.salmon}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -214,6 +203,7 @@ class TaxSSN extends Component {
           placeholder="Time of Birth"
           onChangeText={(tob) => this.setState({tob})}
           keyboardType="default"
+          color={Color.salmon}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -235,6 +225,7 @@ class TaxSSN extends Component {
           placeholder="State of Birth"
           onChangeText={(sob) => this.setState({sob})}
           keyboardType="default"
+          color={Color.salmon}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -242,6 +233,7 @@ class TaxSSN extends Component {
           placeholder="City of Birth"
           onChangeText={(cob) => this.setState({cob})}
           keyboardType="default"
+          color={Color.salmon}
         />
       </View>
     </View>
@@ -254,6 +246,7 @@ class TaxSSN extends Component {
           placeholder="Name"
           onChangeText={(name) => this.setState({name})}
           keyboardType="default"
+          color={Color.salmon}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -261,6 +254,7 @@ class TaxSSN extends Component {
           placeholder="SSN"
           onChangeText={(ssn) => this.setState({ssn})}
           keyboardType="default"
+          color={Color.salmon}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -278,20 +272,6 @@ class TaxSSN extends Component {
     </View>
   );
 
-  title = (active) => {
-    switch (active) {
-      case 0:
-        return 'Basic Information';
-        break;
-      case 1:
-        return 'Tax Details';
-        break;
-      case 2:
-        return 'Birth Details';
-        break;
-    }
-  };
-
   changeModalVisibility = (bool) => {
     this.setState({modal: bool});
   };
@@ -301,26 +281,20 @@ class TaxSSN extends Component {
   };
 
   render() {
-    const {active, isLoader, modal, array, key} = this.state;
+    const {isLoader, modal, array, key} = this.state;
     return (
       <View style={styles.container}>
-        <Text style={styles.title}>{this.title(active)}</Text>
-        {this.subComponet()}
+        <Text style={styles.title}>Basic Information</Text>
+        {this.basicInformation()}
+        <View style={styles.gap}/>
+        <Text style={styles.title}>Tax Details</Text>
+        {this.taxDetails()}
+        <View style={styles.gap}/>
+        <Text style={styles.title}>Birth Details</Text>
+        {this.birthDetails()}
+        <View style={styles.gap}/>
         <View style={styles.buttonContainer}>
-          <Button onPress={this.handleClick} title="Proceed to next" />
-        </View>
-        <View style={styles.inputContainer}>
-          <Dots
-            length={3}
-            active={active}
-            passiveColor="rgba(52, 105, 244, 0.2)"
-            activeColor="rgb(52,105,244)"
-            passiveDotWidth={8}
-            passiveDotHeight={8}
-            activeDotWidth={8}
-            activeDotHeight={8}
-            paddingVertical={10}
-          />
+          <Button onPress={this.handleClick} title="Submit" />
         </View>
         <Loader isLoader={isLoader} />
         <ModalScreen

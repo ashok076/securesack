@@ -8,13 +8,13 @@ const styles = {
   title: {
     fontFamily: 'PublicSans-Regular',
     fontSize: 20,
-    color: 'rgb(33, 47, 60)',
+    color: 'rgb(248, 249, 250)',
   },
   inputContainer: {
-    paddingTop: 20,
+    paddingTop: 1,
   },
   miniContainer: {
-    paddingTop: 20,
+    paddingTop: 1,
     flexDirection: 'row',
     flex: 2,
     justifyContent: 'space-between',
@@ -23,7 +23,10 @@ const styles = {
     flex: 1,
   },
   buttonContainer: {
-    paddingTop: 20,
+    paddingTop: 5,
+  },
+  gap: {
+    marginTop: 50,
   },
 };
 

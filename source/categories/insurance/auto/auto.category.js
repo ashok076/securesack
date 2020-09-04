@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import {View, ScrollView, Modal} from 'react-native';
 import {Text} from 'react-native-paper';
-import Dots from 'react-native-dots-pagination';
 import qs from 'qs';
 
 import InputTextDynamic from '../../../components/input-text-dynamic/input-text-dynamic.component.js';
@@ -12,6 +11,7 @@ import Loader from '../../../components/loader/loader.component';
 import ModalScreen from '../../../components/modal/modal.component';
 import {createOrUpdateRecord} from '../../../configuration/api/api.functions';
 import {payment_due_type} from './auto.list';
+import {Color} from '../../../assets/color/color.js';
 
 import styles from './auto.style';
 
@@ -19,7 +19,6 @@ class Auto extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      active: 0,
       isLoader: false,
       navigation: props.navigation,
       access_token: props.access_token,
@@ -56,9 +55,7 @@ class Auto extends Component {
   }
 
   handleClick = () => {
-    const {active} = this.state;
-    if (active < 3) this.setState({active: active + 1});
-    else if (active === 3) this.submit();
+    this.submit();
   };
 
   submit = async () => {
@@ -123,30 +120,12 @@ class Auto extends Component {
 
     await createOrUpdateRecord('AutoInsurance', recid, data, access_token)
       .then((response) => {
-        this.setState({isLoader: false, active: 0});
+        this.setState({isLoader: false});
         navigation.goBack();
       })
       .catch((error) => {
         this.setState({isLoader: false});
       });
-  };
-
-  subComponet = () => {
-    const {active} = this.state;
-    switch (active) {
-      case 0:
-        return this.basicInformation();
-        break;
-      case 1:
-        return this.additionalInformation();
-        break;
-      case 2:
-        return this.additionalPolicyHolders();
-        break;
-      case 3:
-        return this.securityQuestions();
-        break;
-    }
   };
 
   basicInformation = () => (
@@ -156,6 +135,7 @@ class Auto extends Component {
           placeholder="Name"
           onChangeText={(name) => this.setState({name})}
           keyboardType="default"
+          color={Color.veryLightPink}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -165,6 +145,7 @@ class Auto extends Component {
             this.setState({primaryPolicyHolder})
           }
           keyboardType="default"
+          color={Color.veryLightPink}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -172,6 +153,7 @@ class Auto extends Component {
           placeholder="Policy Number"
           onChangeText={(policyNumber) => this.setState({policyNumber})}
           keyboardType="default"
+          color={Color.veryLightPink}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -179,6 +161,7 @@ class Auto extends Component {
           placeholder="Issuer"
           onChangeText={(issuer) => this.setState({issuer})}
           keyboardType="default"
+          color={Color.veryLightPink}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -216,6 +199,7 @@ class Auto extends Component {
           placeholder="From"
           icon="dollar-sign"
           onChangeText={(from) => this.setState({from})}
+          color={Color.veryLightPink}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -223,6 +207,7 @@ class Auto extends Component {
           placeholder="To"
           icon="dollar-sign"
           onChangeText={(to) => this.setState({to})}
+          color={Color.veryLightPink}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -230,6 +215,7 @@ class Auto extends Component {
           placeholder="Total"
           icon="dollar-sign"
           onChangeText={(total) => this.setState({total})}
+          color={Color.veryLightPink}
         />
       </View>
     </View>
@@ -242,6 +228,7 @@ class Auto extends Component {
           placeholder="Effective From"
           onChangeText={(effectiveFrom) => this.setState({effectiveFrom})}
           keyboardType="default"
+          color={Color.veryLightPink}
         />
       </View>
       <View style={styles.miniInputContainer}>
@@ -249,6 +236,7 @@ class Auto extends Component {
           placeholder="Ends On"
           onChangeText={(endsOn) => this.setState({endsOn})}
           keyboardType="default"
+          color={Color.veryLightPink}
         />
       </View>
     </View>
@@ -263,6 +251,7 @@ class Auto extends Component {
             this.setState({additionalPolicyHolder1})
           }
           keyboardType="default"
+          color={Color.veryLightPink}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -272,6 +261,7 @@ class Auto extends Component {
             this.setState({additionalPolicyHolder2})
           }
           keyboardType="default"
+          color={Color.veryLightPink}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -281,6 +271,7 @@ class Auto extends Component {
             this.setState({additionalPolicyHolder3})
           }
           keyboardType="default"
+          color={Color.veryLightPink}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -290,6 +281,7 @@ class Auto extends Component {
             this.setState({additionalPolicyHolder4})
           }
           keyboardType="default"
+          color={Color.veryLightPink}
         />
       </View>
     </View>
@@ -302,6 +294,7 @@ class Auto extends Component {
           placeholder="Security Question 1"
           onChangeText={(securityQ1) => this.setState({securityQ1})}
           keyboardType="default"
+          color={Color.veryLightPink}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -309,6 +302,7 @@ class Auto extends Component {
           placeholder="Answer 1"
           onChangeText={(securityA1) => this.setState({securityA1})}
           keyboardType="default"
+          color={Color.veryLightPink}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -316,6 +310,7 @@ class Auto extends Component {
           placeholder="Security Question 2"
           onChangeText={(securityQ2) => this.setState({securityQ2})}
           keyboardType="default"
+          color={Color.veryLightPink}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -323,6 +318,7 @@ class Auto extends Component {
           placeholder="Answer 2"
           onChangeText={(securityA2) => this.setState({securityA2})}
           keyboardType="default"
+          color={Color.veryLightPink}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -330,6 +326,7 @@ class Auto extends Component {
           placeholder="Security Question 3"
           onChangeText={(securityQ3) => this.setState({securityQ3})}
           keyboardType="default"
+          color={Color.veryLightPink}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -337,27 +334,11 @@ class Auto extends Component {
           placeholder="Answer 3"
           onChangeText={(securityA3) => this.setState({securityA3})}
           keyboardType="default"
+          color={Color.veryLightPink}
         />
       </View>
     </View>
   );
-
-  title = (active) => {
-    switch (active) {
-      case 0:
-        return 'Basic Information';
-        break;
-      case 1:
-        return 'Additional Information';
-        break;
-      case 2:
-        return 'Additional Policy Holder';
-        break;
-      case 3:
-        return 'Security Questions';
-        break;
-    }
-  };
 
   changeModalVisibility = (bool) => {
     this.setState({modal: bool});
@@ -368,26 +349,23 @@ class Auto extends Component {
   };
 
   render() {
-    const {active, isLoader, modal, array, key} = this.state;
+    const {isLoader, modal, array, key} = this.state;
     return (
       <View style={styles.container}>
-        <Text style={styles.title}>{this.title(active)}</Text>
-        {this.subComponet()}
+        <Text style={styles.title}>Basic Information</Text>
+        {this.basicInformation()}
+        <View style={styles.gap}/>
+        <Text style={styles.title}>Additional Information</Text>
+        {this.additionalInformation()}
+        <View style={styles.gap}/>
+        <Text style={styles.title}>Additional Policy Holder</Text>
+        {this.additionalPolicyHolders()}
+        <View style={styles.gap}/>
+        <Text style={styles.title}>Security Questions</Text>
+        {this.securityQuestions()}
+        <View style={styles.gap}/>
         <View style={styles.buttonContainer}>
-          <Button onPress={this.handleClick} title="Proceed to next" />
-        </View>
-        <View style={styles.inputContainer}>
-          <Dots
-            length={4}
-            active={active}
-            passiveColor="rgba(52, 105, 244, 0.2)"
-            activeColor="rgb(52,105,244)"
-            passiveDotWidth={8}
-            passiveDotHeight={8}
-            activeDotWidth={8}
-            activeDotHeight={8}
-            paddingVertical={10}
-          />
+          <Button onPress={this.handleClick} title="Submit" />
         </View>
         <Loader isLoader={isLoader} />
         <ModalScreen

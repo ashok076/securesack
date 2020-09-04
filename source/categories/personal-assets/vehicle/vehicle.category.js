@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import {View, ScrollView, Modal} from 'react-native';
 import {Text} from 'react-native-paper';
-import Dots from 'react-native-dots-pagination';
 import qs from 'qs';
 
 import InputTextDynamic from '../../../components/input-text-dynamic/input-text-dynamic.component.js';
@@ -12,6 +11,7 @@ import Loader from '../../../components/loader/loader.component';
 import ModalScreen from '../../../components/modal/modal.component';
 import {createOrUpdateRecord} from '../../../configuration/api/api.functions';
 import {vehicle_type, engine_type, is_still_owned} from './vehicle.list';
+import {Color} from '../../../assets/color/color.js';
 
 import styles from './vehicle.style';
 
@@ -19,7 +19,6 @@ class Vehicle extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      active: 0,
       isLoader: false,
       navigation: props.navigation,
       access_token: props.access_token,
@@ -43,9 +42,7 @@ class Vehicle extends Component {
   }
 
   handleClick = () => {
-    const {active} = this.state;
-    if (active < 1) this.setState({active: active + 1});
-    else if (active === 1) this.submit();
+    this.submit();
   };
 
   submit = async () => {
@@ -85,24 +82,12 @@ class Vehicle extends Component {
 
     await createOrUpdateRecord('Vehicle', recid, data, access_token)
       .then((response) => {
-        this.setState({isLoader: false, active: 0});
+        this.setState({isLoader: false});
         navigation.goBack();
       })
       .catch((error) => {
         this.setState({isLoader: false});
       });
-  };
-
-  subComponet = () => {
-    const {active} = this.state;
-    switch (active) {
-      case 0:
-        return this.basicInformation();
-        break;
-      case 1:
-        return this.additionalInformation();
-        break;
-    }
   };
 
   additionalInformation = () => (
@@ -128,6 +113,7 @@ class Vehicle extends Component {
           placeholder="Color"
           onChangeText={(color) => this.setState({color})}
           keyboardType="default"
+          color={Color.paleRed}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -135,6 +121,7 @@ class Vehicle extends Component {
           placeholder="Number of Doors"
           onChangeText={(numOfDoors) => this.setState({numOfDoors})}
           keyboardType="default"
+          color={Color.paleRed}
         />
       </View>
       <View style={styles.miniContainer}>
@@ -143,6 +130,7 @@ class Vehicle extends Component {
             placeholder="Bought On"
             onChangeText={(boughtOn) => this.setState({boughtOn})}
             keyboardType="default"
+            color={Color.paleRed}
           />
         </View>
         <View style={styles.miniInputContainer}>
@@ -150,6 +138,7 @@ class Vehicle extends Component {
             placeholder="Sold On"
             onChangeText={(soldOn) => this.setState({soldOn})}
             keyboardType="default"
+            color={Color.paleRed}
           />
         </View>
       </View>
@@ -179,6 +168,7 @@ class Vehicle extends Component {
           placeholder="Make"
           onChangeText={(make) => this.setState({make})}
           keyboardType="default"
+          color={Color.paleRed}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -186,6 +176,7 @@ class Vehicle extends Component {
           placeholder="Model"
           onChangeText={(modal) => this.setState({modal})}
           keyboardType="default"
+          color={Color.paleRed}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -193,6 +184,7 @@ class Vehicle extends Component {
           placeholder="License Plate"
           onChangeText={(licensePlate) => this.setState({licensePlate})}
           keyboardType="default"
+          color={Color.paleRed}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -200,6 +192,7 @@ class Vehicle extends Component {
           placeholder="VIN"
           onChangeText={(vin) => this.setState({vin})}
           keyboardType="default"
+          color={Color.paleRed}
         />
       </View>
       <View style={styles.miniContainer}>
@@ -208,6 +201,7 @@ class Vehicle extends Component {
             placeholder="Registration Renewal Date"
             onChangeText={(renewalDate) => this.setState({renewalDate})}
             keyboardType="default"
+          color={Color.paleRed}
           />
         </View>
         <View style={styles.miniInputContainer}>
@@ -230,17 +224,6 @@ class Vehicle extends Component {
     </View>
   );
 
-  title = (active) => {
-    switch (active) {
-      case 0:
-        return 'Basic Information';
-        break;
-      case 1:
-        return 'Additional Information';
-        break;
-    }
-  };
-
   changeModalVisibility = (bool) => {
     this.setState({modal: bool});
   };
@@ -250,26 +233,17 @@ class Vehicle extends Component {
   };
 
   render() {
-    const {active, isLoader, modal, array, key} = this.state;
+    const {isLoader, modal, array, key} = this.state;
     return (
       <View style={styles.container}>
-        <Text style={styles.title}>{this.title(active)}</Text>
-        {this.subComponet()}
+        <Text style={styles.title}>Basic Information</Text>
+        {this.basicInformation()}
+        <View style={styles.gap} />
+        <Text style={styles.title}>Additional Information</Text>
+        {this.additionalInformation()}
+        <View style={styles.gap} />
         <View style={styles.buttonContainer}>
-          <Button onPress={this.handleClick} title="Proceed to next" />
-        </View>
-        <View style={styles.inputContainer}>
-          <Dots
-            length={2}
-            active={active}
-            passiveColor="rgba(52, 105, 244, 0.2)"
-            activeColor="rgb(52,105,244)"
-            passiveDotWidth={8}
-            passiveDotHeight={8}
-            activeDotWidth={8}
-            activeDotHeight={8}
-            paddingVertical={10}
-          />
+          <Button onPress={this.handleClick} title="Submit" />
         </View>
         <Loader isLoader={isLoader} />
         <ModalScreen

@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import {View, ScrollView, Modal} from 'react-native';
 import {Text} from 'react-native-paper';
-import Dots from 'react-native-dots-pagination';
 import qs from 'qs';
 
 import InputTextDynamic from '../../../components/input-text-dynamic/input-text-dynamic.component.js';
@@ -10,6 +9,7 @@ import ModalPicker from '../../../components/modal-picker/modal-picker.component
 import Button from '../../../components/button/button.component';
 import Loader from '../../../components/loader/loader.component';
 import {createOrUpdateRecord} from '../../../configuration/api/api.functions';
+import {Color} from '../../../assets/color/color.js';
 
 import styles from './website-password.style';
 
@@ -17,7 +17,6 @@ class WebsitePassword extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      active: 0,
       isLoader: false,
       navigation: props.navigation,
       access_token: props.access_token,
@@ -36,9 +35,7 @@ class WebsitePassword extends Component {
   }
 
   handleClick = () => {
-    const {active} = this.state;
-    if (active < 1) this.setState({active: active + 1});
-    else if (active === 1) this.submit();
+    this.submit();
   };
 
   submit = async () => {
@@ -82,18 +79,6 @@ class WebsitePassword extends Component {
       });
   };
 
-  subComponet = () => {
-    const {active} = this.state;
-    switch (active) {
-      case 0:
-        return this.basicInformation();
-        break;
-      case 1:
-        return this.securityQuestions();
-        break;
-    }
-  };
-
   basicInformation = () => (
     <View>
       <View style={styles.inputContainer}>
@@ -101,6 +86,7 @@ class WebsitePassword extends Component {
           placeholder="Name"
           onChangeText={(name) => this.setState({name})}
           keyboardType="default"
+          color={Color.lightNavyBlue}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -108,6 +94,7 @@ class WebsitePassword extends Component {
           placeholder="URL"
           onChangeText={(url) => this.setState({url})}
           keyboardType="default"
+          color={Color.lightNavyBlue}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -115,6 +102,7 @@ class WebsitePassword extends Component {
           placeholder="Username"
           onChangeText={(username) => this.setState({username})}
           keyboardType="default"
+          color={Color.lightNavyBlue}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -122,6 +110,7 @@ class WebsitePassword extends Component {
           placeholder="Password"
           onChangeText={(password) => this.setState({password})}
           keyboardType="default"
+          color={Color.lightNavyBlue}
         />
       </View>
     </View>
@@ -134,6 +123,7 @@ class WebsitePassword extends Component {
           placeholder="Security Question 1"
           onChangeText={(securityQ1) => this.setState({securityQ1})}
           keyboardType="default"
+          color={Color.lightNavyBlue}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -141,6 +131,7 @@ class WebsitePassword extends Component {
           placeholder="Answer 1"
           onChangeText={(securityA1) => this.setState({securityA1})}
           keyboardType="default"
+          color={Color.lightNavyBlue}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -148,6 +139,7 @@ class WebsitePassword extends Component {
           placeholder="Security Question 2"
           onChangeText={(securityQ2) => this.setState({securityQ2})}
           keyboardType="default"
+          color={Color.lightNavyBlue}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -155,6 +147,7 @@ class WebsitePassword extends Component {
           placeholder="Answer 2"
           onChangeText={(securityA2) => this.setState({securityA2})}
           keyboardType="default"
+          color={Color.lightNavyBlue}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -162,6 +155,7 @@ class WebsitePassword extends Component {
           placeholder="Security Question 3"
           onChangeText={(securityQ3) => this.setState({securityQ3})}
           keyboardType="default"
+          color={Color.lightNavyBlue}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -169,43 +163,24 @@ class WebsitePassword extends Component {
           placeholder="Answer 3"
           onChangeText={(securityA3) => this.setState({securityA3})}
           keyboardType="default"
+          color={Color.lightNavyBlue}
         />
       </View>
     </View>
   );
 
-  title = (active) => {
-    switch (active) {
-      case 0:
-        return 'Basic Information';
-        break;
-      case 1:
-        return 'Security Questions';
-        break;
-    }
-  };
-
   render() {
-    const {active, isLoader} = this.state;
+    const {isLoader} = this.state;
     return (
       <View style={styles.container}>
-        <Text style={styles.title}>{this.title(active)}</Text>
-        {this.subComponet()}
+        <Text style={styles.title}>Basic Information</Text>
+        {this.basicInformation()}
+        <View style={styles.gap}/>
+        <Text style={styles.title}>Security Questions</Text>
+        {this.securityQuestions()}
+        <View style={styles.gap}/>
         <View style={styles.buttonContainer}>
-          <Button onPress={this.handleClick} title="Proceed to next" />
-        </View>
-        <View style={styles.inputContainer}>
-          <Dots
-            length={2}
-            active={active}
-            passiveColor="rgba(52, 105, 244, 0.2)"
-            activeColor="rgb(52,105,244)"
-            passiveDotWidth={8}
-            passiveDotHeight={8}
-            activeDotWidth={8}
-            activeDotHeight={8}
-            paddingVertical={10}
-          />
+          <Button onPress={this.handleClick} title="Submit" />
         </View>
         <Loader isLoader={isLoader} />
       </View>

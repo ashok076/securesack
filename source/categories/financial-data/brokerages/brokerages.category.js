@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import {View, ScrollView, Modal} from 'react-native';
 import {Text} from 'react-native-paper';
-import Dots from 'react-native-dots-pagination';
 import qs from 'qs';
 
 import InputTextDynamic from '../../../components/input-text-dynamic/input-text-dynamic.component.js';
@@ -9,6 +8,7 @@ import InputTextIconDynamic from '../../../components/input-text-icon-dynamic/in
 import Button from '../../../components/button/button.component';
 import Loader from '../../../components/loader/loader.component';
 import {createOrUpdateRecord} from '../../../configuration/api/api.functions';
+import {Color} from '../../../assets/color/color.js';
 
 import styles from './brokerages.style';
 
@@ -16,7 +16,6 @@ class Brokerages extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      active: 0,
       isLoader: false,
       navigation: props.navigation,
       access_token: props.access_token,
@@ -43,9 +42,7 @@ class Brokerages extends Component {
   }
 
   handleClick = () => {
-    const {active} = this.state;
-    if (active < 2) this.setState({active: active + 1});
-    else if (active === 2) this.submit();
+    this.submit();
   };
 
   submit = async () => {
@@ -71,7 +68,7 @@ class Brokerages extends Component {
       openedOn,
       closedOn,
       access_token,
-      navigation
+      navigation,
     } = this.state;
 
     let data = qs.stringify({
@@ -94,12 +91,7 @@ class Brokerages extends Component {
       AccountOpeningDate: openedOn,
       AccountClosingDate: closedOn,
     });
-    await createOrUpdateRecord(
-      'BrokerageAccount',
-      recid,
-      data,
-      access_token,
-    )
+    await createOrUpdateRecord('BrokerageAccount', recid, data, access_token)
       .then((response) => {
         this.setState({isLoader: false});
         navigation.goBack();
@@ -109,21 +101,6 @@ class Brokerages extends Component {
       });
   };
 
-  subComponet = () => {
-    const {active} = this.state;
-    switch (active) {
-      case 0:
-        return this.basicInformation();
-        break;
-      case 1:
-        return this.securityQuestions();
-        break;
-      case 2:
-        return this.additionalInformation();
-        break;
-    }
-  };
-
   basicInformation = () => (
     <View>
       <View style={styles.inputContainer}>
@@ -131,6 +108,7 @@ class Brokerages extends Component {
           placeholder="Name"
           onChangeText={(name) => this.setState({name})}
           keyboardType="default"
+          color={Color.lightishBlue}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -140,6 +118,7 @@ class Brokerages extends Component {
             this.setState({financialInstitution})
           }
           keyboardType="default"
+          color={Color.lightishBlue}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -147,6 +126,7 @@ class Brokerages extends Component {
           placeholder="Account Number"
           onChangeText={(acNumber) => this.setState({acNumber})}
           keyboardType="default"
+          color={Color.lightishBlue}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -154,6 +134,7 @@ class Brokerages extends Component {
           placeholder="Username"
           onChangeText={(username) => this.setState({username})}
           keyboardType="default"
+          color={Color.lightishBlue}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -161,6 +142,7 @@ class Brokerages extends Component {
           placeholder="Password"
           onChangeText={(password) => this.setState({password})}
           keyboardType="default"
+          color={Color.lightishBlue}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -168,6 +150,7 @@ class Brokerages extends Component {
           placeholder="URL"
           onChangeText={(url) => this.setState({url})}
           keyboardType="default"
+          color={Color.lightishBlue}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -175,6 +158,7 @@ class Brokerages extends Component {
           placeholder="Primary Account Holder"
           onChangeText={(primaryAcHolder) => this.setState({primaryAcHolder})}
           keyboardType="default"
+          color={Color.lightishBlue}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -182,6 +166,7 @@ class Brokerages extends Component {
           placeholder="Joint Account Holder 1"
           onChangeText={(joinAcHolderOne) => this.setState({joinAcHolderOne})}
           keyboardType="default"
+          color={Color.lightishBlue}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -189,6 +174,7 @@ class Brokerages extends Component {
           placeholder="Joint Account Holder 2"
           onChangeText={(joinAcHolderTwo) => this.setState({joinAcHolderTwo})}
           keyboardType="default"
+          color={Color.lightishBlue}
         />
       </View>
     </View>
@@ -201,6 +187,7 @@ class Brokerages extends Component {
           placeholder="Security Question 1"
           onChangeText={(securityQ1) => this.setState({securityQ1})}
           keyboardType="default"
+          color={Color.lightishBlue}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -208,6 +195,7 @@ class Brokerages extends Component {
           placeholder="Answer 1"
           onChangeText={(securityA1) => this.setState({securityA1})}
           keyboardType="default"
+          color={Color.lightishBlue}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -215,6 +203,7 @@ class Brokerages extends Component {
           placeholder="Security Question 2"
           onChangeText={(securityQ2) => this.setState({securityQ2})}
           keyboardType="default"
+          color={Color.lightishBlue}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -222,6 +211,7 @@ class Brokerages extends Component {
           placeholder="Answer 2"
           onChangeText={(securityA2) => this.setState({securityA2})}
           keyboardType="default"
+          color={Color.lightishBlue}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -229,6 +219,7 @@ class Brokerages extends Component {
           placeholder="Security Question 3"
           onChangeText={(securityQ3) => this.setState({securityQ3})}
           keyboardType="default"
+          color={Color.lightishBlue}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -236,6 +227,7 @@ class Brokerages extends Component {
           placeholder="Answer 3"
           onChangeText={(securityA3) => this.setState({securityA3})}
           keyboardType="default"
+          color={Color.lightishBlue}
         />
       </View>
     </View>
@@ -259,6 +251,7 @@ class Brokerages extends Component {
             placeholder="Opened On"
             onChangeText={(openedOn) => this.setState({openedOn})}
             keyboardType="default"
+            color={Color.lightishBlue}
           />
         </View>
         <View style={styles.miniInputContainer}>
@@ -266,47 +259,28 @@ class Brokerages extends Component {
             placeholder="Closed On"
             onChangeText={(closedOn) => this.setState({closedOn})}
             keyboardType="default"
+            color={Color.lightishBlue}
           />
         </View>
       </View>
     </View>
   );
 
-  title = (active) => {
-    switch (active) {
-      case 0:
-        return 'Basic Information';
-        break;
-      case 1:
-        return 'Security Questions';
-        break;
-      case 2:
-        return 'Additional Information';
-        break;
-    }
-  };
-
   render() {
-    const {active, isLoader} = this.state;
+    const {isLoader} = this.state;
     return (
       <View style={styles.container}>
-        <Text style={styles.title}>{this.title(active)}</Text>
-        {this.subComponet()}
+        <Text style={styles.title}>Basic Information</Text>
+        {this.basicInformation()}
+        <View style={styles.gap} />
+        <Text style={styles.title}>Security Questions</Text>
+        {this.securityQuestions()}
+        <View style={styles.gap} />
+        <Text style={styles.title}>Additional Information</Text>
+        {this.additionalInformation()}
+        <View style={styles.gap} />
         <View style={styles.buttonContainer}>
-          <Button onPress={this.handleClick} title="Proceed to next" />
-        </View>
-        <View style={styles.inputContainer}>
-          <Dots
-            length={4}
-            active={active}
-            passiveColor="rgba(52, 105, 244, 0.2)"
-            activeColor="rgb(52,105,244)"
-            passiveDotWidth={8}
-            passiveDotHeight={8}
-            activeDotWidth={8}
-            activeDotHeight={8}
-            paddingVertical={10}
-          />
+          <Button onPress={this.handleClick} title="Next" />
         </View>
         <Loader isLoader={isLoader} />
       </View>

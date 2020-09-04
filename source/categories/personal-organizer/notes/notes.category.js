@@ -9,6 +9,7 @@ import ModalPicker from '../../../components/modal-picker/modal-picker.component
 import Button from '../../../components/button/button.component';
 import Loader from '../../../components/loader/loader.component';
 import {createOrUpdateRecord} from '../../../configuration/api/api.functions';
+import {Color} from '../../../assets/color/color.js';
 
 import styles from './notes.style';
 
@@ -65,6 +66,7 @@ class Notes extends Component {
           placeholder="Name"
           onChangeText={(name) => this.setState({name})}
           keyboardType="default"
+          color={Color.lightNavyBlue}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -72,6 +74,7 @@ class Notes extends Component {
           placeholder="Notes"
           onChangeText={(notes) => this.setState({notes})}
           keyboardType="default"
+          color={Color.lightNavyBlue}
         />
       </View>
       <View style={styles.buttonContainer}>

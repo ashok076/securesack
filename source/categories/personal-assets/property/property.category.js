@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import {View, ScrollView, Modal} from 'react-native';
 import {Text} from 'react-native-paper';
-import Dots from 'react-native-dots-pagination';
 import qs from 'qs';
 
 import InputTextDynamic from '../../../components/input-text-dynamic/input-text-dynamic.component.js';
@@ -20,6 +19,7 @@ import {
   alarm_type,
   boolean_value,
 } from './property.list';
+import {Color} from '../../../assets/color/color.js';
 
 import styles from './property.style';
 
@@ -27,7 +27,6 @@ class Property extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      active: 0,
       isLoader: false,
       navigation: props.navigation,
       access_token: props.access_token,
@@ -70,9 +69,7 @@ class Property extends Component {
   }
 
   handleClick = () => {
-    const {active} = this.state;
-    if (active < 2) this.setState({active: active + 1});
-    else if (active === 2) this.submit();
+    this.submit();
   };
 
   submit = async () => {
@@ -148,27 +145,12 @@ class Property extends Component {
 
     await createOrUpdateRecord('Property', recid, data, access_token)
       .then((response) => {
-        this.setState({isLoader: false, active: 0});
+        this.setState({isLoader: false});
         navigation.goBack();
       })
       .catch((error) => {
         this.setState({isLoader: false});
       });
-  };
-
-  subComponet = () => {
-    const {active} = this.state;
-    switch (active) {
-      case 0:
-        return this.basicInformation();
-        break;
-      case 1:
-        return this.propertyDetails();
-        break;
-      case 2:
-        return this.additionalInformation();
-        break;
-    }
   };
 
   additionalInformation = () => (
@@ -248,6 +230,7 @@ class Property extends Component {
             this.setState({respondingFireDepartment})
           }
           keyboardType="default"
+          color={Color.paleRed}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -257,6 +240,7 @@ class Property extends Component {
             this.setState({distanceToFireDepartment})
           }
           keyboardType="default"
+          color={Color.paleRed}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -280,6 +264,7 @@ class Property extends Component {
           placeholder="Sold On"
           onChangeText={(soldOn) => this.setState({soldOn})}
           keyboardType="default"
+          color={Color.paleRed}
         />
       </View>
     </View>
@@ -292,6 +277,7 @@ class Property extends Component {
           placeholder="Name"
           onChangeText={(name) => this.setState({name})}
           keyboardType="default"
+          color={Color.paleRed}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -329,6 +315,7 @@ class Property extends Component {
           placeholder="Address Line 1"
           onChangeText={(address1) => this.setState({address1})}
           keyboardType="default"
+          color={Color.paleRed}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -336,6 +323,7 @@ class Property extends Component {
           placeholder="Address Line 2"
           onChangeText={(address2) => this.setState({address2})}
           keyboardType="default"
+          color={Color.paleRed}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -343,6 +331,7 @@ class Property extends Component {
           placeholder="City"
           onChangeText={(city) => this.setState({city})}
           keyboardType="default"
+          color={Color.paleRed}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -350,6 +339,7 @@ class Property extends Component {
           placeholder="State"
           onChangeText={(state) => this.setState({state})}
           keyboardType="default"
+          color={Color.paleRed}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -357,6 +347,7 @@ class Property extends Component {
           placeholder="Zip/Postal"
           onChangeText={(zip) => this.setState({zip})}
           keyboardType="default"
+          color={Color.paleRed}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -378,6 +369,7 @@ class Property extends Component {
           placeholder="Bought On"
           onChangeText={(boughtOn) => this.setState({boughtOn})}
           keyboardType="default"
+          color={Color.paleRed}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -385,6 +377,7 @@ class Property extends Component {
           placeholder="House Size"
           onChangeText={(houseSize) => this.setState({houseSize})}
           keyboardType="default"
+          color={Color.paleRed}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -392,6 +385,7 @@ class Property extends Component {
           placeholder="Lot Size"
           onChangeText={(lotSize) => this.setState({lotSize})}
           keyboardType="default"
+          color={Color.paleRed}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -399,6 +393,7 @@ class Property extends Component {
           placeholder="County"
           onChangeText={(county) => this.setState({county})}
           keyboardType="default"
+          color={Color.paleRed}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -406,6 +401,7 @@ class Property extends Component {
           placeholder="School District"
           onChangeText={(schoolDistrict) => this.setState({schoolDistrict})}
           keyboardType="default"
+          color={Color.paleRed}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -413,6 +409,7 @@ class Property extends Component {
           placeholder="APN #"
           onChangeText={(apn) => this.setState({apn})}
           keyboardType="default"
+          color={Color.paleRed}
         />
       </View>
     </View>
@@ -425,6 +422,7 @@ class Property extends Component {
           placeholder="Property Tax Amount"
           onChangeText={(propertyTaxAmnt) => this.setState({propertyTaxAmnt})}
           keyboardType="default"
+          color={Color.paleRed}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -434,6 +432,7 @@ class Property extends Component {
             this.setState({yearOfConstruction})
           }
           keyboardType="default"
+          color={Color.paleRed}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -441,6 +440,7 @@ class Property extends Component {
           placeholder="Age"
           onChangeText={(age) => this.setState({age})}
           keyboardType="default"
+          color={Color.paleRed}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -448,6 +448,7 @@ class Property extends Component {
           placeholder="Number of Levels"
           onChangeText={(numberOfLevels) => this.setState({numberOfLevels})}
           keyboardType="default"
+          color={Color.paleRed}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -471,6 +472,7 @@ class Property extends Component {
           placeholder="Garage Size"
           onChangeText={(garageSize) => this.setState({garageSize})}
           keyboardType="default"
+          color={Color.paleRed}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -492,20 +494,6 @@ class Property extends Component {
     </View>
   );
 
-  title = (active) => {
-    switch (active) {
-      case 0:
-        return 'Basic Information';
-        break;
-      case 1:
-        return 'Property Details';
-        break;
-      case 2:
-        return 'Additional Information';
-        break;
-    }
-  };
-
   changeModalVisibility = (bool) => {
     this.setState({modal: bool});
   };
@@ -515,26 +503,20 @@ class Property extends Component {
   };
 
   render() {
-    const {active, isLoader, modal, array, key} = this.state;
+    const {isLoader, modal, array, key} = this.state;
     return (
       <View style={styles.container}>
-        <Text style={styles.title}>{this.title(active)}</Text>
-        {this.subComponet()}
+        <Text style={styles.title}>Basic Information</Text>
+        {this.basicInformation()}
+        <View style={styles.gap}/>
+        <Text style={styles.title}>Property Details</Text>
+        {this.propertyDetails()}
+        <View style={styles.gap}/>
+        <Text style={styles.title}>Additional Information</Text>
+        {this.additionalInformation()}
+        <View style={styles.gap}/>
         <View style={styles.buttonContainer}>
-          <Button onPress={this.handleClick} title="Proceed to next" />
-        </View>
-        <View style={styles.inputContainer}>
-          <Dots
-            length={3}
-            active={active}
-            passiveColor="rgba(52, 105, 244, 0.2)"
-            activeColor="rgb(52,105,244)"
-            passiveDotWidth={8}
-            passiveDotHeight={8}
-            activeDotWidth={8}
-            activeDotHeight={8}
-            paddingVertical={10}
-          />
+          <Button onPress={this.handleClick} title="Submit" />
         </View>
         <Loader isLoader={isLoader} />
         <ModalScreen

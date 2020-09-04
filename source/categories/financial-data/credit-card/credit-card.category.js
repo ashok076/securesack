@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import {View, ScrollView, Modal} from 'react-native';
 import {Text} from 'react-native-paper';
-import Dots from 'react-native-dots-pagination';
 import qs from 'qs';
 
 import InputTextDynamic from '../../../components/input-text-dynamic/input-text-dynamic.component.js';
@@ -12,6 +11,7 @@ import Loader from '../../../components/loader/loader.component';
 import ModalScreen from '../../../components/modal/modal.component';
 import {createOrUpdateRecord} from '../../../configuration/api/api.functions';
 import {credit_card_type} from './credit-card.category';
+import {Color} from '../../../assets/color/color.js';
 
 import styles from './credit-card.style';
 
@@ -19,7 +19,6 @@ class CreditCard extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      active: 0,
       isLoader: false,
       modal: false,
       array: [],
@@ -57,9 +56,7 @@ class CreditCard extends Component {
   }
 
   handleClick = () => {
-    const {active} = this.state;
-    if (active < 4) this.setState({active: active + 1});
-    else if (active === 4) this.submit();
+    this.submit();
   };
 
   submit = async () => {
@@ -124,33 +121,12 @@ class CreditCard extends Component {
     });
     await createOrUpdateRecord('CreditCard', recid, data, access_token)
       .then((response) => {
-        this.setState({isLoader: false, active: 0});
+        this.setState({isLoader: false});
         navigation.goBack();
       })
       .catch((error) => {
         this.setState({isLoader: false});
       });
-  };
-
-  subComponet = () => {
-    const {active} = this.state;
-    switch (active) {
-      case 0:
-        return this.primaryCard();
-        break;
-      case 1:
-        return this.additionalCardInfo();
-        break;
-      case 2:
-        return this.securityQuestions();
-        break;
-      case 3:
-        return this.paymentMailingAddress();
-        break;
-      case 4:
-        return this.additionalInformation();
-        break;
-    }
   };
 
   primaryCard = () => (
@@ -160,6 +136,7 @@ class CreditCard extends Component {
           placeholder="Name"
           onChangeText={(name) => this.setState({name})}
           keyboardType="default"
+          color={Color.lightishBlue}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -167,6 +144,7 @@ class CreditCard extends Component {
           placeholder="Card Holder Name"
           onChangeText={(cardHolderName) => this.setState({cardHolderName})}
           keyboardType="default"
+          color={Color.lightishBlue}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -190,6 +168,7 @@ class CreditCard extends Component {
           placeholder="Card Number"
           onChangeText={(cardNo) => this.setState({cardNo})}
           keyboardType="default"
+          color={Color.lightishBlue}
         />
       </View>
       <View style={styles.miniContainer}>
@@ -198,6 +177,7 @@ class CreditCard extends Component {
             placeholder="Expiration Date"
             onChangeText={(expiryDate) => this.setState({expiryDate})}
             keyboardType="default"
+            color={Color.lightishBlue}
           />
         </View>
         <View style={styles.miniInputContainer}>
@@ -205,6 +185,7 @@ class CreditCard extends Component {
             placeholder="CVV"
             onChangeText={(cvv) => this.setState({cvv})}
             keyboardType="default"
+            color={Color.lightishBlue}
           />
         </View>
       </View>
@@ -213,6 +194,7 @@ class CreditCard extends Component {
           placeholder="URL"
           onChangeText={(url) => this.setState({url})}
           keyboardType="default"
+          color={Color.lightishBlue}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -220,6 +202,7 @@ class CreditCard extends Component {
           placeholder="User Name"
           onChangeText={(username) => this.setState({username})}
           keyboardType="default"
+          color={Color.lightishBlue}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -227,6 +210,7 @@ class CreditCard extends Component {
           placeholder="Password"
           onChangeText={(password) => this.setState({password})}
           keyboardType="default"
+          color={Color.lightishBlue}
         />
       </View>
     </View>
@@ -239,6 +223,7 @@ class CreditCard extends Component {
           placeholder="Card Holder Name"
           onChangeText={(cardHolderName2) => this.setState({cardHolderName2})}
           keyboardType="default"
+          color={Color.lightishBlue}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -246,6 +231,7 @@ class CreditCard extends Component {
           placeholder="Card Number"
           onChangeText={(cardNo2) => this.setState({cardNo2})}
           keyboardType="default"
+          color={Color.lightishBlue}
         />
       </View>
       <View style={styles.miniContainer}>
@@ -254,6 +240,7 @@ class CreditCard extends Component {
             placeholder="Expiration Date"
             onChangeText={(expiryDate2) => this.setState({expiryDate2})}
             keyboardType="default"
+            color={Color.lightishBlue}
           />
         </View>
         <View style={styles.miniInputContainer}>
@@ -261,6 +248,7 @@ class CreditCard extends Component {
             placeholder="CVV"
             onChangeText={(cvv2) => this.setState({cvv2})}
             keyboardType="default"
+            color={Color.lightishBlue}
           />
         </View>
       </View>
@@ -274,6 +262,7 @@ class CreditCard extends Component {
           placeholder="Security Question 1"
           onChangeText={(securityQ1) => this.setState({securityQ1})}
           keyboardType="default"
+          color={Color.lightishBlue}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -281,6 +270,7 @@ class CreditCard extends Component {
           placeholder="Answer 1"
           onChangeText={(securityA1) => this.setState({securityA1})}
           keyboardType="default"
+          color={Color.lightishBlue}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -288,6 +278,7 @@ class CreditCard extends Component {
           placeholder="Security Question 2"
           onChangeText={(securityQ2) => this.setState({securityQ2})}
           keyboardType="default"
+          color={Color.lightishBlue}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -295,6 +286,7 @@ class CreditCard extends Component {
           placeholder="Answer 2"
           onChangeText={(securityA2) => this.setState({securityA2})}
           keyboardType="default"
+          color={Color.lightishBlue}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -302,6 +294,7 @@ class CreditCard extends Component {
           placeholder="Security Question 3"
           onChangeText={(securityQ3) => this.setState({securityQ3})}
           keyboardType="default"
+          color={Color.lightishBlue}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -309,6 +302,7 @@ class CreditCard extends Component {
           placeholder="Answer 3"
           onChangeText={(securityA3) => this.setState({securityA3})}
           keyboardType="default"
+          color={Color.lightishBlue}
         />
       </View>
     </View>
@@ -321,6 +315,7 @@ class CreditCard extends Component {
           placeholder="Address Line 1"
           onChangeText={(address1) => this.setState({address1})}
           keyboardType="default"
+          color={Color.lightishBlue}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -328,6 +323,7 @@ class CreditCard extends Component {
           placeholder="Address Line 2"
           onChangeText={(address2) => this.setState({address2})}
           keyboardType="default"
+          color={Color.lightishBlue}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -335,6 +331,7 @@ class CreditCard extends Component {
           placeholder="City"
           onChangeText={(city) => this.setState({city})}
           keyboardType="default"
+          color={Color.lightishBlue}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -342,6 +339,7 @@ class CreditCard extends Component {
           placeholder="State"
           onChangeText={(state) => this.setState({state})}
           keyboardType="default"
+          color={Color.lightishBlue}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -349,6 +347,7 @@ class CreditCard extends Component {
           placeholder="Zip/Postal"
           onChangeText={(zip) => this.setState({zip})}
           keyboardType="default"
+          color={Color.lightishBlue}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -383,6 +382,7 @@ class CreditCard extends Component {
           placeholder="APR"
           onChangeText={this.handleFirstNaame}
           keyboardType="default"
+          color={Color.lightishBlue}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -396,26 +396,6 @@ class CreditCard extends Component {
     </View>
   );
 
-  title = (active) => {
-    switch (active) {
-      case 0:
-        return 'Primary Card';
-        break;
-      case 1:
-        return 'Additional Card Information';
-        break;
-      case 2:
-        return 'Security Questions';
-        break;
-      case 3:
-        return 'Payment Mailing Address';
-        break;
-      case 4:
-        return 'Additional Information';
-        break;
-    }
-  };
-
   changeModalVisibility = (bool) => {
     this.setState({modal: bool});
   };
@@ -425,26 +405,26 @@ class CreditCard extends Component {
   };
 
   render() {
-    const {active, isLoader, modal, array, key} = this.state;
+    const {isLoader, modal, array, key} = this.state;
     return (
       <View style={styles.container}>
-        <Text style={styles.title}>{this.title(active)}</Text>
-        {this.subComponet()}
+        <Text style={styles.title}>Primary Card</Text>
+        {this.primaryCard()}
+        <View style={styles.gap} />
+        <Text style={styles.title}>Additional Card Information</Text>
+        {this.additionalCardInfo()}
+        <View style={styles.gap} />
+        <Text style={styles.title}>Security Questions</Text>
+        {this.securityQuestions()}
+        <View style={styles.gap} />
+        <Text style={styles.title}>Payment Mailing Address</Text>
+        {this.paymentMailingAddress()}
+        <View style={styles.gap} />
+        <Text style={styles.title}>Additional Information</Text>
+        {this.additionalInformation()}
+        <View style={styles.gap} />
         <View style={styles.buttonContainer}>
-          <Button onPress={this.handleClick} title="Proceed to next account" />
-        </View>
-        <View style={styles.inputContainer}>
-          <Dots
-            length={5}
-            active={active}
-            passiveColor="rgba(52, 105, 244, 0.2)"
-            activeColor="rgb(52,105,244)"
-            passiveDotWidth={8}
-            passiveDotHeight={8}
-            activeDotWidth={8}
-            activeDotHeight={8}
-            paddingVertical={10}
-          />
+          <Button onPress={this.handleClick} title="Next" />
         </View>
         <Loader isLoader={isLoader} />
         <ModalScreen

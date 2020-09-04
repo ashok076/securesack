@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import {View, ScrollView, Modal} from 'react-native';
 import {Text} from 'react-native-paper';
-import Dots from 'react-native-dots-pagination';
 import qs from 'qs';
 
 import InputTextDynamic from '../../../components/input-text-dynamic/input-text-dynamic.component.js';
@@ -10,6 +9,7 @@ import ModalPicker from '../../../components/modal-picker/modal-picker.component
 import Button from '../../../components/button/button.component';
 import Loader from '../../../components/loader/loader.component';
 import {createOrUpdateRecord} from '../../../configuration/api/api.functions';
+import {Color} from '../../../assets/color/color.js';
 
 import styles from './driving-license.style';
 
@@ -17,7 +17,6 @@ class DriverLicense extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      active: 0,
       isLoader: false,
       navigation: props.navigation,
       access_token: props.access_token,
@@ -36,9 +35,7 @@ class DriverLicense extends Component {
   }
 
   handleClick = () => {
-    const {active} = this.state;
-    if (active < 1) this.setState({active: active + 1});
-    else if (active === 1) this.submit();
+    this.submit();
   };
 
   submit = async () => {
@@ -55,7 +52,7 @@ class DriverLicense extends Component {
       drivingViolationType2,
       access_token,
       navigation,
-      recid
+      recid,
     } = this.state;
 
     let data = qs.stringify({
@@ -80,20 +77,6 @@ class DriverLicense extends Component {
       });
   };
 
-  subComponet = () => {
-    const {active} = this.state;
-    switch (active) {
-      case 0:
-        return this.basicInformation();
-        break;
-      case 1:
-        return this.drivingVoilations();
-        break;
-      case 2:
-        break;
-    }
-  };
-
   drivingVoilations = () => (
     <View>
       <View style={styles.inputContainer}>
@@ -103,6 +86,7 @@ class DriverLicense extends Component {
             this.setState({noOfDrivingVoilation})
           }
           keyboardType="default"
+          color={Color.salmon}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -112,6 +96,7 @@ class DriverLicense extends Component {
             this.setState({drivingViolationType1})
           }
           keyboardType="default"
+          color={Color.salmon}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -121,6 +106,7 @@ class DriverLicense extends Component {
             this.setState({drivingViolationType2})
           }
           keyboardType="default"
+          color={Color.salmon}
         />
       </View>
     </View>
@@ -133,12 +119,15 @@ class DriverLicense extends Component {
           placeholder="Name"
           onChangeText={(name) => this.setState({name})}
           keyboardType="default"
+          color={Color.salmon}
         />
       </View>
       <View style={styles.inputContainer}>
         <ModalPicker
           label={
-            this.state.countryOfIssue.length === 0 ? 'Country of Issue' : this.state.countryOfIssue
+            this.state.countryOfIssue.length === 0
+              ? 'Country of Issue'
+              : this.state.countryOfIssue
           }
           onPress={() =>
             this.setState({
@@ -154,6 +143,7 @@ class DriverLicense extends Component {
           placeholder="State of Issue"
           onChangeText={(stateOfIssue) => this.setState({stateOfIssue})}
           keyboardType="default"
+          color={Color.salmon}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -161,6 +151,7 @@ class DriverLicense extends Component {
           placeholder="License #"
           onChangeText={(license) => this.setState({license})}
           keyboardType="default"
+          color={Color.salmon}
         />
       </View>
       <View style={styles.miniContainer}>
@@ -169,6 +160,7 @@ class DriverLicense extends Component {
             placeholder="Date of Issue"
             onChangeText={(dateOfIssue) => this.setState({dateOfIssue})}
             keyboardType="default"
+            color={Color.salmon}
           />
         </View>
         <View style={styles.miniInputContainer}>
@@ -176,44 +168,25 @@ class DriverLicense extends Component {
             placeholder="Expiration Date"
             onChangeText={(expiryDate) => this.setState({expiryDate})}
             keyboardType="default"
+            color={Color.salmon}
           />
         </View>
       </View>
     </View>
   );
 
-  title = (active) => {
-    switch (active) {
-      case 0:
-        return 'Basic Information';
-        break;
-      case 1:
-        return 'Driving Violations';
-        break;
-    }
-  };
-
   render() {
-    const {active, isLoader} = this.state;
+    const {isLoader} = this.state;
     return (
       <View style={styles.container}>
-        <Text style={styles.title}>{this.title(active)}</Text>
-        {this.subComponet()}
+        <Text style={styles.title}>Basic Information</Text>
+        {this.basicInformation()}
+        <View style={styles.gap} />
+        <Text style={styles.title}>Driving Violations</Text>
+        {this.drivingVoilations()}
+        <View style={styles.gap} />
         <View style={styles.buttonContainer}>
-          <Button onPress={this.handleClick} title="Proceed to next" />
-        </View>
-        <View style={styles.inputContainer}>
-          <Dots
-            length={2}
-            active={active}
-            passiveColor="rgba(52, 105, 244, 0.2)"
-            activeColor="rgb(52,105,244)"
-            passiveDotWidth={8}
-            passiveDotHeight={8}
-            activeDotWidth={8}
-            activeDotHeight={8}
-            paddingVertical={10}
-          />
+          <Button onPress={this.handleClick} title="Submit" />
         </View>
         <Loader isLoader={isLoader} />
       </View>

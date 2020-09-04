@@ -15,7 +15,6 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 15,
     width: '100%',
     height: '100%',
-    backgroundColor: 'rgb(248, 249, 250)',
   },
   titleView: {
     width: '100%',

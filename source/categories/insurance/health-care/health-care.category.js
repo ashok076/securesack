@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import {View, ScrollView, Modal} from 'react-native';
 import {Text} from 'react-native-paper';
-import Dots from 'react-native-dots-pagination';
 import qs from 'qs';
 
 import InputTextDynamic from '../../../components/input-text-dynamic/input-text-dynamic.component.js';
@@ -12,6 +11,7 @@ import Loader from '../../../components/loader/loader.component';
 import ModalScreen from '../../../components/modal/modal.component';
 import {createOrUpdateRecord} from '../../../configuration/api/api.functions';
 import {insurance_type, plan_type, payment_due_type} from './health-care.list';
+import {Color} from '../../../assets/color/color.js';
 
 import styles from './health-care.style';
 
@@ -19,7 +19,6 @@ class HealthCare extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      active: 0,
       isLoader: false,
       navigation: props.navigation,
       access_token: props.access_token,
@@ -60,9 +59,7 @@ class HealthCare extends Component {
   }
 
   handleClick = () => {
-    const {active} = this.state;
-    if (active < 3) this.setState({active: active + 1});
-    else if (active === 3) this.submit();
+    this.submit();
   };
 
   submit = async () => {
@@ -139,30 +136,12 @@ class HealthCare extends Component {
       access_token,
     )
       .then((response) => {
-        this.setState({isLoader: false, active: 0});
+        this.setState({isLoader: false});
         navigation.goBack();
       })
       .catch((error) => {
         this.setState({isLoader: false});
       });
-  };
-
-  subComponet = () => {
-    const {active} = this.state;
-    switch (active) {
-      case 0:
-        return this.baiscInformation();
-        break;
-      case 1:
-        return this.additionalInformation();
-        break;
-      case 2:
-        return this.claimMailingAddress();
-        break;
-      case 3:
-        return this.dependentInfo();
-        break;
-    }
   };
 
   baiscInformation = () => (
@@ -174,6 +153,7 @@ class HealthCare extends Component {
             this.setState({insuranceProvider})
           }
           keyboardType="default"
+          color={Color.veryLightPink}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -211,6 +191,7 @@ class HealthCare extends Component {
           placeholder="Group ID Number"
           onChangeText={(groupIdNumber) => this.setState({groupIdNumber})}
           keyboardType="default"
+          color={Color.veryLightPink}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -218,6 +199,7 @@ class HealthCare extends Component {
           placeholder="Plan Coverage"
           onChangeText={(planCoverage) => this.setState({planCoverage})}
           keyboardType="default"
+          color={Color.veryLightPink}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -233,6 +215,7 @@ class HealthCare extends Component {
           placeholder="URL"
           onChangeText={(url) => this.setState({url})}
           keyboardType="default"
+          color={Color.veryLightPink}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -240,6 +223,7 @@ class HealthCare extends Component {
           placeholder="Username"
           onChangeText={(username) => this.setState({username})}
           keyboardType="default"
+          color={Color.veryLightPink}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -247,6 +231,7 @@ class HealthCare extends Component {
           placeholder="Password"
           onChangeText={(password) => this.setState({password})}
           keyboardType="default"
+          color={Color.veryLightPink}
         />
       </View>
     </View>
@@ -261,6 +246,7 @@ class HealthCare extends Component {
             this.setState({customerServiceNo})
           }
           keyboardType="default"
+          color={Color.veryLightPink}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -268,6 +254,7 @@ class HealthCare extends Component {
           placeholder="Email Provided"
           onChangeText={(emailProvided) => this.setState({emailProvided})}
           keyboardType="default"
+          color={Color.veryLightPink}
         />
       </View>
       <View style={styles.miniContainer}>
@@ -276,6 +263,7 @@ class HealthCare extends Component {
             placeholder="Effective From"
             onChangeText={(effectiveFrom) => this.setState({effectiveFrom})}
             keyboardType="default"
+          color={Color.veryLightPink}
           />
         </View>
         <View style={styles.miniInputContainer}>
@@ -283,6 +271,7 @@ class HealthCare extends Component {
             placeholder="Expiration"
             onChangeText={(expiration) => this.setState({expiration})}
             keyboardType="default"
+          color={Color.veryLightPink}
           />
         </View>
       </View>
@@ -314,6 +303,7 @@ class HealthCare extends Component {
           placeholder="From"
           icon="dollar-sign"
           onChangeText={(from) => this.setState({from})}
+          color={Color.veryLightPink}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -321,6 +311,7 @@ class HealthCare extends Component {
           placeholder="To"
           icon="dollar-sign"
           onChangeText={(to) => this.setState({to})}
+          color={Color.veryLightPink}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -328,6 +319,7 @@ class HealthCare extends Component {
           placeholder="Total"
           icon="dollar-sign"
           onChangeText={(total) => this.setState({total})}
+          color={Color.veryLightPink}
         />
       </View>
     </View>
@@ -340,6 +332,7 @@ class HealthCare extends Component {
           placeholder="Address Line 1"
           onChangeText={(address1) => this.setState({address1})}
           keyboardType="default"
+          color={Color.veryLightPink}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -347,6 +340,7 @@ class HealthCare extends Component {
           placeholder="Address Line 2"
           onChangeText={(address2) => this.setState({address2})}
           keyboardType="default"
+          color={Color.veryLightPink}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -354,6 +348,7 @@ class HealthCare extends Component {
           placeholder="City"
           onChangeText={(city) => this.setState({city})}
           keyboardType="default"
+          color={Color.veryLightPink}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -361,6 +356,7 @@ class HealthCare extends Component {
           placeholder="State"
           onChangeText={(state) => this.setState({state})}
           keyboardType="default"
+          color={Color.veryLightPink}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -368,6 +364,7 @@ class HealthCare extends Component {
           placeholder="Zip/Postal"
           onChangeText={(zip) => this.setState({zip})}
           keyboardType="default"
+          color={Color.veryLightPink}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -394,6 +391,7 @@ class HealthCare extends Component {
           placeholder="Dependent 1"
           onChangeText={(dependent1) => this.setState({dependent1})}
           keyboardType="default"
+          color={Color.veryLightPink}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -401,6 +399,7 @@ class HealthCare extends Component {
           placeholder="Dependent 2"
           onChangeText={(dependent2) => this.setState({dependent2})}
           keyboardType="default"
+          color={Color.veryLightPink}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -408,6 +407,7 @@ class HealthCare extends Component {
           placeholder="Dependent 3"
           onChangeText={(dependent3) => this.setState({dependent3})}
           keyboardType="default"
+          color={Color.veryLightPink}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -415,27 +415,11 @@ class HealthCare extends Component {
           placeholder="Dependent 4"
           onChangeText={(dependent4) => this.setState({dependent4})}
           keyboardType="default"
+          color={Color.veryLightPink}
         />
       </View>
     </View>
   );
-
-  title = (active) => {
-    switch (active) {
-      case 0:
-        return 'Basic Information';
-        break;
-      case 1:
-        return 'Additional Information';
-        break;
-      case 2:
-        return 'Claims Mailing Address';
-        break;
-      case 3:
-        return 'Dependent Information';
-        break;
-    }
-  };
 
   changeModalVisibility = (bool) => {
     this.setState({modal: bool});
@@ -446,26 +430,23 @@ class HealthCare extends Component {
   };
 
   render() {
-    const {active, isLoader, modal, array, key} = this.state;
+    const {isLoader, modal, array, key} = this.state;
     return (
       <View style={styles.container}>
-        <Text style={styles.title}>{this.title(active)}</Text>
-        {this.subComponet()}
+        <Text style={styles.title}>Basic Information</Text>
+        {this.baiscInformation()}
+        <View style={styles.gap}/>
+        <Text style={styles.title}>Additional Information</Text>
+        {this.additionalInformation()}
+        <View style={styles.gap}/>
+        <Text style={styles.title}>Claims Mailing Address</Text>
+        {this.claimMailingAddress()}
+        <View style={styles.gap}/>
+        <Text style={styles.title}>Dependent Information</Text>
+        {this.dependentInfo()}
+        <View style={styles.gap}/>
         <View style={styles.buttonContainer}>
-          <Button onPress={this.handleClick} title="Proceed to next" />
-        </View>
-        <View style={styles.inputContainer}>
-          <Dots
-            length={4}
-            active={active}
-            passiveColor="rgba(52, 105, 244, 0.2)"
-            activeColor="rgb(52,105,244)"
-            passiveDotWidth={8}
-            passiveDotHeight={8}
-            activeDotWidth={8}
-            activeDotHeight={8}
-            paddingVertical={10}
-          />
+          <Button onPress={this.handleClick} title="Submit" />
         </View>
         <Loader isLoader={isLoader} />
         <ModalScreen

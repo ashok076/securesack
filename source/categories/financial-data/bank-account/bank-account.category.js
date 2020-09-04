@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import {View, ScrollView, Modal} from 'react-native';
 import {Text, Portal} from 'react-native-paper';
-import Dots from 'react-native-dots-pagination';
 import qs from 'qs';
 
 import InputTextDynamic from '../../../components/input-text-dynamic/input-text-dynamic.component.js';
@@ -12,6 +11,7 @@ import Loader from '../../../components/loader/loader.component';
 import ModalScreen from '../../../components/modal/modal.component';
 import {createOrUpdateRecord} from '../../../configuration/api/api.functions';
 import {account_type, size, payment_due_type} from './bank-account.list';
+import {Color} from '../../../assets/color/color.js';
 
 import styles from './bank-account.style';
 
@@ -19,7 +19,6 @@ class BankAccounts extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      active: 0,
       access_token: props.access_token,
       navigation: props.navigation,
       countries: props.countries.country,
@@ -78,32 +77,6 @@ class BankAccounts extends Component {
     };
   }
 
-  subComponet = () => {
-    const {active} = this.state;
-    switch (active) {
-      case 0:
-        return this.basicInformation();
-        break;
-      case 1:
-        return this.atmCard();
-        break;
-      case 2:
-        return this.debitCard();
-        break;
-      case 3:
-        return this.securityQuestions();
-        break;
-      case 4:
-        return this.safetyDepositBox();
-        break;
-      case 5:
-        return this.additonalInformation();
-        break;
-      case 6:
-        break;
-    }
-  };
-
   basicInformation = () => (
     <View>
       <View style={styles.inputContainer}>
@@ -111,6 +84,8 @@ class BankAccounts extends Component {
           placeholder="Name"
           onChangeText={(name) => this.setState({name})}
           keyboardType="default"
+          value={this.state.name}
+          color={Color.lightishBlue}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -118,6 +93,8 @@ class BankAccounts extends Component {
           placeholder="Issuing Bank"
           onChangeText={(issuingBank) => this.setState({issuingBank})}
           keyboardType="default"
+          value={this.state.issuingBank}
+          color={Color.lightishBlue}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -140,7 +117,9 @@ class BankAccounts extends Component {
         <InputTextDynamic
           placeholder="Account Number"
           onChangeText={(accountNumber) => this.setState({accountNumber})}
-          keyboardType="default"
+          keyboardType="number-pad"
+          value={this.state.accountNumber}
+          color={Color.lightishBlue}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -149,7 +128,9 @@ class BankAccounts extends Component {
           onChangeText={(bankRoutingNumber) =>
             this.setState({bankRoutingNumber})
           }
-          keyboardType="default"
+          keyboardType="number-pad"
+          value={this.state.bankRoutingNumber}
+          color={Color.lightishBlue}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -157,6 +138,8 @@ class BankAccounts extends Component {
           placeholder="User Name"
           onChangeText={(userName) => this.setState({userName})}
           keyboardType="default"
+          value={this.state.userName}
+          color={Color.lightishBlue}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -164,6 +147,8 @@ class BankAccounts extends Component {
           placeholder="Password"
           onChangeText={(password) => this.setState({password})}
           keyboardType="default"
+          value={this.state.password}
+          color={Color.lightishBlue}
         />
       </View>
     </View>
@@ -175,14 +160,18 @@ class BankAccounts extends Component {
         <InputTextDynamic
           placeholder="ATM Card Number"
           onChangeText={(atm1CardNo) => this.setState({atm1CardNo})}
-          keyboardType="default"
+          keyboardType="number-pad"
+          value={this.state.atm1CardNo}
+          color={Color.lightishBlue}
         />
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="ATM Card PIN"
           onChangeText={(atm1CardPin) => this.setState({atm1CardPin})}
-          keyboardType="default"
+          keyboardType="number-pad"
+          value={this.state.atm1CardPin}
+          color={Color.lightishBlue}
         />
       </View>
       <View style={styles.miniContainer}>
@@ -191,13 +180,17 @@ class BankAccounts extends Component {
             placeholder="Expiration Date"
             onChangeText={(atm1CardExDate) => this.setState({atm1CardExDate})}
             keyboardType="default"
+            value={this.state.atm1CardExDate}
+            color={Color.lightishBlue}
           />
         </View>
         <View style={styles.miniInputContainer}>
           <InputTextDynamic
             placeholder="CVV"
             onChangeText={(atm1CVV) => this.setState({atm1CVV})}
-            keyboardType="default"
+            keyboardType="number-pad"
+            value={this.state.atm1CVV}
+            color={Color.lightishBlue}
           />
         </View>
       </View>
@@ -205,14 +198,18 @@ class BankAccounts extends Component {
         <InputTextDynamic
           placeholder="ATM Card Number"
           onChangeText={(atm2CardNo) => this.setState({atm2CardNo})}
-          keyboardType="default"
+          keyboardType="number-pad"
+          value={this.state.atm2CardNo}
+          color={Color.lightishBlue}
         />
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="ATM Card PIN"
           onChangeText={(atm2CardPin) => this.setState({atm2CardPin})}
-          keyboardType="default"
+          keyboardType="number-pad"
+          value={this.state.atm2CardPin}
+          color={Color.lightishBlue}
         />
       </View>
       <View style={styles.miniContainer}>
@@ -221,13 +218,17 @@ class BankAccounts extends Component {
             placeholder="Expiration Date"
             onChangeText={(atm2CardExDate) => this.setState({atm2CardExDate})}
             keyboardType="default"
+            value={this.state.atm2CardExDate}
+            color={Color.lightishBlue}
           />
         </View>
         <View style={styles.miniInputContainer}>
           <InputTextDynamic
             placeholder="CVV"
             onChangeText={(atm2CVV) => this.setState({atm2CVV})}
-            keyboardType="default"
+            keyboardType="number-pad"
+            value={this.state.atm2CVV}
+            color={Color.lightishBlue}
           />
         </View>
       </View>
@@ -240,14 +241,18 @@ class BankAccounts extends Component {
         <InputTextDynamic
           placeholder="Debit Card Number"
           onChangeText={(debit1CardNo) => this.setState({debit1CardNo})}
-          keyboardType="default"
+          keyboardType="number-pad"
+          value={this.state.debit1CardNo}
+          color={Color.lightishBlue}
         />
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Debit Card PIN"
           onChangeText={(debit1CardPin) => this.setState({debit1CardPin})}
-          keyboardType="default"
+          keyboardType="number-pad"
+          value={this.state.debit1CardPin}
+          color={Color.lightishBlue}
         />
       </View>
       <View style={styles.miniContainer}>
@@ -258,13 +263,17 @@ class BankAccounts extends Component {
               this.setState({debit1CardExDate})
             }
             keyboardType="default"
+            value={this.state.debit1CardExDate}
+            color={Color.lightishBlue}
           />
         </View>
         <View style={styles.miniInputContainer}>
           <InputTextDynamic
             placeholder="CVV"
             onChangeText={(debit1CVV) => this.setState({debit1CVV})}
-            keyboardType="default"
+            keyboardType="number-pad"
+            value={this.state.debit1CVV}
+            color={Color.lightishBlue}
           />
         </View>
       </View>
@@ -272,14 +281,18 @@ class BankAccounts extends Component {
         <InputTextDynamic
           placeholder="Debit Card Number"
           onChangeText={(debit2CardNo) => this.setState({debit2CardNo})}
-          keyboardType="default"
+          keyboardType="number-pad"
+          value={this.state.debit2CardNo}
+          color={Color.lightishBlue}
         />
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Debit Card PIN"
           onChangeText={(debit2CardPin) => this.setState({debit2CardPin})}
-          keyboardType="default"
+          keyboardType="number-pad"
+          value={this.state.debit2CardPin}
+          color={Color.lightishBlue}
         />
       </View>
       <View style={styles.miniContainer}>
@@ -290,13 +303,17 @@ class BankAccounts extends Component {
               this.setState({debit2CardExDate})
             }
             keyboardType="default"
+            value={this.state.debit2CardExDate}
+            color={Color.lightishBlue}
           />
         </View>
         <View style={styles.miniInputContainer}>
           <InputTextDynamic
             placeholder="CVV"
             onChangeText={(debit2CVV) => this.setState({debit2CVV})}
-            keyboardType="default"
+            keyboardType="number-pad"
+            value={this.state.debit2CVV}
+            color={Color.lightishBlue}
           />
         </View>
       </View>
@@ -310,6 +327,8 @@ class BankAccounts extends Component {
           placeholder="Security Question 1"
           onChangeText={(securityQ1) => this.setState({securityQ1})}
           keyboardType="default"
+          value={this.state.securityQ1}
+          color={Color.lightishBlue}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -317,6 +336,8 @@ class BankAccounts extends Component {
           placeholder="Answer 1"
           onChangeText={(securityA1) => this.setState({securityA1})}
           keyboardType="default"
+          value={this.state.securityA1}
+          color={Color.lightishBlue}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -324,6 +345,8 @@ class BankAccounts extends Component {
           placeholder="Security Question 2"
           onChangeText={(securityQ2) => this.setState({securityQ2})}
           keyboardType="default"
+          value={this.state.securityQ2}
+          color={Color.lightishBlue}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -331,6 +354,8 @@ class BankAccounts extends Component {
           placeholder="Answer 2"
           onChangeText={(securityA2) => this.setState({securityA2})}
           keyboardType="default"
+          value={this.state.securityA2}
+          color={Color.lightishBlue}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -338,6 +363,8 @@ class BankAccounts extends Component {
           placeholder="Security Question 3"
           onChangeText={(securityQ3) => this.setState({securityQ3})}
           keyboardType="default"
+          value={this.state.securityQ3}
+          color={Color.lightishBlue}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -345,6 +372,8 @@ class BankAccounts extends Component {
           placeholder="Answer 3"
           onChangeText={(securityA3) => this.setState({securityA3})}
           keyboardType="default"
+          value={this.state.securityA3}
+          color={Color.lightishBlue}
         />
       </View>
     </View>
@@ -357,7 +386,9 @@ class BankAccounts extends Component {
           <InputTextDynamic
             placeholder="Box Number"
             onChangeText={(boxNumber1) => this.setState({boxNumber1})}
-            keyboardType="default"
+            keyboardType="number-pad"
+            value={this.state.boxNumber1}
+            color={Color.lightishBlue}
           />
         </View>
         <View style={styles.miniInputContainer}>
@@ -375,6 +406,8 @@ class BankAccounts extends Component {
             placeholder="Opened on"
             onChangeText={(openedOn1) => this.setState({openedOn1})}
             keyboardType="default"
+            value={this.state.openedOn1}
+            color={Color.lightishBlue}
           />
         </View>
         <View style={styles.miniInputContainer}>
@@ -407,7 +440,9 @@ class BankAccounts extends Component {
           <InputTextDynamic
             placeholder="Box Number"
             onChangeText={(boxNumber2) => this.setState({boxNumber2})}
-            keyboardType="default"
+            keyboardType="number-pad"
+            value={this.state.boxNumber2}
+            color={Color.lightishBlue}
           />
         </View>
         <View style={styles.miniInputContainer}>
@@ -425,6 +460,8 @@ class BankAccounts extends Component {
             placeholder="Opened on"
             onChangeText={(openedOn2) => this.setState({openedOn2})}
             keyboardType="default"
+            value={this.state.openedOn2}
+            color={Color.lightishBlue}
           />
         </View>
         <View style={styles.miniInputContainer}>
@@ -462,6 +499,8 @@ class BankAccounts extends Component {
           placeholder="Address Line 1"
           onChangeText={(address1) => this.setState({address1})}
           keyboardType="default"
+          value={this.state.address1}
+          color={Color.lightishBlue}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -469,6 +508,8 @@ class BankAccounts extends Component {
           placeholder="Address Line 2"
           onChangeText={(address2) => this.setState({address2})}
           keyboardType="default"
+          value={this.state.address2}
+          color={Color.lightishBlue}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -476,6 +517,8 @@ class BankAccounts extends Component {
           placeholder="City"
           onChangeText={(city) => this.setState({city})}
           keyboardType="default"
+          value={this.state.city}
+          color={Color.lightishBlue}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -483,21 +526,23 @@ class BankAccounts extends Component {
           placeholder="State"
           onChangeText={(state) => this.setState({state})}
           keyboardType="default"
+          value={this.state.state}
+          color={Color.lightishBlue}
         />
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Zip/Postal"
           onChangeText={(zip) => this.setState({zip})}
-          keyboardType="default"
+          keyboardType="number-pad"
+          value={this.state.zip}
+          color={Color.lightishBlue}
         />
       </View>
       <View style={styles.inputContainer}>
         <ModalPicker
           label={
-            this.state.country.length === 0
-              ? 'Country'
-              : this.state.country
+            this.state.country.length === 0 ? 'Country' : this.state.country
           }
           onPress={() =>
             this.setState({
@@ -511,40 +556,8 @@ class BankAccounts extends Component {
     </View>
   );
 
-  title = (active) => {
-    switch (active) {
-      case 0:
-        return 'Basic Information';
-        break;
-      case 1:
-        return 'ATM Card';
-        break;
-      case 2:
-        return 'Debit Card';
-        break;
-      case 3:
-        return 'Security Questions';
-        break;
-      case 4:
-        return 'Safety Deposit Box';
-        break;
-      case 5:
-        return 'Additional Information';
-        break;
-      case 6:
-        return 'Notes';
-        break;
-    }
-  };
-
   handleClick = () => {
-    const {active} = this.state;
-    console.log('Clicked');
-    if (active < 5) {
-      this.setState({active: active + 1});
-    } else if (active === 5) {
-      this.submit();
-    }
+    this.submit();
   };
 
   submit = async () => {
@@ -647,19 +660,14 @@ class BankAccounts extends Component {
       'BankBranchAddress-Country': country,
       AccountType: accountType,
     });
-    await createOrUpdateRecord('BankAccounts', recid , data, access_token)
+    await createOrUpdateRecord('BankAccounts', recid, data, access_token)
       .then((response) => {
-        this.setState({isLoader: false, active: 0});
+        this.setState({isLoader: false});
         navigation.goBack();
       })
       .catch((error) => {
         this.setState({isLoader: false});
       });
-  };
-
-  buttonTitle = (active) => {
-    if (active === 5) return 'Submit';
-    else return 'Proceed to next account';
   };
 
   changeModalVisibility = (bool) => {
@@ -671,26 +679,29 @@ class BankAccounts extends Component {
   };
 
   render() {
-    const {active, isLoader, modal, array, key} = this.state;
+    const {isLoader, modal, array, key} = this.state;
     return (
       <View style={styles.container}>
-        <Text style={styles.title}>{this.title(active)}</Text>
-        {this.subComponet()}
+        <Text style={styles.title}>Basic Information</Text>
+        {this.basicInformation()}
+        <View style={styles.gap} />
+        <Text style={styles.title}>ATM Card</Text>
+        {this.atmCard()}
+        <View style={styles.gap} />
+        <Text style={styles.title}>Debit Card</Text>
+        {this.debitCard()}
+        <View style={styles.gap} />
+        <Text style={styles.title}>Security Questions</Text>
+        {this.securityQuestions()}
+        <View style={styles.gap} />
+        <Text style={styles.title}>Safety Deposit Box</Text>
+        {this.safetyDepositBox()}
+        <View style={styles.gap} />
+        <Text style={styles.title}>Additional Information</Text>
+        {this.additonalInformation()}
+        <View style={styles.gap} />
         <View style={styles.buttonContainer}>
-          <Button onPress={this.handleClick} title={this.buttonTitle(active)} />
-        </View>
-        <View style={styles.inputContainer}>
-          <Dots
-            length={6}
-            active={active}
-            passiveColor="rgba(52, 105, 244, 0.2)"
-            activeColor="rgb(52,105,244)"
-            passiveDotWidth={8}
-            passiveDotHeight={8}
-            activeDotWidth={8}
-            activeDotHeight={8}
-            paddingVertical={10}
-          />
+          <Button onPress={this.handleClick} title="Submit" />
         </View>
         <Loader isLoader={isLoader} />
         <ModalScreen

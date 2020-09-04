@@ -11,10 +11,10 @@ const styles = {
     color: 'rgb(33, 47, 60)',
   },
   inputContainer: {
-    paddingTop: 20,
+    paddingTop: 1,
   },
   miniContainer: {
-    paddingTop: 20,
+    paddingTop: 1,
     flexDirection: 'row',
     flex: 2,
     justifyContent: 'space-between',
@@ -23,8 +23,11 @@ const styles = {
     flex: 1,
   },
   buttonContainer: {
-    paddingTop: 20,
+    paddingTop: 5,
   },
+  gap: {
+    marginTop: 50
+  }
 };
 
 export default styles;
