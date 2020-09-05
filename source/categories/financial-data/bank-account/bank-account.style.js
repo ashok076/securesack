@@ -11,7 +11,7 @@ const styles = {
     color: 'rgb(33, 47, 60)',
   },
   inputContainer: {
-    paddingTop: 1,
+    height: 65,
   },
   miniContainer: {
     paddingTop: 1,
@@ -21,13 +21,14 @@ const styles = {
   },
   miniInputContainer: {
     flex: 1,
+    height: 65,
   },
   buttonContainer: {
     paddingTop: 5,
   },
   gap: {
     marginTop: 50
-  }
+  },
 };
 
 export default styles;

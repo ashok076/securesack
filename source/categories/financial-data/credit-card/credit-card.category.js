@@ -375,6 +375,7 @@ class CreditCard extends Component {
           onChangeText={this.handleFirstNaame}
           icon="dollar-sign"
           keyboardType="default"
+          color={Color.lightishBlue}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -391,6 +392,7 @@ class CreditCard extends Component {
           onChangeText={this.handleFirstNaame}
           icon="percent"
           keyboardType="default"
+          color={Color.lightishBlue}
         />
       </View>
     </View>

@@ -243,6 +243,7 @@ class Brokerages extends Component {
           }
           icon="dollar-sign"
           keyboardType="default"
+          color={Color.lightishBlue}
         />
       </View>
       <View style={styles.miniContainer}>

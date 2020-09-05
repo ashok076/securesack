@@ -111,6 +111,7 @@ class BankAccounts extends Component {
               key: 'accountType',
             })
           }
+          color={Color.lightishBlue}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -397,6 +398,7 @@ class BankAccounts extends Component {
             onPress={() =>
               this.setState({modal: true, array: size, key: 'size1'})
             }
+          color={Color.lightishBlue}
           />
         </View>
       </View>
@@ -416,6 +418,7 @@ class BankAccounts extends Component {
             onChangeText={(interestRate1) => this.setState({interestRate1})}
             icon="dollar-sign"
             keyboardType="default"
+            color={Color.lightishBlue}
           />
         </View>
       </View>
@@ -433,6 +436,7 @@ class BankAccounts extends Component {
               key: 'paymentDueType1',
             })
           }
+          color={Color.lightishBlue}
         />
       </View>
       <View style={styles.miniContainer}>
@@ -451,6 +455,7 @@ class BankAccounts extends Component {
             onPress={() =>
               this.setState({modal: true, array: size, key: 'size2'})
             }
+          color={Color.lightishBlue}
           />
         </View>
       </View>
@@ -470,6 +475,7 @@ class BankAccounts extends Component {
             onChangeText={(interestRate2) => this.setState({interestRate2})}
             icon="dollar-sign"
             keyboardType="default"
+            color={Color.lightishBlue}
           />
         </View>
       </View>
@@ -487,6 +493,7 @@ class BankAccounts extends Component {
               key: 'paymentDueType2',
             })
           }
+          color={Color.lightishBlue}
         />
       </View>
     </View>
@@ -551,6 +558,7 @@ class BankAccounts extends Component {
               key: 'country',
             })
           }
+          color={Color.lightishBlue}
         />
       </View>
     </View>

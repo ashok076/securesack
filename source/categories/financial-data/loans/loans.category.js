@@ -136,6 +136,7 @@ class Loans extends Component {
           placeholder="Loan Amount"
           icon="dollar-sign"
           onChangeText={(loanAmnt) => this.setState({loanAmnt})}
+          color={Color.lightishBlue}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -144,6 +145,7 @@ class Loans extends Component {
           onChangeText={(interestRate) => this.setState({interestRate})}
           icon="percent"
           keyboardType="default"
+          color={Color.lightishBlue}
         />
       </View>
       <View style={styles.inputContainer}>
