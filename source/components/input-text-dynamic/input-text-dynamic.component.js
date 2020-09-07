@@ -1,6 +1,6 @@
 import React from 'react';
 import {View} from 'react-native';
-import {Content, Form, Item, Input, Label} from 'native-base';
+import {TextInput} from 'react-native-paper';
 
 import styles from './input-text-dynamic.style.js';
 
@@ -12,19 +12,17 @@ const InputTextDynamic = ({
   editable,
   color,
 }) => (
-  <Form>
-    <Item floatingLabel style={{borderColor: color}}>
-      <Label style={{color: color}}>{placeholder}</Label>
-      <Input
-        onChangeText={onChangeText}
-        editable={editable}
-        value={value}
-        keyboardType={keyboardType}
-        inputHeightBase={10}
-        style={[styles.input]}
-        selectionColor={color}
-      />
-    </Item>
-  </Form>
+  <View>
+    <TextInput
+      label={placeholder}
+      value={value}
+      onChangeText={onChangeText}
+      keyboardType={keyboardType}
+      disabled={editable}
+      style={styles.input}
+      selectionColor={color}
+      theme={{colors:{primary: color}}}
+    />
+  </View>
 );
 export default InputTextDynamic;

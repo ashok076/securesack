@@ -1,7 +1,7 @@
 import React from 'react';
 import {View} from 'react-native';
-import {Content, Form, Item, Input, Label} from 'native-base';
 import Icon from 'react-native-vector-icons/Feather';
+import {TextInput, PaperProvider} from 'react-native-paper';
 
 import styles from './input-text-icon-dynamic.style';
 
@@ -15,20 +15,19 @@ const InputTextIconDynamic = ({
   color,
   keyboardType,
 }) => (
-  <Form>
-    <Item floatingLabel style={{borderColor: color}}>
-      <Label style={{color: color}}>{placeholder}</Label>
-      <Input
-        onChangeText={onChangeText}
-        editable={editable}
-        value={value}
-        keyboardType={keyboardType}
-        inputHeightBase={10}
-        style={[styles.input]}
-        selectionColor={color}
-      />
-    </Item>
-  </Form>
+  <View>
+    <TextInput
+      label={placeholder}
+      value={value}
+      onChangeText={onChangeText}
+      keyboardType={keyboardType}
+      disabled={editable}
+      style={styles.input}
+      selectionColor={color}
+      theme={{colors:{primary: color}}}
+      right={<Icon name={icon}/>}
+    />
+  </View>
 );
 
 export default InputTextIconDynamic;
