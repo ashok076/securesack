@@ -36,3 +36,18 @@ export const country = async (access_token, lookupType) => {
       throw error;
     });
 };
+
+export const viewRecords = async (datatype, recid, access_token) => {
+  console.log('View Rec: ', datatype, recid, access_token);
+  return axios(`${BASE_URL}/data/${datatype}/${recid}`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      Authorization: 'Bearer ' + access_token,
+    },
+  })
+    .then((response) => response.data)
+    .catch((error) => {
+      throw error;
+    });
+};

@@ -9,54 +9,110 @@ import ModalPicker from '../../../components/modal-picker/modal-picker.component
 import Button from '../../../components/button/button.component';
 import Loader from '../../../components/loader/loader.component';
 import ModalScreen from '../../../components/modal/modal.component';
-import {createOrUpdateRecord} from '../../../configuration/api/api.functions';
+import {
+  createOrUpdateRecord,
+  viewRecords,
+} from '../../../configuration/api/api.functions';
 import {term, refiance_repayment} from './mortgages.list';
 import {Color} from '../../../assets/color/color.js';
 
 import styles from './mortgages.style';
 
 class Mortgages extends Component {
+  initialState = {
+    isLoader: false,
+    modal: false,
+    array: [],
+    key: '',
+    name: '',
+    loanNo: '',
+    issuer: '',
+    loanAmnt: '',
+    mortgageRate: '',
+    effectivefrom: '',
+    endsOn: '',
+    url: '',
+    username: '',
+    password: '',
+    securityQ1: '',
+    securityA1: '',
+    securityQ2: '',
+    securityA2: '',
+    securityQ3: '',
+    securityA3: '',
+    address1: '',
+    address2: '',
+    city: '',
+    state: '',
+    zip: '',
+    country: '',
+    term: '',
+    refiance: '',
+    repayment: '',
+  };
+
   constructor(props) {
     super(props);
     this.state = {
-      isLoader: false,
-      modal: false,
-      array: [],
-      key: '',
-      navigation: props.navigation,
-      access_token: props.access_token,
-      countries: props.countries.country,
-      recid: props.recid,
-      name: '',
-      loanNo: '',
-      issuer: '',
-      loanAmnt: '',
-      mortgageRate: '',
-      effectivefrom: '',
-      endsOn: '',
-      url: '',
-      username: '',
-      password: '',
-      securityQ1: '',
-      securityA1: '',
-      securityQ2: '',
-      securityA2: '',
-      securityQ3: '',
-      securityA3: '',
-      address1: '',
-      address2: '',
-      city: '',
-      state: '',
-      zip: '',
-      country: '',
-      term: '',
-      refiance: '',
-      repayment: '',
+      ...this.initialState,
     };
   }
 
   handleClick = () => {
     this.submit();
+  };
+
+  componentDidMount() {
+    const {navigation} = this.props;
+    this.didBlurSubscription = navigation.addListener('focus', () => {
+      this.setState(this.initialState);
+      this.viewRecord();
+    });
+  }
+
+  viewRecord = async () => {
+    const {recid, access_token} = this.props;
+    this.setState({isLoader: true});
+    await viewRecords('Mortgage', recid, access_token)
+      .then((response) => {
+        console.log('View res: ', response);
+        this.setViewData(response.data);
+      })
+      .catch((error) => {
+        console.log('Error: ', error);
+        this.setState({isLoader: false});
+      });
+  };
+
+  setViewData = (data) => {
+    this.setState({
+      name: data.Name,
+      loanNo: data.LoanNumber,
+      issuer: data.Issuer,
+      loanAmnt: data.LoanAmount,
+      mortgageRate: data.InterestRate,
+      effectivefrom: data.StartDate,
+      endsOn: Edata.ndDate,
+      url: data.URL,
+      username: data.WebSiteAccountNumber,
+      password: data.WebSitePassword,
+      securityQ1: data.SecurityQuestion1,
+      securityA1: data.SecurityAnswer1,
+      securityQ2: data.SecurityQuestion2,
+      securityA2: data.SecurityAnswer2,
+      securityQ3: data.SecurityQuestion3,
+      securityA3: data.SecurityAnswer3,
+      address1: data.PaymentMailingAddress.Line1,
+      address2: data.PaymentMailingAddress.Line2,
+      city: data.PaymentMailingAddress.City,
+      state: data.PaymentMailingAddress.State,
+      zip: data.PaymentMailingAddress.Zip,
+      country: data.PaymentMailingAddress.Country,
+      term: data.Term,
+      refiance: data.Refinanced ? 'Yes' : 'No',
+      repayment: data.repayment ? 'Yes' : 'No',
+      isLoader: false,
+    });
   };
 
   submit = async () => {
@@ -83,13 +139,12 @@ class Mortgages extends Component {
       city,
       state,
       zip,
-      access_token,
-      navigation,
-      recid,
       term,
       refiance,
       repayment,
     } = this.state;
+
+    const {access_token, navigation, recid} = this.props;
 
     let data = qs.stringify({
       Name: name,
@@ -137,6 +192,7 @@ class Mortgages extends Component {
           onChangeText={(name) => this.setState({name})}
           keyboardType="default"
           color={Color.lightishBlue}
+          value={this.state.name}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -145,6 +201,7 @@ class Mortgages extends Component {
           onChangeText={(loanNo) => this.setState({loanNo})}
           keyboardType="default"
           color={Color.lightishBlue}
+          value={this.state.loanNo}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -153,6 +210,7 @@ class Mortgages extends Component {
           onChangeText={(issuer) => this.setState({issuer})}
           keyboardType="default"
           color={Color.lightishBlue}
+          value={this.state.issuer}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -173,6 +231,7 @@ class Mortgages extends Component {
           icon="dollar-sign"
           onChangeText={(loanAmnt) => this.setState({loanAmnt})}
           color={Color.lightishBlue}
+          value={this.state.loanAmnt}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -181,7 +240,8 @@ class Mortgages extends Component {
           onChangeText={(mortgageRate) => this.setState({mortgageRate})}
           icon="percent"
           keyboardType="default"
-          color={Color.lightishBlue} 
+          color={Color.lightishBlue}
+          value={this.state.mortgageRate}
         />
       </View>
       <View style={styles.miniContainer}>
@@ -190,7 +250,8 @@ class Mortgages extends Component {
             placeholder="Effective From"
             onChangeText={(effectivefrom) => this.setState({effectivefrom})}
             keyboardType="default"
-          color={Color.lightishBlue}
+            color={Color.lightishBlue}
+          value={this.state.effectivefrom}
           />
         </View>
         <View style={styles.miniInputContainer}>
@@ -198,7 +259,8 @@ class Mortgages extends Component {
             placeholder="Ends On"
             onChangeText={(endsOn) => this.setState({endsOn})}
             keyboardType="default"
-          color={Color.lightishBlue}
+            color={Color.lightishBlue}
+          value={this.state.endsOn}
           />
         </View>
       </View>
@@ -208,6 +270,7 @@ class Mortgages extends Component {
           onChangeText={(url) => this.setState({url})}
           keyboardType="default"
           color={Color.lightishBlue}
+          value={this.state.url}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -216,6 +279,7 @@ class Mortgages extends Component {
           onChangeText={(username) => this.setState({username})}
           keyboardType="default"
           color={Color.lightishBlue}
+          value={this.state.username}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -224,6 +288,7 @@ class Mortgages extends Component {
           onChangeText={(password) => this.setState({password})}
           keyboardType="default"
           color={Color.lightishBlue}
+          value={this.state.password}
         />
       </View>
     </View>
@@ -237,6 +302,7 @@ class Mortgages extends Component {
           onChangeText={(securityQ1) => this.setState({securityQ1})}
           keyboardType="default"
           color={Color.lightishBlue}
+          value={this.state.securityQ1}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -245,6 +311,7 @@ class Mortgages extends Component {
           onChangeText={(securityA1) => this.setState({securityA1})}
           keyboardType="default"
           color={Color.lightishBlue}
+          value={this.state.securityA1}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -253,6 +320,7 @@ class Mortgages extends Component {
           onChangeText={(securityQ2) => this.setState({securityQ2})}
           keyboardType="default"
           color={Color.lightishBlue}
+          value={this.state.securityQ2}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -261,6 +329,7 @@ class Mortgages extends Component {
           onChangeText={(securityA2) => this.setState({securityA2})}
           keyboardType="default"
           color={Color.lightishBlue}
+          value={this.state.securityA2}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -269,6 +338,7 @@ class Mortgages extends Component {
           onChangeText={(securityQ3) => this.setState({securityQ3})}
           keyboardType="default"
           color={Color.lightishBlue}
+          value={this.state.securityQ3}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -277,6 +347,7 @@ class Mortgages extends Component {
           onChangeText={(securityA3) => this.setState({securityA3})}
           keyboardType="default"
           color={Color.lightishBlue}
+          value={this.state.securityA3}
         />
       </View>
     </View>
@@ -290,6 +361,7 @@ class Mortgages extends Component {
           onChangeText={(address1) => this.setState({address1})}
           keyboardType="default"
           color={Color.lightishBlue}
+          value={this.state.address1}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -298,6 +370,7 @@ class Mortgages extends Component {
           onChangeText={(address2) => this.setState({address2})}
           keyboardType="default"
           color={Color.lightishBlue}
+          value={this.state.address2}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -306,6 +379,7 @@ class Mortgages extends Component {
           onChangeText={(city) => this.setState({city})}
           keyboardType="default"
           color={Color.lightishBlue}
+          value={this.state.city}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -314,6 +388,7 @@ class Mortgages extends Component {
           onChangeText={(state) => this.setState({state})}
           keyboardType="default"
           color={Color.lightishBlue}
+          value={this.state.state}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -322,6 +397,7 @@ class Mortgages extends Component {
           onChangeText={(zip) => this.setState({zip})}
           keyboardType="default"
           color={Color.lightishBlue}
+          value={this.state.zip}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -332,7 +408,7 @@ class Mortgages extends Component {
           onPress={() =>
             this.setState({
               modal: true,
-              array: this.state.countries,
+              array: this.props.countries.country,
               key: 'country',
             })
           }

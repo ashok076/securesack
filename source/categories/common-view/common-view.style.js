@@ -22,14 +22,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     padding: 15,
   },
-  title: {
-    fontFamily: 'PublicSans-Bold',
-    fontSize: 20,
-    marginLeft: 15,
-  },
-  rowObject: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
 });
 export default styles;

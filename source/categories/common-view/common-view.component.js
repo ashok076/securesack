@@ -1,14 +1,8 @@
 import React from 'react';
-import {
-  View,
-  ImageBackground,
-  SafeAreaView,
-  ScrollView,
-  TouchableOpacity,
-} from 'react-native';
-import {Title} from 'react-native-paper';
+import {View, ImageBackground, SafeAreaView, ScrollView, Text} from 'react-native';
 import {connect} from 'react-redux';
-import Icons from 'react-native-vector-icons/MaterialIcons';
+
+import TitleView from '../../components/title-view/title-view.component';
 
 //financial-data
 import BankAccounts from '../financial-data/bank-account/bank-account.category';
@@ -45,7 +39,7 @@ import Recipes from '../personal-organizer/recipes/recipes.category.js';
 import styles from './common-view.style';
 
 const CommonView = ({navigation, route, userData, country}) => {
-  const {title, type, background, recid, theme} = route.params;
+  const {title, type, background, recid, theme, mode} = route.params;
   console.log('Themeee: ', theme);
   let access_token = null;
   if (userData && userData.userData)
@@ -54,29 +48,16 @@ const CommonView = ({navigation, route, userData, country}) => {
     <SafeAreaView style={styles.outerView}>
       <ImageBackground source={background} style={styles.backgroundImage}>
         <View style={styles.titleView}>
-          <View style={styles.rowObject}>
-            <TouchableOpacity onPress={() => navigation.goBack()}>
-              <Icons
-                name="arrow-back"
-                color={
-                  theme !== 'dark' ? 'rgb(255, 255, 255)' : 'rgb(33, 47, 60)'
-                }
-                size={24}
-              />
-            </TouchableOpacity>
-            <Title
-              style={[
-                styles.title,
-                {
-                  color:
-                    theme !== 'dark' ? 'rgb(255, 255, 255)' : 'rgb(33, 47, 60)',
-                },
-              ]}>
-              Add {title}
-            </Title>
-          </View>
+          <TitleView navigation={navigation} mode={mode} theme={theme} title={title} type={type}/>
         </View>
-        <ScrollView style={[styles.outerContainerView, {backgroundColor: theme !== 'dark' ? 'rgb(255, 255, 255)' : 'rgb(33, 47, 60)'}]}>
+        <ScrollView
+          style={[
+            styles.outerContainerView,
+            {
+              backgroundColor:
+                theme !== 'dark' ? 'rgb(255, 255, 255)' : 'rgb(33, 47, 60)',
+            },
+          ]}>
           {subView(type, access_token, navigation, country, recid)}
         </ScrollView>
       </ImageBackground>

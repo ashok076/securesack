@@ -64,9 +64,12 @@ class FinancialDataType extends Component {
     this.setState({dataType});
   };
 
-  renderTitleSubtitle = (item, type) => {
+  renderTitleSubtitle = (item, type, title) => {
+    console.log('Items: ', item);
     return (
-      <TouchableRipple rippleColor="rgba(0, 0, 0, .32)" onPress={() => this.navigation('BankAccountView','Bank Accounts', '')}>
+      <TouchableRipple
+        rippleColor="rgba(0, 0, 0, .32)"
+        onPress={() => this.navigation(type, title, item.id, 'View')}>
         <View>
           <View style={styles.titleSubTitle}>
             <Title style={styles.catTitle}>{this.getTitle(type, item)}</Title>
@@ -134,13 +137,13 @@ class FinancialDataType extends Component {
           <Text style={styles.title}>{title}</Text>
           <TouchableOpacity
             style={styles.addView}
-            onPress={() => this.navigation(type, title, `__NEW__`)}>
+            onPress={() => this.navigation(type, title, `__NEW__`, 'Add')}>
             <Icon name="plus" color="rgb(33, 47, 60)" size={20} />
           </TouchableOpacity>
         </View>
         <FlatList
           data={category === undefined ? category : category.slice(0, viewAll)}
-          renderItem={({item}) => this.renderTitleSubtitle(item, type)}
+          renderItem={({item}) => this.renderTitleSubtitle(item, type, title)}
           maxToRenderPerBatch={viewAll}
         />
         {this.viewAll(category)}
@@ -179,7 +182,7 @@ class FinancialDataType extends Component {
     );
   };
 
-  navigation = (type, title, recid) => {
+  navigation = (type, title, recid, mode) => {
     const {navigation} = this.props;
     navigation.navigate('CommonView', {
       type: type,
@@ -187,7 +190,8 @@ class FinancialDataType extends Component {
       title: title,
       background: require('../../assets/jpg-images/Financial-Data-Background/financial-data-background.jpg'),
       recid: recid,
-      theme: 'light'
+      theme: 'light',
+      mode: mode,
     });
   };
 

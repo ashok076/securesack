@@ -6,7 +6,8 @@ const styles = StyleSheet.create({
     fontFamily: 'PublicSans-Regular',
     width: '100%',
     fontSize: 15,
-    backgroundColor: '#80000000'
+    backgroundColor: '#80000000',
+    paddingHorizontal: 0
   },
 });
 

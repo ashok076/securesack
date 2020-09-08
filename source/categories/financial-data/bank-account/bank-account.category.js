@@ -9,73 +9,150 @@ import ModalPicker from '../../../components/modal-picker/modal-picker.component
 import Button from '../../../components/button/button.component';
 import Loader from '../../../components/loader/loader.component';
 import ModalScreen from '../../../components/modal/modal.component';
-import {createOrUpdateRecord} from '../../../configuration/api/api.functions';
+import {
+  createOrUpdateRecord,
+  viewRecords,
+} from '../../../configuration/api/api.functions';
 import {account_type, size, payment_due_type} from './bank-account.list';
 import {Color} from '../../../assets/color/color.js';
+import {connect} from 'react-redux';
 
 import styles from './bank-account.style';
 
 class BankAccounts extends Component {
+  initialState = {
+    isLoader: false,
+    modal: false,
+    array: [],
+    key: '',
+    title: '',
+    dataType: '',
+    name: '',
+    issuingBank: '',
+    accountNumber: '',
+    bankRoutingNumber: '',
+    userName: '',
+    password: '',
+    atm1CardNo: '',
+    atm1CardPin: '',
+    atm1CardExDate: '',
+    atm1CVV: '',
+    atm2CardNo: '',
+    atm2CardPin: '',
+    atm2CardExDate: '',
+    atm2CVV: '',
+    debit1CardNo: '',
+    debit1CardPin: '',
+    debit1CardExDate: '',
+    debit1CVV: '',
+    debit2CardNo: '',
+    debit2CardPin: '',
+    debit2CardExDate: '',
+    debit2CVV: '',
+    securityQ1: '',
+    securityA1: '',
+    securityQ2: '',
+    securityA2: '',
+    securityQ3: '',
+    securityA3: '',
+    boxNumber1: '',
+    openedOn1: '',
+    interestRate1: '',
+    boxNumber2: '',
+    openedOn2: '',
+    interestRate2: '',
+    address1: '',
+    address2: '',
+    city: '',
+    state: '',
+    zip: '',
+    country: '',
+    accountType: '',
+    size1: '',
+    size2: '',
+    paymentDueType1: '',
+    paymentDueType2: '',
+    save: '',
+  };
   constructor(props) {
     super(props);
     this.state = {
-      access_token: props.access_token,
-      navigation: props.navigation,
-      countries: props.countries.country,
-      recid: props.recid,
-      isLoader: false,
-      modal: false,
-      array: [],
-      key: '',
-      title: '',
-      dataType: '',
-      name: '',
-      issuingBank: '',
-      accountNumber: '',
-      bankRoutingNumber: '',
-      userName: '',
-      password: '',
-      atm1CardNo: '',
-      atm1CardPin: '',
-      atm1CardExDate: '',
-      atm1CVV: '',
-      atm2CardNo: '',
-      atm2CardPin: '',
-      atm2CardExDate: '',
-      atm2CVV: '',
-      debit1CardNo: '',
-      debit1CardPin: '',
-      debit1CardExDate: '',
-      debit1CVV: '',
-      debit2CardNo: '',
-      debit2CardPin: '',
-      debit2CardExDate: '',
-      debit2CVV: '',
-      securityQ1: '',
-      securityA1: '',
-      securityQ2: '',
-      securityA2: '',
-      securityQ3: '',
-      securityA3: '',
-      boxNumber1: '',
-      openedOn1: '',
-      interestRate1: '',
-      boxNumber2: '',
-      openedOn2: '',
-      interestRate2: '',
-      address1: '',
-      address2: '',
-      city: '',
-      state: '',
-      zip: '',
-      country: '',
-      accountType: '',
-      size1: '',
-      size2: '',
-      paymentDueType1: '',
-      paymentDueType2: '',
+      ...this.initialState,
     };
   }
+
+  componentDidMount() {
+    const {navigation} = this.props;
+    this.didBlurSubscription = navigation.addListener('focus', () => {
+      this.setState(this.initialState);
+      this.viewRecord();
+    });
+  }
+
+  viewRecord = async () => {
+    const {recid, access_token} = this.props;
+    this.setState({isLoader: true});
+    await viewRecords('BankAccounts', recid, access_token)
+      .then((response) => {
+        console.log('View res: ', response);
+        this.setViewData(response.data);
+      })
+      .catch((error) => {
+        console.log('Error: ', error);
+        this.setState({isLoader: false});
+      });
+  };
+
+  setViewData = (data) => {
+    this.setState({
+      name: data.AccountName,
+      issuingBank: data.FinancialInstitution,
+      accountNumber: data.AccountNumber,
+      bankRoutingNumber: data.RoutingNumber,
+      userName: data.WebSiteUsername,
+      password: data.WebSitePassword,
+      atm1CardNo: data.ATMCardNumber,
+      atm1CardPin: data.ATMCardPIN,
+      atm1CardExDate: data.ATMCardExpirationDate,
+      atm1CVV: data.ATMCardCCVNumber,
+      atm2CardNo: data.ATMCardNumber2,
+      atm2CardPin: data.ATMCardPIN2,
+      atm2CardExDate: data.ATMCardExpirationDate2,
+      atm2CVV: data.ATMCardCCVNumber2,
+      debit1CardNo: data.DebitCardNumber,
+      debit1CardPin: data.DebitCardPIN,
+      debit1CardExDate: data.DebitCardExpirationDate,
+      debit1CVV: data.DebitCardCCVNumber,
+      debit2CardNo: data.DebitCardNumber2,
+      debit2CardPin: data.DebitCardPIN2,
+      debit2CardExDate: data.DebitCardExpirationDate2,
+      debit2CVV: data.DebitCardCCVNumber2,
+      securityQ1: data.SecurityQuestion1,
+      securityA1: data.SecurityAnswer1,
+      securityQ2: data.SecurityQuestion2,
+      securityA2: data.SecurityAnswer2,
+      securityQ3: data.SecurityQuestion3,
+      securityA3: data.SecurityAnswer3,
+      boxNumber1: data.SafetyDepositBox1.BoxNumber,
+      openedOn1: data.SafetyDepositBox1BoxOpeningDate,
+      interestRate1: data.SafetyDepositBox1.Fee,
+      size1: data.SafetyDepositBox1.BoxSize,
+      paymentDueType1: data.SafetyDepositBox1.FeeDuration,
+      boxNumber2: data.SafetyDepositBox2.BoxNumber,
+      openedOn2: data.SafetyDepositBox2.BoxOpeningDate,
+      interestRate2: data.SafetyDepositBox2.Fee,
+      size2: data.SafetyDepositBox2.BoxSize,
+      paymentDueType2: data.SafetyDepositBox2.FeeDuration,
+      address1: data.BankBranchAddress.Line1,
+      address2: data.BankBranchAddress.Line2,
+      city: data.BankBranchAddress.City,
+      state: data.BankBranchAddress.State,
+      zip: data.BankBranchAddress.Zip,
+      country: data.BankBranchAddress.Country,
+      accountType: data.AccountType,
+      isLoader: false,
+    });
+  };
 
   basicInformation = () => (
     <View>
@@ -398,7 +475,7 @@ class BankAccounts extends Component {
             onPress={() =>
               this.setState({modal: true, array: size, key: 'size1'})
             }
-          color={Color.lightishBlue}
+            color={Color.lightishBlue}
           />
         </View>
       </View>
@@ -455,7 +532,7 @@ class BankAccounts extends Component {
             onPress={() =>
               this.setState({modal: true, array: size, key: 'size2'})
             }
-          color={Color.lightishBlue}
+            color={Color.lightishBlue}
           />
         </View>
       </View>
@@ -554,7 +631,7 @@ class BankAccounts extends Component {
           onPress={() =>
             this.setState({
               modal: true,
-              array: this.state.countries,
+              array: this.props.countries.country,
               key: 'country',
             })
           }
@@ -565,15 +642,13 @@ class BankAccounts extends Component {
   );
 
   handleClick = () => {
-    this.submit();
+    // this.submit();
+    console.log('Button Clicked');
   };
 
   submit = async () => {
     this.setState({isLoader: true});
     const {
-      access_token,
-      navigation,
-      recid,
       name,
       issuingBank,
       accountNumber,
@@ -620,7 +695,7 @@ class BankAccounts extends Component {
       paymentDueType1,
       paymentDueType2,
     } = this.state;
-
+    const {access_token, navigation, recid} = this.props;
     let data = qs.stringify({
       AccountName: name,
       FinancialInstitution: issuingBank,
@@ -724,4 +799,8 @@ class BankAccounts extends Component {
   }
 }
 
-export default BankAccounts;
+const mapStateToProps = ({save}) => ({
+  save,
+});
+
+export default connect(mapStateToProps)(BankAccounts);

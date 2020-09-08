@@ -9,41 +9,44 @@ import ModalPicker from '../../../components/modal-picker/modal-picker.component
 import Button from '../../../components/button/button.component';
 import Loader from '../../../components/loader/loader.component';
 import ModalScreen from '../../../components/modal/modal.component';
-import {createOrUpdateRecord} from '../../../configuration/api/api.functions';
+import {
+  createOrUpdateRecord,
+  viewRecords,
+} from '../../../configuration/api/api.functions';
 import {refianced} from './loans.list';
 import {Color} from '../../../assets/color/color.js';
 
 import styles from './loans.style';
 
 class Loans extends Component {
+  initialState = {
+    isLoader: false,
+    modal: false,
+    array: [],
+    key: '',
+    name: '',
+    loanNo: '',
+    issuer: '',
+    loanAmnt: '',
+    interestRate: '',
+    url: '',
+    username: '',
+    password: '',
+    address1: '',
+    address2: '',
+    city: '',
+    state: '',
+    zip: '',
+    country: '',
+    effectiveFrom: '',
+    endsOn: '',
+    refiance: '',
+  };
+
   constructor(props) {
     super(props);
     this.state = {
-      isLoader: false,
-      modal: false,
-      array: [],
-      key: '',
-      navigation: props.navigation,
-      access_token: props.access_token,
-      countries: props.countries.country,
-      recid: props.recid,
-      name: '',
-      loanNo: '',
-      issuer: '',
-      loanAmnt: '',
-      interestRate: '',
-      url: '',
-      username: '',
-      password: '',
-      address1: '',
-      address2: '',
-      city: '',
-      state: '',
-      zip: '',
-      country: '',
-      effectiveFrom: '',
-      endsOn: '',
-      refiance: '',
+      ...this.initialState,
     };
   }
 
@@ -51,12 +54,54 @@ class Loans extends Component {
     this.submit();
   };
 
+  componentDidMount() {
+    const {navigation} = this.props;
+    this.didBlurSubscription = navigation.addListener('focus', () => {
+      this.setState(this.initialState);
+      this.viewRecord();
+    });
+  }
+
+  viewRecord = async () => {
+    const {recid, access_token} = this.props;
+    this.setState({isLoader: true});
+    await viewRecords('ConsumerLoan', recid, access_token)
+      .then((response) => {
+        console.log('View res: ', response);
+        this.setViewData(response.data);
+      })
+      .catch((error) => {
+        console.log('Error: ', error);
+        this.setState({isLoader: false});
+      });
+  };
+
+  setViewData = (data) => {
+    this.setState({
+      name: data.Name,
+      loanNo: data.LoanNumber,
+      issuer: data.Issuer,
+      loanAmnt: data.LoanAmount,
+      interestRate: data.InterestRate,
+      url: data.URL,
+      username: data.WebSiteUsername,
+      password: data.WebSitePassword,
+      address1: data.PaymentMailingAddress.Line1,
+      address2: data.PaymentMailingAddress.Line2,
+      city: data.PaymentMailingAddress.City,
+      state: data.PaymentMailingAddress.State,
+      zip: data.PaymentMailingAddress.Zip,
+      country: data.PaymentMailingAddress.Country,
+      effectiveFrom: data.StartDate,
+      endsOn: data.EndDate,
+      refiance: data.Refinanced,
+      isLoader: false,
+    });
+  };
+
   submit = async () => {
     this.setState({isLoader: true});
     const {
-      navigation,
-      access_token,
-      recid,
       name,
       loanNo,
       issuer,
@@ -75,7 +120,7 @@ class Loans extends Component {
       endsOn,
       refiance,
     } = this.state;
-
+    const {navigation, access_token, recid} = this.props;
     let data = qs.stringify({
       Name: name,
       LoanNumber: loanNo,
@@ -113,6 +158,7 @@ class Loans extends Component {
           onChangeText={(name) => this.setState({name})}
           keyboardType="default"
           color={Color.lightishBlue}
+          value={this.state.name}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -121,6 +167,7 @@ class Loans extends Component {
           onChangeText={(loanNo) => this.setState({loanNo})}
           keyboardType="default"
           color={Color.lightishBlue}
+          value={this.state.loanNo}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -129,6 +176,7 @@ class Loans extends Component {
           onChangeText={(issuer) => this.setState({issuer})}
           keyboardType="default"
           color={Color.lightishBlue}
+          value={this.state.issuer}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -137,6 +185,7 @@ class Loans extends Component {
           icon="dollar-sign"
           onChangeText={(loanAmnt) => this.setState({loanAmnt})}
           color={Color.lightishBlue}
+          value={this.state.loanAmnt}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -146,6 +195,7 @@ class Loans extends Component {
           icon="percent"
           keyboardType="default"
           color={Color.lightishBlue}
+          value={this.state.interestRate}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -154,6 +204,7 @@ class Loans extends Component {
           onChangeText={(url) => this.setState({url})}
           keyboardType="default"
           color={Color.lightishBlue}
+          value={this.state.url}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -162,6 +213,7 @@ class Loans extends Component {
           onChangeText={(username) => this.setState({username})}
           keyboardType="default"
           color={Color.lightishBlue}
+          value={this.state.username}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -170,6 +222,7 @@ class Loans extends Component {
           onChangeText={(password) => this.setState({password})}
           keyboardType="default"
           color={Color.lightishBlue}
+          value={this.state.password}
         />
       </View>
     </View>
@@ -183,6 +236,7 @@ class Loans extends Component {
           onChangeText={(address1) => this.setState({address1})}
           keyboardType="default"
           color={Color.lightishBlue}
+          value={this.state.address1}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -191,6 +245,7 @@ class Loans extends Component {
           onChangeText={(address2) => this.setState({address2})}
           keyboardType="default"
           color={Color.lightishBlue}
+          value={this.state.address2}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -199,6 +254,7 @@ class Loans extends Component {
           onChangeText={(city) => this.setState({city})}
           keyboardType="default"
           color={Color.lightishBlue}
+          value={this.state.city}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -207,6 +263,7 @@ class Loans extends Component {
           onChangeText={(state) => this.setState({state})}
           keyboardType="default"
           color={Color.lightishBlue}
+          value={this.state.state}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -215,6 +272,7 @@ class Loans extends Component {
           onChangeText={(zip) => this.setState({zip})}
           keyboardType="default"
           color={Color.lightishBlue}
+          value={this.state.zip}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -225,7 +283,7 @@ class Loans extends Component {
           onPress={() =>
             this.setState({
               modal: true,
-              array: this.state.countries,
+              array: this.props.countries.country,
               key: 'country',
             })
           }
@@ -257,6 +315,7 @@ class Loans extends Component {
             onChangeText={(effectiveFrom) => this.setState({effectiveFrom})}
             keyboardType="default"
             color={Color.lightishBlue}
+            value={this.state.effectiveFrom}
           />
         </View>
         <View style={styles.miniInputContainer}>
@@ -265,6 +324,7 @@ class Loans extends Component {
             onChangeText={(endsOn) => this.setState({endsOn})}
             keyboardType="default"
             color={Color.lightishBlue}
+            value={this.state.endsOn}
           />
         </View>
       </View>
