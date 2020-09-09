@@ -22,7 +22,10 @@ class FinancialDataType extends Component {
   }
 
   componentDidMount() {
-    this.getType();
+    const {navigation} = this.props;
+    navigation.addListener('focus', () => {
+      this.getType();
+    });
   }
 
   getType = () => {
@@ -184,7 +187,7 @@ class FinancialDataType extends Component {
 
   navigation = (type, title, recid, mode) => {
     const {navigation} = this.props;
-    navigation.navigate('CommonView', {
+    navigation.navigate(type, {
       type: type,
       category: 'Financial Data',
       title: title,

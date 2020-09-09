@@ -1,7 +1,15 @@
 import React, {Component} from 'react';
-import {View, ScrollView, Modal} from 'react-native';
+import {
+  View,
+  ScrollView,
+  Modal,
+  SafeAreaView,
+  ImageBackground,
+  Alert,
+} from 'react-native';
 import {Text} from 'react-native-paper';
 import qs from 'qs';
+import {connect} from 'react-redux';
 
 import InputTextDynamic from '../../../components/input-text-dynamic/input-text-dynamic.component.js';
 import InputTextIconDynamic from '../../../components/input-text-icon-dynamic/input-text-icon-dynamic.component.js';
@@ -9,16 +17,18 @@ import ModalPicker from '../../../components/modal-picker/modal-picker.component
 import Button from '../../../components/button/button.component';
 import Loader from '../../../components/loader/loader.component';
 import ModalScreen from '../../../components/modal/modal.component';
+import TitleView from '../../../components/title-view/title-view.component';
 import {
   createOrUpdateRecord,
   viewRecords,
+  deleteRecords,
 } from '../../../configuration/api/api.functions';
 import {refianced} from './loans.list';
 import {Color} from '../../../assets/color/color.js';
 
 import styles from './loans.style';
 
-class Loans extends Component {
+class ConsumerLoan extends Component {
   initialState = {
     isLoader: false,
     modal: false,
@@ -41,6 +51,7 @@ class Loans extends Component {
     effectiveFrom: '',
     endsOn: '',
     refiance: '',
+    access_token: '',
   };
 
   constructor(props) {
@@ -56,16 +67,20 @@ class Loans extends Component {
 
   componentDidMount() {
     const {navigation} = this.props;
-    this.didBlurSubscription = navigation.addListener('focus', () => {
+    navigation.addListener('focus', () => {
       this.setState(this.initialState);
-      this.viewRecord();
+      if (this.props.userData && this.props.userData.userData)
+        this.setState(
+          {access_token: this.props.userData.userData.access_token},
+          () => this.viewRecord(),
+        );
     });
   }
 
   viewRecord = async () => {
-    const {recid, access_token} = this.props;
+    const {recid} = this.props.route.params;
     this.setState({isLoader: true});
-    await viewRecords('ConsumerLoan', recid, access_token)
+    await viewRecords('ConsumerLoan', recid, this.props.userData.userData.access_token)
       .then((response) => {
         console.log('View res: ', response);
         this.setViewData(response.data);
@@ -119,8 +134,10 @@ class Loans extends Component {
       effectiveFrom,
       endsOn,
       refiance,
+      access_token,
     } = this.state;
-    const {navigation, access_token, recid} = this.props;
+    const {navigation, route} = this.props;
+    const {recid} = route.params;
     let data = qs.stringify({
       Name: name,
       LoanNumber: loanNo,
@@ -138,7 +155,7 @@ class Loans extends Component {
       'PaymentMailingAddress-Country': country,
       StartDate: effectiveFrom,
       EndDate: endsOn,
-      Refinanced: refiance,
+      Refinanced: refiance === 'Yes' ? true : false,
     });
     await createOrUpdateRecord('ConsumerLoan', recid, data, access_token)
       .then((response) => {
@@ -148,6 +165,14 @@ class Loans extends Component {
       .catch((error) => {
         this.setState({isLoader: false});
       });
+  };
+
+  delete = async () => {
+    const { navigation, route } = this.props
+    const {recid} = route.params;
+    await deleteRecords('ConsumerLoan', recid, this.props.userData.userData.access_token)
+      .then((response) => navigation.goBack())
+      .catch((error) => console.log('Error in delete', error));
   };
 
   basicInformation = () => (
@@ -283,7 +308,7 @@ class Loans extends Component {
           onPress={() =>
             this.setState({
               modal: true,
-              array: this.props.countries.country,
+              array: this.props.country.country,
               key: 'country',
             })
           }
@@ -336,36 +361,96 @@ class Loans extends Component {
   };
 
   changeState = (key, value) => {
-    this.setState({[key]: value === 'Yes' ? true : false});
+    this.setState({[key]: value});
+  };
+
+  editComponent = (isLoader, modal, array, key) => (
+    <View>
+      <Text style={styles.title}>Basic Information</Text>
+      {this.basicInformation()}
+      <View style={styles.gap} />
+      <Text style={styles.title}>Payment mailing address</Text>
+      {this.paymentMailingAddress()}
+      <View style={styles.gap} />
+      <Text style={styles.title}>Refiance</Text>
+      {this.refiance()}
+      <View style={styles.gap} />
+      <View style={styles.buttonContainer}>
+        <Button onPress={this.handleClick} title="Next" />
+      </View>
+      <Loader isLoader={isLoader} />
+      <ModalScreen
+        isModalVisible={modal}
+        list={array}
+        changeModalVisibility={this.changeModalVisibility}
+        id={key}
+        changeState={this.changeState}
+      />
+    </View>
+  );
+
+  onSave = () => {
+    this.submit();
+  };
+
+  onEdit = () => {
+    console.log('Edit');
+  };
+
+  onDelete = () => {
+    Alert.alert(
+      //title
+      'Delete',
+      //body
+      'Are you sure you want to delete ?',
+      [
+        {text: 'Yes', onPress: () => this.delete()},
+        {text: 'No', onPress: () => console.log('No Pressed'), style: 'cancel'},
+      ],
+      {cancelable: false},
+      //clicking out side of alert will not cancel
+    );
   };
 
   render() {
     const {isLoader, modal, array, key} = this.state;
+    const {route, navigation} = this.props;
+    const {title, type, background, theme, mode} = route.params;
     return (
-      <View style={styles.container}>
-        <Text style={styles.title}>Basic Information</Text>
-        {this.basicInformation()}
-        <View style={styles.gap} />
-        <Text style={styles.title}>Payment mailing address</Text>
-        {this.paymentMailingAddress()}
-        <View style={styles.gap} />
-        <Text style={styles.title}>Refiance</Text>
-        {this.refiance()}
-        <View style={styles.gap} />
-        <View style={styles.buttonContainer}>
-          <Button onPress={this.handleClick} title="Next" />
-        </View>
-        <Loader isLoader={isLoader} />
-        <ModalScreen
-          isModalVisible={modal}
-          list={array}
-          changeModalVisibility={this.changeModalVisibility}
-          id={key}
-          changeState={this.changeState}
-        />
-      </View>
+      <SafeAreaView style={styles.outerView}>
+        <ImageBackground source={background} style={styles.backgroundImage}>
+          <View style={styles.titleView}>
+            <TitleView
+              navigation={navigation}
+              mode={mode}
+              theme={theme}
+              title={title}
+              type={type}
+              save={this.onSave}
+              edit={this.onEdit}
+              delete={this.onDelete}
+            />
+          </View>
+          <ScrollView
+            style={[
+              styles.outerContainerView,
+              {
+                backgroundColor:
+                  theme !== 'dark' ? 'rgb(255, 255, 255)' : 'rgb(33, 47, 60)',
+              },
+            ]}>
+            <View style={styles.container}>
+              {this.editComponent(isLoader, modal, array, key)}
+            </View>
+          </ScrollView>
+        </ImageBackground>
+      </SafeAreaView>
     );
   }
 }
+const mapStateToProps = ({userData, country}) => ({
+  userData,
+  country,
+});
 
-export default Loans;
+export default connect(mapStateToProps)(ConsumerLoan);

@@ -1,7 +1,15 @@
 import React, {Component} from 'react';
-import {View, ScrollView, Modal} from 'react-native';
+import {
+  View,
+  ScrollView,
+  Modal,
+  SafeAreaView,
+  ImageBackground,
+  Alert,
+} from 'react-native';
 import {Text} from 'react-native-paper';
 import qs from 'qs';
+import {connect} from 'react-redux';
 
 import InputTextDynamic from '../../../components/input-text-dynamic/input-text-dynamic.component.js';
 import InputTextIconDynamic from '../../../components/input-text-icon-dynamic/input-text-icon-dynamic.component.js';
@@ -9,9 +17,11 @@ import ModalPicker from '../../../components/modal-picker/modal-picker.component
 import Button from '../../../components/button/button.component';
 import Loader from '../../../components/loader/loader.component';
 import ModalScreen from '../../../components/modal/modal.component';
+import TitleView from '../../../components/title-view/title-view.component';
 import {
   createOrUpdateRecord,
   viewRecords,
+  deleteRecords,
 } from '../../../configuration/api/api.functions';
 import {credit_card_type} from './credit-card.list';
 import {Color} from '../../../assets/color/color.js';
@@ -49,6 +59,7 @@ class CreditCard extends Component {
     zip: '',
     country: '',
     creditCardType: '',
+    access_token: '',
   };
   constructor(props) {
     super(props);
@@ -59,16 +70,20 @@ class CreditCard extends Component {
 
   componentDidMount() {
     const {navigation} = this.props;
-    this.didBlurSubscription = navigation.addListener('focus', () => {
+    navigation.addListener('focus', () => {
       this.setState(this.initialState);
-      this.viewRecord();
+      if (this.props.userData && this.props.userData.userData)
+        this.setState(
+          {access_token: this.props.userData.userData.access_token},
+          () => this.viewRecord(),
+        );
     });
   }
 
   viewRecord = async () => {
-    const {recid, access_token} = this.props;
+    const {recid} = this.props.route.params;
     this.setState({isLoader: true});
-    await viewRecords('CreditCard', recid, access_token)
+    await viewRecords('CreditCard', recid, this.props.userData.userData.access_token)
       .then((response) => {
         console.log('View res: ', response);
         this.setViewData(response.data);
@@ -80,7 +95,7 @@ class CreditCard extends Component {
   };
 
   setViewData = (data) => {
-    console.log("Data: ", data)
+    console.log('Data: ', data);
     this.setState({
       name: data.Name,
       cardHolderName: data.PrimaryCardHolder,
@@ -142,9 +157,11 @@ class CreditCard extends Component {
       state,
       zip,
       country,
+      access_token,
       creditCardType,
     } = this.state;
-    const {access_token, navigation, recid} = this.props;
+    const {navigation, route} = this.props;
+    const {recid} = route.params;
     let data = qs.stringify({
       Name: name,
       PrimaryCardHolder: cardHolderName,
@@ -180,6 +197,14 @@ class CreditCard extends Component {
       .catch((error) => {
         this.setState({isLoader: false});
       });
+  };
+
+  delete = async () => {
+    const { navigation, route } = this.props
+    const {recid} = route.params;
+    await deleteRecords('CreditCard', recid, this.props.userData.userData.access_token)
+      .then((response) => navigation.goBack())
+      .catch((error) => console.log('Error in delete', error));
   };
 
   primaryCard = () => (
@@ -234,7 +259,7 @@ class CreditCard extends Component {
             onChangeText={(expiryDate) => this.setState({expiryDate})}
             keyboardType="default"
             color={Color.lightishBlue}
-          value={this.state.expiryDate}
+            value={this.state.expiryDate}
           />
         </View>
         <View style={styles.miniInputContainer}>
@@ -243,7 +268,7 @@ class CreditCard extends Component {
             onChangeText={(cvv) => this.setState({cvv})}
             keyboardType="default"
             color={Color.lightishBlue}
-          value={this.state.cvv}
+            value={this.state.cvv}
           />
         </View>
       </View>
@@ -304,7 +329,7 @@ class CreditCard extends Component {
             onChangeText={(expiryDate2) => this.setState({expiryDate2})}
             keyboardType="default"
             color={Color.lightishBlue}
-          value={this.state.expiryDate2}
+            value={this.state.expiryDate2}
           />
         </View>
         <View style={styles.miniInputContainer}>
@@ -313,7 +338,7 @@ class CreditCard extends Component {
             onChangeText={(cvv2) => this.setState({cvv2})}
             keyboardType="default"
             color={Color.lightishBlue}
-          value={this.state.cvv2}
+            value={this.state.cvv2}
           />
         </View>
       </View>
@@ -434,7 +459,7 @@ class CreditCard extends Component {
           onPress={() =>
             this.setState({
               modal: true,
-              array: this.props.countries.country,
+              array: this.props.country.country,
               key: 'country',
             })
           }
@@ -485,39 +510,100 @@ class CreditCard extends Component {
     this.setState({[key]: value});
   };
 
+  editComponent = (isLoader, modal, array, key) => (
+    <View>
+      <Text style={styles.title}>Primary Card</Text>
+      {this.primaryCard()}
+      <View style={styles.gap} />
+      <Text style={styles.title}>Additional Card Information</Text>
+      {this.additionalCardInfo()}
+      <View style={styles.gap} />
+      <Text style={styles.title}>Security Questions</Text>
+      {this.securityQuestions()}
+      <View style={styles.gap} />
+      <Text style={styles.title}>Payment Mailing Address</Text>
+      {this.paymentMailingAddress()}
+      <View style={styles.gap} />
+      {/* <Text style={styles.title}>Additional Information</Text>
+        {this.additionalInformation()} */}
+      <View style={styles.gap} />
+      <View style={styles.buttonContainer}>
+        <Button onPress={this.handleClick} title="Next" />
+      </View>
+      <Loader isLoader={isLoader} />
+      <ModalScreen
+        isModalVisible={modal}
+        list={array}
+        changeModalVisibility={this.changeModalVisibility}
+        id={key}
+        changeState={this.changeState}
+      />
+    </View>
+  );
+
+  onSave = () => {
+    this.submit();
+  };
+
+  onEdit = () => {
+    console.log('Edit');
+  };
+
+  onDelete = () => {
+    Alert.alert(
+      //title
+      'Delete',
+      //body
+      'Are you sure you want to delete ?',
+      [
+        {text: 'Yes', onPress: () => this.delete()},
+        {text: 'No', onPress: () => console.log('No Pressed'), style: 'cancel'},
+      ],
+      {cancelable: false},
+      //clicking out side of alert will not cancel
+    );
+  };
+
   render() {
     const {isLoader, modal, array, key} = this.state;
+    const {route, navigation} = this.props;
+    const {title, type, background, theme, mode} = route.params;
     return (
-      <View style={styles.container}>
-        <Text style={styles.title}>Primary Card</Text>
-        {this.primaryCard()}
-        <View style={styles.gap} />
-        <Text style={styles.title}>Additional Card Information</Text>
-        {this.additionalCardInfo()}
-        <View style={styles.gap} />
-        <Text style={styles.title}>Security Questions</Text>
-        {this.securityQuestions()}
-        <View style={styles.gap} />
-        <Text style={styles.title}>Payment Mailing Address</Text>
-        {this.paymentMailingAddress()}
-        <View style={styles.gap} />
-        {/* <Text style={styles.title}>Additional Information</Text>
-        {this.additionalInformation()} */}
-        <View style={styles.gap} />
-        <View style={styles.buttonContainer}>
-          <Button onPress={this.handleClick} title="Next" />
-        </View>
-        <Loader isLoader={isLoader} />
-        <ModalScreen
-          isModalVisible={modal}
-          list={array}
-          changeModalVisibility={this.changeModalVisibility}
-          id={key}
-          changeState={this.changeState}
-        />
-      </View>
+      <SafeAreaView style={styles.outerView}>
+        <ImageBackground source={background} style={styles.backgroundImage}>
+          <View style={styles.titleView}>
+            <TitleView
+              navigation={navigation}
+              mode={mode}
+              theme={theme}
+              title={title}
+              type={type}
+              save={this.onSave}
+              edit={this.onEdit}
+              delete={this.onDelete}
+            />
+          </View>
+          <ScrollView
+            style={[
+              styles.outerContainerView,
+              {
+                backgroundColor:
+                  theme !== 'dark' ? 'rgb(255, 255, 255)' : 'rgb(33, 47, 60)',
+              },
+            ]}>
+            <View style={styles.container}>
+              {this.editComponent(isLoader, modal, array, key)}
+            </View>
+          </ScrollView>
+        </ImageBackground>
+      </SafeAreaView>
     );
   }
 }
 
-export default CreditCard;
+const mapStateToProps = ({userData, country}) => ({
+  userData,
+  country,
+});
+
+export default connect(mapStateToProps)(CreditCard);

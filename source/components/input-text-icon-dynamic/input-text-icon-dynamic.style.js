@@ -7,7 +7,8 @@ const styles = StyleSheet.create({
     width: '100%',
     fontSize: 15,
     backgroundColor: '#80000000',
-    paddingHorizontal: 0
+    paddingHorizontal: 0,
+    height: 55
   },
 });
 

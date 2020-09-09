@@ -1,7 +1,15 @@
 import React, {Component} from 'react';
-import {View, ScrollView, Modal} from 'react-native';
+import {
+  View,
+  ScrollView,
+  Modal,
+  ImageBackground,
+  SafeAreaView,
+  Alert,
+} from 'react-native';
 import {Text, Portal} from 'react-native-paper';
 import qs from 'qs';
+import {connect} from 'react-redux';
 
 import InputTextDynamic from '../../../components/input-text-dynamic/input-text-dynamic.component.js';
 import InputTextIconDynamic from '../../../components/input-text-icon-dynamic/input-text-icon-dynamic.component.js';
@@ -9,13 +17,14 @@ import ModalPicker from '../../../components/modal-picker/modal-picker.component
 import Button from '../../../components/button/button.component';
 import Loader from '../../../components/loader/loader.component';
 import ModalScreen from '../../../components/modal/modal.component';
+import TitleView from '../../../components/title-view/title-view.component';
 import {
   createOrUpdateRecord,
   viewRecords,
+  deleteRecords,
 } from '../../../configuration/api/api.functions';
 import {account_type, size, payment_due_type} from './bank-account.list';
 import {Color} from '../../../assets/color/color.js';
-import {connect} from 'react-redux';
 
 import styles from './bank-account.style';
 
@@ -73,6 +82,7 @@ class BankAccounts extends Component {
     paymentDueType1: '',
     paymentDueType2: '',
     save: '',
+    access_token: '',
   };
   constructor(props) {
     super(props);
@@ -83,24 +93,30 @@ class BankAccounts extends Component {
 
   componentDidMount() {
     const {navigation} = this.props;
-    this.didBlurSubscription = navigation.addListener('focus', () => {
+    navigation.addListener('focus', () => {
       this.setState(this.initialState);
-      this.viewRecord();
+      if (this.props.userData && this.props.userData.userData)
+        this.setState(
+          {access_token: this.props.userData.userData.access_token},
+          () => this.viewRecord(),
+        );
     });
   }
 
   viewRecord = async () => {
-    const {recid, access_token} = this.props;
+    const {recid} = this.props.route.params;
     this.setState({isLoader: true});
-    await viewRecords('BankAccounts', recid, access_token)
+    await viewRecords('BankAccounts', recid, this.props.userData.userData.access_token)
       .then((response) => {
         console.log('View res: ', response);
         this.setViewData(response.data);
+        this.setState({isLoader: false});
       })
       .catch((error) => {
         console.log('Error: ', error);
         this.setState({isLoader: false});
       });
+    this.setState({isLoader: false});
   };
 
   setViewData = (data) => {
@@ -631,7 +647,7 @@ class BankAccounts extends Component {
           onPress={() =>
             this.setState({
               modal: true,
-              array: this.props.countries.country,
+              array: this.props.country.country,
               key: 'country',
             })
           }
@@ -642,13 +658,14 @@ class BankAccounts extends Component {
   );
 
   handleClick = () => {
-    // this.submit();
-    console.log('Button Clicked');
+    this.submit();
+    // console.log('Button Clicked');
   };
 
   submit = async () => {
     this.setState({isLoader: true});
     const {
+      access_token,
       name,
       issuingBank,
       accountNumber,
@@ -695,7 +712,8 @@ class BankAccounts extends Component {
       paymentDueType1,
       paymentDueType2,
     } = this.state;
-    const {access_token, navigation, recid} = this.props;
+    const {navigation, route} = this.props;
+    const {recid} = route.params;
     let data = qs.stringify({
       AccountName: name,
       FinancialInstitution: issuingBank,
@@ -753,6 +771,14 @@ class BankAccounts extends Component {
       });
   };
 
+  delete = async () => {
+    const { navigation, route } = this.props
+    const {recid} = route.params;
+    await deleteRecords('BankAccounts', recid, this.props.userData.userData.access_token)
+      .then((response) => navigation.goBack())
+      .catch((error) => console.log('Error in delete', error));
+  };
+
   changeModalVisibility = (bool) => {
     this.setState({modal: bool});
   };
@@ -761,46 +787,103 @@ class BankAccounts extends Component {
     this.setState({[key]: value});
   };
 
+  editComponent = (isLoader, modal, array, key) => (
+    <View>
+      <Text style={styles.title}>Basic Information</Text>
+      {this.basicInformation()}
+      <View style={styles.gap} />
+      <Text style={styles.title}>ATM Card</Text>
+      {this.atmCard()}
+      <View style={styles.gap} />
+      <Text style={styles.title}>Debit Card</Text>
+      {this.debitCard()}
+      <View style={styles.gap} />
+      <Text style={styles.title}>Security Questions</Text>
+      {this.securityQuestions()}
+      <View style={styles.gap} />
+      <Text style={styles.title}>Safety Deposit Box</Text>
+      {this.safetyDepositBox()}
+      <View style={styles.gap} />
+      <Text style={styles.title}>Additional Information</Text>
+      {this.additonalInformation()}
+      <View style={styles.gap} />
+      <View style={styles.buttonContainer}>
+        <Button onPress={this.handleClick} title="Submit" />
+      </View>
+      <Loader isLoader={isLoader} />
+      <ModalScreen
+        isModalVisible={modal}
+        list={array}
+        changeModalVisibility={this.changeModalVisibility}
+        id={key}
+        changeState={this.changeState}
+      />
+    </View>
+  );
+
+  onSave = () => {
+    this.submit();
+  };
+
+  onEdit = () => {
+    console.log('Edit');
+  };
+
+  onDelete = () => {
+    Alert.alert(
+      //title
+      'Delete',
+      //body
+      'Are you sure you want to delete ?',
+      [
+        {text: 'Yes', onPress: () => this.delete()},
+        {text: 'No', onPress: () => console.log('No Pressed'), style: 'cancel'},
+      ],
+      {cancelable: false},
+      //clicking out side of alert will not cancel
+    );
+  };
+
   render() {
     const {isLoader, modal, array, key} = this.state;
+    const {route, navigation} = this.props;
+    const {title, type, background, theme, mode} = route.params;
     return (
-      <View style={styles.container}>
-        <Text style={styles.title}>Basic Information</Text>
-        {this.basicInformation()}
-        <View style={styles.gap} />
-        <Text style={styles.title}>ATM Card</Text>
-        {this.atmCard()}
-        <View style={styles.gap} />
-        <Text style={styles.title}>Debit Card</Text>
-        {this.debitCard()}
-        <View style={styles.gap} />
-        <Text style={styles.title}>Security Questions</Text>
-        {this.securityQuestions()}
-        <View style={styles.gap} />
-        <Text style={styles.title}>Safety Deposit Box</Text>
-        {this.safetyDepositBox()}
-        <View style={styles.gap} />
-        <Text style={styles.title}>Additional Information</Text>
-        {this.additonalInformation()}
-        <View style={styles.gap} />
-        <View style={styles.buttonContainer}>
-          <Button onPress={this.handleClick} title="Submit" />
-        </View>
-        <Loader isLoader={isLoader} />
-        <ModalScreen
-          isModalVisible={modal}
-          list={array}
-          changeModalVisibility={this.changeModalVisibility}
-          id={key}
-          changeState={this.changeState}
-        />
-      </View>
+      <SafeAreaView style={styles.outerView}>
+        <ImageBackground source={background} style={styles.backgroundImage}>
+          <View style={styles.titleView}>
+            <TitleView
+              navigation={navigation}
+              mode={mode}
+              theme={theme}
+              title={title}
+              type={type}
+              save={this.onSave}
+              edit={this.onEdit}
+              delete={this.onDelete}
+            />
+          </View>
+          <ScrollView
+            style={[
+              styles.outerContainerView,
+              {
+                backgroundColor:
+                  theme !== 'dark' ? 'rgb(255, 255, 255)' : 'rgb(33, 47, 60)',
+              },
+            ]}>
+            <View style={styles.container}>
+              {this.editComponent(isLoader, modal, array, key)}
+            </View>
+          </ScrollView>
+        </ImageBackground>
+      </SafeAreaView>
     );
   }
 }
 
-const mapStateToProps = ({save}) => ({
-  save,
+const mapStateToProps = ({userData, country}) => ({
+  userData,
+  country,
 });
 
 export default connect(mapStateToProps)(BankAccounts);

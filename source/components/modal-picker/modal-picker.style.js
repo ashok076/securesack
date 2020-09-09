@@ -2,11 +2,11 @@ import {StyleSheet} from 'react-native';
 
 const styles = StyleSheet.create({
   container: {
-    height: 64,
+    height: 55,
     width: '100%',
     justifyContent: 'center',
-    borderBottomColor: 'black',
-    borderBottomWidth: 0.5,
+    borderBottomColor: 'rgb(33, 47, 60)',
+    borderBottomWidth: 1,
   },
   label: {
     fontSize: 15,

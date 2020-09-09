@@ -5,9 +5,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import {connect} from 'react-redux';
 
-import {save} from '../../redux/save/actions/save.action';
 
 import styles from './title-view.style';
 
@@ -34,7 +32,7 @@ class TitleView extends Component {
         return (
           <View style={styles.icons}>
             <View style={styles.rowObject}>
-              <TouchableOpacity style={styles.iconView}>
+              <TouchableOpacity style={styles.iconView} onPress={() => this.editInfo()}>
                 <SimpleLineIcons
                   name="pencil"
                   color={
@@ -43,7 +41,7 @@ class TitleView extends Component {
                   size={20}
                 />
               </TouchableOpacity>
-              <TouchableOpacity>
+              <TouchableOpacity onPress={() => this.deleteInfo()}>
                 <SimpleLineIcons
                   name="trash"
                   color={
@@ -62,9 +60,16 @@ class TitleView extends Component {
     }
   };
 
+  editInfo = () => {
+    this.props.edit()
+  }
+
   saveInfo = () => {
-    const {save} = this.props
-    save('Save')
+    this.props.save()
+  }
+
+  deleteInfo = () => {
+    this.props.delete()
   }
 
   render() {
@@ -94,7 +99,4 @@ class TitleView extends Component {
   }
 }
 
-const mapDispatchToProps = (dispatch) => ({
-  save: (info) => dispatch(save(info)),
-});
-export default connect(null, mapDispatchToProps)(TitleView);
+export default TitleView;

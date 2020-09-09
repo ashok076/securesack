@@ -1,5 +1,11 @@
 import React from 'react';
-import {View, ImageBackground, SafeAreaView, ScrollView, Text} from 'react-native';
+import {
+  View,
+  ImageBackground,
+  SafeAreaView,
+  ScrollView,
+  Text,
+} from 'react-native';
 import {connect} from 'react-redux';
 
 import TitleView from '../../components/title-view/title-view.component';
@@ -48,7 +54,14 @@ const CommonView = ({navigation, route, userData, country}) => {
     <SafeAreaView style={styles.outerView}>
       <ImageBackground source={background} style={styles.backgroundImage}>
         <View style={styles.titleView}>
-          <TitleView navigation={navigation} mode={mode} theme={theme} title={title} type={type}/>
+          <TitleView
+            navigation={navigation}
+            mode={mode}
+            theme={theme}
+            title={title}
+            type={type}
+            save={save}
+          />
         </View>
         <ScrollView
           style={[
@@ -65,6 +78,10 @@ const CommonView = ({navigation, route, userData, country}) => {
   );
 };
 
+const save = (val) => console.log("val: ", val)
+
+const reference = React.createRef();
+
 const subView = (type, access_token, navigation, countries_list, recid) => {
   switch (type) {
     case 'BankAccounts':
@@ -74,6 +91,7 @@ const subView = (type, access_token, navigation, countries_list, recid) => {
           navigation={navigation}
           countries={countries_list}
           recid={recid}
+          save={save}
         />
       );
       break;

@@ -1,4 +1,4 @@
-import {StyleSheet} from 'react-native';
+import {StyleSheet, StatusBar} from 'react-native';
 
 const styles = {
   container: {
@@ -10,9 +10,7 @@ const styles = {
     fontSize: 20,
     color: 'rgb(33, 47, 60)',
   },
-  inputContainer: {
-    paddingTop: 1,
-  },
+  inputContainer: {},
   miniContainer: {
     paddingTop: 1,
     flexDirection: 'row',
@@ -27,6 +25,27 @@ const styles = {
   },
   gap: {
     marginTop: 50,
+  },
+  outerView: {
+    backgroundColor: 'rgb(248, 249, 250)',
+    paddingTop: StatusBar.HEIGHT,
+    flex: 1,
+  },
+  backgroundImage: {
+    height: '100%',
+    width: '100%',
+  },
+  outerContainerView: {
+    borderTopLeftRadius: 15,
+    borderTopRightRadius: 15,
+    width: '100%',
+    height: '100%',
+  },
+  titleView: {
+    width: '100%',
+    height: 100,
+    justifyContent: 'center',
+    padding: 15,
   },
 };
 

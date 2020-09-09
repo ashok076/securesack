@@ -1,7 +1,15 @@
 import React, {Component} from 'react';
-import {View, ScrollView, Modal} from 'react-native';
+import {
+  View,
+  ScrollView,
+  Modal,
+  SafeAreaView,
+  ImageBackground,
+  Alert,
+} from 'react-native';
 import {Text} from 'react-native-paper';
 import qs from 'qs';
+import {connect} from 'react-redux';
 
 import InputTextDynamic from '../../../components/input-text-dynamic/input-text-dynamic.component.js';
 import InputTextIconDynamic from '../../../components/input-text-icon-dynamic/input-text-icon-dynamic.component.js';
@@ -9,9 +17,11 @@ import ModalPicker from '../../../components/modal-picker/modal-picker.component
 import Button from '../../../components/button/button.component';
 import Loader from '../../../components/loader/loader.component';
 import ModalScreen from '../../../components/modal/modal.component';
+import TitleView from '../../../components/title-view/title-view.component';
 import {
   createOrUpdateRecord,
   viewRecords,
+  deleteRecords,
 } from '../../../configuration/api/api.functions';
 import {term, refiance_repayment} from './mortgages.list';
 import {Color} from '../../../assets/color/color.js';
@@ -49,6 +59,7 @@ class Mortgages extends Component {
     term: '',
     refiance: '',
     repayment: '',
+    access_token: '',
   };
 
   constructor(props) {
@@ -64,14 +75,19 @@ class Mortgages extends Component {
 
   componentDidMount() {
     const {navigation} = this.props;
-    this.didBlurSubscription = navigation.addListener('focus', () => {
+    navigation.addListener('focus', () => {
       this.setState(this.initialState);
-      this.viewRecord();
+      if (this.props.userData && this.props.userData.userData)
+        this.setState(
+          {access_token: this.props.userData.userData.access_token},
+          () => this.viewRecord(),
+        );
     });
   }
 
   viewRecord = async () => {
-    const {recid, access_token} = this.props;
+    const {access_token} = this.state;
+    const {recid} = this.props.route.params;
     this.setState({isLoader: true});
     await viewRecords('Mortgage', recid, access_token)
       .then((response) => {
@@ -92,7 +108,7 @@ class Mortgages extends Component {
       loanAmnt: data.LoanAmount,
       mortgageRate: data.InterestRate,
       effectivefrom: data.StartDate,
-      endsOn: Edata.ndDate,
+      endsOn: data.EndDate,
       url: data.URL,
       username: data.WebSiteAccountNumber,
       password: data.WebSitePassword,
@@ -139,12 +155,15 @@ class Mortgages extends Component {
       city,
       state,
       zip,
+      country,
       term,
       refiance,
       repayment,
+      access_token,
     } = this.state;
 
-    const {access_token, navigation, recid} = this.props;
+    const {navigation, route} = this.props;
+    const {recid} = route.params;
 
     let data = qs.stringify({
       Name: name,
@@ -182,6 +201,18 @@ class Mortgages extends Component {
       .catch((error) => {
         this.setState({isLoader: false});
       });
+  };
+
+  delete = async () => {
+    const {navigation, route} = this.props;
+    const {recid} = route.params;
+    await deleteRecords(
+      'Mortgage',
+      recid,
+      this.props.userData.userData.access_token,
+    )
+      .then((response) => navigation.goBack())
+      .catch((error) => console.log('Error in delete', error));
   };
 
   basicInformation = () => (
@@ -251,7 +282,7 @@ class Mortgages extends Component {
             onChangeText={(effectivefrom) => this.setState({effectivefrom})}
             keyboardType="default"
             color={Color.lightishBlue}
-          value={this.state.effectivefrom}
+            value={this.state.effectivefrom}
           />
         </View>
         <View style={styles.miniInputContainer}>
@@ -260,7 +291,7 @@ class Mortgages extends Component {
             onChangeText={(endsOn) => this.setState({endsOn})}
             keyboardType="default"
             color={Color.lightishBlue}
-          value={this.state.endsOn}
+            value={this.state.endsOn}
           />
         </View>
       </View>
@@ -408,7 +439,7 @@ class Mortgages extends Component {
           onPress={() =>
             this.setState({
               modal: true,
-              array: this.props.countries.country,
+              array: this.props.country.country,
               key: 'country',
             })
           }
@@ -464,36 +495,94 @@ class Mortgages extends Component {
     this.setState({[key]: value});
   };
 
+  editComponent = (isLoader, modal, array, key) => (
+    <View>
+      <Text style={styles.title}>Basic Information</Text>
+      {this.basicInformation()}
+      <View style={styles.gap} />
+      <Text style={styles.title}>Security Questions</Text>
+      {this.securityQuestions()}
+      <View style={styles.gap} />
+      <Text style={styles.title}>Payment Mailing Address</Text>
+      {this.paymentMailingAddress()}
+      <View style={styles.gap} />
+      <Text style={styles.title}>Additional Information</Text>
+      {this.additionalInformation()}
+      <View style={styles.gap} />
+      <View style={styles.buttonContainer}>
+        <Button onPress={this.handleClick} title="Next" />
+      </View>
+      <Loader isLoader={isLoader} />
+      <ModalScreen
+        isModalVisible={modal}
+        list={array}
+        changeModalVisibility={this.changeModalVisibility}
+        id={key}
+        changeState={this.changeState}
+      />
+    </View>
+  );
+  onSave = () => {
+    this.submit();
+  };
+
+  onEdit = () => {
+    console.log('Edit');
+  };
+
+  onDelete = () => {
+    Alert.alert(
+      //title
+      'Delete',
+      //body
+      'Are you sure you want to delete ?',
+      [
+        {text: 'Yes', onPress: () => this.delete()},
+        {text: 'No', onPress: () => console.log('No Pressed'), style: 'cancel'},
+      ],
+      {cancelable: false},
+      //clicking out side of alert will not cancel
+    );
+  };
+
   render() {
     const {isLoader, modal, array, key} = this.state;
     return (
-      <View style={styles.container}>
-        <Text style={styles.title}>Basic Information</Text>
-        {this.basicInformation()}
-        <View style={styles.gap} />
-        <Text style={styles.title}>Security Questions</Text>
-        {this.securityQuestions()}
-        <View style={styles.gap} />
-        <Text style={styles.title}>Payment Mailing Address</Text>
-        {this.paymentMailingAddress()}
-        <View style={styles.gap} />
-        <Text style={styles.title}>Additional Information</Text>
-        {this.additionalInformation()}
-        <View style={styles.gap} />
-        <View style={styles.buttonContainer}>
-          <Button onPress={this.handleClick} title="Next" />
-        </View>
-        <Loader isLoader={isLoader} />
-        <ModalScreen
-          isModalVisible={modal}
-          list={array}
-          changeModalVisibility={this.changeModalVisibility}
-          id={key}
-          changeState={this.changeState}
-        />
-      </View>
+      <SafeAreaView style={styles.outerView}>
+        <ImageBackground source={background} style={styles.backgroundImage}>
+          <View style={styles.titleView}>
+            <TitleView
+              navigation={navigation}
+              mode={mode}
+              theme={theme}
+              title={title}
+              type={type}
+              save={this.onSave}
+              edit={this.onEdit}
+              delete={this.onDelete}
+            />
+          </View>
+          <ScrollView
+            style={[
+              styles.outerContainerView,
+              {
+                backgroundColor:
+                  theme !== 'dark' ? 'rgb(255, 255, 255)' : 'rgb(33, 47, 60)',
+              },
+            ]}>
+            <View style={styles.container}>
+              {this.editComponent(isLoader, modal, array, key)}
+            </View>
+          </ScrollView>
+        </ImageBackground>
+      </SafeAreaView>
     );
   }
 }
 
-export default Mortgages;
+const mapStateToProps = ({userData, country}) => ({
+  userData,
+  country,
+});
+
+export default connect(mapStateToProps)(Mortgages);

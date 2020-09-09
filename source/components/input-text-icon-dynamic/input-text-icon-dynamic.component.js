@@ -25,6 +25,7 @@ const InputTextIconDynamic = ({
       style={styles.input}
       selectionColor={color}
       theme={{colors:{primary: color}}}
+      underlineColor={'rgb(33, 47, 60)'}
       right={<Icon name={icon}/>}
     />
   </View>

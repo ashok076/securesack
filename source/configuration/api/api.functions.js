@@ -51,3 +51,17 @@ export const viewRecords = async (datatype, recid, access_token) => {
       throw error;
     });
 };
+
+export const deleteRecords = async (datatype, recid, access_token) => {
+  return axios(`${BASE_URL}/data/${datatype}/${recid}`, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      Authorization: 'Bearer ' + access_token,
+    },
+  })
+    .then((response) => response.data)
+    .catch((error) => {
+      throw error;
+    });
+};
