@@ -22,6 +22,7 @@ import {
   createOrUpdateRecord,
   viewRecords,
   deleteRecords,
+  archiveRecords,
 } from '../../../configuration/api/api.functions';
 import {account_type, size, payment_due_type} from './bank-account.list';
 import {Color} from '../../../assets/color/color.js';
@@ -83,6 +84,7 @@ class BankAccounts extends Component {
     paymentDueType2: '',
     save: '',
     access_token: '',
+    editable: true,
   };
   constructor(props) {
     super(props);
@@ -92,7 +94,7 @@ class BankAccounts extends Component {
   }
 
   componentDidMount() {
-    const {navigation} = this.props;
+    const {navigation, route} = this.props;
     navigation.addListener('focus', () => {
       this.setState(this.initialState);
       if (this.props.userData && this.props.userData.userData)
@@ -104,9 +106,13 @@ class BankAccounts extends Component {
   }
 
   viewRecord = async () => {
-    const {recid} = this.props.route.params;
+    const {recid, mode} = this.props.route.params;
     this.setState({isLoader: true});
-    await viewRecords('BankAccounts', recid, this.props.userData.userData.access_token)
+    await viewRecords(
+      'BankAccounts',
+      recid,
+      this.props.userData.userData.access_token,
+    )
       .then((response) => {
         console.log('View res: ', response);
         this.setViewData(response.data);
@@ -117,6 +123,7 @@ class BankAccounts extends Component {
         this.setState({isLoader: false});
       });
     this.setState({isLoader: false});
+    if (mode === 'Add') this.setState({editable: false});
   };
 
   setViewData = (data) => {
@@ -179,6 +186,7 @@ class BankAccounts extends Component {
           keyboardType="default"
           value={this.state.name}
           color={Color.lightishBlue}
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -188,6 +196,7 @@ class BankAccounts extends Component {
           keyboardType="default"
           value={this.state.issuingBank}
           color={Color.lightishBlue}
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -205,6 +214,7 @@ class BankAccounts extends Component {
             })
           }
           color={Color.lightishBlue}
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -214,6 +224,7 @@ class BankAccounts extends Component {
           keyboardType="number-pad"
           value={this.state.accountNumber}
           color={Color.lightishBlue}
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -225,6 +236,7 @@ class BankAccounts extends Component {
           keyboardType="number-pad"
           value={this.state.bankRoutingNumber}
           color={Color.lightishBlue}
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -234,6 +246,7 @@ class BankAccounts extends Component {
           keyboardType="default"
           value={this.state.userName}
           color={Color.lightishBlue}
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -243,6 +256,7 @@ class BankAccounts extends Component {
           keyboardType="default"
           value={this.state.password}
           color={Color.lightishBlue}
+          editable={this.state.editable}
         />
       </View>
     </View>
@@ -257,6 +271,7 @@ class BankAccounts extends Component {
           keyboardType="number-pad"
           value={this.state.atm1CardNo}
           color={Color.lightishBlue}
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -266,6 +281,7 @@ class BankAccounts extends Component {
           keyboardType="number-pad"
           value={this.state.atm1CardPin}
           color={Color.lightishBlue}
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.miniContainer}>
@@ -276,6 +292,7 @@ class BankAccounts extends Component {
             keyboardType="default"
             value={this.state.atm1CardExDate}
             color={Color.lightishBlue}
+            editable={this.state.editable}
           />
         </View>
         <View style={styles.miniInputContainer}>
@@ -285,44 +302,7 @@ class BankAccounts extends Component {
             keyboardType="number-pad"
             value={this.state.atm1CVV}
             color={Color.lightishBlue}
-          />
-        </View>
-      </View>
-      <View style={styles.inputContainer}>
-        <InputTextDynamic
-          placeholder="ATM Card Number"
-          onChangeText={(atm2CardNo) => this.setState({atm2CardNo})}
-          keyboardType="number-pad"
-          value={this.state.atm2CardNo}
-          color={Color.lightishBlue}
-        />
-      </View>
-      <View style={styles.inputContainer}>
-        <InputTextDynamic
-          placeholder="ATM Card PIN"
-          onChangeText={(atm2CardPin) => this.setState({atm2CardPin})}
-          keyboardType="number-pad"
-          value={this.state.atm2CardPin}
-          color={Color.lightishBlue}
-        />
-      </View>
-      <View style={styles.miniContainer}>
-        <View style={[styles.miniInputContainer, {marginRight: 10}]}>
-          <InputTextDynamic
-            placeholder="Expiration Date"
-            onChangeText={(atm2CardExDate) => this.setState({atm2CardExDate})}
-            keyboardType="default"
-            value={this.state.atm2CardExDate}
-            color={Color.lightishBlue}
-          />
-        </View>
-        <View style={styles.miniInputContainer}>
-          <InputTextDynamic
-            placeholder="CVV"
-            onChangeText={(atm2CVV) => this.setState({atm2CVV})}
-            keyboardType="number-pad"
-            value={this.state.atm2CVV}
-            color={Color.lightishBlue}
+            editable={this.state.editable}
           />
         </View>
       </View>
@@ -338,6 +318,7 @@ class BankAccounts extends Component {
           keyboardType="number-pad"
           value={this.state.debit1CardNo}
           color={Color.lightishBlue}
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -347,6 +328,7 @@ class BankAccounts extends Component {
           keyboardType="number-pad"
           value={this.state.debit1CardPin}
           color={Color.lightishBlue}
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.miniContainer}>
@@ -359,6 +341,7 @@ class BankAccounts extends Component {
             keyboardType="default"
             value={this.state.debit1CardExDate}
             color={Color.lightishBlue}
+            editable={this.state.editable}
           />
         </View>
         <View style={styles.miniInputContainer}>
@@ -368,46 +351,7 @@ class BankAccounts extends Component {
             keyboardType="number-pad"
             value={this.state.debit1CVV}
             color={Color.lightishBlue}
-          />
-        </View>
-      </View>
-      <View style={styles.inputContainer}>
-        <InputTextDynamic
-          placeholder="Debit Card Number"
-          onChangeText={(debit2CardNo) => this.setState({debit2CardNo})}
-          keyboardType="number-pad"
-          value={this.state.debit2CardNo}
-          color={Color.lightishBlue}
-        />
-      </View>
-      <View style={styles.inputContainer}>
-        <InputTextDynamic
-          placeholder="Debit Card PIN"
-          onChangeText={(debit2CardPin) => this.setState({debit2CardPin})}
-          keyboardType="number-pad"
-          value={this.state.debit2CardPin}
-          color={Color.lightishBlue}
-        />
-      </View>
-      <View style={styles.miniContainer}>
-        <View style={[styles.miniInputContainer, {marginRight: 10}]}>
-          <InputTextDynamic
-            placeholder="Expiration Date"
-            onChangeText={(debit2CardExDate) =>
-              this.setState({debit2CardExDate})
-            }
-            keyboardType="default"
-            value={this.state.debit2CardExDate}
-            color={Color.lightishBlue}
-          />
-        </View>
-        <View style={styles.miniInputContainer}>
-          <InputTextDynamic
-            placeholder="CVV"
-            onChangeText={(debit2CVV) => this.setState({debit2CVV})}
-            keyboardType="number-pad"
-            value={this.state.debit2CVV}
-            color={Color.lightishBlue}
+            editable={this.state.editable}
           />
         </View>
       </View>
@@ -423,6 +367,7 @@ class BankAccounts extends Component {
           keyboardType="default"
           value={this.state.securityQ1}
           color={Color.lightishBlue}
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -432,6 +377,7 @@ class BankAccounts extends Component {
           keyboardType="default"
           value={this.state.securityA1}
           color={Color.lightishBlue}
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -441,6 +387,7 @@ class BankAccounts extends Component {
           keyboardType="default"
           value={this.state.securityQ2}
           color={Color.lightishBlue}
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -450,6 +397,7 @@ class BankAccounts extends Component {
           keyboardType="default"
           value={this.state.securityA2}
           color={Color.lightishBlue}
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -459,6 +407,7 @@ class BankAccounts extends Component {
           keyboardType="default"
           value={this.state.securityQ3}
           color={Color.lightishBlue}
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -468,6 +417,7 @@ class BankAccounts extends Component {
           keyboardType="default"
           value={this.state.securityA3}
           color={Color.lightishBlue}
+          editable={this.state.editable}
         />
       </View>
     </View>
@@ -483,6 +433,7 @@ class BankAccounts extends Component {
             keyboardType="number-pad"
             value={this.state.boxNumber1}
             color={Color.lightishBlue}
+            editable={this.state.editable}
           />
         </View>
         <View style={styles.miniInputContainer}>
@@ -492,6 +443,7 @@ class BankAccounts extends Component {
               this.setState({modal: true, array: size, key: 'size1'})
             }
             color={Color.lightishBlue}
+            editable={this.state.editable}
           />
         </View>
       </View>
@@ -503,6 +455,7 @@ class BankAccounts extends Component {
             keyboardType="default"
             value={this.state.openedOn1}
             color={Color.lightishBlue}
+            editable={this.state.editable}
           />
         </View>
         <View style={styles.miniInputContainer}>
@@ -512,6 +465,7 @@ class BankAccounts extends Component {
             icon="dollar-sign"
             keyboardType="default"
             color={Color.lightishBlue}
+            editable={this.state.editable}
           />
         </View>
       </View>
@@ -530,6 +484,7 @@ class BankAccounts extends Component {
             })
           }
           color={Color.lightishBlue}
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.miniContainer}>
@@ -540,6 +495,7 @@ class BankAccounts extends Component {
             keyboardType="number-pad"
             value={this.state.boxNumber2}
             color={Color.lightishBlue}
+            editable={this.state.editable}
           />
         </View>
         <View style={styles.miniInputContainer}>
@@ -549,6 +505,7 @@ class BankAccounts extends Component {
               this.setState({modal: true, array: size, key: 'size2'})
             }
             color={Color.lightishBlue}
+            editable={this.state.editable}
           />
         </View>
       </View>
@@ -560,6 +517,7 @@ class BankAccounts extends Component {
             keyboardType="default"
             value={this.state.openedOn2}
             color={Color.lightishBlue}
+            editable={this.state.editable}
           />
         </View>
         <View style={styles.miniInputContainer}>
@@ -569,6 +527,7 @@ class BankAccounts extends Component {
             icon="dollar-sign"
             keyboardType="default"
             color={Color.lightishBlue}
+            editable={this.state.editable}
           />
         </View>
       </View>
@@ -587,6 +546,7 @@ class BankAccounts extends Component {
             })
           }
           color={Color.lightishBlue}
+          editable={this.state.editable}
         />
       </View>
     </View>
@@ -601,6 +561,7 @@ class BankAccounts extends Component {
           keyboardType="default"
           value={this.state.address1}
           color={Color.lightishBlue}
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -610,6 +571,7 @@ class BankAccounts extends Component {
           keyboardType="default"
           value={this.state.address2}
           color={Color.lightishBlue}
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -619,6 +581,7 @@ class BankAccounts extends Component {
           keyboardType="default"
           value={this.state.city}
           color={Color.lightishBlue}
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -628,6 +591,7 @@ class BankAccounts extends Component {
           keyboardType="default"
           value={this.state.state}
           color={Color.lightishBlue}
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -637,6 +601,7 @@ class BankAccounts extends Component {
           keyboardType="number-pad"
           value={this.state.zip}
           color={Color.lightishBlue}
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -652,6 +617,7 @@ class BankAccounts extends Component {
             })
           }
           color={Color.lightishBlue}
+          editable={this.state.editable}
         />
       </View>
     </View>
@@ -772,11 +738,39 @@ class BankAccounts extends Component {
   };
 
   delete = async () => {
-    const { navigation, route } = this.props
+    const {navigation, route} = this.props;
     const {recid} = route.params;
-    await deleteRecords('BankAccounts', recid, this.props.userData.userData.access_token)
+    await deleteRecords(
+      'BankAccounts',
+      recid,
+      this.props.userData.userData.access_token,
+    )
       .then((response) => navigation.goBack())
       .catch((error) => console.log('Error in delete', error));
+  };
+
+  archive = async () => {
+    this.setState({isLoader: true});
+    const {navigation, route} = this.props;
+    const {recid} = route.params;
+    let data = qs.stringify({
+      IsArchived: true,
+    });
+    await archiveRecords(
+      'BankAccounts',
+      recid,
+      this.props.userData.userData.access_token,
+      data,
+    )
+      .then((response) => {
+        this.setState({isLoader: false});
+        console.log('Response', response);
+        navigation.goBack();
+      })
+      .catch((error) => {
+        this.setState({isLoader: false});
+        console.log('Error in delete', error);
+      });
   };
 
   changeModalVisibility = (bool) => {
@@ -787,7 +781,7 @@ class BankAccounts extends Component {
     this.setState({[key]: value});
   };
 
-  editComponent = (isLoader, modal, array, key) => (
+  editComponent = (isLoader, modal, array, key, editable) => (
     <View>
       <Text style={styles.title}>Basic Information</Text>
       {this.basicInformation()}
@@ -807,9 +801,13 @@ class BankAccounts extends Component {
       <Text style={styles.title}>Additional Information</Text>
       {this.additonalInformation()}
       <View style={styles.gap} />
-      <View style={styles.buttonContainer}>
-        <Button onPress={this.handleClick} title="Submit" />
-      </View>
+      {!editable ? (
+        <View style={styles.buttonContainer}>
+          <Button onPress={this.handleClick} title="Submit" />
+        </View>
+      ) : (
+        <View />
+      )}
       <Loader isLoader={isLoader} />
       <ModalScreen
         isModalVisible={modal}
@@ -826,7 +824,7 @@ class BankAccounts extends Component {
   };
 
   onEdit = () => {
-    console.log('Edit');
+    this.setState({editable: false}, () => console.log(this.state.editable));
   };
 
   onDelete = () => {
@@ -844,8 +842,12 @@ class BankAccounts extends Component {
     );
   };
 
+  onArchive = () => {
+    this.archive();
+  };
+
   render() {
-    const {isLoader, modal, array, key} = this.state;
+    const {isLoader, modal, array, key, editable} = this.state;
     const {route, navigation} = this.props;
     const {title, type, background, theme, mode} = route.params;
     return (
@@ -861,6 +863,8 @@ class BankAccounts extends Component {
               save={this.onSave}
               edit={this.onEdit}
               delete={this.onDelete}
+              archive={this.onArchive}
+              editable={editable}
             />
           </View>
           <ScrollView
@@ -872,7 +876,7 @@ class BankAccounts extends Component {
               },
             ]}>
             <View style={styles.container}>
-              {this.editComponent(isLoader, modal, array, key)}
+              {this.editComponent(isLoader, modal, array, key, editable)}
             </View>
           </ScrollView>
         </ImageBackground>

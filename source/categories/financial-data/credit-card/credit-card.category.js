@@ -22,6 +22,7 @@ import {
   createOrUpdateRecord,
   viewRecords,
   deleteRecords,
+  archiveRecords,
 } from '../../../configuration/api/api.functions';
 import {credit_card_type} from './credit-card.list';
 import {Color} from '../../../assets/color/color.js';
@@ -60,6 +61,8 @@ class CreditCard extends Component {
     country: '',
     creditCardType: '',
     access_token: '',
+    editable: true,
+    
   };
   constructor(props) {
     super(props);
@@ -81,9 +84,13 @@ class CreditCard extends Component {
   }
 
   viewRecord = async () => {
-    const {recid} = this.props.route.params;
+    const {recid, mode} = this.props.route.params;
     this.setState({isLoader: true});
-    await viewRecords('CreditCard', recid, this.props.userData.userData.access_token)
+    await viewRecords(
+      'CreditCard',
+      recid,
+      this.props.userData.userData.access_token,
+    )
       .then((response) => {
         console.log('View res: ', response);
         this.setViewData(response.data);
@@ -92,6 +99,7 @@ class CreditCard extends Component {
         console.log('Error: ', error);
         this.setState({isLoader: false});
       });
+    if (mode === 'Add') this.setState({editable: false});
   };
 
   setViewData = (data) => {
@@ -200,14 +208,40 @@ class CreditCard extends Component {
   };
 
   delete = async () => {
-    const { navigation, route } = this.props
+    const {navigation, route} = this.props;
     const {recid} = route.params;
-    await deleteRecords('CreditCard', recid, this.props.userData.userData.access_token)
+    await deleteRecords(
+      'CreditCard',
+      recid,
+      this.props.userData.userData.access_token,
+    )
       .then((response) => navigation.goBack())
       .catch((error) => console.log('Error in delete', error));
   };
 
-  primaryCard = () => (
+  archive = async () => {
+    this.setState({isLoader: true});
+    const {navigation, route} = this.props;
+    const {recid} = route.params;
+    let data = qs.stringify({
+      IsArchived: true,
+    });
+    await archiveRecords(
+      'CreditCard',
+      recid,
+      data,
+      this.props.userData.userData.access_token,
+    )
+      .then((response) => {
+        this.setState({isLoader: false});
+        navigation.goBack();
+      })
+      .catch((error) => {
+        this.setState({isLoader: false});
+      });
+  };
+
+  primaryCard = (editable) => (
     <View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
@@ -216,6 +250,7 @@ class CreditCard extends Component {
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.name}
+          editable={editable}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -225,6 +260,7 @@ class CreditCard extends Component {
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.cardHolderName}
+          editable={editable}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -241,6 +277,7 @@ class CreditCard extends Component {
               key: 'creditCardType',
             })
           }
+          editable={editable}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -250,6 +287,7 @@ class CreditCard extends Component {
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.cardNo}
+          editable={editable}
         />
       </View>
       <View style={styles.miniContainer}>
@@ -260,6 +298,7 @@ class CreditCard extends Component {
             keyboardType="default"
             color={Color.lightishBlue}
             value={this.state.expiryDate}
+          editable={editable}
           />
         </View>
         <View style={styles.miniInputContainer}>
@@ -269,6 +308,7 @@ class CreditCard extends Component {
             keyboardType="default"
             color={Color.lightishBlue}
             value={this.state.cvv}
+          editable={editable}
           />
         </View>
       </View>
@@ -279,6 +319,7 @@ class CreditCard extends Component {
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.url}
+          editable={editable}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -288,6 +329,7 @@ class CreditCard extends Component {
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.username}
+          editable={editable}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -297,12 +339,13 @@ class CreditCard extends Component {
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.password}
+          editable={editable}
         />
       </View>
     </View>
   );
 
-  additionalCardInfo = () => (
+  additionalCardInfo = (editable) => (
     <View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
@@ -311,6 +354,7 @@ class CreditCard extends Component {
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.cardHolderName2}
+          editable={editable}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -320,6 +364,7 @@ class CreditCard extends Component {
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.cardNo2}
+          editable={editable}
         />
       </View>
       <View style={styles.miniContainer}>
@@ -330,6 +375,7 @@ class CreditCard extends Component {
             keyboardType="default"
             color={Color.lightishBlue}
             value={this.state.expiryDate2}
+          editable={editable}
           />
         </View>
         <View style={styles.miniInputContainer}>
@@ -339,13 +385,14 @@ class CreditCard extends Component {
             keyboardType="default"
             color={Color.lightishBlue}
             value={this.state.cvv2}
+          editable={editable}
           />
         </View>
       </View>
     </View>
   );
 
-  securityQuestions = () => (
+  securityQuestions = (editable) => (
     <View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
@@ -354,6 +401,7 @@ class CreditCard extends Component {
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.securityQ1}
+          editable={editable}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -363,6 +411,7 @@ class CreditCard extends Component {
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.securityA1}
+          editable={editable}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -372,6 +421,7 @@ class CreditCard extends Component {
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.securityQ2}
+          editable={editable}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -381,6 +431,7 @@ class CreditCard extends Component {
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.securityA2}
+          editable={editable}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -390,6 +441,7 @@ class CreditCard extends Component {
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.securityQ3}
+          editable={editable}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -399,12 +451,13 @@ class CreditCard extends Component {
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.securityA3}
+          editable={editable}
         />
       </View>
     </View>
   );
 
-  paymentMailingAddress = () => (
+  paymentMailingAddress = (editable) => (
     <View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
@@ -413,6 +466,7 @@ class CreditCard extends Component {
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.address1}
+          editable={editable}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -422,6 +476,7 @@ class CreditCard extends Component {
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.address2}
+          editable={editable}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -431,6 +486,7 @@ class CreditCard extends Component {
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.city}
+          editable={editable}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -440,6 +496,7 @@ class CreditCard extends Component {
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.state}
+          editable={editable}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -449,6 +506,7 @@ class CreditCard extends Component {
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.zip}
+          editable={editable}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -463,6 +521,7 @@ class CreditCard extends Component {
               key: 'country',
             })
           }
+          editable={editable}
         />
       </View>
     </View>
@@ -510,26 +569,30 @@ class CreditCard extends Component {
     this.setState({[key]: value});
   };
 
-  editComponent = (isLoader, modal, array, key) => (
+  editComponent = (isLoader, modal, array, key, editable) => (
     <View>
       <Text style={styles.title}>Primary Card</Text>
-      {this.primaryCard()}
+      {this.primaryCard(editable)}
       <View style={styles.gap} />
       <Text style={styles.title}>Additional Card Information</Text>
-      {this.additionalCardInfo()}
+      {this.additionalCardInfo(editable)}
       <View style={styles.gap} />
       <Text style={styles.title}>Security Questions</Text>
-      {this.securityQuestions()}
+      {this.securityQuestions(editable)}
       <View style={styles.gap} />
       <Text style={styles.title}>Payment Mailing Address</Text>
-      {this.paymentMailingAddress()}
+      {this.paymentMailingAddress(editable)}
       <View style={styles.gap} />
       {/* <Text style={styles.title}>Additional Information</Text>
         {this.additionalInformation()} */}
       <View style={styles.gap} />
-      <View style={styles.buttonContainer}>
-        <Button onPress={this.handleClick} title="Next" />
-      </View>
+      {!editable ? (
+        <View style={styles.buttonContainer}>
+          <Button onPress={this.handleClick} title="Submit" />
+        </View>
+      ) : (
+        <View />
+      )}
       <Loader isLoader={isLoader} />
       <ModalScreen
         isModalVisible={modal}
@@ -546,7 +609,7 @@ class CreditCard extends Component {
   };
 
   onEdit = () => {
-    console.log('Edit');
+    this.setState({editable: false});
   };
 
   onDelete = () => {
@@ -564,8 +627,12 @@ class CreditCard extends Component {
     );
   };
 
+  onArchive = () => {
+    this.archive();
+  };
+
   render() {
-    const {isLoader, modal, array, key} = this.state;
+    const {isLoader, modal, array, key, editable} = this.state;
     const {route, navigation} = this.props;
     const {title, type, background, theme, mode} = route.params;
     return (
@@ -581,6 +648,8 @@ class CreditCard extends Component {
               save={this.onSave}
               edit={this.onEdit}
               delete={this.onDelete}
+              archive={this.onArchive}
+              editable={editable}
             />
           </View>
           <ScrollView
@@ -592,7 +661,7 @@ class CreditCard extends Component {
               },
             ]}>
             <View style={styles.container}>
-              {this.editComponent(isLoader, modal, array, key)}
+              {this.editComponent(isLoader, modal, array, key, editable)}
             </View>
           </ScrollView>
         </ImageBackground>

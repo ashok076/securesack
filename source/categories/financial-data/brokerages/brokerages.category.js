@@ -20,12 +20,13 @@ import {
   createOrUpdateRecord,
   viewRecords,
   deleteRecords,
+  archiveRecords,
 } from '../../../configuration/api/api.functions';
 import {Color} from '../../../assets/color/color.js';
 
 import styles from './brokerages.style';
 
-class Brokerages extends Component {
+class BrokerageAccount extends Component {
   initialState = {
     isLoader: false,
     name: '',
@@ -46,6 +47,7 @@ class Brokerages extends Component {
     stockTransactionFee: '',
     openedOn: '',
     closedOn: '',
+    editable: true,
   };
   constructor(props) {
     super(props);
@@ -56,7 +58,7 @@ class Brokerages extends Component {
 
   componentDidMount() {
     const {navigation} = this.props;
-    avigation.addListener('focus', () => {
+    navigation.addListener('focus', () => {
       this.setState(this.initialState);
       if (this.props.userData && this.props.userData.userData)
         this.setState(
@@ -67,9 +69,13 @@ class Brokerages extends Component {
   }
 
   viewRecord = async () => {
-    const {recid} = this.props.route.params;
+    const {recid, mode} = this.props.route.params;
     this.setState({isLoader: true});
-    await viewRecords('BrokerageAccount', recid, this.props.userData.userData.access_token)
+    await viewRecords(
+      'BrokerageAccount',
+      recid,
+      this.props.userData.userData.access_token,
+    )
       .then((response) => {
         console.log('View res: ', response);
         this.setViewData(response.data);
@@ -78,6 +84,7 @@ class Brokerages extends Component {
         console.log('Error: ', error);
         this.setState({isLoader: false});
       });
+    if (mode === 'Add') this.setState({editable: false});
   };
 
   setViewData = (data) => {
@@ -164,11 +171,37 @@ class Brokerages extends Component {
   };
 
   delete = async () => {
-    const { navigation, route } = this.props
+    const {navigation, route} = this.props;
     const {recid} = route.params;
-    await deleteRecords('BrokerageAccount', recid, this.props.userData.userData.access_token)
+    await deleteRecords(
+      'BrokerageAccount',
+      recid,
+      this.props.userData.userData.access_token,
+    )
       .then((response) => navigation.goBack())
       .catch((error) => console.log('Error in delete', error));
+  };
+
+  archive = async () => {
+    this.setState({isLoader: true});
+    const {navigation, route} = this.props;
+    const {recid} = route.params;
+    let data = qs.stringify({
+      IsArchived: true,
+    });
+    await archiveRecords(
+      'BrokerageAccount',
+      recid,
+      data,
+      this.props.userData.userData.access_token,
+    )
+      .then((response) => {
+        this.setState({isLoader: false});
+        navigation.goBack();
+      })
+      .catch((error) => {
+        this.setState({isLoader: false});
+      });
   };
 
   basicInformation = () => (
@@ -180,6 +213,7 @@ class Brokerages extends Component {
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.name}
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -191,6 +225,7 @@ class Brokerages extends Component {
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.financialInstitution}
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -200,6 +235,7 @@ class Brokerages extends Component {
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.acNumber}
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -209,6 +245,7 @@ class Brokerages extends Component {
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.username}
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -218,6 +255,7 @@ class Brokerages extends Component {
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.password}
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -227,6 +265,7 @@ class Brokerages extends Component {
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.url}
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -236,6 +275,7 @@ class Brokerages extends Component {
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.primaryAcHolder}
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -245,6 +285,7 @@ class Brokerages extends Component {
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.joinAcHolderOne}
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -254,6 +295,7 @@ class Brokerages extends Component {
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.joinAcHolderTwo}
+          editable={this.state.editable}
         />
       </View>
     </View>
@@ -268,6 +310,7 @@ class Brokerages extends Component {
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.securityQ1}
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -277,6 +320,7 @@ class Brokerages extends Component {
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.securityA1}
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -286,6 +330,7 @@ class Brokerages extends Component {
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.securityQ2}
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -295,6 +340,7 @@ class Brokerages extends Component {
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.securityA2}
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -304,6 +350,7 @@ class Brokerages extends Component {
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.securityQ3}
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -313,6 +360,7 @@ class Brokerages extends Component {
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.securityA3}
+          editable={this.state.editable}
         />
       </View>
     </View>
@@ -330,6 +378,7 @@ class Brokerages extends Component {
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.stockTransactionFee}
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.miniContainer}>
@@ -340,6 +389,7 @@ class Brokerages extends Component {
             keyboardType="default"
             color={Color.lightishBlue}
             value={this.state.openedOn}
+            editable={this.state.editable}
           />
         </View>
         <View style={styles.miniInputContainer}>
@@ -349,13 +399,14 @@ class Brokerages extends Component {
             keyboardType="default"
             color={Color.lightishBlue}
             value={this.state.closedOn}
+            editable={this.state.editable}
           />
         </View>
       </View>
     </View>
   );
 
-  editComponent = (isLoader) => (
+  editComponent = (isLoader, editable) => (
     <View>
       <Text style={styles.title}>Basic Information</Text>
       {this.basicInformation()}
@@ -366,9 +417,13 @@ class Brokerages extends Component {
       <Text style={styles.title}>Additional Information</Text>
       {this.additionalInformation()}
       <View style={styles.gap} />
-      <View style={styles.buttonContainer}>
-        <Button onPress={this.handleClick} title="Next" />
-      </View>
+      {!editable ? (
+        <View style={styles.buttonContainer}>
+          <Button onPress={this.handleClick} title="Submit" />
+        </View>
+      ) : (
+        <View />
+      )}
       <Loader isLoader={isLoader} />
     </View>
   );
@@ -378,7 +433,11 @@ class Brokerages extends Component {
   };
 
   onEdit = () => {
-    console.log('Edit');
+    this.setState({ editable: false })
+  };
+
+  onArchive = () => {
+    this.archive();
   };
 
   onDelete = () => {
@@ -397,7 +456,7 @@ class Brokerages extends Component {
   };
 
   render() {
-    const {isLoader} = this.state;
+    const {isLoader, editable} = this.state;
     const {route, navigation} = this.props;
     const {title, type, background, theme, mode} = route.params;
     return (
@@ -413,6 +472,8 @@ class Brokerages extends Component {
               save={this.onSave}
               edit={this.onEdit}
               delete={this.onDelete}
+              archive={this.onArchive}
+              editable={editable}
             />
           </View>
           <ScrollView
@@ -423,7 +484,7 @@ class Brokerages extends Component {
                   theme !== 'dark' ? 'rgb(255, 255, 255)' : 'rgb(33, 47, 60)',
               },
             ]}>
-            <View style={styles.container}>{this.editComponent(isLoader)}</View>
+            <View style={styles.container}>{this.editComponent(isLoader, editable)}</View>
           </ScrollView>
         </ImageBackground>
       </SafeAreaView>
@@ -435,4 +496,4 @@ const mapStateToProps = ({userData}) => ({
   userData,
 });
 
-export default connect(mapStateToProps)(Brokerages);
+export default connect(mapStateToProps)(BrokerageAccount);

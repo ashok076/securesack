@@ -14,8 +14,8 @@ import PersonalOrganisation from '../../pages/personal-organisation/personal-org
 //financial data
 import BankAccounts from '../../categories/financial-data/bank-account/bank-account.category';
 import CreditCard from '../../categories/financial-data/credit-card/credit-card.category.js';
-import Brokerages from '../../categories/financial-data/brokerages/brokerages.category';
-import Mortgages from '../../categories/financial-data/mortgages/mortgages.category.js';
+import BrokerageAccount from '../../categories/financial-data/brokerages/brokerages.category';
+import Mortgage from '../../categories/financial-data/mortgages/mortgages.category.js';
 import ConsumerLoan from '../../categories/financial-data/loans/loans.category.js';
 
 //services and rewards
@@ -59,8 +59,8 @@ const DrawerNavigator = () => {
       <Drawer.Screen name="PersonalOrganisation" component={PersonalOrganisation} />
       <Drawer.Screen name="BankAccounts" component={BankAccounts}/>
       <Drawer.Screen name="CreditCard" component={CreditCard}/>
-      <Drawer.Screen name="Brokerages" component={Brokerages}/>
-      <Drawer.Screen name="Mortgages" component={Mortgages}/>
+      <Drawer.Screen name="BrokerageAccount" component={BrokerageAccount}/>
+      <Drawer.Screen name="Mortgage" component={Mortgage}/>
       <Drawer.Screen name="ConsumerLoan" component={ConsumerLoan}/>
       <Drawer.Screen name="Services" component={Services}/>
       <Drawer.Screen name="RewardsPrograms" component={RewardsPrograms}/>

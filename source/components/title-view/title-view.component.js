@@ -2,57 +2,23 @@ import React, {Component} from 'react';
 import {View, TouchableOpacity, Text} from 'react-native';
 import {Title} from 'react-native-paper';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import EvilIcons from 'react-native-vector-icons/EvilIcons';
+import Feather from 'react-native-vector-icons/Feather';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-
 
 import styles from './title-view.style';
 
 class TitleView extends Component {
   toggleIcons = () => {
-    const {mode, theme, type} = this.props
+    const {mode, theme, type, editable} = this.props;
     switch (mode) {
       case 'Add':
-        return (
-          <View style={styles.icons}>
-            <TouchableOpacity onPress={() => this.saveInfo()}>
-              <AntDesign
-                name="save"
-                color={
-                  theme !== 'dark' ? 'rgb(255, 255, 255)' : 'rgb(33, 47, 60)'
-                }
-                size={20}
-              />
-            </TouchableOpacity>
-          </View>
-        );
+        return this.add(theme, type, editable);
         break;
       case 'View':
-        return (
-          <View style={styles.icons}>
-            <View style={styles.rowObject}>
-              <TouchableOpacity style={styles.iconView} onPress={() => this.editInfo()}>
-                <SimpleLineIcons
-                  name="pencil"
-                  color={
-                    theme !== 'dark' ? 'rgb(255, 255, 255)' : 'rgb(33, 47, 60)'
-                  }
-                  size={20}
-                />
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => this.deleteInfo()}>
-                <SimpleLineIcons
-                  name="trash"
-                  color={
-                    theme !== 'dark' ? 'rgb(255, 255, 255)' : 'rgb(33, 47, 60)'
-                  }
-                  size={20}
-                />
-              </TouchableOpacity>
-            </View>
-          </View>
-        );
+        return editable
+          ? this.view(theme, type, editable)
+          : this.add(theme, type, editable);
         break;
       default:
         <View />;
@@ -60,17 +26,65 @@ class TitleView extends Component {
     }
   };
 
+  add = (theme, type, editable) => (
+    <View style={styles.icons}>
+      <TouchableOpacity onPress={() => this.saveInfo()}>
+        <AntDesign
+          name="save"
+          color={theme !== 'dark' ? 'rgb(255, 255, 255)' : 'rgb(33, 47, 60)'}
+          size={20}
+        />
+      </TouchableOpacity>
+    </View>
+  );
+
+  view = (theme, type, editable) => (
+    <View style={styles.icons}>
+      <View style={styles.rowObject}>
+        <TouchableOpacity
+          style={styles.iconView}
+          onPress={() => this.editInfo()}>
+          <SimpleLineIcons
+            name="pencil"
+            color={theme !== 'dark' ? 'rgb(255, 255, 255)' : 'rgb(33, 47, 60)'}
+            size={20}
+          />
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.iconView}
+          onPress={() => this.archive()}>
+          <Feather
+            name="archive"
+            color={theme !== 'dark' ? 'rgb(255, 255, 255)' : 'rgb(33, 47, 60)'}
+            size={20}
+          />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => this.deleteInfo()}>
+          <SimpleLineIcons
+            name="trash"
+            color={theme !== 'dark' ? 'rgb(255, 255, 255)' : 'rgb(33, 47, 60)'}
+            size={20}
+          />
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
+
   editInfo = () => {
-    this.props.edit()
-  }
+    this.props.edit();
+  };
 
   saveInfo = () => {
-    this.props.save()
-  }
+    this.props.save();
+  };
 
   deleteInfo = () => {
-    this.props.delete()
-  }
+    this.props.delete();
+  };
+
+  archive = () => {
+    this.props.archive();
+  };
 
   render() {
     const {mode, theme, save, type, navigation, title} = this.props;

@@ -22,6 +22,7 @@ import {
   createOrUpdateRecord,
   viewRecords,
   deleteRecords,
+  archiveRecords,
 } from '../../../configuration/api/api.functions';
 import {refianced} from './loans.list';
 import {Color} from '../../../assets/color/color.js';
@@ -52,6 +53,7 @@ class ConsumerLoan extends Component {
     endsOn: '',
     refiance: '',
     access_token: '',
+    editable: true,
   };
 
   constructor(props) {
@@ -78,9 +80,13 @@ class ConsumerLoan extends Component {
   }
 
   viewRecord = async () => {
-    const {recid} = this.props.route.params;
+    const {recid, mode} = this.props.route.params;
     this.setState({isLoader: true});
-    await viewRecords('ConsumerLoan', recid, this.props.userData.userData.access_token)
+    await viewRecords(
+      'ConsumerLoan',
+      recid,
+      this.props.userData.userData.access_token,
+    )
       .then((response) => {
         console.log('View res: ', response);
         this.setViewData(response.data);
@@ -89,6 +95,7 @@ class ConsumerLoan extends Component {
         console.log('Error: ', error);
         this.setState({isLoader: false});
       });
+    if (mode === 'Add') this.setState({editable: false});
   };
 
   setViewData = (data) => {
@@ -168,11 +175,37 @@ class ConsumerLoan extends Component {
   };
 
   delete = async () => {
-    const { navigation, route } = this.props
+    const {navigation, route} = this.props;
     const {recid} = route.params;
-    await deleteRecords('ConsumerLoan', recid, this.props.userData.userData.access_token)
+    await deleteRecords(
+      'ConsumerLoan',
+      recid,
+      this.props.userData.userData.access_token,
+    )
       .then((response) => navigation.goBack())
       .catch((error) => console.log('Error in delete', error));
+  };
+
+  archive = async () => {
+    this.setState({isLoader: true});
+    const {navigation, route} = this.props;
+    const {recid} = route.params;
+    let data = qs.stringify({
+      IsArchived: true,
+    });
+    await archiveRecords(
+      'ConsumerLoan',
+      recid,
+      data,
+      this.props.userData.userData.access_token,
+    )
+      .then((response) => {
+        this.setState({isLoader: false});
+        navigation.goBack();
+      })
+      .catch((error) => {
+        this.setState({isLoader: false});
+      });
   };
 
   basicInformation = () => (
@@ -184,6 +217,7 @@ class ConsumerLoan extends Component {
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.name}
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -193,6 +227,7 @@ class ConsumerLoan extends Component {
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.loanNo}
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -202,6 +237,7 @@ class ConsumerLoan extends Component {
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.issuer}
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -211,6 +247,7 @@ class ConsumerLoan extends Component {
           onChangeText={(loanAmnt) => this.setState({loanAmnt})}
           color={Color.lightishBlue}
           value={this.state.loanAmnt}
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -221,6 +258,7 @@ class ConsumerLoan extends Component {
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.interestRate}
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -230,6 +268,7 @@ class ConsumerLoan extends Component {
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.url}
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -239,6 +278,7 @@ class ConsumerLoan extends Component {
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.username}
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -248,6 +288,7 @@ class ConsumerLoan extends Component {
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.password}
+          editable={this.state.editable}
         />
       </View>
     </View>
@@ -262,6 +303,7 @@ class ConsumerLoan extends Component {
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.address1}
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -271,6 +313,7 @@ class ConsumerLoan extends Component {
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.address2}
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -280,6 +323,7 @@ class ConsumerLoan extends Component {
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.city}
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -289,6 +333,7 @@ class ConsumerLoan extends Component {
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.state}
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -298,6 +343,7 @@ class ConsumerLoan extends Component {
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.zip}
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -312,6 +358,7 @@ class ConsumerLoan extends Component {
               key: 'country',
             })
           }
+          editable={this.state.editable}
         />
       </View>
     </View>
@@ -331,6 +378,7 @@ class ConsumerLoan extends Component {
               key: 'refiance',
             })
           }
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.miniContainer}>
@@ -341,6 +389,7 @@ class ConsumerLoan extends Component {
             keyboardType="default"
             color={Color.lightishBlue}
             value={this.state.effectiveFrom}
+          editable={this.state.editable}
           />
         </View>
         <View style={styles.miniInputContainer}>
@@ -350,6 +399,7 @@ class ConsumerLoan extends Component {
             keyboardType="default"
             color={Color.lightishBlue}
             value={this.state.endsOn}
+          editable={this.state.editable}
           />
         </View>
       </View>
@@ -364,7 +414,7 @@ class ConsumerLoan extends Component {
     this.setState({[key]: value});
   };
 
-  editComponent = (isLoader, modal, array, key) => (
+  editComponent = (isLoader, modal, array, key, editable) => (
     <View>
       <Text style={styles.title}>Basic Information</Text>
       {this.basicInformation()}
@@ -375,9 +425,13 @@ class ConsumerLoan extends Component {
       <Text style={styles.title}>Refiance</Text>
       {this.refiance()}
       <View style={styles.gap} />
-      <View style={styles.buttonContainer}>
-        <Button onPress={this.handleClick} title="Next" />
-      </View>
+      {!editable ? (
+        <View style={styles.buttonContainer}>
+          <Button onPress={this.handleClick} title="Submit" />
+        </View>
+      ) : (
+        <View />
+      )}
       <Loader isLoader={isLoader} />
       <ModalScreen
         isModalVisible={modal}
@@ -394,7 +448,7 @@ class ConsumerLoan extends Component {
   };
 
   onEdit = () => {
-    console.log('Edit');
+    this.setState({ editable: false })
   };
 
   onDelete = () => {
@@ -412,8 +466,12 @@ class ConsumerLoan extends Component {
     );
   };
 
+  onArchive = () => {
+    this.archive();
+  };
+
   render() {
-    const {isLoader, modal, array, key} = this.state;
+    const {isLoader, modal, array, key, editable} = this.state;
     const {route, navigation} = this.props;
     const {title, type, background, theme, mode} = route.params;
     return (
@@ -429,6 +487,8 @@ class ConsumerLoan extends Component {
               save={this.onSave}
               edit={this.onEdit}
               delete={this.onDelete}
+              archive={this.onArchive}
+              editable={editable}
             />
           </View>
           <ScrollView
@@ -440,7 +500,7 @@ class ConsumerLoan extends Component {
               },
             ]}>
             <View style={styles.container}>
-              {this.editComponent(isLoader, modal, array, key)}
+              {this.editComponent(isLoader, modal, array, key, editable)}
             </View>
           </ScrollView>
         </ImageBackground>

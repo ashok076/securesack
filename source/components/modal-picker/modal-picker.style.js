@@ -10,7 +10,6 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 15,
-    color: 'rgb(33, 47, 60)',
     fontFamily: 'PublicSans-Regular',
   },
   icon: {

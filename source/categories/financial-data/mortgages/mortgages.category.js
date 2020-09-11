@@ -22,13 +22,14 @@ import {
   createOrUpdateRecord,
   viewRecords,
   deleteRecords,
+  archiveRecords,
 } from '../../../configuration/api/api.functions';
 import {term, refiance_repayment} from './mortgages.list';
 import {Color} from '../../../assets/color/color.js';
 
 import styles from './mortgages.style';
 
-class Mortgages extends Component {
+class Mortgage extends Component {
   initialState = {
     isLoader: false,
     modal: false,
@@ -60,6 +61,7 @@ class Mortgages extends Component {
     refiance: '',
     repayment: '',
     access_token: '',
+    editable: true,
   };
 
   constructor(props) {
@@ -86,10 +88,9 @@ class Mortgages extends Component {
   }
 
   viewRecord = async () => {
-    const {access_token} = this.state;
-    const {recid} = this.props.route.params;
+    const {recid, mode} = this.props.route.params;
     this.setState({isLoader: true});
-    await viewRecords('Mortgage', recid, access_token)
+    await viewRecords('Mortgage', recid, this.props.userData.userData.access_token)
       .then((response) => {
         console.log('View res: ', response);
         this.setViewData(response.data);
@@ -98,6 +99,7 @@ class Mortgages extends Component {
         console.log('Error: ', error);
         this.setState({isLoader: false});
       });
+    if (mode === 'Add') this.setState({editable: false});
   };
 
   setViewData = (data) => {
@@ -215,6 +217,28 @@ class Mortgages extends Component {
       .catch((error) => console.log('Error in delete', error));
   };
 
+  archive = async () => {
+    this.setState({isLoader: true});
+    const {navigation, route} = this.props;
+    const {recid} = route.params;
+    let data = qs.stringify({
+      IsArchived: true,
+    });
+    await archiveRecords(
+      'Mortgage',
+      recid,
+      data,
+      this.props.userData.userData.access_token,
+    )
+      .then((response) => {
+        this.setState({isLoader: false});
+        navigation.goBack();
+      })
+      .catch((error) => {
+        this.setState({isLoader: false});
+      });
+  };
+
   basicInformation = () => (
     <View>
       <View style={styles.inputContainer}>
@@ -224,6 +248,7 @@ class Mortgages extends Component {
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.name}
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -233,6 +258,7 @@ class Mortgages extends Component {
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.loanNo}
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -242,6 +268,7 @@ class Mortgages extends Component {
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.issuer}
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -254,6 +281,7 @@ class Mortgages extends Component {
               key: 'term',
             })
           }
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -263,6 +291,7 @@ class Mortgages extends Component {
           onChangeText={(loanAmnt) => this.setState({loanAmnt})}
           color={Color.lightishBlue}
           value={this.state.loanAmnt}
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -273,6 +302,7 @@ class Mortgages extends Component {
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.mortgageRate}
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.miniContainer}>
@@ -283,6 +313,7 @@ class Mortgages extends Component {
             keyboardType="default"
             color={Color.lightishBlue}
             value={this.state.effectivefrom}
+            editable={this.state.editable}
           />
         </View>
         <View style={styles.miniInputContainer}>
@@ -292,6 +323,7 @@ class Mortgages extends Component {
             keyboardType="default"
             color={Color.lightishBlue}
             value={this.state.endsOn}
+            editable={this.state.editable}
           />
         </View>
       </View>
@@ -302,6 +334,7 @@ class Mortgages extends Component {
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.url}
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -311,6 +344,7 @@ class Mortgages extends Component {
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.username}
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -320,6 +354,7 @@ class Mortgages extends Component {
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.password}
+          editable={this.state.editable}
         />
       </View>
     </View>
@@ -334,6 +369,7 @@ class Mortgages extends Component {
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.securityQ1}
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -343,6 +379,7 @@ class Mortgages extends Component {
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.securityA1}
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -352,6 +389,7 @@ class Mortgages extends Component {
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.securityQ2}
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -361,6 +399,7 @@ class Mortgages extends Component {
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.securityA2}
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -370,6 +409,7 @@ class Mortgages extends Component {
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.securityQ3}
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -379,6 +419,7 @@ class Mortgages extends Component {
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.securityA3}
+          editable={this.state.editable}
         />
       </View>
     </View>
@@ -393,6 +434,7 @@ class Mortgages extends Component {
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.address1}
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -402,6 +444,7 @@ class Mortgages extends Component {
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.address2}
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -411,6 +454,7 @@ class Mortgages extends Component {
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.city}
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -420,6 +464,7 @@ class Mortgages extends Component {
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.state}
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -429,6 +474,7 @@ class Mortgages extends Component {
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.zip}
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -443,6 +489,7 @@ class Mortgages extends Component {
               key: 'country',
             })
           }
+          editable={this.state.editable}
         />
       </View>
     </View>
@@ -465,6 +512,7 @@ class Mortgages extends Component {
                 key: 'refiance',
               })
             }
+            editable={this.state.editable}
           />
         </View>
         <View style={styles.miniInputContainer}>
@@ -481,6 +529,7 @@ class Mortgages extends Component {
                 key: 'refiance',
               })
             }
+            editable={this.state.editable}
           />
         </View>
       </View>
@@ -495,7 +544,7 @@ class Mortgages extends Component {
     this.setState({[key]: value});
   };
 
-  editComponent = (isLoader, modal, array, key) => (
+  editComponent = (isLoader, modal, array, key, editable) => (
     <View>
       <Text style={styles.title}>Basic Information</Text>
       {this.basicInformation()}
@@ -509,9 +558,13 @@ class Mortgages extends Component {
       <Text style={styles.title}>Additional Information</Text>
       {this.additionalInformation()}
       <View style={styles.gap} />
-      <View style={styles.buttonContainer}>
-        <Button onPress={this.handleClick} title="Next" />
-      </View>
+      {!editable ? (
+        <View style={styles.buttonContainer}>
+          <Button onPress={this.handleClick} title="Submit" />
+        </View>
+      ) : (
+        <View />
+      )}
       <Loader isLoader={isLoader} />
       <ModalScreen
         isModalVisible={modal}
@@ -527,7 +580,7 @@ class Mortgages extends Component {
   };
 
   onEdit = () => {
-    console.log('Edit');
+    this.setState({editable: false});
   };
 
   onDelete = () => {
@@ -545,8 +598,14 @@ class Mortgages extends Component {
     );
   };
 
+  onArchive = () => {
+    this.archive();
+  };
+
   render() {
-    const {isLoader, modal, array, key} = this.state;
+    const {isLoader, modal, array, key, editable} = this.state;
+    const {route, navigation} = this.props;
+    const {title, type, background, theme, mode} = route.params;
     return (
       <SafeAreaView style={styles.outerView}>
         <ImageBackground source={background} style={styles.backgroundImage}>
@@ -560,6 +619,8 @@ class Mortgages extends Component {
               save={this.onSave}
               edit={this.onEdit}
               delete={this.onDelete}
+              archive={this.onArchive}
+              editable={editable}
             />
           </View>
           <ScrollView
@@ -585,4 +646,4 @@ const mapStateToProps = ({userData, country}) => ({
   country,
 });
 
-export default connect(mapStateToProps)(Mortgages);
+export default connect(mapStateToProps)(Mortgage);

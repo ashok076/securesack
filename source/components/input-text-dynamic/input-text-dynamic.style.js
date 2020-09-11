@@ -8,6 +8,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
     backgroundColor: '#80000000',
     paddingHorizontal: 0,
+    paddingVertical: 0,
     height: 55,
   },
 });

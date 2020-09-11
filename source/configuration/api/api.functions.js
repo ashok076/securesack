@@ -65,3 +65,18 @@ export const deleteRecords = async (datatype, recid, access_token) => {
       throw error;
     });
 };
+
+export const archiveRecords = async (datatype, recid, access_token, payload) => {
+  return axios(`${BASE_URL}/data/${datatype}/${recid}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      Authorization: 'Bearer ' + access_token,
+    },
+    data: payload
+  })
+    .then((response) => response.data)
+    .catch((error) => {
+      throw error;
+    });
+};
