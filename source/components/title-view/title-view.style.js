@@ -13,6 +13,7 @@ const styles = StyleSheet.create({
     fontFamily: 'PublicSans-Bold',
     fontSize: 20,
     marginLeft: 15,
+    width: '60%'
   },
   iconView: {
       marginRight: 19

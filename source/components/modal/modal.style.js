@@ -27,6 +27,7 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 17,
     fontFamily: 'PublicSans-Regular',
+    textAlign: 'center',
   },
 });
 

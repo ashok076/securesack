@@ -192,7 +192,7 @@ class AuthCode extends Component {
             />
           </View>
           <View style={styles.buttonContainer}>
-            <Button onPress={this.handleClick} title="Verify Auth Code" />
+            <Button onPress={this.handleClick} title="Verify with code" />
           </View>
           <Loader isLoader={isLoader} />
         </SafeAreaView>

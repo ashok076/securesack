@@ -11,6 +11,7 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 15,
     fontFamily: 'PublicSans-Regular',
+    
   },
   icon: {
     position: 'absolute',

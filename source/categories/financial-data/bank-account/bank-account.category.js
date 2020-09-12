@@ -18,6 +18,7 @@ import Button from '../../../components/button/button.component';
 import Loader from '../../../components/loader/loader.component';
 import ModalScreen from '../../../components/modal/modal.component';
 import TitleView from '../../../components/title-view/title-view.component';
+import AutoCompleteText from '../../../components/auto-complete-text-input/auto-complete-text-input.component'
 import {
   createOrUpdateRecord,
   viewRecords,
@@ -85,6 +86,7 @@ class BankAccounts extends Component {
     save: '',
     access_token: '',
     editable: true,
+    hideResult: true
   };
   constructor(props) {
     super(props);
@@ -190,13 +192,15 @@ class BankAccounts extends Component {
         />
       </View>
       <View style={styles.inputContainer}>
-        <InputTextDynamic
+        <AutoCompleteText
           placeholder="Issuing Bank"
           onChangeText={(issuingBank) => this.setState({issuingBank})}
           keyboardType="default"
           value={this.state.issuingBank}
           color={Color.lightishBlue}
           editable={this.state.editable}
+          array={['A1','B2','C3','D4','E5', 'E6']}
+          onPress={(issuingBank) => this.setState({issuingBank})}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -289,10 +293,11 @@ class BankAccounts extends Component {
           <InputTextDynamic
             placeholder="Expiration Date"
             onChangeText={(atm1CardExDate) => this.setState({atm1CardExDate})}
-            keyboardType="default"
+            keyboardType="number-pad"
             value={this.state.atm1CardExDate}
             color={Color.lightishBlue}
             editable={this.state.editable}
+            example="MM/YY"
           />
         </View>
         <View style={styles.miniInputContainer}>
@@ -781,6 +786,39 @@ class BankAccounts extends Component {
     this.setState({[key]: value});
   };
 
+  handlingExpiryDate = (text, key) => {
+    if (text.indexOf('.') >= 0 || text.length > 5) {
+      return;
+    }
+    if (text.length === 2) {
+      text += '/';
+    }
+    this.setState({[key]: text});
+  };
+
+  handlingCardnumber = (e, key) => {
+    console.log('v al: ', e);
+    var val = e;
+    const valArray = val.split(' ').join('').split('');
+    var valSpace = val.split('');
+
+    // to work with backspace
+    if (valSpace[valSpace.length - 1] == ' ') {
+      var valSpaceN = valSpace.slice(0, -2);
+      val = valSpaceN.join('');
+      this.setState({[key]: val});
+      return;
+    }
+
+    if (isNaN(valArray.join(''))) return;
+    if (valArray.length === 17) return;
+    if (valArray.length % 4 === 0 && valArray.length <= 15) {
+      this.setState({[key]: e + '  '});
+    } else {
+      this.setState({[key]: e});
+    }
+  };
+
   editComponent = (isLoader, modal, array, key, editable) => (
     <View>
       <Text style={styles.title}>Basic Information</Text>
@@ -868,6 +906,10 @@ class BankAccounts extends Component {
             />
           </View>
           <ScrollView
+            ref={(ref) => (this.scroll = ref)}
+            onContentSizeChange={() => {
+              this.scroll.scrollTo({y: 0});
+            }}
             style={[
               styles.outerContainerView,
               {

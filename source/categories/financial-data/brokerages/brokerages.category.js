@@ -16,6 +16,7 @@ import InputTextIconDynamic from '../../../components/input-text-icon-dynamic/in
 import Button from '../../../components/button/button.component';
 import Loader from '../../../components/loader/loader.component';
 import TitleView from '../../../components/title-view/title-view.component';
+import AutoCompleteText from '../../../components/auto-complete-text-input/auto-complete-text-input.component';
 import {
   createOrUpdateRecord,
   viewRecords,
@@ -217,7 +218,7 @@ class BrokerageAccount extends Component {
         />
       </View>
       <View style={styles.inputContainer}>
-        <InputTextDynamic
+        <AutoCompleteText
           placeholder="Financial Institution"
           onChangeText={(financialInstitution) =>
             this.setState({financialInstitution})
@@ -226,6 +227,10 @@ class BrokerageAccount extends Component {
           color={Color.lightishBlue}
           value={this.state.financialInstitution}
           editable={this.state.editable}
+          array={['A1', 'B2', 'C3', 'D4', 'E5', 'E6']}
+          onPress={(financialInstitution) =>
+            this.setState({financialInstitution})
+          }
         />
       </View>
       <View style={styles.inputContainer}>
@@ -433,7 +438,7 @@ class BrokerageAccount extends Component {
   };
 
   onEdit = () => {
-    this.setState({ editable: false })
+    this.setState({editable: false});
   };
 
   onArchive = () => {
@@ -484,7 +489,9 @@ class BrokerageAccount extends Component {
                   theme !== 'dark' ? 'rgb(255, 255, 255)' : 'rgb(33, 47, 60)',
               },
             ]}>
-            <View style={styles.container}>{this.editComponent(isLoader, editable)}</View>
+            <View style={styles.container}>
+              {this.editComponent(isLoader, editable)}
+            </View>
           </ScrollView>
         </ImageBackground>
       </SafeAreaView>

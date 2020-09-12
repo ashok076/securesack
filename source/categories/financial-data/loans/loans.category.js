@@ -18,6 +18,7 @@ import Button from '../../../components/button/button.component';
 import Loader from '../../../components/loader/loader.component';
 import ModalScreen from '../../../components/modal/modal.component';
 import TitleView from '../../../components/title-view/title-view.component';
+import AutoCompleteText from '../../../components/auto-complete-text-input/auto-complete-text-input.component';
 import {
   createOrUpdateRecord,
   viewRecords,
@@ -231,13 +232,16 @@ class ConsumerLoan extends Component {
         />
       </View>
       <View style={styles.inputContainer}>
-        <InputTextDynamic
+        <AutoCompleteText
           placeholder="Issuer"
           onChangeText={(issuer) => this.setState({issuer})}
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.issuer}
           editable={this.state.editable}
+          array={['A1', 'B2', 'C3', 'D4', 'E5', 'E6']}
+          onPress={(issuer) =>
+            this.setState({issuer})}
         />
       </View>
       <View style={styles.inputContainer}>

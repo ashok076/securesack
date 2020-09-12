@@ -11,6 +11,8 @@ const InputTextDynamic = ({
   keyboardType,
   editable,
   color,
+  example,
+  onChange
 }) => (
   <View>
     <TextInput
