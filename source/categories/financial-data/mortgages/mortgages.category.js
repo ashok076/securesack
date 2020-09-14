@@ -39,6 +39,7 @@ class Mortgage extends Component {
     name: '',
     loanNo: '',
     issuer: '',
+    issuerId: '',
     loanAmnt: '',
     mortgageRate: '',
     effectivefrom: '',
@@ -63,6 +64,7 @@ class Mortgage extends Component {
     repayment: '',
     access_token: '',
     editable: true,
+    hideResult: true,
   };
 
   constructor(props) {
@@ -91,7 +93,11 @@ class Mortgage extends Component {
   viewRecord = async () => {
     const {recid, mode} = this.props.route.params;
     this.setState({isLoader: true});
-    await viewRecords('Mortgage', recid, this.props.userData.userData.access_token)
+    await viewRecords(
+      'Mortgage',
+      recid,
+      this.props.userData.userData.access_token,
+    )
       .then((response) => {
         console.log('View res: ', response);
         this.setViewData(response.data);
@@ -100,38 +106,49 @@ class Mortgage extends Component {
         console.log('Error: ', error);
         this.setState({isLoader: false});
       });
-    if (mode === 'Add') this.setState({editable: false});
+    if (mode === 'Add') this.setState({editable: false, hideResult: false});
   };
 
   setViewData = (data) => {
-    this.setState({
-      name: data.Name,
-      loanNo: data.LoanNumber,
-      issuer: data.Issuer,
-      loanAmnt: data.LoanAmount,
-      mortgageRate: data.InterestRate,
-      effectivefrom: data.StartDate,
-      endsOn: data.EndDate,
-      url: data.URL,
-      username: data.WebSiteAccountNumber,
-      password: data.WebSitePassword,
-      securityQ1: data.SecurityQuestion1,
-      securityA1: data.SecurityAnswer1,
-      securityQ2: data.SecurityQuestion2,
-      securityA2: data.SecurityAnswer2,
-      securityQ3: data.SecurityQuestion3,
-      securityA3: data.SecurityAnswer3,
-      address1: data.PaymentMailingAddress.Line1,
-      address2: data.PaymentMailingAddress.Line2,
-      city: data.PaymentMailingAddress.City,
-      state: data.PaymentMailingAddress.State,
-      zip: data.PaymentMailingAddress.Zip,
-      country: data.PaymentMailingAddress.Country,
-      term: data.Term,
-      refiance: data.Refinanced ? 'Yes' : 'No',
-      repayment: data.repayment ? 'Yes' : 'No',
-      isLoader: false,
-    });
+    this.setState(
+      {
+        name: data.Name,
+        loanNo: data.LoanNumber,
+        issuerId: data.Issuer.id,
+        loanAmnt: data.LoanAmount,
+        mortgageRate: data.InterestRate,
+        effectivefrom: data.StartDate,
+        endsOn: data.EndDate,
+        url: data.URL,
+        username: data.WebSiteAccountNumber,
+        password: data.WebSitePassword,
+        securityQ1: data.SecurityQuestion1,
+        securityA1: data.SecurityAnswer1,
+        securityQ2: data.SecurityQuestion2,
+        securityA2: data.SecurityAnswer2,
+        securityQ3: data.SecurityQuestion3,
+        securityA3: data.SecurityAnswer3,
+        address1: data.PaymentMailingAddress.Line1,
+        address2: data.PaymentMailingAddress.Line2,
+        city: data.PaymentMailingAddress.City,
+        state: data.PaymentMailingAddress.State,
+        zip: data.PaymentMailingAddress.Zip,
+        country: data.PaymentMailingAddress.Country,
+        term: data.Term,
+        refiance: data.Refinanced ? 'Yes' : 'No',
+        repayment: data.repayment ? 'Yes' : 'No',
+        isLoader: false,
+      },
+      () => this.referenceObj(),
+    );
+  };
+
+  referenceObj = () => {
+    const {route} = this.props;
+    const {refArray} = route.params;
+    refArray
+      .filter((item) => item.id === this.state.issuerId)
+      .map((val) => this.setState({issuer: val.label}));
   };
 
   submit = async () => {
@@ -139,7 +156,7 @@ class Mortgage extends Component {
     const {
       name,
       loanNo,
-      issuer,
+      issuerId,
       loanAmnt,
       mortgageRate,
       effectivefrom,
@@ -171,7 +188,7 @@ class Mortgage extends Component {
     let data = qs.stringify({
       Name: name,
       LoanNumber: loanNo,
-      Issuer: issuer,
+      Issuer: issuerId,
       LoanAmount: loanAmnt,
       InterestRate: mortgageRate,
       StartDate: effectivefrom,
@@ -270,9 +287,13 @@ class Mortgage extends Component {
           color={Color.lightishBlue}
           value={this.state.issuer}
           editable={this.state.editable}
-          array={['A1', 'B2', 'C3', 'D4', 'E5', 'E6']}
+          array={this.props.route.params.refArray}
+          hideResult={this.state.hideResult}
           onPress={(issuer) =>
-            this.setState({issuer})}
+            this.setState({issuer: issuer.label, issuerId: issuer.id}, () =>
+              this.setState({hideResult: true}),
+            )
+          }
         />
       </View>
       <View style={styles.inputContainer}>

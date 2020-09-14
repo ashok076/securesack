@@ -5,12 +5,16 @@ import Autocomplete from '../auto-complete-lib/auto-complete.component';
 import styles from './auto-complete-text-input.style';
 
 class AutoCompleteText extends Component {
-  renderLable = (item, i) =>
-    this.props.value > 0 && (
-      <TouchableOpacity onPress={() => this.props.onPress(item)}>
-        <Text>{item}</Text>
-      </TouchableOpacity>
+  renderLable = (item, i) => {
+    console.log('Item: ', item);
+    return (
+      this.props.value.length > 0 && (
+        <TouchableOpacity onPress={() => this.props.onPress(item)} style={styles.labelView}>
+          <Text>{item.label}</Text>
+        </TouchableOpacity>
+      )
     );
+  };
 
   render() {
     const {
@@ -34,10 +38,11 @@ class AutoCompleteText extends Component {
         selectionColor={color}
         theme={{colors: {primary: color}}}
         underlineColor={'rgb(33, 47, 60)'}
-        data={array}
+        data={array.slice(0, array.length - 1)}
         renderItem={({item, i}) => this.renderLable(item, i)}
-        hideResult={hideResult}
+        hideResults={hideResult}
         disable={editable}
+        maxRender={array.length - 1}
       />
     );
   }

@@ -8,6 +8,7 @@ import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 
 import {financialDataTypeList, getDataAsType} from './financial-data-type.list';
 import {BASE_URL} from '../../configuration/api/api.types';
+import {lookupType} from '../../configuration/api/api.functions';
 
 import styles from './financial-data-type.style';
 
@@ -18,6 +19,7 @@ class FinancialDataType extends Component {
       dataType: financialDataTypeList,
       viewAll: 2,
       isExpanded: false,
+      refArray: []
     };
   }
 
@@ -25,6 +27,7 @@ class FinancialDataType extends Component {
     const {navigation} = this.props;
     navigation.addListener('focus', () => {
       this.getType();
+      this.getBusinessEntity();
     });
   }
 
@@ -32,10 +35,21 @@ class FinancialDataType extends Component {
     getDataAsType.map((type) => this.getData(type));
   };
 
-  getData = (type) => {
+  getBusinessEntity = async () => {
     const {userData} = this.props;
     if (userData !== null) {
-      console.log('User data access token: ', userData.userData.access_token);
+      await lookupType(userData.userData.access_token, 'RefBusinessEntity')
+        .then((response) => {
+          console.log("Ref res: ", response)
+          this.setState({ refArray: response })
+        })
+        .catch((error) => console.log('Ref Business error: ', error));
+    }
+  };
+
+  getData = async (type) => {
+    const {userData} = this.props;
+    if (userData !== null) {
       let config = {
         method: 'get',
         url: `${BASE_URL}/data/${type}`,
@@ -47,7 +61,7 @@ class FinancialDataType extends Component {
           Authorization: 'Bearer ' + userData.userData.access_token,
         },
       };
-      axios(config)
+      await axios(config)
         .then((res) => {
           console.log('res: ', res.data.datatype.name);
           this.updateArray(res.data.data.items, res.data.datatype.name);
@@ -68,7 +82,6 @@ class FinancialDataType extends Component {
   };
 
   renderTitleSubtitle = (item, type, title) => {
-    console.log('Items: ', item);
     return (
       <TouchableRipple
         rippleColor="rgba(0, 0, 0, .32)"
@@ -131,7 +144,6 @@ class FinancialDataType extends Component {
   };
 
   category = ({title, icon, id, category, type}) => {
-    console.log('category', category);
     const {viewAll} = this.state;
     return (
       <View style={styles.container}>
@@ -187,6 +199,7 @@ class FinancialDataType extends Component {
 
   navigation = (type, title, recid, mode) => {
     const {navigation} = this.props;
+    const {refArray} = this.state;
     navigation.navigate(type, {
       type: type,
       category: 'Financial Data',
@@ -195,6 +208,7 @@ class FinancialDataType extends Component {
       recid: recid,
       theme: 'light',
       mode: mode,
+      refArray: refArray
     });
   };
 

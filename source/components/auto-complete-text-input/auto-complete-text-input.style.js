@@ -10,7 +10,20 @@ const styles = StyleSheet.create({
     paddingHorizontal: 0,
     paddingVertical: 0,
     height: 55,
-    zIndex: 9999999
+    zIndex: 9999999,
+  },
+  labelView: {
+    borderBottomWidth: 1,
+    borderRightWidth: 1,
+    borderLeftWidth: 1,
+    borderColor: 'rgb(33, 47, 60)',
+    height: 25,
+    justifyContent: 'center',
+    paddingLeft: 5
+  },
+  label: {
+    fontFamily: 'PublicSans-Regular',
+    color: 'rgb(33, 47, 60)',
   },
 });
 

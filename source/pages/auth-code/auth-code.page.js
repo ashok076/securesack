@@ -13,7 +13,7 @@ import {postApi} from '../../configuration/api/api.functions';
 import Loader from '../../components/loader/loader.component';
 import {userInfo} from '../../redux/user-info/actions/user-info.action';
 import {countries} from '../../redux/countries-list/actions/countries-list.actions';
-import {country} from '../../configuration/api/api.functions';
+import {lookupType} from '../../configuration/api/api.functions';
 
 import styles from './auth-code.style.js';
 
@@ -118,7 +118,7 @@ class AuthCode extends Component {
   };
 
   country = async (access_token) => {
-    await country(access_token, 'RefCountry')
+    await lookupType(access_token, 'RefCountry')
       .then((res) => this.filter(res))
       .catch((err) => console.log('Error in fetching country: ', err));
   };
@@ -192,7 +192,7 @@ class AuthCode extends Component {
             />
           </View>
           <View style={styles.buttonContainer}>
-            <Button onPress={this.handleClick} title="Verify with code" />
+            <Button onPress={this.handleClick} title="Verify security code" />
           </View>
           <Loader isLoader={isLoader} />
         </SafeAreaView>

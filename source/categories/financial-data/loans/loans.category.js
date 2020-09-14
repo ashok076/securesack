@@ -39,6 +39,7 @@ class ConsumerLoan extends Component {
     name: '',
     loanNo: '',
     issuer: '',
+    issuerId: '',
     loanAmnt: '',
     interestRate: '',
     url: '',
@@ -55,6 +56,7 @@ class ConsumerLoan extends Component {
     refiance: '',
     access_token: '',
     editable: true,
+    hideResult: true,
   };
 
   constructor(props) {
@@ -96,30 +98,41 @@ class ConsumerLoan extends Component {
         console.log('Error: ', error);
         this.setState({isLoader: false});
       });
-    if (mode === 'Add') this.setState({editable: false});
+    if (mode === 'Add') this.setState({editable: false, hideResult: false});
   };
 
   setViewData = (data) => {
-    this.setState({
-      name: data.Name,
-      loanNo: data.LoanNumber,
-      issuer: data.Issuer,
-      loanAmnt: data.LoanAmount,
-      interestRate: data.InterestRate,
-      url: data.URL,
-      username: data.WebSiteUsername,
-      password: data.WebSitePassword,
-      address1: data.PaymentMailingAddress.Line1,
-      address2: data.PaymentMailingAddress.Line2,
-      city: data.PaymentMailingAddress.City,
-      state: data.PaymentMailingAddress.State,
-      zip: data.PaymentMailingAddress.Zip,
-      country: data.PaymentMailingAddress.Country,
-      effectiveFrom: data.StartDate,
-      endsOn: data.EndDate,
-      refiance: data.Refinanced,
-      isLoader: false,
-    });
+    this.setState(
+      {
+        name: data.Name,
+        loanNo: data.LoanNumber,
+        issuerId: data.Issuer.id,
+        loanAmnt: data.LoanAmount,
+        interestRate: data.InterestRate,
+        url: data.URL,
+        username: data.WebSiteUsername,
+        password: data.WebSitePassword,
+        address1: data.PaymentMailingAddress.Line1,
+        address2: data.PaymentMailingAddress.Line2,
+        city: data.PaymentMailingAddress.City,
+        state: data.PaymentMailingAddress.State,
+        zip: data.PaymentMailingAddress.Zip,
+        country: data.PaymentMailingAddress.Country,
+        effectiveFrom: data.StartDate,
+        endsOn: data.EndDate,
+        refiance: data.Refinanced,
+        isLoader: false,
+      },
+      () => this.referenceObj(),
+    );
+  };
+
+  referenceObj = () => {
+    const {route} = this.props;
+    const {refArray} = route.params;
+    refArray
+      .filter((item) => item.id === this.state.issuerId)
+      .map((val) => this.setState({issuer: val.label}));
   };
 
   submit = async () => {
@@ -127,7 +140,7 @@ class ConsumerLoan extends Component {
     const {
       name,
       loanNo,
-      issuer,
+      issuerId,
       loanAmnt,
       interestRate,
       url,
@@ -149,7 +162,7 @@ class ConsumerLoan extends Component {
     let data = qs.stringify({
       Name: name,
       LoanNumber: loanNo,
-      Issuer: issuer,
+      Issuer: issuerId,
       LoanAmount: loanAmnt,
       InterestRate: interestRate,
       URL: url,
@@ -239,9 +252,13 @@ class ConsumerLoan extends Component {
           color={Color.lightishBlue}
           value={this.state.issuer}
           editable={this.state.editable}
-          array={['A1', 'B2', 'C3', 'D4', 'E5', 'E6']}
+          array={this.props.route.params.refArray}
+          hideResult={this.state.hideResult}
           onPress={(issuer) =>
-            this.setState({issuer})}
+            this.setState({issuer: issuer.label, issuerId: issuer.id}, () =>
+              this.setState({hideResult: true}),
+            )
+          }
         />
       </View>
       <View style={styles.inputContainer}>
@@ -393,7 +410,7 @@ class ConsumerLoan extends Component {
             keyboardType="default"
             color={Color.lightishBlue}
             value={this.state.effectiveFrom}
-          editable={this.state.editable}
+            editable={this.state.editable}
           />
         </View>
         <View style={styles.miniInputContainer}>
@@ -403,7 +420,7 @@ class ConsumerLoan extends Component {
             keyboardType="default"
             color={Color.lightishBlue}
             value={this.state.endsOn}
-          editable={this.state.editable}
+            editable={this.state.editable}
           />
         </View>
       </View>
@@ -452,7 +469,7 @@ class ConsumerLoan extends Component {
   };
 
   onEdit = () => {
-    this.setState({ editable: false })
+    this.setState({editable: false});
   };
 
   onDelete = () => {

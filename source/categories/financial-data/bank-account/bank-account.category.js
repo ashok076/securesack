@@ -18,7 +18,7 @@ import Button from '../../../components/button/button.component';
 import Loader from '../../../components/loader/loader.component';
 import ModalScreen from '../../../components/modal/modal.component';
 import TitleView from '../../../components/title-view/title-view.component';
-import AutoCompleteText from '../../../components/auto-complete-text-input/auto-complete-text-input.component'
+import AutoCompleteText from '../../../components/auto-complete-text-input/auto-complete-text-input.component';
 import {
   createOrUpdateRecord,
   viewRecords,
@@ -27,6 +27,10 @@ import {
 } from '../../../configuration/api/api.functions';
 import {account_type, size, payment_due_type} from './bank-account.list';
 import {Color} from '../../../assets/color/color.js';
+import {
+  formatCardNumber,
+  formatExpiry,
+} from '../../../configuration/card-formatter/card-formatter';
 
 import styles from './bank-account.style';
 
@@ -40,6 +44,7 @@ class BankAccounts extends Component {
     dataType: '',
     name: '',
     issuingBank: '',
+    issuingBankId: '',
     accountNumber: '',
     bankRoutingNumber: '',
     userName: '',
@@ -86,7 +91,7 @@ class BankAccounts extends Component {
     save: '',
     access_token: '',
     editable: true,
-    hideResult: true
+    hideResult: true,
   };
   constructor(props) {
     super(props);
@@ -101,7 +106,9 @@ class BankAccounts extends Component {
       this.setState(this.initialState);
       if (this.props.userData && this.props.userData.userData)
         this.setState(
-          {access_token: this.props.userData.userData.access_token},
+          {
+            access_token: this.props.userData.userData.access_token,
+          },
           () => this.viewRecord(),
         );
     });
@@ -125,58 +132,69 @@ class BankAccounts extends Component {
         this.setState({isLoader: false});
       });
     this.setState({isLoader: false});
-    if (mode === 'Add') this.setState({editable: false});
+    if (mode === 'Add') this.setState({editable: false, hideResult: false});
   };
 
   setViewData = (data) => {
-    this.setState({
-      name: data.AccountName,
-      issuingBank: data.FinancialInstitution,
-      accountNumber: data.AccountNumber,
-      bankRoutingNumber: data.RoutingNumber,
-      userName: data.WebSiteUsername,
-      password: data.WebSitePassword,
-      atm1CardNo: data.ATMCardNumber,
-      atm1CardPin: data.ATMCardPIN,
-      atm1CardExDate: data.ATMCardExpirationDate,
-      atm1CVV: data.ATMCardCCVNumber,
-      atm2CardNo: data.ATMCardNumber2,
-      atm2CardPin: data.ATMCardPIN2,
-      atm2CardExDate: data.ATMCardExpirationDate2,
-      atm2CVV: data.ATMCardCCVNumber2,
-      debit1CardNo: data.DebitCardNumber,
-      debit1CardPin: data.DebitCardPIN,
-      debit1CardExDate: data.DebitCardExpirationDate,
-      debit1CVV: data.DebitCardCCVNumber,
-      debit2CardNo: data.DebitCardNumber2,
-      debit2CardPin: data.DebitCardPIN2,
-      debit2CardExDate: data.DebitCardExpirationDate2,
-      debit2CVV: data.DebitCardCCVNumber2,
-      securityQ1: data.SecurityQuestion1,
-      securityA1: data.SecurityAnswer1,
-      securityQ2: data.SecurityQuestion2,
-      securityA2: data.SecurityAnswer2,
-      securityQ3: data.SecurityQuestion3,
-      securityA3: data.SecurityAnswer3,
-      boxNumber1: data.SafetyDepositBox1.BoxNumber,
-      openedOn1: data.SafetyDepositBox1BoxOpeningDate,
-      interestRate1: data.SafetyDepositBox1.Fee,
-      size1: data.SafetyDepositBox1.BoxSize,
-      paymentDueType1: data.SafetyDepositBox1.FeeDuration,
-      boxNumber2: data.SafetyDepositBox2.BoxNumber,
-      openedOn2: data.SafetyDepositBox2.BoxOpeningDate,
-      interestRate2: data.SafetyDepositBox2.Fee,
-      size2: data.SafetyDepositBox2.BoxSize,
-      paymentDueType2: data.SafetyDepositBox2.FeeDuration,
-      address1: data.BankBranchAddress.Line1,
-      address2: data.BankBranchAddress.Line2,
-      city: data.BankBranchAddress.City,
-      state: data.BankBranchAddress.State,
-      zip: data.BankBranchAddress.Zip,
-      country: data.BankBranchAddress.Country,
-      accountType: data.AccountType,
-      isLoader: false,
-    });
+    this.setState(
+      {
+        name: data.AccountName,
+        issuingBankId: data.FinancialInstitution.id,
+        accountNumber: data.AccountNumber,
+        bankRoutingNumber: data.RoutingNumber,
+        userName: data.WebSiteUsername,
+        password: data.WebSitePassword,
+        atm1CardNo: data.ATMCardNumber,
+        atm1CardPin: data.ATMCardPIN,
+        atm1CardExDate: data.ATMCardExpirationDate,
+        atm1CVV: data.ATMCardCCVNumber,
+        atm2CardNo: data.ATMCardNumber2,
+        atm2CardPin: data.ATMCardPIN2,
+        atm2CardExDate: data.ATMCardExpirationDate2,
+        atm2CVV: data.ATMCardCCVNumber2,
+        debit1CardNo: data.DebitCardNumber,
+        debit1CardPin: data.DebitCardPIN,
+        debit1CardExDate: data.DebitCardExpirationDate,
+        debit1CVV: data.DebitCardCCVNumber,
+        debit2CardNo: data.DebitCardNumber2,
+        debit2CardPin: data.DebitCardPIN2,
+        debit2CardExDate: data.DebitCardExpirationDate2,
+        debit2CVV: data.DebitCardCCVNumber2,
+        securityQ1: data.SecurityQuestion1,
+        securityA1: data.SecurityAnswer1,
+        securityQ2: data.SecurityQuestion2,
+        securityA2: data.SecurityAnswer2,
+        securityQ3: data.SecurityQuestion3,
+        securityA3: data.SecurityAnswer3,
+        boxNumber1: data.SafetyDepositBox1.BoxNumber,
+        openedOn1: data.SafetyDepositBox1BoxOpeningDate,
+        interestRate1: data.SafetyDepositBox1.Fee,
+        size1: data.SafetyDepositBox1.BoxSize,
+        paymentDueType1: data.SafetyDepositBox1.FeeDuration,
+        boxNumber2: data.SafetyDepositBox2.BoxNumber,
+        openedOn2: data.SafetyDepositBox2.BoxOpeningDate,
+        interestRate2: data.SafetyDepositBox2.Fee,
+        size2: data.SafetyDepositBox2.BoxSize,
+        paymentDueType2: data.SafetyDepositBox2.FeeDuration,
+        address1: data.BankBranchAddress.Line1,
+        address2: data.BankBranchAddress.Line2,
+        city: data.BankBranchAddress.City,
+        state: data.BankBranchAddress.State,
+        zip: data.BankBranchAddress.Zip,
+        country: data.BankBranchAddress.Country,
+        accountType: data.AccountType,
+        isLoader: false,
+      },
+      () => this.referenceObj(),
+    );
+  };
+
+  referenceObj = () => {
+    const {route} = this.props;
+    const {refArray} = route.params;
+    refArray
+      .filter((item) => item.id === this.state.issuingBankId)
+      .map((val) => this.setState({issuingBank: val.label}));
   };
 
   basicInformation = () => (
@@ -199,8 +217,17 @@ class BankAccounts extends Component {
           value={this.state.issuingBank}
           color={Color.lightishBlue}
           editable={this.state.editable}
-          array={['A1','B2','C3','D4','E5', 'E6']}
-          onPress={(issuingBank) => this.setState({issuingBank})}
+          array={this.props.route.params.refArray}
+          hideResult={this.state.hideResult}
+          onPress={(issuingBank) =>
+            this.setState(
+              {
+                issuingBank: issuingBank.label,
+                issuingBankId: issuingBank.id,
+              },
+              () => this.setState({hideResult: true}),
+            )
+          }
         />
       </View>
       <View style={styles.inputContainer}>
@@ -271,7 +298,9 @@ class BankAccounts extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="ATM Card Number"
-          onChangeText={(atm1CardNo) => this.setState({atm1CardNo})}
+          onChangeText={(atm1CardNo) =>
+            this.setState({atm1CardNo: formatCardNumber(atm1CardNo)})
+          }
           keyboardType="number-pad"
           value={this.state.atm1CardNo}
           color={Color.lightishBlue}
@@ -292,7 +321,9 @@ class BankAccounts extends Component {
         <View style={[styles.miniInputContainer, {marginRight: 10}]}>
           <InputTextDynamic
             placeholder="Expiration Date"
-            onChangeText={(atm1CardExDate) => this.setState({atm1CardExDate})}
+            onChangeText={(atm1CardExDate) =>
+              this.setState({atm1CardExDate: formatExpiry(atm1CardExDate)})
+            }
             keyboardType="number-pad"
             value={this.state.atm1CardExDate}
             color={Color.lightishBlue}
@@ -319,7 +350,7 @@ class BankAccounts extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Debit Card Number"
-          onChangeText={(debit1CardNo) => this.setState({debit1CardNo})}
+          onChangeText={(debit1CardNo) => this.setState({debit1CardNo: formatCardNumber(debit1CardNo)})}
           keyboardType="number-pad"
           value={this.state.debit1CardNo}
           color={Color.lightishBlue}
@@ -341,9 +372,9 @@ class BankAccounts extends Component {
           <InputTextDynamic
             placeholder="Expiration Date"
             onChangeText={(debit1CardExDate) =>
-              this.setState({debit1CardExDate})
+              this.setState({debit1CardExDate: formatExpiry(debit1CardExDate)})
             }
-            keyboardType="default"
+            keyboardType="number-pad"
             value={this.state.debit1CardExDate}
             color={Color.lightishBlue}
             editable={this.state.editable}
@@ -682,6 +713,7 @@ class BankAccounts extends Component {
       size2,
       paymentDueType1,
       paymentDueType2,
+      issuingBankId,
     } = this.state;
     const {navigation, route} = this.props;
     const {recid} = route.params;
@@ -694,7 +726,7 @@ class BankAccounts extends Component {
       WebSitePassword: password,
       ATMCardNumber: atm1CardNo,
       ATMCardPIN: atm1CardPin,
-      ATMCardExpirationDate: atm1CardExDate,
+      ATMCardExpirationDate: new Date(atm1CardExDate),
       ATMCardCCVNumber: atm1CVV,
       ATMCardNumber2: atm2CardNo,
       ATMCardPIN2: atm2CardPin,
@@ -731,6 +763,7 @@ class BankAccounts extends Component {
       'BankBranchAddress-Zip': zip,
       'BankBranchAddress-Country': country,
       AccountType: accountType,
+      FinancialInstitution: issuingBankId,
     });
     await createOrUpdateRecord('BankAccounts', recid, data, access_token)
       .then((response) => {
@@ -888,6 +921,7 @@ class BankAccounts extends Component {
     const {isLoader, modal, array, key, editable} = this.state;
     const {route, navigation} = this.props;
     const {title, type, background, theme, mode} = route.params;
+    console.log('Array: ', this.props.route.params.refArray);
     return (
       <SafeAreaView style={styles.outerView}>
         <ImageBackground source={background} style={styles.backgroundImage}>

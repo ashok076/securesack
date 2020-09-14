@@ -32,6 +32,7 @@ class BrokerageAccount extends Component {
     isLoader: false,
     name: '',
     financialInstitution: '',
+    financialInstitutionId: '',
     acNumber: '',
     username: '',
     password: '',
@@ -49,6 +50,7 @@ class BrokerageAccount extends Component {
     openedOn: '',
     closedOn: '',
     editable: true,
+    hideResult: true,
   };
   constructor(props) {
     super(props);
@@ -85,31 +87,42 @@ class BrokerageAccount extends Component {
         console.log('Error: ', error);
         this.setState({isLoader: false});
       });
-    if (mode === 'Add') this.setState({editable: false});
+    if (mode === 'Add') this.setState({editable: false, hideResult: false});
   };
 
   setViewData = (data) => {
-    this.setState({
-      name: data.BrokerageName,
-      financialInstitution: data.FinancialInstitution,
-      acNumber: data.AccountNumber,
-      username: data.WebSiteAccountNumber,
-      password: data.WebSitePassword,
-      url: data.URL,
-      primaryAcHolder: data.PrimaryAccountHolder,
-      joinAcHolderOne: data.AdditionalAccountHolder1,
-      joinAcHolderTwo: data.AdditionalAccountHolder2,
-      securityQ1: data.SecurityQuestion1,
-      securityA1: data.SecurityAnswer1,
-      securityQ2: data.SecurityQuestion2,
-      securityA2: data.SecurityAnswer2,
-      securityQ3: data.SecurityQuestion3,
-      securityA3: data.SecurityAnswer3,
-      stockTransactionFee: data.StockTransactionFee,
-      openedOn: data.AccountOpeningDate,
-      closedOn: data.AccountClosingDate,
-      isLoader: false,
-    });
+    this.setState(
+      {
+        name: data.BrokerageName,
+        financialInstitutionId: data.FinancialInstitution.id,
+        acNumber: data.AccountNumber,
+        username: data.WebSiteAccountNumber,
+        password: data.WebSitePassword,
+        url: data.URL,
+        primaryAcHolder: data.PrimaryAccountHolder,
+        joinAcHolderOne: data.AdditionalAccountHolder1,
+        joinAcHolderTwo: data.AdditionalAccountHolder2,
+        securityQ1: data.SecurityQuestion1,
+        securityA1: data.SecurityAnswer1,
+        securityQ2: data.SecurityQuestion2,
+        securityA2: data.SecurityAnswer2,
+        securityQ3: data.SecurityQuestion3,
+        securityA3: data.SecurityAnswer3,
+        stockTransactionFee: data.StockTransactionFee,
+        openedOn: data.AccountOpeningDate,
+        closedOn: data.AccountClosingDate,
+        isLoader: false,
+      },
+      () => this.referenceObj(),
+    );
+  };
+
+  referenceObj = () => {
+    const {route} = this.props;
+    const {refArray} = route.params;
+    refArray
+      .filter((item) => item.id === this.state.financialInstitutionId)
+      .map((val) => this.setState({financialInstitution: val.label}));
   };
 
   handleClick = () => {
@@ -122,6 +135,7 @@ class BrokerageAccount extends Component {
       access_token,
       name,
       financialInstitution,
+      financialInstitutionId,
       acNumber,
       username,
       password,
@@ -143,7 +157,7 @@ class BrokerageAccount extends Component {
     const {recid} = route.params;
     let data = qs.stringify({
       BrokerageName: name,
-      FinancialInstitution: financialInstitution,
+      FinancialInstitution: financialInstitutionId,
       AccountNumber: acNumber,
       WebSiteAccountNumber: username,
       WebSitePassword: password,
@@ -227,9 +241,16 @@ class BrokerageAccount extends Component {
           color={Color.lightishBlue}
           value={this.state.financialInstitution}
           editable={this.state.editable}
-          array={['A1', 'B2', 'C3', 'D4', 'E5', 'E6']}
+          array={this.props.route.params.refArray}
+          hideResult={this.state.hideResult}
           onPress={(financialInstitution) =>
-            this.setState({financialInstitution})
+            this.setState(
+              {
+                financialInstitution: financialInstitution.label,
+                financialInstitutionId: financialInstitution.id,
+              },
+              () => this.setState({hideResult: true}),
+            )
           }
         />
       </View>
@@ -237,7 +258,7 @@ class BrokerageAccount extends Component {
         <InputTextDynamic
           placeholder="Account Number"
           onChangeText={(acNumber) => this.setState({acNumber})}
-          keyboardType="default"
+          keyboardType="number-pad"
           color={Color.lightishBlue}
           value={this.state.acNumber}
           editable={this.state.editable}
@@ -267,7 +288,7 @@ class BrokerageAccount extends Component {
         <InputTextDynamic
           placeholder="URL"
           onChangeText={(url) => this.setState({url})}
-          keyboardType="default"
+          keyboardType="url"
           color={Color.lightishBlue}
           value={this.state.url}
           editable={this.state.editable}
@@ -391,7 +412,7 @@ class BrokerageAccount extends Component {
           <InputTextDynamic
             placeholder="Opened On"
             onChangeText={(openedOn) => this.setState({openedOn})}
-            keyboardType="default"
+            keyboardType="number-pad"
             color={Color.lightishBlue}
             value={this.state.openedOn}
             editable={this.state.editable}
@@ -401,7 +422,7 @@ class BrokerageAccount extends Component {
           <InputTextDynamic
             placeholder="Closed On"
             onChangeText={(closedOn) => this.setState({closedOn})}
-            keyboardType="default"
+            keyboardType="number-pad"
             color={Color.lightishBlue}
             value={this.state.closedOn}
             editable={this.state.editable}

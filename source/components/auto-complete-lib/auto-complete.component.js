@@ -92,6 +92,7 @@ class Autocomplete extends Component {
       onEndReached,
       onEndReachedThreshold,
       disable,
+      maxRender
     } = this.props;
     return (
       !disable && (
@@ -104,6 +105,7 @@ class Autocomplete extends Component {
           renderSeparator={renderSeparator}
           onEndReached={onEndReached}
           onEndReachedThreshold={onEndReachedThreshold}
+          maxToRenderPerBatch={maxRender}
           style={[styles.list, listStyle]}
           {...flatListProps}
         />
@@ -136,7 +138,6 @@ class Autocomplete extends Component {
       value,
     } = this.props;
     const showResults = data.length > 0;
-    console.log('Val: ', disable);
 
     // Notify listener if the suggestion will be shown.
     onShowResults && onShowResults(showResults);
