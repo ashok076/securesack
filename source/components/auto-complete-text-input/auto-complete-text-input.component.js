@@ -6,14 +6,24 @@ import styles from './auto-complete-text-input.style';
 
 class AutoCompleteText extends Component {
   renderLable = (item, i) => {
-    console.log('Item: ', item);
     return (
       this.props.value.length > 0 && (
-        <TouchableOpacity onPress={() => this.props.onPress(item)} style={styles.labelView}>
+        <TouchableOpacity
+          onPress={() => this.props.onPress(item)}
+          style={styles.labelView}>
           <Text>{item.label}</Text>
         </TouchableOpacity>
       )
     );
+  };
+
+  find = (val, array) => {
+    if (val === '') {
+      return [];
+    }
+    const regex = new RegExp(`${val.trim()}`, 'i');
+    const arr = array.filter((array) => array.label.search(regex) >= 0);
+    return arr;
   };
 
   render() {
@@ -25,11 +35,17 @@ class AutoCompleteText extends Component {
       editable,
       color,
       array,
+      show,
       hideResult,
     } = this.props;
+    const arr = this.find(value, array);
+    const comp = (a, b) => a.toLowerCase().trim() === b.toLowerCase().trim();
+    const add = {label: 'Add'};
     return (
       <Autocomplete
         label={placeholder}
+        autoCapitalize="none"
+        autoCorrect={false}
         value={value}
         onChangeText={onChangeText}
         keyboardType={keyboardType}
@@ -38,11 +54,11 @@ class AutoCompleteText extends Component {
         selectionColor={color}
         theme={{colors: {primary: color}}}
         underlineColor={'rgb(33, 47, 60)'}
-        data={array.slice(0, array.length - 1)}
+        data={
+          arr.length === 1 && comp(value, arr[0].label) ? [] : [...arr, add]
+        }
         renderItem={({item, i}) => this.renderLable(item, i)}
-        hideResults={hideResult}
         disable={editable}
-        maxRender={array.length - 1}
       />
     );
   }

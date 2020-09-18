@@ -15,6 +15,7 @@ import InputTextDynamic from '../../../components/input-text-dynamic/input-text-
 import InputTextIconDynamic from '../../../components/input-text-icon-dynamic/input-text-icon-dynamic.component.js';
 import ModalPicker from '../../../components/modal-picker/modal-picker.component.js';
 import Button from '../../../components/button/button.component';
+import RefBusinessModal from '../../../components/ref-business-modal/ref-business-modal.component';
 import Loader from '../../../components/loader/loader.component';
 import ModalScreen from '../../../components/modal/modal.component';
 import TitleView from '../../../components/title-view/title-view.component';
@@ -24,6 +25,7 @@ import {
   viewRecords,
   deleteRecords,
   archiveRecords,
+  lookupType
 } from '../../../configuration/api/api.functions';
 import {refianced} from './loans.list';
 import {Color} from '../../../assets/color/color.js';
@@ -34,6 +36,7 @@ class ConsumerLoan extends Component {
   initialState = {
     isLoader: false,
     modal: false,
+    refBusModal: false,
     array: [],
     key: '',
     name: '',
@@ -57,6 +60,7 @@ class ConsumerLoan extends Component {
     access_token: '',
     editable: true,
     hideResult: true,
+    refArray: [],
   };
 
   constructor(props) {
@@ -66,10 +70,6 @@ class ConsumerLoan extends Component {
     };
   }
 
-  handleClick = () => {
-    this.submit();
-  };
-
   componentDidMount() {
     const {navigation} = this.props;
     navigation.addListener('focus', () => {
@@ -78,6 +78,7 @@ class ConsumerLoan extends Component {
         this.setState(
           {access_token: this.props.userData.userData.access_token},
           () => this.viewRecord(),
+          this.getBusinessEntity(),
         );
     });
   }
@@ -106,7 +107,7 @@ class ConsumerLoan extends Component {
       {
         name: data.Name,
         loanNo: data.LoanNumber,
-        issuerId: data.Issuer.id,
+        issuer: data.Issuer.label,
         loanAmnt: data.LoanAmount,
         interestRate: data.InterestRate,
         url: data.URL,
@@ -128,8 +129,7 @@ class ConsumerLoan extends Component {
   };
 
   referenceObj = () => {
-    const {route} = this.props;
-    const {refArray} = route.params;
+    const {refArray} = this.state;
     refArray
       .filter((item) => item.id === this.state.issuerId)
       .map((val) => this.setState({issuer: val.label}));
@@ -252,13 +252,9 @@ class ConsumerLoan extends Component {
           color={Color.lightishBlue}
           value={this.state.issuer}
           editable={this.state.editable}
-          array={this.props.route.params.refArray}
+          array={this.state.refArray}
           hideResult={this.state.hideResult}
-          onPress={(issuer) =>
-            this.setState({issuer: issuer.label, issuerId: issuer.id}, () =>
-              this.setState({hideResult: true}),
-            )
-          }
+          onPress={(issuer) => this.showAutoComplete(issuer)}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -431,11 +427,44 @@ class ConsumerLoan extends Component {
     this.setState({modal: bool});
   };
 
+  showAutoComplete = (val) => {
+    if (val.label === 'Add') this.setState({refBusModal: true});
+    else {
+      this.setState(
+        {
+          issuer: val.label,
+          issuerId: val.id,
+        },
+        () => this.setState({hideResult: true}),
+      );
+    }
+  };
+
+  getBusinessEntity = async () => {
+    const {userData} = this.props;
+    if (userData !== null) {
+      await lookupType(userData.userData.access_token, 'RefBusinessEntity')
+        .then((response) => {
+          response.pop();
+          this.setState({refArray: response});
+        })
+        .catch((error) => console.log('Ref Business error: ', error));
+    }
+  };
+
+  changeRefBusinessmModal = (bool) => {
+    this.setState({refBusModal: bool});
+  };
+
+  refreshingList = () => {
+    this.getBusinessEntity();
+  };
+
   changeState = (key, value) => {
     this.setState({[key]: value});
   };
 
-  editComponent = (isLoader, modal, array, key, editable) => (
+  editComponent = (isLoader, modal, array, key, editable, refBusModal) => (
     <View>
       <Text style={styles.title}>Basic Information</Text>
       {this.basicInformation()}
@@ -446,13 +475,6 @@ class ConsumerLoan extends Component {
       <Text style={styles.title}>Refiance</Text>
       {this.refiance()}
       <View style={styles.gap} />
-      {!editable ? (
-        <View style={styles.buttonContainer}>
-          <Button onPress={this.handleClick} title="Submit" />
-        </View>
-      ) : (
-        <View />
-      )}
       <Loader isLoader={isLoader} />
       <ModalScreen
         isModalVisible={modal}
@@ -460,6 +482,12 @@ class ConsumerLoan extends Component {
         changeModalVisibility={this.changeModalVisibility}
         id={key}
         changeState={this.changeState}
+      />
+      <RefBusinessModal
+        isModalVisible={refBusModal}
+        changeModalVisibility={this.changeRefBusinessmModal}
+        access_token={this.props.userData.userData.access_token}
+        refreshingList={this.refreshingList}
       />
     </View>
   );
@@ -492,7 +520,7 @@ class ConsumerLoan extends Component {
   };
 
   render() {
-    const {isLoader, modal, array, key, editable} = this.state;
+    const {isLoader, modal, array, key, editable, refBusModal} = this.state;
     const {route, navigation} = this.props;
     const {title, type, background, theme, mode} = route.params;
     return (
@@ -521,7 +549,14 @@ class ConsumerLoan extends Component {
               },
             ]}>
             <View style={styles.container}>
-              {this.editComponent(isLoader, modal, array, key, editable)}
+              {this.editComponent(
+                isLoader,
+                modal,
+                array,
+                key,
+                editable,
+                refBusModal,
+              )}
             </View>
           </ScrollView>
         </ImageBackground>

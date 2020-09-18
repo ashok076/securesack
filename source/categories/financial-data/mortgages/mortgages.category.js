@@ -17,6 +17,7 @@ import ModalPicker from '../../../components/modal-picker/modal-picker.component
 import Button from '../../../components/button/button.component';
 import Loader from '../../../components/loader/loader.component';
 import ModalScreen from '../../../components/modal/modal.component';
+import RefBusinessModal from '../../../components/ref-business-modal/ref-business-modal.component';
 import TitleView from '../../../components/title-view/title-view.component';
 import AutoCompleteText from '../../../components/auto-complete-text-input/auto-complete-text-input.component';
 import {
@@ -24,6 +25,7 @@ import {
   viewRecords,
   deleteRecords,
   archiveRecords,
+  lookupType,
 } from '../../../configuration/api/api.functions';
 import {term, refiance_repayment} from './mortgages.list';
 import {Color} from '../../../assets/color/color.js';
@@ -34,6 +36,7 @@ class Mortgage extends Component {
   initialState = {
     isLoader: false,
     modal: false,
+    refBusModal: false,
     array: [],
     key: '',
     name: '',
@@ -65,6 +68,9 @@ class Mortgage extends Component {
     access_token: '',
     editable: true,
     hideResult: true,
+    refArray: [],
+    issuer: '',
+    issuerId: '',
   };
 
   constructor(props) {
@@ -86,6 +92,7 @@ class Mortgage extends Component {
         this.setState(
           {access_token: this.props.userData.userData.access_token},
           () => this.viewRecord(),
+          this.getBusinessEntity(),
         );
     });
   }
@@ -106,7 +113,7 @@ class Mortgage extends Component {
         console.log('Error: ', error);
         this.setState({isLoader: false});
       });
-    if (mode === 'Add') this.setState({editable: false, hideResult: false});
+    if (mode === 'Add') this.setState({editable: false});
   };
 
   setViewData = (data) => {
@@ -114,7 +121,7 @@ class Mortgage extends Component {
       {
         name: data.Name,
         loanNo: data.LoanNumber,
-        issuerId: data.Issuer.id,
+        issuer: data.Issuer.label,
         loanAmnt: data.LoanAmount,
         mortgageRate: data.InterestRate,
         effectivefrom: data.StartDate,
@@ -140,12 +147,12 @@ class Mortgage extends Component {
         isLoader: false,
       },
       () => this.referenceObj(),
+      console.log('Resp: ', data.Issuer),
     );
   };
 
   referenceObj = () => {
-    const {route} = this.props;
-    const {refArray} = route.params;
+    const {refArray} = this.state;
     refArray
       .filter((item) => item.id === this.state.issuerId)
       .map((val) => this.setState({issuer: val.label}));
@@ -284,16 +291,11 @@ class Mortgage extends Component {
           placeholder="Issuer"
           onChangeText={(issuer) => this.setState({issuer})}
           keyboardType="default"
-          color={Color.lightishBlue}
           value={this.state.issuer}
+          color={Color.lightishBlue}
           editable={this.state.editable}
-          array={this.props.route.params.refArray}
-          hideResult={this.state.hideResult}
-          onPress={(issuer) =>
-            this.setState({issuer: issuer.label, issuerId: issuer.id}, () =>
-              this.setState({hideResult: true}),
-            )
-          }
+          array={this.state.refArray}
+          onPress={(issuer) => this.showAutoComplete(issuer)}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -565,11 +567,45 @@ class Mortgage extends Component {
     this.setState({modal: bool});
   };
 
+  changeRefBusinessmModal = (bool) => {
+    this.setState({refBusModal: bool});
+  };
+
+  refreshingList = () => {
+    this.getBusinessEntity();
+  };
+
+  getBusinessEntity = async () => {
+    const {userData} = this.props;
+    if (userData !== null) {
+      await lookupType(userData.userData.access_token, 'RefBusinessEntity')
+        .then((response) => {
+          response.pop();
+          console.log('Response: ', response);
+          this.setState({refArray: response});
+        })
+        .catch((error) => console.log('Ref Business error: ', error));
+    }
+  };
+
   changeState = (key, value) => {
     this.setState({[key]: value});
   };
 
-  editComponent = (isLoader, modal, array, key, editable) => (
+  showAutoComplete = (val) => {
+    if (val.label === 'Add') this.setState({refBusModal: true});
+    else {
+      this.setState(
+        {
+          issuer: val.label,
+          issuerId: val.id,
+        },
+        () => this.setState({hideResult: true}),
+      );
+    }
+  };
+
+  editComponent = (isLoader, modal, array, key, editable, refBusModal) => (
     <View>
       <Text style={styles.title}>Basic Information</Text>
       {this.basicInformation()}
@@ -582,14 +618,6 @@ class Mortgage extends Component {
       <View style={styles.gap} />
       <Text style={styles.title}>Additional Information</Text>
       {this.additionalInformation()}
-      <View style={styles.gap} />
-      {!editable ? (
-        <View style={styles.buttonContainer}>
-          <Button onPress={this.handleClick} title="Submit" />
-        </View>
-      ) : (
-        <View />
-      )}
       <Loader isLoader={isLoader} />
       <ModalScreen
         isModalVisible={modal}
@@ -597,6 +625,12 @@ class Mortgage extends Component {
         changeModalVisibility={this.changeModalVisibility}
         id={key}
         changeState={this.changeState}
+      />
+      <RefBusinessModal
+        isModalVisible={this.state.refBusModal}
+        changeModalVisibility={this.changeRefBusinessmModal}
+        access_token={this.props.userData.userData.access_token}
+        refreshingList={this.refreshingList}
       />
     </View>
   );
@@ -628,9 +662,10 @@ class Mortgage extends Component {
   };
 
   render() {
-    const {isLoader, modal, array, key, editable} = this.state;
+    const {isLoader, modal, array, key, editable, refBusModal} = this.state;
     const {route, navigation} = this.props;
     const {title, type, background, theme, mode} = route.params;
+    console.log('Ref Bus Modal: ', refBusModal);
     return (
       <SafeAreaView style={styles.outerView}>
         <ImageBackground source={background} style={styles.backgroundImage}>
@@ -657,7 +692,7 @@ class Mortgage extends Component {
               },
             ]}>
             <View style={styles.container}>
-              {this.editComponent(isLoader, modal, array, key)}
+              {this.editComponent(isLoader, modal, array, key, refBusModal)}
             </View>
           </ScrollView>
         </ImageBackground>

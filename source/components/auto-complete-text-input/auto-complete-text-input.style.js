@@ -19,11 +19,19 @@ const styles = StyleSheet.create({
     borderColor: 'rgb(33, 47, 60)',
     height: 25,
     justifyContent: 'center',
-    paddingLeft: 5
+    paddingLeft: 5,
   },
   label: {
     fontFamily: 'PublicSans-Regular',
     color: 'rgb(33, 47, 60)',
+  },
+  autocompleteContainer: {
+    flex: 1,
+    left: 0,
+    position: 'absolute',
+    right: 0,
+    top: 0,
+    zIndex: 1,
   },
 });
 

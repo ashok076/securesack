@@ -10,13 +10,14 @@ import {
 import {Text, Portal} from 'react-native-paper';
 import qs from 'qs';
 import {connect} from 'react-redux';
+import DateTimePicker from '@react-native-community/datetimepicker';
 
-import InputTextDynamic from '../../../components/input-text-dynamic/input-text-dynamic.component.js';
+import InputTextDynamic from '../../../components/input-text-dynamic/input-text-dynamic.component';
 import InputTextIconDynamic from '../../../components/input-text-icon-dynamic/input-text-icon-dynamic.component.js';
-import ModalPicker from '../../../components/modal-picker/modal-picker.component.js';
-import Button from '../../../components/button/button.component';
+import ModalPicker from '../../../components/modal-picker/modal-picker.component';
 import Loader from '../../../components/loader/loader.component';
 import ModalScreen from '../../../components/modal/modal.component';
+import RefBusinessModal from '../../../components/ref-business-modal/ref-business-modal.component';
 import TitleView from '../../../components/title-view/title-view.component';
 import AutoCompleteText from '../../../components/auto-complete-text-input/auto-complete-text-input.component';
 import {
@@ -24,6 +25,7 @@ import {
   viewRecords,
   deleteRecords,
   archiveRecords,
+  lookupType
 } from '../../../configuration/api/api.functions';
 import {account_type, size, payment_due_type} from './bank-account.list';
 import {Color} from '../../../assets/color/color.js';
@@ -38,6 +40,7 @@ class BankAccounts extends Component {
   initialState = {
     isLoader: false,
     modal: false,
+    refBusModal: false,
     array: [],
     key: '',
     title: '',
@@ -92,6 +95,8 @@ class BankAccounts extends Component {
     access_token: '',
     editable: true,
     hideResult: true,
+    showDate: false,
+    refArray: [],
   };
   constructor(props) {
     super(props);
@@ -110,6 +115,7 @@ class BankAccounts extends Component {
             access_token: this.props.userData.userData.access_token,
           },
           () => this.viewRecord(),
+          this.getBusinessEntity(),
         );
     });
   }
@@ -139,7 +145,7 @@ class BankAccounts extends Component {
     this.setState(
       {
         name: data.AccountName,
-        issuingBankId: data.FinancialInstitution.id,
+        issuingBank: data.FinancialInstitution.label,
         accountNumber: data.AccountNumber,
         bankRoutingNumber: data.RoutingNumber,
         userName: data.WebSiteUsername,
@@ -189,9 +195,20 @@ class BankAccounts extends Component {
     );
   };
 
+  getBusinessEntity = async () => {
+    const {userData} = this.props;
+    if (userData !== null) {
+      await lookupType(userData.userData.access_token, 'RefBusinessEntity')
+        .then((response) => {
+          response.pop();
+          this.setState({refArray: response});
+        })
+        .catch((error) => console.log('Ref Business error: ', error));
+    }
+  };
+
   referenceObj = () => {
-    const {route} = this.props;
-    const {refArray} = route.params;
+    const {refArray} = this.state;
     refArray
       .filter((item) => item.id === this.state.issuingBankId)
       .map((val) => this.setState({issuingBank: val.label}));
@@ -217,17 +234,8 @@ class BankAccounts extends Component {
           value={this.state.issuingBank}
           color={Color.lightishBlue}
           editable={this.state.editable}
-          array={this.props.route.params.refArray}
-          hideResult={this.state.hideResult}
-          onPress={(issuingBank) =>
-            this.setState(
-              {
-                issuingBank: issuingBank.label,
-                issuingBankId: issuingBank.id,
-              },
-              () => this.setState({hideResult: true}),
-            )
-          }
+          array={this.state.refArray}
+          onPress={(issuingBank) => this.showAutoComplete(issuingBank)}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -305,6 +313,7 @@ class BankAccounts extends Component {
           value={this.state.atm1CardNo}
           color={Color.lightishBlue}
           editable={this.state.editable}
+          example="XXXX XXXX XXXX XXXX"
         />
       </View>
       <View style={styles.inputContainer}>
@@ -350,11 +359,14 @@ class BankAccounts extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Debit Card Number"
-          onChangeText={(debit1CardNo) => this.setState({debit1CardNo: formatCardNumber(debit1CardNo)})}
+          onChangeText={(debit1CardNo) =>
+            this.setState({debit1CardNo: formatCardNumber(debit1CardNo)})
+          }
           keyboardType="number-pad"
           value={this.state.debit1CardNo}
           color={Color.lightishBlue}
           editable={this.state.editable}
+          example="XXXX XXXX XXXX XXXX"
         />
       </View>
       <View style={styles.inputContainer}>
@@ -378,6 +390,7 @@ class BankAccounts extends Component {
             value={this.state.debit1CardExDate}
             color={Color.lightishBlue}
             editable={this.state.editable}
+            example="MM/YY"
           />
         </View>
         <View style={styles.miniInputContainer}>
@@ -659,11 +672,6 @@ class BankAccounts extends Component {
     </View>
   );
 
-  handleClick = () => {
-    this.submit();
-    // console.log('Button Clicked');
-  };
-
   submit = async () => {
     this.setState({isLoader: true});
     const {
@@ -726,7 +734,7 @@ class BankAccounts extends Component {
       WebSitePassword: password,
       ATMCardNumber: atm1CardNo,
       ATMCardPIN: atm1CardPin,
-      ATMCardExpirationDate: new Date(atm1CardExDate),
+      ATMCardExpirationDate: atm1CardExDate,
       ATMCardCCVNumber: atm1CVV,
       ATMCardNumber2: atm2CardNo,
       ATMCardPIN2: atm2CardPin,
@@ -815,44 +823,36 @@ class BankAccounts extends Component {
     this.setState({modal: bool});
   };
 
+  changeRefBusinessmModal = (bool) => {
+    this.setState({refBusModal: bool});
+  };
+
+  refreshingList = () => {
+    this.getBusinessEntity();
+  };
+
   changeState = (key, value) => {
     this.setState({[key]: value});
   };
 
-  handlingExpiryDate = (text, key) => {
-    if (text.indexOf('.') >= 0 || text.length > 5) {
-      return;
-    }
-    if (text.length === 2) {
-      text += '/';
-    }
-    this.setState({[key]: text});
-  };
-
-  handlingCardnumber = (e, key) => {
-    console.log('v al: ', e);
-    var val = e;
-    const valArray = val.split(' ').join('').split('');
-    var valSpace = val.split('');
-
-    // to work with backspace
-    if (valSpace[valSpace.length - 1] == ' ') {
-      var valSpaceN = valSpace.slice(0, -2);
-      val = valSpaceN.join('');
-      this.setState({[key]: val});
-      return;
-    }
-
-    if (isNaN(valArray.join(''))) return;
-    if (valArray.length === 17) return;
-    if (valArray.length % 4 === 0 && valArray.length <= 15) {
-      this.setState({[key]: e + '  '});
-    } else {
-      this.setState({[key]: e});
+  showAutoComplete = (issuingBank) => {
+    if (issuingBank.label === 'Add') this.setState({refBusModal: true});
+    else {
+      this.setState(
+        {
+          issuingBank: issuingBank.label,
+          issuingBankId: issuingBank.id,
+        },
+        () => this.setState({hideResult: true}),
+      );
     }
   };
 
-  editComponent = (isLoader, modal, array, key, editable) => (
+  onChangeDate = (event, selecteDate) => {
+    console.log('Event: ', event);
+  };
+
+  editComponent = (isLoader, modal, array, key, editable, refBusModal) => (
     <View>
       <Text style={styles.title}>Basic Information</Text>
       {this.basicInformation()}
@@ -871,14 +871,6 @@ class BankAccounts extends Component {
       <View style={styles.gap} />
       <Text style={styles.title}>Additional Information</Text>
       {this.additonalInformation()}
-      <View style={styles.gap} />
-      {!editable ? (
-        <View style={styles.buttonContainer}>
-          <Button onPress={this.handleClick} title="Submit" />
-        </View>
-      ) : (
-        <View />
-      )}
       <Loader isLoader={isLoader} />
       <ModalScreen
         isModalVisible={modal}
@@ -886,6 +878,12 @@ class BankAccounts extends Component {
         changeModalVisibility={this.changeModalVisibility}
         id={key}
         changeState={this.changeState}
+      />
+      <RefBusinessModal
+        isModalVisible={refBusModal}
+        changeModalVisibility={this.changeRefBusinessmModal}
+        access_token={this.props.userData.userData.access_token}
+        refreshingList={this.refreshingList}
       />
     </View>
   );
@@ -918,10 +916,9 @@ class BankAccounts extends Component {
   };
 
   render() {
-    const {isLoader, modal, array, key, editable} = this.state;
+    const {isLoader, modal, array, key, editable, refBusModal} = this.state;
     const {route, navigation} = this.props;
     const {title, type, background, theme, mode} = route.params;
-    console.log('Array: ', this.props.route.params.refArray);
     return (
       <SafeAreaView style={styles.outerView}>
         <ImageBackground source={background} style={styles.backgroundImage}>
@@ -952,7 +949,14 @@ class BankAccounts extends Component {
               },
             ]}>
             <View style={styles.container}>
-              {this.editComponent(isLoader, modal, array, key, editable)}
+              {this.editComponent(
+                isLoader,
+                modal,
+                array,
+                key,
+                editable,
+                refBusModal,
+              )}
             </View>
           </ScrollView>
         </ImageBackground>
@@ -967,3 +971,4 @@ const mapStateToProps = ({userData, country}) => ({
 });
 
 export default connect(mapStateToProps)(BankAccounts);
+

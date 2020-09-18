@@ -25,6 +25,7 @@ const InputTextDynamic = ({
       selectionColor={color}
       theme={{colors: {primary: color}}}
       underlineColor={'rgb(33, 47, 60)'}
+      placeholder={example}
     />
   </View>
 );

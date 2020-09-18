@@ -24,7 +24,6 @@ export const createOrUpdateRecord = async (
 };
 
 export const lookupType = async (access_token, lookupType) => {
-  console.log("access token: POPOPO", lookupType)
   return axios(`${BASE_URL}/actions/lookup/${lookupType}`, {
     method: 'GET',
     headers: {
@@ -67,14 +66,34 @@ export const deleteRecords = async (datatype, recid, access_token) => {
     });
 };
 
-export const archiveRecords = async (datatype, recid, access_token, payload) => {
+export const archiveRecords = async (
+  datatype,
+  recid,
+  access_token,
+  payload,
+) => {
   return axios(`${BASE_URL}/data/${datatype}/${recid}`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
       Authorization: 'Bearer ' + access_token,
     },
-    data: payload
+    data: payload,
+  })
+    .then((response) => response.data)
+    .catch((error) => {
+      throw error;
+    });
+};
+
+export const addBusinessEntity = async (access_token, payload) => {
+  return axios(`${BASE_URL}/data/RefBusinessEntity/__NEW__`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      Authorization: 'Bearer ' + access_token,
+    },
+    data: payload 
   })
     .then((response) => response.data)
     .catch((error) => {

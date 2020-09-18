@@ -15,6 +15,7 @@ import InputTextDynamic from '../../../components/input-text-dynamic/input-text-
 import InputTextIconDynamic from '../../../components/input-text-icon-dynamic/input-text-icon-dynamic.component.js';
 import Button from '../../../components/button/button.component';
 import Loader from '../../../components/loader/loader.component';
+import RefBusinessModal from '../../../components/ref-business-modal/ref-business-modal.component';
 import TitleView from '../../../components/title-view/title-view.component';
 import AutoCompleteText from '../../../components/auto-complete-text-input/auto-complete-text-input.component';
 import {
@@ -22,6 +23,7 @@ import {
   viewRecords,
   deleteRecords,
   archiveRecords,
+  lookupType
 } from '../../../configuration/api/api.functions';
 import {Color} from '../../../assets/color/color.js';
 
@@ -30,6 +32,7 @@ import styles from './brokerages.style';
 class BrokerageAccount extends Component {
   initialState = {
     isLoader: false,
+    refBusModal: false,
     name: '',
     financialInstitution: '',
     financialInstitutionId: '',
@@ -51,6 +54,7 @@ class BrokerageAccount extends Component {
     closedOn: '',
     editable: true,
     hideResult: true,
+    refArray: [],
   };
   constructor(props) {
     super(props);
@@ -67,6 +71,7 @@ class BrokerageAccount extends Component {
         this.setState(
           {access_token: this.props.userData.userData.access_token},
           () => this.viewRecord(),
+          this.getBusinessEntity(),
         );
     });
   }
@@ -94,7 +99,7 @@ class BrokerageAccount extends Component {
     this.setState(
       {
         name: data.BrokerageName,
-        financialInstitutionId: data.FinancialInstitution.id,
+        financialInstitution: data.FinancialInstitution.label,
         acNumber: data.AccountNumber,
         username: data.WebSiteAccountNumber,
         password: data.WebSitePassword,
@@ -118,15 +123,10 @@ class BrokerageAccount extends Component {
   };
 
   referenceObj = () => {
-    const {route} = this.props;
-    const {refArray} = route.params;
+    const {refArray} = this.state;
     refArray
       .filter((item) => item.id === this.state.financialInstitutionId)
       .map((val) => this.setState({financialInstitution: val.label}));
-  };
-
-  handleClick = () => {
-    this.submit();
   };
 
   submit = async () => {
@@ -241,16 +241,10 @@ class BrokerageAccount extends Component {
           color={Color.lightishBlue}
           value={this.state.financialInstitution}
           editable={this.state.editable}
-          array={this.props.route.params.refArray}
+          array={this.state.refArray}
           hideResult={this.state.hideResult}
           onPress={(financialInstitution) =>
-            this.setState(
-              {
-                financialInstitution: financialInstitution.label,
-                financialInstitutionId: financialInstitution.id,
-              },
-              () => this.setState({hideResult: true}),
-            )
+            this.showAutoComplete(financialInstitution)
           }
         />
       </View>
@@ -432,7 +426,15 @@ class BrokerageAccount extends Component {
     </View>
   );
 
-  editComponent = (isLoader, editable) => (
+  changeRefBusinessmModal = (bool) => {
+    this.setState({refBusModal: bool});
+  };
+
+  refreshingList = () => {
+    this.getBusinessEntity();
+  };
+
+  editComponent = (isLoader, editable, refBusModal) => (
     <View>
       <Text style={styles.title}>Basic Information</Text>
       {this.basicInformation()}
@@ -443,16 +445,40 @@ class BrokerageAccount extends Component {
       <Text style={styles.title}>Additional Information</Text>
       {this.additionalInformation()}
       <View style={styles.gap} />
-      {!editable ? (
-        <View style={styles.buttonContainer}>
-          <Button onPress={this.handleClick} title="Submit" />
-        </View>
-      ) : (
-        <View />
-      )}
       <Loader isLoader={isLoader} />
+      <RefBusinessModal
+        isModalVisible={refBusModal}
+        changeModalVisibility={this.changeRefBusinessmModal}
+        access_token={this.props.userData.userData.access_token}
+        refreshingList={this.refreshingList}
+      />
     </View>
   );
+
+  getBusinessEntity = async () => {
+    const {userData} = this.props;
+    if (userData !== null) {
+      await lookupType(userData.userData.access_token, 'RefBusinessEntity')
+        .then((response) => {
+          response.pop();
+          this.setState({refArray: response});
+        })
+        .catch((error) => console.log('Ref Business error: ', error));
+    }
+  };
+
+  showAutoComplete = (val) => {
+    if (val.label === 'Add') this.setState({refBusModal: true});
+    else {
+      this.setState(
+        {
+          financialInstitution: val.label,
+          financialInstitutionId: val.id,
+        },
+        () => this.setState({hideResult: true}),
+      );
+    }
+  };
 
   onSave = () => {
     this.submit();
@@ -482,7 +508,7 @@ class BrokerageAccount extends Component {
   };
 
   render() {
-    const {isLoader, editable} = this.state;
+    const {isLoader, editable,refBusModal} = this.state;
     const {route, navigation} = this.props;
     const {title, type, background, theme, mode} = route.params;
     return (
@@ -511,7 +537,7 @@ class BrokerageAccount extends Component {
               },
             ]}>
             <View style={styles.container}>
-              {this.editComponent(isLoader, editable)}
+              {this.editComponent(isLoader, editable, refBusModal)}
             </View>
           </ScrollView>
         </ImageBackground>

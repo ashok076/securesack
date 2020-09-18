@@ -105,7 +105,6 @@ class Autocomplete extends Component {
           renderSeparator={renderSeparator}
           onEndReached={onEndReached}
           onEndReachedThreshold={onEndReachedThreshold}
-          maxToRenderPerBatch={maxRender}
           style={[styles.list, listStyle]}
           {...flatListProps}
         />

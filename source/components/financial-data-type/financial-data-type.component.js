@@ -19,7 +19,6 @@ class FinancialDataType extends Component {
       dataType: financialDataTypeList,
       viewAll: 2,
       isExpanded: false,
-      refArray: []
     };
   }
 
@@ -27,7 +26,6 @@ class FinancialDataType extends Component {
     const {navigation} = this.props;
     navigation.addListener('focus', () => {
       this.getType();
-      this.getBusinessEntity();
     });
   }
 
@@ -35,17 +33,6 @@ class FinancialDataType extends Component {
     getDataAsType.map((type) => this.getData(type));
   };
 
-  getBusinessEntity = async () => {
-    const {userData} = this.props;
-    if (userData !== null) {
-      await lookupType(userData.userData.access_token, 'RefBusinessEntity')
-        .then((response) => {
-          console.log("Ref res: ", response)
-          this.setState({ refArray: response })
-        })
-        .catch((error) => console.log('Ref Business error: ', error));
-    }
-  };
 
   getData = async (type) => {
     const {userData} = this.props;
@@ -128,7 +115,6 @@ class FinancialDataType extends Component {
       case 'BankAccounts':
         return item.AccountNumber;
       case 'CreditCard':
-        console.log('valuesssss ', item.Name);
         return item.Name;
         break;
       case 'BrokerageAccount':
@@ -199,7 +185,6 @@ class FinancialDataType extends Component {
 
   navigation = (type, title, recid, mode) => {
     const {navigation} = this.props;
-    const {refArray} = this.state;
     navigation.navigate(type, {
       type: type,
       category: 'Financial Data',
@@ -208,7 +193,6 @@ class FinancialDataType extends Component {
       recid: recid,
       theme: 'light',
       mode: mode,
-      refArray: refArray
     });
   };
 

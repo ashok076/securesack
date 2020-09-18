@@ -16,6 +16,7 @@ import InputTextIconDynamic from '../../../components/input-text-icon-dynamic/in
 import ModalPicker from '../../../components/modal-picker/modal-picker.component.js';
 import Button from '../../../components/button/button.component';
 import Loader from '../../../components/loader/loader.component';
+import RefBusinessModal from '../../../components/ref-business-modal/ref-business-modal.component';
 import ModalScreen from '../../../components/modal/modal.component';
 import TitleView from '../../../components/title-view/title-view.component';
 import AutoCompleteText from '../../../components/auto-complete-text-input/auto-complete-text-input.component';
@@ -24,6 +25,7 @@ import {
   viewRecords,
   deleteRecords,
   archiveRecords,
+  lookupType,
 } from '../../../configuration/api/api.functions';
 import {credit_card_type} from './credit-card.list';
 import {Color} from '../../../assets/color/color.js';
@@ -38,6 +40,7 @@ class CreditCard extends Component {
   initialState = {
     isLoader: false,
     modal: false,
+    refBusModal: false,
     array: [],
     key: '',
     name: '',
@@ -70,6 +73,7 @@ class CreditCard extends Component {
     issuer: '',
     issuerId: '',
     hideResult: true,
+    refArray: [],
   };
   constructor(props) {
     super(props);
@@ -86,6 +90,7 @@ class CreditCard extends Component {
         this.setState(
           {access_token: this.props.userData.userData.access_token},
           () => this.viewRecord(),
+          this.getBusinessEntity(),
         );
     });
   }
@@ -117,7 +122,7 @@ class CreditCard extends Component {
         cardNo: data.CardNumber,
         expiryDate: data.ExpirationDate,
         cvv: data.CreditCardVerificationValue,
-        issuerId: data.Issuer.id,
+        issuer: data.Issuer.label,
         url: data.URL,
         username: data.WebSiteAccountNumber,
         password: data.WebSitePassword,
@@ -145,8 +150,7 @@ class CreditCard extends Component {
   };
 
   referenceObj = () => {
-    const {route} = this.props;
-    const {refArray} = route.params;
+    const {refArray} = this.state;
     refArray
       .filter((item) => item.id === this.state.issuerId)
       .map((val) => this.setState({issuer: val.label}));
@@ -193,14 +197,14 @@ class CreditCard extends Component {
       Name: name,
       PrimaryCardHolder: cardHolderName,
       CardNumber: cardNo,
-      ExpirationDate: new Date(expiryDate),
+      ExpirationDate: expiryDate,
       CreditCardVerificationValue: cvv,
       URL: url,
       WebSiteAccountNumber: username,
       WebSitePassword: password,
       AdditionalCardHolder: cardHolderName2,
       AdditionalCardNumber: cardNo2,
-      AdditionalCardExpirationDate: new Date(expiryDate2),
+      AdditionalCardExpirationDate: expiryDate2,
       AdditionalCreditCardVerificationValue: cvv2,
       SecurityQuestion1: securityQ1,
       SecurityAnswer1: securityA1,
@@ -261,7 +265,7 @@ class CreditCard extends Component {
       });
   };
 
-  primaryCard = (editable) => (
+  primaryCard = () => (
     <View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
@@ -270,7 +274,7 @@ class CreditCard extends Component {
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.name}
-          editable={editable}
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -280,7 +284,7 @@ class CreditCard extends Component {
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.cardHolderName}
-          editable={editable}
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -297,28 +301,34 @@ class CreditCard extends Component {
               key: 'creditCardType',
             })
           }
-          editable={editable}
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Card Number"
-          onChangeText={(cardNo) => this.setState({cardNo: formatCardNumber(cardNo)})}
-          keyboardType="numer-pad"
+          onChangeText={(cardNo) =>
+            this.setState({cardNo: formatCardNumber(cardNo)})
+          }
+          keyboardType="number-pad"
           color={Color.lightishBlue}
           value={this.state.cardNo}
-          editable={editable}
+          editable={this.state.editable}
+          example="XXXX XXXX XXXX XXXX"
         />
       </View>
       <View style={styles.miniContainer}>
         <View style={[styles.miniInputContainer, {marginRight: 10}]}>
           <InputTextDynamic
             placeholder="Expiration Date"
-            onChangeText={(expiryDate) => this.setState({expiryDate: formatExpiry(expiryDate)})}
-            keyboardType="numer-pad"
+            onChangeText={(expiryDate) =>
+              this.setState({expiryDate: formatExpiry(expiryDate)})
+            }
+            keyboardType="number-pad"
             color={Color.lightishBlue}
             value={this.state.expiryDate}
-            editable={editable}
+            editable={this.state.editable}
+            example="MM/YY"
           />
         </View>
         <View style={styles.miniInputContainer}>
@@ -328,7 +338,7 @@ class CreditCard extends Component {
             keyboardType="number-pad"
             color={Color.lightishBlue}
             value={this.state.cvv}
-            editable={editable}
+            editable={this.state.editable}
           />
         </View>
       </View>
@@ -339,18 +349,9 @@ class CreditCard extends Component {
           keyboardType="default"
           value={this.state.issuer}
           color={Color.lightishBlue}
-          editable={editable}
-          array={this.props.route.params.refArray}
-          hideResult={this.state.hideResult}
-          onPress={(issuer) =>
-            this.setState(
-              {
-                issuer: issuer.label,
-                issuerId: issuer.id,
-              },
-              () => this.setState({hideResult: true}),
-            )
-          }
+          editable={this.state.editable}
+          array={this.state.refArray}
+          onPress={(issuer) => this.showAutoComplete(issuer)}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -360,7 +361,7 @@ class CreditCard extends Component {
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.url}
-          editable={editable}
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -370,7 +371,7 @@ class CreditCard extends Component {
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.username}
-          editable={editable}
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -380,13 +381,13 @@ class CreditCard extends Component {
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.password}
-          editable={editable}
+          editable={this.state.editable}
         />
       </View>
     </View>
   );
 
-  additionalCardInfo = (editable) => (
+  additionalCardInfo = () => (
     <View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
@@ -395,28 +396,34 @@ class CreditCard extends Component {
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.cardHolderName2}
-          editable={editable}
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Card Number"
-          onChangeText={(cardNo2) => this.setState({cardNo2: formatCardNumber(cardNo2)})}
+          onChangeText={(cardNo2) =>
+            this.setState({cardNo2: formatCardNumber(cardNo2)})
+          }
           keyboardType="number-pad"
           color={Color.lightishBlue}
           value={this.state.cardNo2}
-          editable={editable}
+          editable={this.state.editable}
+          example="XXXX XXXX XXXX XXXX"
         />
       </View>
       <View style={styles.miniContainer}>
         <View style={[styles.miniInputContainer, {marginRight: 10}]}>
           <InputTextDynamic
             placeholder="Expiration Date"
-            onChangeText={(expiryDate2) => this.setState({expiryDate2: formatExpiry(expiryDate2)})}
+            onChangeText={(expiryDate2) =>
+              this.setState({expiryDate2: formatExpiry(expiryDate2)})
+            }
             keyboardType="number-pad"
             color={Color.lightishBlue}
             value={this.state.expiryDate2}
-            editable={editable}
+            editable={this.state.editable}
+            example="MM/YY"
           />
         </View>
         <View style={styles.miniInputContainer}>
@@ -426,14 +433,14 @@ class CreditCard extends Component {
             keyboardType="number-pad"
             color={Color.lightishBlue}
             value={this.state.cvv2}
-            editable={editable}
+            editable={this.state.editable}
           />
         </View>
       </View>
     </View>
   );
 
-  securityQuestions = (editable) => (
+  securityQuestions = () => (
     <View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
@@ -442,7 +449,7 @@ class CreditCard extends Component {
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.securityQ1}
-          editable={editable}
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -452,7 +459,7 @@ class CreditCard extends Component {
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.securityA1}
-          editable={editable}
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -462,7 +469,7 @@ class CreditCard extends Component {
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.securityQ2}
-          editable={editable}
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -472,7 +479,7 @@ class CreditCard extends Component {
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.securityA2}
-          editable={editable}
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -482,7 +489,7 @@ class CreditCard extends Component {
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.securityQ3}
-          editable={editable}
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -492,13 +499,13 @@ class CreditCard extends Component {
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.securityA3}
-          editable={editable}
+          editable={this.state.editable}
         />
       </View>
     </View>
   );
 
-  paymentMailingAddress = (editable) => (
+  paymentMailingAddress = () => (
     <View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
@@ -507,7 +514,7 @@ class CreditCard extends Component {
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.address1}
-          editable={editable}
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -517,7 +524,7 @@ class CreditCard extends Component {
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.address2}
-          editable={editable}
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -527,7 +534,7 @@ class CreditCard extends Component {
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.city}
-          editable={editable}
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -537,7 +544,7 @@ class CreditCard extends Component {
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.state}
-          editable={editable}
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -547,7 +554,7 @@ class CreditCard extends Component {
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.zip}
-          editable={editable}
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -562,7 +569,7 @@ class CreditCard extends Component {
               key: 'country',
             })
           }
-          editable={editable}
+          editable={this.state.editable}
         />
       </View>
     </View>
@@ -602,38 +609,63 @@ class CreditCard extends Component {
   //   </View>
   // );
 
+  showAutoComplete = (val) => {
+    if (val.label === 'Add') this.setState({refBusModal: true});
+    else {
+      this.setState(
+        {
+          issuer: val.label,
+          issuerId: val.id,
+        },
+        () => this.setState({hideResult: true}),
+      );
+    }
+  };
+
   changeModalVisibility = (bool) => {
     this.setState({modal: bool});
+  };
+
+  changeRefBusinessmModal = (bool) => {
+    this.setState({refBusModal: bool});
+  };
+
+  refreshingList = () => {
+    this.getBusinessEntity();
+  };
+
+  getBusinessEntity = async () => {
+    const {userData} = this.props;
+    if (userData !== null) {
+      await lookupType(userData.userData.access_token, 'RefBusinessEntity')
+        .then((response) => {
+          response.pop();
+          this.setState({refArray: response});
+        })
+        .catch((error) => console.log('Ref Business error: ', error));
+    }
   };
 
   changeState = (key, value) => {
     this.setState({[key]: value});
   };
 
-  editComponent = (isLoader, modal, array, key, editable) => (
+  editComponent = (isLoader, modal, array, key, editable, refBusModal) => (
     <View>
       <Text style={styles.title}>Primary Card</Text>
-      {this.primaryCard(editable)}
+      {this.primaryCard()}
       <View style={styles.gap} />
       <Text style={styles.title}>Additional Card Information</Text>
-      {this.additionalCardInfo(editable)}
+      {this.additionalCardInfo()}
       <View style={styles.gap} />
       <Text style={styles.title}>Security Questions</Text>
-      {this.securityQuestions(editable)}
+      {this.securityQuestions()}
       <View style={styles.gap} />
       <Text style={styles.title}>Payment Mailing Address</Text>
-      {this.paymentMailingAddress(editable)}
+      {this.paymentMailingAddress()}
       <View style={styles.gap} />
       {/* <Text style={styles.title}>Additional Information</Text>
         {this.additionalInformation()} */}
-      <View style={styles.gap} />
-      {!editable ? (
-        <View style={styles.buttonContainer}>
-          <Button onPress={this.handleClick} title="Submit" />
-        </View>
-      ) : (
-        <View />
-      )}
       <Loader isLoader={isLoader} />
       <ModalScreen
         isModalVisible={modal}
@@ -641,6 +673,12 @@ class CreditCard extends Component {
         changeModalVisibility={this.changeModalVisibility}
         id={key}
         changeState={this.changeState}
+      />
+      <RefBusinessModal
+        isModalVisible={refBusModal}
+        changeModalVisibility={this.changeRefBusinessmModal}
+        access_token={this.props.userData.userData.access_token}
+        refreshingList={this.refreshingList}
       />
     </View>
   );
@@ -673,7 +711,7 @@ class CreditCard extends Component {
   };
 
   render() {
-    const {isLoader, modal, array, key, editable} = this.state;
+    const {isLoader, modal, array, key, editable, refBusModal} = this.state;
     const {route, navigation} = this.props;
     const {title, type, background, theme, mode} = route.params;
     return (
@@ -702,7 +740,14 @@ class CreditCard extends Component {
               },
             ]}>
             <View style={styles.container}>
-              {this.editComponent(isLoader, modal, array, key, editable)}
+              {this.editComponent(
+                isLoader,
+                modal,
+                array,
+                key,
+                editable,
+                refBusModal,
+              )}
             </View>
           </ScrollView>
         </ImageBackground>

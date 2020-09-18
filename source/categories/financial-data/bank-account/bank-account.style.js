@@ -20,16 +20,12 @@ const styles = {
   miniInputContainer: {
     flex: 1,
   },
-  buttonContainer: {
-    paddingTop: 5,
-  },
   gap: {
     marginTop: 50,
   },
   outerView: {
     backgroundColor: 'rgb(248, 249, 250)',
     paddingTop: StatusBar.HEIGHT,
-    flex: 1,
   },
   backgroundImage: {
     height: '100%',
