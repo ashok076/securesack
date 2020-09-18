@@ -25,7 +25,7 @@ import {
   viewRecords,
   deleteRecords,
   archiveRecords,
-  lookupType
+  lookupType,
 } from '../../../configuration/api/api.functions';
 import {account_type, size, payment_due_type} from './bank-account.list';
 import {Color} from '../../../assets/color/color.js';
@@ -146,6 +146,7 @@ class BankAccounts extends Component {
       {
         name: data.AccountName,
         issuingBank: data.FinancialInstitution.label,
+        issuingBankId: data.FinancialInstitution.id,
         accountNumber: data.AccountNumber,
         bankRoutingNumber: data.RoutingNumber,
         userName: data.WebSiteUsername,
@@ -195,6 +196,13 @@ class BankAccounts extends Component {
     );
   };
 
+  referenceObj = () => {
+    const {refArray} = this.state;
+    refArray
+      .filter((item) => item.id === this.state.issuingBankId)
+      .map((val) => this.setState({issuingBank: val.label}));
+  };
+
   getBusinessEntity = async () => {
     const {userData} = this.props;
     if (userData !== null) {
@@ -205,13 +213,6 @@ class BankAccounts extends Component {
         })
         .catch((error) => console.log('Ref Business error: ', error));
     }
-  };
-
-  referenceObj = () => {
-    const {refArray} = this.state;
-    refArray
-      .filter((item) => item.id === this.state.issuingBankId)
-      .map((val) => this.setState({issuingBank: val.label}));
   };
 
   basicInformation = () => (
@@ -971,4 +972,3 @@ const mapStateToProps = ({userData, country}) => ({
 });
 
 export default connect(mapStateToProps)(BankAccounts);
-

@@ -123,6 +123,7 @@ class CreditCard extends Component {
         expiryDate: data.ExpirationDate,
         cvv: data.CreditCardVerificationValue,
         issuer: data.Issuer.label,
+        issuerId: data.Issuer.id,
         url: data.URL,
         username: data.WebSiteAccountNumber,
         password: data.WebSitePassword,
@@ -154,10 +155,6 @@ class CreditCard extends Component {
     refArray
       .filter((item) => item.id === this.state.issuerId)
       .map((val) => this.setState({issuer: val.label}));
-  };
-
-  handleClick = () => {
-    this.submit();
   };
 
   submit = async () => {

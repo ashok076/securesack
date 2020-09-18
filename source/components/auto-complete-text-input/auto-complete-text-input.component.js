@@ -6,6 +6,7 @@ import styles from './auto-complete-text-input.style';
 
 class AutoCompleteText extends Component {
   renderLable = (item, i) => {
+    if (this.props.value === undefined) return;
     return (
       this.props.value.length > 0 && (
         <TouchableOpacity
@@ -18,7 +19,7 @@ class AutoCompleteText extends Component {
   };
 
   find = (val, array) => {
-    if (val === '') {
+    if (val === '' || val === undefined) {
       return [];
     }
     const regex = new RegExp(`${val.trim()}`, 'i');

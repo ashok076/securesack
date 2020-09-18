@@ -23,7 +23,7 @@ import {
   viewRecords,
   deleteRecords,
   archiveRecords,
-  lookupType
+  lookupType,
 } from '../../../configuration/api/api.functions';
 import {Color} from '../../../assets/color/color.js';
 
@@ -100,6 +100,7 @@ class BrokerageAccount extends Component {
       {
         name: data.BrokerageName,
         financialInstitution: data.FinancialInstitution.label,
+        financialInstitutionId: data.FinancialInstitution.id,
         acNumber: data.AccountNumber,
         username: data.WebSiteAccountNumber,
         password: data.WebSitePassword,
@@ -508,7 +509,7 @@ class BrokerageAccount extends Component {
   };
 
   render() {
-    const {isLoader, editable,refBusModal} = this.state;
+    const {isLoader, editable, refBusModal} = this.state;
     const {route, navigation} = this.props;
     const {title, type, background, theme, mode} = route.params;
     return (

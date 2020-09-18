@@ -122,6 +122,7 @@ class Mortgage extends Component {
         name: data.Name,
         loanNo: data.LoanNumber,
         issuer: data.Issuer.label,
+        issuerId: data.Issuer.id,
         loanAmnt: data.LoanAmount,
         mortgageRate: data.InterestRate,
         effectivefrom: data.StartDate,
@@ -147,7 +148,6 @@ class Mortgage extends Component {
         isLoader: false,
       },
       () => this.referenceObj(),
-      console.log('Resp: ', data.Issuer),
     );
   };
 

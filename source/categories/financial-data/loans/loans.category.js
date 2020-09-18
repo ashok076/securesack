@@ -108,6 +108,7 @@ class ConsumerLoan extends Component {
         name: data.Name,
         loanNo: data.LoanNumber,
         issuer: data.Issuer.label,
+        issuerId: data.Issuer.id,
         loanAmnt: data.LoanAmount,
         interestRate: data.InterestRate,
         url: data.URL,
