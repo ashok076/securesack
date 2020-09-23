@@ -12,7 +12,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#00000040',
   },
   modalList: {
-    height: Dimensions.get('window').height * .4,
+    height: Dimensions.get('window').height * .5,
     width: Dimensions.get('window').width / 1.1,
     backgroundColor: '#FFFFFF',
     borderRadius: 9,

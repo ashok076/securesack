@@ -27,6 +27,7 @@ import {
   archiveRecords,
   lookupType,
 } from '../../../configuration/api/api.functions';
+import {formatDate} from '../../../configuration/card-formatter/card-formatter';
 import {term, refiance_repayment} from './mortgages.list';
 import {Color} from '../../../assets/color/color.js';
 
@@ -280,7 +281,7 @@ class Mortgage extends Component {
         <InputTextDynamic
           placeholder="Loan Number"
           onChangeText={(loanNo) => this.setState({loanNo})}
-          keyboardType="default"
+          keyboardType="number-pad"
           color={Color.lightishBlue}
           value={this.state.loanNo}
           editable={this.state.editable}
@@ -309,6 +310,7 @@ class Mortgage extends Component {
             })
           }
           editable={this.state.editable}
+          name="Term"
         />
       </View>
       <View style={styles.inputContainer}>
@@ -319,6 +321,7 @@ class Mortgage extends Component {
           color={Color.lightishBlue}
           value={this.state.loanAmnt}
           editable={this.state.editable}
+          keyboardType="number-pad"
         />
       </View>
       <View style={styles.inputContainer}>
@@ -330,27 +333,34 @@ class Mortgage extends Component {
           color={Color.lightishBlue}
           value={this.state.mortgageRate}
           editable={this.state.editable}
+          keyboardType="number-pad"
         />
       </View>
       <View style={styles.miniContainer}>
         <View style={[styles.miniInputContainer, {marginRight: 10}]}>
           <InputTextDynamic
             placeholder="Effective From"
-            onChangeText={(effectivefrom) => this.setState({effectivefrom})}
-            keyboardType="default"
+            onChangeText={(effectivefrom) =>
+              this.setState({effectivefrom: formatDate(effectivefrom)})
+            }
+            keyboardType="number-pad"
             color={Color.lightishBlue}
             value={this.state.effectivefrom}
             editable={this.state.editable}
+            example="MM/DD/YYYY"
           />
         </View>
         <View style={styles.miniInputContainer}>
           <InputTextDynamic
             placeholder="Ends On"
-            onChangeText={(endsOn) => this.setState({endsOn})}
-            keyboardType="default"
+            onChangeText={(endsOn) =>
+              this.setState({endsOn: formatDate(endsOn)})
+            }
+            keyboardType="number-pad"
             color={Color.lightishBlue}
             value={this.state.endsOn}
             editable={this.state.editable}
+            example="MM/DD/YYYY"
           />
         </View>
       </View>
@@ -517,6 +527,7 @@ class Mortgage extends Component {
             })
           }
           editable={this.state.editable}
+          name="Country"
         />
       </View>
     </View>
@@ -540,6 +551,7 @@ class Mortgage extends Component {
               })
             }
             editable={this.state.editable}
+            name="Refianced"
           />
         </View>
         <View style={styles.miniInputContainer}>
@@ -553,10 +565,11 @@ class Mortgage extends Component {
               this.setState({
                 modal: true,
                 array: refiance_repayment,
-                key: 'refiance',
+                key: 'repayment',
               })
             }
             editable={this.state.editable}
+            name="Prepayment Penalty"
           />
         </View>
       </View>
@@ -690,7 +703,8 @@ class Mortgage extends Component {
                 backgroundColor:
                   theme !== 'dark' ? 'rgb(255, 255, 255)' : 'rgb(33, 47, 60)',
               },
-            ]}>
+            ]}
+            keyboardShouldPersistTaps="handled">
             <View style={styles.container}>
               {this.editComponent(isLoader, modal, array, key, refBusModal)}
             </View>

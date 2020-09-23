@@ -218,6 +218,7 @@ class CreditCard extends Component {
       CreditCardType: creditCardType,
       Issuer: issuerId,
     });
+    console.log('Check data: ', data);
     await createOrUpdateRecord('CreditCard', recid, data, access_token)
       .then((response) => {
         this.setState({isLoader: false});
@@ -299,6 +300,7 @@ class CreditCard extends Component {
             })
           }
           editable={this.state.editable}
+          name="Type"
         />
       </View>
       <View style={styles.inputContainer}>
@@ -567,6 +569,7 @@ class CreditCard extends Component {
             })
           }
           editable={this.state.editable}
+          nam="Country"
         />
       </View>
     </View>
@@ -735,7 +738,8 @@ class CreditCard extends Component {
                 backgroundColor:
                   theme !== 'dark' ? 'rgb(255, 255, 255)' : 'rgb(33, 47, 60)',
               },
-            ]}>
+            ]}
+            keyboardShouldPersistTaps="handled">
             <View style={styles.container}>
               {this.editComponent(
                 isLoader,

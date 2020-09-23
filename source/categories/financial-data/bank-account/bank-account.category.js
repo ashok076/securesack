@@ -10,7 +10,7 @@ import {
 import {Text, Portal} from 'react-native-paper';
 import qs from 'qs';
 import {connect} from 'react-redux';
-import DateTimePicker from '@react-native-community/datetimepicker';
+import {Root} from 'native-base';
 
 import InputTextDynamic from '../../../components/input-text-dynamic/input-text-dynamic.component';
 import InputTextIconDynamic from '../../../components/input-text-icon-dynamic/input-text-icon-dynamic.component.js';
@@ -32,6 +32,7 @@ import {Color} from '../../../assets/color/color.js';
 import {
   formatCardNumber,
   formatExpiry,
+  formatDate,
 } from '../../../configuration/card-formatter/card-formatter';
 
 import styles from './bank-account.style';
@@ -174,7 +175,7 @@ class BankAccounts extends Component {
         securityQ3: data.SecurityQuestion3,
         securityA3: data.SecurityAnswer3,
         boxNumber1: data.SafetyDepositBox1.BoxNumber,
-        openedOn1: data.SafetyDepositBox1BoxOpeningDate,
+        openedOn1: data.SafetyDepositBox1.BoxOpeningDate,
         interestRate1: data.SafetyDepositBox1.Fee,
         size1: data.SafetyDepositBox1.BoxSize,
         paymentDueType1: data.SafetyDepositBox1.FeeDuration,
@@ -255,6 +256,7 @@ class BankAccounts extends Component {
           }
           color={Color.lightishBlue}
           editable={this.state.editable}
+          name="Account Type"
         />
       </View>
       <View style={styles.inputContainer}>
@@ -494,6 +496,7 @@ class BankAccounts extends Component {
             }
             color={Color.lightishBlue}
             editable={this.state.editable}
+            name="Size"
           />
         </View>
       </View>
@@ -501,11 +504,14 @@ class BankAccounts extends Component {
         <View style={[styles.miniInputContainer, {marginRight: 10}]}>
           <InputTextDynamic
             placeholder="Opened on"
-            onChangeText={(openedOn1) => this.setState({openedOn1})}
-            keyboardType="default"
+            onChangeText={(openedOn1) =>
+              this.setState({openedOn1: formatDate(openedOn1)})
+            }
+            keyboardType="number-pad"
             value={this.state.openedOn1}
             color={Color.lightishBlue}
             editable={this.state.editable}
+            example="MM/DD/YYYY"
           />
         </View>
         <View style={styles.miniInputContainer}>
@@ -513,7 +519,7 @@ class BankAccounts extends Component {
             placeholder="Interest Rate"
             onChangeText={(interestRate1) => this.setState({interestRate1})}
             icon="dollar-sign"
-            keyboardType="default"
+            keyboardType="number-pad"
             color={Color.lightishBlue}
             editable={this.state.editable}
           />
@@ -535,6 +541,7 @@ class BankAccounts extends Component {
           }
           color={Color.lightishBlue}
           editable={this.state.editable}
+          name="Payment Due Type"
         />
       </View>
       <View style={styles.miniContainer}>
@@ -556,6 +563,7 @@ class BankAccounts extends Component {
             }
             color={Color.lightishBlue}
             editable={this.state.editable}
+            name="Size"
           />
         </View>
       </View>
@@ -563,11 +571,14 @@ class BankAccounts extends Component {
         <View style={[styles.miniInputContainer, {marginRight: 10}]}>
           <InputTextDynamic
             placeholder="Opened on"
-            onChangeText={(openedOn2) => this.setState({openedOn2})}
-            keyboardType="default"
+            onChangeText={(openedOn2) =>
+              this.setState({openedOn2: formatDate(openedOn2)})
+            }
+            keyboardType="number-pad"
             value={this.state.openedOn2}
             color={Color.lightishBlue}
             editable={this.state.editable}
+            example="MM/DD/YYYY"
           />
         </View>
         <View style={styles.miniInputContainer}>
@@ -575,7 +586,7 @@ class BankAccounts extends Component {
             placeholder="Interest Rate"
             onChangeText={(interestRate2) => this.setState({interestRate2})}
             icon="dollar-sign"
-            keyboardType="default"
+            keyboardType="number-pad"
             color={Color.lightishBlue}
             editable={this.state.editable}
           />
@@ -597,6 +608,7 @@ class BankAccounts extends Component {
           }
           color={Color.lightishBlue}
           editable={this.state.editable}
+          name="Payment Due Type"
         />
       </View>
     </View>
@@ -668,6 +680,7 @@ class BankAccounts extends Component {
           }
           color={Color.lightishBlue}
           editable={this.state.editable}
+          name="Country"
         />
       </View>
     </View>
@@ -921,47 +934,50 @@ class BankAccounts extends Component {
     const {route, navigation} = this.props;
     const {title, type, background, theme, mode} = route.params;
     return (
-      <SafeAreaView style={styles.outerView}>
-        <ImageBackground source={background} style={styles.backgroundImage}>
-          <View style={styles.titleView}>
-            <TitleView
-              navigation={navigation}
-              mode={mode}
-              theme={theme}
-              title={title}
-              type={type}
-              save={this.onSave}
-              edit={this.onEdit}
-              delete={this.onDelete}
-              archive={this.onArchive}
-              editable={editable}
-            />
-          </View>
-          <ScrollView
-            ref={(ref) => (this.scroll = ref)}
-            onContentSizeChange={() => {
-              this.scroll.scrollTo({y: 0});
-            }}
-            style={[
-              styles.outerContainerView,
-              {
-                backgroundColor:
-                  theme !== 'dark' ? 'rgb(255, 255, 255)' : 'rgb(33, 47, 60)',
-              },
-            ]}>
-            <View style={styles.container}>
-              {this.editComponent(
-                isLoader,
-                modal,
-                array,
-                key,
-                editable,
-                refBusModal,
-              )}
+      <Root>
+        <SafeAreaView style={styles.outerView}>
+          <ImageBackground source={background} style={styles.backgroundImage}>
+            <View style={styles.titleView}>
+              <TitleView
+                navigation={navigation}
+                mode={mode}
+                theme={theme}
+                title={title}
+                type={type}
+                save={this.onSave}
+                edit={this.onEdit}
+                delete={this.onDelete}
+                archive={this.onArchive}
+                editable={editable}
+              />
             </View>
-          </ScrollView>
-        </ImageBackground>
-      </SafeAreaView>
+            <ScrollView
+              ref={(ref) => (this.scroll = ref)}
+              onContentSizeChange={() => {
+                this.scroll.scrollTo({y: 0});
+              }}
+              style={[
+                styles.outerContainerView,
+                {
+                  backgroundColor:
+                    theme !== 'dark' ? 'rgb(255, 255, 255)' : 'rgb(33, 47, 60)',
+                },
+              ]}
+              keyboardShouldPersistTaps="handled">
+              <View style={styles.container}>
+                {this.editComponent(
+                  isLoader,
+                  modal,
+                  array,
+                  key,
+                  editable,
+                  refBusModal,
+                )}
+              </View>
+            </ScrollView>
+          </ImageBackground>
+        </SafeAreaView>
+      </Root>
     );
   }
 }

@@ -8,10 +8,12 @@ import ModalScreen from '../modal/modal.component';
 
 import styles from './modal-picker.style';
 
-const ModalPicker = ({label, onPress, color, editable}) => (
-  <TouchableRipple
+const ModalPicker = ({label, onPress, color, editable, name}) => (
+  <View style={
+      styles.container}>
+      {editable && (<Text style={styles.labelText}>{name}</Text>)}
+      <TouchableRipple
     style={[
-      styles.container,
       !editable
         ? {
             borderBottomColor: 'rgb(33, 47, 60)',
@@ -45,6 +47,7 @@ const ModalPicker = ({label, onPress, color, editable}) => (
       />
     </View>
   </TouchableRipple>
+  </View>
 );
 
 export default ModalPicker;

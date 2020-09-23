@@ -25,6 +25,7 @@ import {
   archiveRecords,
   lookupType,
 } from '../../../configuration/api/api.functions';
+import {formatDate} from '../../../configuration/card-formatter/card-formatter';
 import {Color} from '../../../assets/color/color.js';
 
 import styles from './brokerages.style';
@@ -396,7 +397,7 @@ class BrokerageAccount extends Component {
             this.setState({stockTransactionFee})
           }
           icon="dollar-sign"
-          keyboardType="default"
+          keyboardType="number-pad"
           color={Color.lightishBlue}
           value={this.state.stockTransactionFee}
           editable={this.state.editable}
@@ -406,21 +407,27 @@ class BrokerageAccount extends Component {
         <View style={[styles.miniInputContainer, {marginRight: 10}]}>
           <InputTextDynamic
             placeholder="Opened On"
-            onChangeText={(openedOn) => this.setState({openedOn})}
+            onChangeText={(openedOn) =>
+              this.setState({openedOn: formatDate(openedOn)})
+            }
             keyboardType="number-pad"
             color={Color.lightishBlue}
             value={this.state.openedOn}
             editable={this.state.editable}
+            example="MM/DD/YYYY"
           />
         </View>
         <View style={styles.miniInputContainer}>
           <InputTextDynamic
             placeholder="Closed On"
-            onChangeText={(closedOn) => this.setState({closedOn})}
+            onChangeText={(closedOn) =>
+              this.setState({closedOn: formatDate(closedOn)})
+            }
             keyboardType="number-pad"
             color={Color.lightishBlue}
             value={this.state.closedOn}
             editable={this.state.editable}
+            example="MM/DD/YYYY"
           />
         </View>
       </View>
@@ -536,7 +543,8 @@ class BrokerageAccount extends Component {
                 backgroundColor:
                   theme !== 'dark' ? 'rgb(255, 255, 255)' : 'rgb(33, 47, 60)',
               },
-            ]}>
+            ]}
+            keyboardShouldPersistTaps="handled">
             <View style={styles.container}>
               {this.editComponent(isLoader, editable, refBusModal)}
             </View>
