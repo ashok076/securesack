@@ -96,7 +96,6 @@ class BankAccounts extends Component {
     access_token: '',
     editable: true,
     hideResult: true,
-    showDate: false,
     refArray: [],
   };
   constructor(props) {
@@ -860,10 +859,6 @@ class BankAccounts extends Component {
         () => this.setState({hideResult: true}),
       );
     }
-  };
-
-  onChangeDate = (event, selecteDate) => {
-    console.log('Event: ', event);
   };
 
   editComponent = (isLoader, modal, array, key, editable, refBusModal) => (
