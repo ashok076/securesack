@@ -1,1 +1,1 @@
-const boolean_value = ['Yes', 'No']
+export const boolean_value = ['Yes', 'No']

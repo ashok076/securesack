@@ -163,13 +163,13 @@ class PropertyInsurance extends Component {
         personalItemInsured: data.PersonalItemsInsured,
         jointPolicyHolderTwo: data.AdditionalPolicyHolder1,
         jointPolicyHolderThree: data.AdditionalPolicyHolder2,
-        escrowAccount: data.EscrowAccount === true ? 'Yes' : 'No',
+        escrowAccount: data.EscrowAccount ? 'Yes' : 'No',
         replacementContentCoverage:
-          data.ReplacementOfContentsCoverage === true ? 'Yes' : 'No',
+          data.ReplacementOfContentsCoverage ? 'Yes' : 'No',
         lossAssessmentCoverage:
-          data.LossAssessmentCoverage === true ? 'Yes' : 'No',
+          data.LossAssessmentCoverage ? 'Yes' : 'No',
         sewerBackupCoverage:
-          data.SewerWaterBackupCoverage === true ? 'Yes' : 'No',
+          data.SewerWaterBackupCoverage ? 'Yes' : 'No',
         ownedProperty:
           data.OwnedProperty.label === undefined
             ? ''
