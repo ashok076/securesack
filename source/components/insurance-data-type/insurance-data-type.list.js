@@ -1,25 +1,25 @@
 export const insuranceDataTypeList = [
   {
     id: 1,
-    title: 'Auto',
+    title: 'Auto Insurance',
     type: 'AutoInsurance',
     icon: require('../../assets/png-images/Vehicle-Insurance-Icon/vehicle-insurance.png'),
   },
   {
     id: 2,
-    title: 'Health Care',
+    title: 'Health Care Insurance',
     type: 'HealthCareProvider',
     icon: require('../../assets/png-images/Health-Insurance-Icon/heath-insurance.png'),
   },
   {
     id: 3,
-    title: 'Property',
+    title: 'Property Insurance',
     type: 'PropertyInsurance',
     icon: require('../../assets/png-images/Property-Insurance-Icon/property-insurance.png'),
   },
   {
     id: 4,
-    title: 'Life',
+    title: 'Life Insurance',
     type: 'LifeInsurance',
     icon: require('../../assets/png-images/Life-Insurance-Icon/life-insurance.png'),
   },

@@ -2,10 +2,10 @@ import {StyleSheet} from 'react-native';
 
 const styles = StyleSheet.create({
   container: {
-    height: 45,
+    height: 50,
     width: '100%',
     justifyContent: 'center',
-    marginTop: 10,
+    marginTop: 13,
   },
   label: {
     fontSize: 15,

@@ -7,7 +7,7 @@ import {
   SafeAreaView,
   Alert,
 } from 'react-native';
-import {Text, Portal} from 'react-native-paper';
+import {Text} from 'react-native-paper';
 import qs from 'qs';
 import {connect} from 'react-redux';
 import {Root} from 'native-base';

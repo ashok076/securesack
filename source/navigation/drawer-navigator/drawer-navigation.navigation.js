@@ -23,9 +23,9 @@ import ServiceAccount from '../../categories/services-and-rewards/services/servi
 import RewardProgram from '../../categories/services-and-rewards/reward-programs/rewards-programs.category.js';
 
 //insurance
-import Auto from '../../categories/insurance/auto/auto.category.js';
-import HealthCare from '../../categories/insurance/health-care/health-care.category.js';
-import Life from '../../categories/insurance/life/life.category.js';
+import AutoInsurance from '../../categories/insurance/auto/auto.category.js';
+import HealthCareProvider from '../../categories/insurance/health-care/health-care.category.js';
+import LifeInsurance from '../../categories/insurance/life/life.category.js';
 import PropertyInsurance from '../../categories/insurance/property/property.category.js';
 
 //personal assets
@@ -64,9 +64,9 @@ const DrawerNavigator = () => {
       <Drawer.Screen name="ConsumerLoan" component={ConsumerLoan}/>
       <Drawer.Screen name="ServiceAccount" component={ServiceAccount}/>
       <Drawer.Screen name="RewardProgram" component={RewardProgram}/>
-      <Drawer.Screen name="Auto" component={Auto}/>
-      <Drawer.Screen name="HealthCare" component={HealthCare}/>
-      <Drawer.Screen name="Life" component={Life}/>
+      <Drawer.Screen name="AutoInsurance" component={AutoInsurance}/>
+      <Drawer.Screen name="HealthCareProvider" component={HealthCareProvider}/>
+      <Drawer.Screen name="LifeInsurance" component={LifeInsurance}/>
       <Drawer.Screen name="PropertyInsurance" component={PropertyInsurance}/>
       <Drawer.Screen name="Vehicle" component={Vehicle}/>
       <Drawer.Screen name="Property" component={Property}/>

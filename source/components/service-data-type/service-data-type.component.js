@@ -20,7 +20,10 @@ class ServiceDataType extends Component {
   }
 
   componentDidMount() {
-    this.getType();
+    const {navigation} = this.props;
+    navigation.addListener('focus', () => {
+      this.getType();
+    });
   }
 
   getType = () => {
@@ -90,14 +93,15 @@ class ServiceDataType extends Component {
       background: require('../../assets/jpg-images/Service-Reward-Background/service-and-reward-background.jpg'),
       recid: recid,
       theme: 'dark',
-      mode: mode
+      mode: mode,
     });
   };
 
   renderTitleSubtitle = (item, type, title) => {
     return (
-      <TouchableRipple rippleColor="rgba(0, 0, 0, .32)"
-      onPress={() => this.navigation(type, title, item.id, 'View')}>
+      <TouchableRipple
+        rippleColor="rgba(0, 0, 0, .32)"
+        onPress={() => this.navigation(type, title, item.id, 'View')}>
         <View>
           <View style={styles.titleSubTitle}>
             <Title style={styles.catTitle}>{this.getTitle(type, item)}</Title>
@@ -117,8 +121,8 @@ class ServiceDataType extends Component {
 
   getTitle = (type, item) => {
     switch (type) {
-      case 'BankAccounts':
-        return item.AccountName;
+      case 'ServiceAccount':
+        return item.ServiceName;
       case 'RewardProgram':
         return item.NumberOfPoints;
         break;
@@ -127,7 +131,7 @@ class ServiceDataType extends Component {
 
   getSubTitle = (type, item) => {
     switch (type) {
-      case 'BankAccounts':
+      case 'ServiceAccount':
         return item.AccountNumber;
       case 'RewardProgram':
         return item.Name;

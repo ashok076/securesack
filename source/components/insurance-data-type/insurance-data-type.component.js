@@ -20,7 +20,10 @@ class InsuranceDataType extends Component {
   }
 
   componentDidMount() {
-    this.getType();
+    const {navigation} = this.props;
+    navigation.addListener('focus', () => {
+      this.getType();
+    });
   }
 
   getType = () => {
@@ -61,41 +64,43 @@ class InsuranceDataType extends Component {
     this.setState({dataType});
   };
 
-  category = ({title, id, category, type,icon}) => {
+  category = ({title, id, category, type, icon}) => {
     return (
       <View style={styles.container}>
         <View style={styles.titleIcon}>
           <Image source={icon} />
           <Text style={styles.title}>{title}</Text>
-          <TouchableOpacity style={styles.addView}
-          onPress={() => this.navigation(type, title, `__NEW__`)}>
+          <TouchableOpacity
+            style={styles.addView}
+            onPress={() => this.navigation(type, title, `__NEW__`, 'Add')}>
             <Icon name="plus" color="rgb(33, 47, 60)" size={20} />
           </TouchableOpacity>
         </View>
         <FlatList
           data={category}
-          renderItem={({item}) => this.renderTitleSubtitle(item, type)}
+          renderItem={({item}) => this.renderTitleSubtitle(item, type, title)}
         />
       </View>
     );
   };
 
-  navigation = (type, title, recid) => {
+  navigation = (type, title, recid, mode) => {
     const {navigation} = this.props;
-    navigation.navigate('CommonView', {
+    navigation.navigate(type, {
       type: type,
       category: 'Insurance',
       title: title,
       background: require('../../assets/jpg-images/Insurance-Background/insurance-background.jpg'),
       recid: recid,
-      theme: 'dark'
+      theme: 'dark',
+      mode: mode
     });
   };
 
-  renderTitleSubtitle = (item, type) => {
-    console.log(item);
+  renderTitleSubtitle = (item, type, title) => {
     return (
-      <TouchableRipple rippleColor="rgba(0, 0, 0, .32)">
+      <TouchableRipple rippleColor="rgba(0, 0, 0, .32)"
+      onPress={() => this.navigation(type, title, item.id, 'View')}>
         <View>
           <View style={styles.titleSubTitle}>
             <Title style={styles.catTitle}>{this.getTitle(type, item)}</Title>

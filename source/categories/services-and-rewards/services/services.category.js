@@ -73,8 +73,7 @@ class ServiceAccount extends Component {
     additionalAcHolder2: '',
     paymentDueType: '',
     isCreditCardProvided: '',
-    creditCardProv: '',
-    creditCardProvidedId: '',
+    creditCardProvided: '',
     serviceType: '',
     creditCardArray: [],
     editable: true,
@@ -125,7 +124,7 @@ class ServiceAccount extends Component {
   };
 
   setViewData = (data) => {
-    console.log("Data: ", data)
+    console.log('Data: ', data);
     this.setState(
       {
         name: data.ServiceName,
@@ -156,8 +155,7 @@ class ServiceAccount extends Component {
         additionalAcHolder2: data.AdditionalAccountHolder2,
         serviceType: data.ServiceType,
         isCreditCardProvided: data.IsCreditCardProvided,
-        creditCardProvided: data.CreditCardProvided,
-        // creditCardProv: data.CreditCardProvided.label,
+        creditCardProvided: data.CreditCardProvided.label === undefined ? '' : data.CreditCardProvided.label ,
       },
       () => this.referenceObj(),
     );
@@ -225,7 +223,7 @@ class ServiceAccount extends Component {
       type,
       paymentDueType,
       isCreditCardProvided,
-      creditCardProvidedId,
+      creditCardProvided,
     } = this.state;
     const {navigation, route} = this.props;
     const {recid} = route.params;
@@ -257,7 +255,7 @@ class ServiceAccount extends Component {
       AdditionalAccountHolder2: additionalAcHolder2,
       ServiceType: serviceType,
       IsCreditCardProvided: isCreditCardProvided,
-      CreditCardProvided: creditCardProvidedId,
+      CreditCardProvided: this.getSelectedCreditId(creditCardProvided),
     });
 
     await createOrUpdateRecord('ServiceAccount', recid, data, access_token)
@@ -268,6 +266,17 @@ class ServiceAccount extends Component {
       .catch((error) => {
         this.setState({isLoader: false});
       });
+  };
+
+  getSelectedCreditId = (creditCardProvided) => {
+    let {creditCardArray} = this.state;
+    let creditRef = '';
+    creditCardArray
+      .filter((item) => item.label === creditCardProvided)
+      .map((val) => {
+        creditRef = val.id;
+      });
+    return creditRef;
   };
 
   delete = async () => {
@@ -428,6 +437,7 @@ class ServiceAccount extends Component {
             color={Color.veryLightBlue}
             value={this.state.from}
             editable={this.state.editable}
+            example="DD/MM/YYYY"
           />
         </View>
         <View style={styles.miniInputContainer}>
@@ -438,6 +448,7 @@ class ServiceAccount extends Component {
             color={Color.veryLightBlue}
             value={this.state.to}
             editable={this.state.editable}
+            example="DD/MM/YYYY"
           />
         </View>
       </View>
@@ -515,7 +526,7 @@ class ServiceAccount extends Component {
           onPress={() =>
             this.setState({
               modal: true,
-              array: this.state.countries,
+              array: this.props.country.country,
               key: 'country',
             })
           }
@@ -585,7 +596,7 @@ class ServiceAccount extends Component {
           onChangeText={(securityA3) => this.setState({securityA3})}
           keyboardType="default"
           color={Color.veryLightBlue}
-          value={this.state.address1}
+          value={this.state.securityA3}
           editable={this.state.editable}
         />
       </View>
@@ -593,72 +604,80 @@ class ServiceAccount extends Component {
   );
 
   additionalInformation = () => {
-    return(
-    <View>
-      <View style={styles.inputContainer}>
-        <InputTextDynamic
-          placeholder="Additional Account Holder 1"
-          onChangeText={(additionalAcHolder1) =>
-            this.setState({additionalAcHolder1})
-          }
-          keyboardType="default"
-          color={Color.veryLightBlue}
-          value={this.state.additionalAcHolder1}
-          editable={this.state.editable}
-        />
+    return (
+      <View>
+        <View style={styles.inputContainer}>
+          <InputTextDynamic
+            placeholder="Additional Account Holder 1"
+            onChangeText={(additionalAcHolder1) =>
+              this.setState({additionalAcHolder1})
+            }
+            keyboardType="default"
+            color={Color.veryLightBlue}
+            value={this.state.additionalAcHolder1}
+            editable={this.state.editable}
+          />
+        </View>
+        <View style={styles.inputContainer}>
+          <InputTextDynamic
+            placeholder="Additional Account Holder 2"
+            onChangeText={(additionalAcHolder2) =>
+              this.setState({additionalAcHolder2})
+            }
+            keyboardType="default"
+            color={Color.veryLightBlue}
+            value={this.state.additionalAcHolder2}
+            editable={this.state.editable}
+          />
+        </View>
+        <View style={styles.inputContainer}>
+          <ModalPicker
+            label={
+              this.state.isCreditCardProvided.length === 0
+                ? 'Is Credit Card Provided?'
+                : this.state.isCreditCardProvided
+            }
+            onPress={() =>
+              this.setState({
+                modal: true,
+                array: is_credit_card_provided,
+                key: 'isCreditCardProvided',
+              })
+            }
+            color={Color.veryLightBlue}
+            editable={this.state.editable}
+            name="Is Credit Card Provided?"
+          />
+        </View>
+        <View style={styles.inputContainer}>
+          <ModalPicker
+            label={
+              this.state.creditCardProvided.length === 0
+                ? 'Credit Card On Record'
+                : this.state.creditCardProvided
+            }
+            onPress={() => this.filterCardArray()}
+            color={Color.veryLightBlue}
+            editable={this.state.editable}
+            name="Credit Card On Record"
+          />
+        </View>
       </View>
-      <View style={styles.inputContainer}>
-        <InputTextDynamic
-          placeholder="Additional Account Holder 2"
-          onChangeText={(additionalAcHolder2) =>
-            this.setState({additionalAcHolder2})
-          }
-          keyboardType="default"
-          color={Color.veryLightBlue}
-          value={this.state.additionalAcHolder2}
-          editable={this.state.editable}
-        />
-      </View>
-      <View style={styles.inputContainer}>
-        <ModalPicker
-          label={
-            this.state.isCreditCardProvided.length === 0
-              ? 'Is Credit Card Provided?'
-              : this.state.isCreditCardProvided
-          }
-          onPress={() =>
-            this.setState({
-              modal: true,
-              array: is_credit_card_provided,
-              key: 'isCreditCardProvided',
-            })
-          }
-          color={Color.veryLightBlue}
-          editable={this.state.editable}
-          name="Is Credit Card Provided?"
-        />
-      </View>
-      <View style={styles.inputContainer}>
-        {/* <ModalPicker
-          label={
-            this.state.creditCardProv.length === 0
-              ? 'Credit Card On Record'
-              : this.state.creditCardProv
-          }
-          onPress={() =>
-            this.setState({
-              modal: true,
-              array: this.state.creditCardArray,
-              key: 'creditCardProv',
-            })
-          }
-          color={Color.veryLightBlue}
-          editable={this.state.editable}
-          name="Credit Card On Record"
-        /> */}
-      </View>
-    </View>
-  )};
+    );
+  };
+
+  filterCardArray = () => {
+    const {creditCardArray} = this.state;
+    let arr = [];
+    creditCardArray.map((label) => {
+      arr.push(label.label);
+    });
+    this.setState({
+      modal: true,
+      array: arr,
+      key: 'creditCardProvided',
+    });
+  };
 
   changeModalVisibility = (bool) => {
     this.setState({modal: bool});
@@ -750,6 +769,7 @@ class ServiceAccount extends Component {
     const {isLoader, modal, array, key, editable, refBusModal} = this.state;
     const {route, navigation} = this.props;
     const {title, type, background, theme, mode} = route.params;
+    console.log('Array: ', this.state.creditCardArray);
     return (
       <Root>
         <SafeAreaView style={styles.outerView}>

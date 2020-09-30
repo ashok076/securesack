@@ -1,57 +1,201 @@
 import React, {Component} from 'react';
-import {View, ScrollView, Modal} from 'react-native';
+import {
+  View,
+  ScrollView,
+  Modal,
+  ImageBackground,
+  SafeAreaView,
+  Alert,
+} from 'react-native';
 import {Text} from 'react-native-paper';
 import qs from 'qs';
+import {connect} from 'react-redux';
+import {Root} from 'native-base';
 
 import InputTextDynamic from '../../../components/input-text-dynamic/input-text-dynamic.component.js';
 import InputTextIconDynamic from '../../../components/input-text-icon-dynamic/input-text-icon-dynamic.component.js';
 import ModalPicker from '../../../components/modal-picker/modal-picker.component.js';
+import TitleView from '../../../components/title-view/title-view.component';
 import Button from '../../../components/button/button.component';
 import ModalScreen from '../../../components/modal/modal.component';
+import RefBusinessModal from '../../../components/ref-business-modal/ref-business-modal.component';
 import Loader from '../../../components/loader/loader.component';
-import {createOrUpdateRecord} from '../../../configuration/api/api.functions';
+import AutoCompleteText from '../../../components/auto-complete-text-input/auto-complete-text-input.component';
+import {
+  createOrUpdateRecord,
+  viewRecords,
+  deleteRecords,
+  archiveRecords,
+  lookupType,
+} from '../../../configuration/api/api.functions';
 import {boolean_value} from './property.list';
+import {formatDate} from '../../../configuration/card-formatter/card-formatter';
 import {Color} from '../../../assets/color/color.js';
 
 import styles from './property.style';
 
 class PropertyInsurance extends Component {
+  initialState = {
+    isLoader: false,
+    editable: true,
+    refBusModal: false,
+    array: [],
+    refArray: [],
+    modal: '',
+    access_token: '',
+    name: '',
+    policyNo: '',
+    policyHolder: '',
+    issuer: '',
+    installmentAmnt: '',
+    url: '',
+    username: '',
+    password: '',
+    county: '',
+    parcelNo: '',
+    effectiveFrom: '',
+    dwellingCoverage: '',
+    liabilityCoverage: '',
+    medicalPayment: '',
+    dwellingCoverageDeductoble: '',
+    lossOfCoverage: '',
+    ordianceCoverage: '',
+    personalItemInsured: '',
+    jointPolicyHolderTwo: '',
+    jointPolicyHolderThree: '',
+    escrowAccount: '',
+    replacementContentCoverage: '',
+    lossAssessmentCoverage: '',
+    sewerBackupCoverage: '',
+    ownedProperty: '',
+    ownedPropertyArr: [],
+    issuerId: ''
+  };
+
   constructor(props) {
     super(props);
     this.state = {
-      isLoader: false,
-      navigation: props.navigation,
-      access_token: props.access_token,
-      recid: props.recid,
-      name: '',
-      policyNo: '',
-      policyHolder: '',
-      issuer: '',
-      installmentAmnt: '',
-      url: '',
-      username: '',
-      password: '',
-      county: '',
-      parcelNo: '',
-      effectiveFrom: '',
-      dwellingCoverage: '',
-      liabilityCoverage: '',
-      medicalPayment: '',
-      dwellingCoverageDeductoble: '',
-      lossOfCoverage: '',
-      ordianceCoverage: '',
-      personalItemInsured: '',
-      jointPolicyHolderTwo: '',
-      jointPolicyHolderThree: '',
-      escrowAccount: '',
-      replacementContentCoverage: '',
-      lossAssessmentCoverage: '',
-      sewerBackupCoverage: '',
+      ...this.initialState,
     };
   }
 
-  handleClick = () => {
-    this.submit();
+  componentDidMount() {
+    const {navigation, route} = this.props;
+    navigation.addListener('focus', () => {
+      this.setState(this.initialState);
+      if (this.props.userData && this.props.userData.userData)
+        this.setState(
+          {
+            access_token: this.props.userData.userData.access_token,
+          },
+          () => this.viewRecord(),
+          this.getBusinessEntity(),
+          this.getOwnedProperty(),
+        );
+    });
+  }
+
+  getOwnedProperty = async () => {
+    const {userData} = this.props;
+    if (userData !== null) {
+      await lookupType(userData.userData.access_token, 'Property')
+        .then((response) => {
+          console.log('Response credit card: ', response);
+          this.setState({ownedPropertyArr: response});
+        })
+        .catch((error) => console.log('Ref Credit card error: ', error));
+    }
+  };
+
+  getOwnedPropertyId = (ownedProperty) => {
+    let {ownedPropertyArr} = this.state;
+    let ownedRef = '';
+    ownedPropertyArr
+      .filter((item) => item.label === ownedProperty)
+      .map((val) => {
+        ownedRef = val.id;
+      });
+    return ownedRef;
+  };
+
+  viewRecord = async () => {
+    const {recid, mode} = this.props.route.params;
+    this.setState({isLoader: true});
+    await viewRecords(
+      'PropertyInsurance',
+      recid,
+      this.props.userData.userData.access_token,
+    )
+      .then((response) => {
+        console.log('View res: ', response);
+        this.setViewData(response.data);
+        this.setState({isLoader: false});
+      })
+      .catch((error) => {
+        console.log('Error: ', error);
+        this.setState({isLoader: false});
+      });
+    this.setState({isLoader: false});
+    if (mode === 'Add') this.setState({editable: false, hideResult: false});
+  };
+
+  setViewData = (data) => {
+    console.log('Data: ', data);
+    this.setState(
+      {
+        name: data.Name,
+        policyNo: data.PolicyNumber,
+        policyHolder: data.PrimaryPolicyHolder,
+        issuer: data.Issuer,
+        installmentAmnt: data.InstallmentAccount,
+        url: data.URL,
+        username: data.WebSiteUserName,
+        password: data.WebSitePassword,
+        county: data.County,
+        parcelNo: data.PropertyParcelNumber,
+        effectiveFrom: data.StartDate,
+        dwellingCoverage: data.DwellingCoverage,
+        liabilityCoverage: data.LiabilityCoverage,
+        medicalPayment: data.MedicalPaymentCoverage,
+        dwellingCoverageDeductoble: data.DwellingCoverageDeductible,
+        lossOfCoverage: data.LossOfUseCoverage,
+        ordianceCoverage: data.OrdianceAndLawCoverage,
+        personalItemInsured: data.PersonalItemsInsured,
+        jointPolicyHolderTwo: data.AdditionalPolicyHolder1,
+        jointPolicyHolderThree: data.AdditionalPolicyHolder2,
+        escrowAccount: data.EscrowAccount === true ? 'Yes' : 'No',
+        replacementContentCoverage:
+          data.ReplacementOfContentsCoverage === true ? 'Yes' : 'No',
+        lossAssessmentCoverage:
+          data.LossAssessmentCoverage === true ? 'Yes' : 'No',
+        sewerBackupCoverage:
+          data.SewerWaterBackupCoverage === true ? 'Yes' : 'No',
+        ownedProperty:
+          data.OwnedProperty.label === undefined
+            ? ''
+            : data.OwnedProperty.label,
+      },
+      () => this.referenceObj(),
+    );
+  };
+
+  referenceObj = () => {
+    const {refArray} = this.state;
+    refArray
+      .filter((item) => item.id === this.state.issuingBankId)
+      .map((val) => this.setState({issuer: val.label}));
+  };
+
+  getBusinessEntity = async () => {
+    const {userData} = this.props;
+    if (userData !== null) {
+      await lookupType(userData.userData.access_token, 'RefBusinessEntity')
+        .then((response) => {
+          response.pop();
+          this.setState({refArray: response});
+        })
+        .catch((error) => console.log('Ref Business error: ', error));
+    }
   };
 
   submit = async () => {
@@ -60,7 +204,7 @@ class PropertyInsurance extends Component {
       name,
       policyNo,
       policyHolder,
-      issuer,
+      issuerId,
       installmentAmnt,
       url,
       username,
@@ -82,15 +226,17 @@ class PropertyInsurance extends Component {
       lossAssessmentCoverage,
       sewerBackupCoverage,
       access_token,
-      navigation,
-      recid,
+      ownedProperty,
     } = this.state;
+
+    const {navigation, route} = this.props;
+    const {recid} = route.params;
 
     let data = qs.stringify({
       Name: name,
       PolicyNumber: policyNo,
       PrimaryPolicyHolder: policyHolder,
-      Issuer: issuer,
+      Issuer: issuerId,
       InstallmentAccount: installmentAmnt,
       URL: url,
       WebSiteUserName: username,
@@ -112,20 +258,52 @@ class PropertyInsurance extends Component {
         replacementContentCoverage === 'Yes' ? true : false,
       LossAssessmentCoverage: lossAssessmentCoverage === 'Yes' ? true : false,
       SewerWaterBackupCoverage: sewerBackupCoverage === 'Yes' ? true : false,
+      OwnedProperty: this.getOwnedPropertyId(ownedProperty),
     });
 
-    await createOrUpdateRecord(
-      'PropertyInsurance',
-      recid,
-      data,
-      access_token,
-    )
+    await createOrUpdateRecord('PropertyInsurance', recid, data, access_token)
       .then((response) => {
         this.setState({isLoader: false});
         navigation.goBack();
       })
       .catch((error) => {
         this.setState({isLoader: false});
+      });
+  };
+
+  delete = async () => {
+    const {navigation, route} = this.props;
+    const {recid} = route.params;
+    await deleteRecords(
+      'PropertyInsurance',
+      recid,
+      this.props.userData.userData.access_token,
+    )
+      .then((response) => navigation.goBack())
+      .catch((error) => console.log('Error in delete', error));
+  };
+
+  archive = async () => {
+    this.setState({isLoader: true});
+    const {navigation, route} = this.props;
+    const {recid} = route.params;
+    let data = qs.stringify({
+      IsArchived: true,
+    });
+    await archiveRecords(
+      'PropertyInsurance',
+      recid,
+      this.props.userData.userData.access_token,
+      data,
+    )
+      .then((response) => {
+        this.setState({isLoader: false});
+        console.log('Response', response);
+        navigation.goBack();
+      })
+      .catch((error) => {
+        this.setState({isLoader: false});
+        console.log('Error in delete', error);
       });
   };
 
@@ -137,6 +315,8 @@ class PropertyInsurance extends Component {
           onChangeText={(name) => this.setState({name})}
           keyboardType="default"
           color={Color.veryLightPink}
+          value={this.state.name}
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -145,6 +325,8 @@ class PropertyInsurance extends Component {
           onChangeText={(policyNo) => this.setState({policyNo})}
           keyboardType="default"
           color={Color.veryLightPink}
+          value={this.state.policyNo}
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -153,14 +335,20 @@ class PropertyInsurance extends Component {
           onChangeText={(policyHolder) => this.setState({policyHolder})}
           keyboardType="default"
           color={Color.veryLightPink}
+          value={this.state.policyHolder}
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.inputContainer}>
-        <InputTextDynamic
+        <AutoCompleteText
           placeholder="Issuer"
           onChangeText={(issuer) => this.setState({issuer})}
           keyboardType="default"
-          color={Color.veryLightPink}
+          value={this.state.issuer}
+          color={Color.veryLightBlue}
+          editable={this.state.editable}
+          array={this.state.refArray}
+          onPress={(issuer) => this.showAutoComplete(issuer)}
         />
       </View>
       <View style={styles.miniContainer}>
@@ -169,7 +357,9 @@ class PropertyInsurance extends Component {
             placeholder="Installment Amount"
             onChangeText={(installmentAmnt) => this.setState({installmentAmnt})}
             keyboardType="default"
-          color={Color.veryLightPink}
+            color={Color.veryLightPink}
+            value={this.state.installmentAmnt}
+            editable={this.state.editable}
           />
         </View>
         <View style={styles.miniInputContainer}>
@@ -186,6 +376,9 @@ class PropertyInsurance extends Component {
                 key: 'escrowAccount',
               })
             }
+            color={Color.veryLightBlue}
+            editable={this.state.editable}
+            name="Escrow Account"
           />
         </View>
       </View>
@@ -195,6 +388,8 @@ class PropertyInsurance extends Component {
           onChangeText={(url) => this.setState({url})}
           keyboardType="default"
           color={Color.veryLightPink}
+          value={this.state.url}
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -203,6 +398,8 @@ class PropertyInsurance extends Component {
           onChangeText={(username) => this.setState({username})}
           keyboardType="default"
           color={Color.veryLightPink}
+          value={this.state.username}
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -211,6 +408,8 @@ class PropertyInsurance extends Component {
           onChangeText={(password) => this.setState({password})}
           keyboardType="default"
           color={Color.veryLightPink}
+          value={this.state.password}
+          editable={this.state.editable}
         />
       </View>
     </View>
@@ -224,6 +423,8 @@ class PropertyInsurance extends Component {
           onChangeText={(county) => this.setState({county})}
           keyboardType="default"
           color={Color.veryLightPink}
+          value={this.state.county}
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -232,23 +433,51 @@ class PropertyInsurance extends Component {
           onChangeText={(parcelNo) => this.setState({parcelNo})}
           keyboardType="default"
           color={Color.veryLightPink}
+          value={this.state.parcelNo}
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.miniContainer}>
         <View style={[styles.miniInputContainer, {marginRight: 10}]}>
           <InputTextDynamic
             placeholder="Effective From"
-            onChangeText={(effectiveFrom) => this.setState({effectiveFrom})}
+            onChangeText={(effectiveFrom) => this.setState({effectiveFrom: formatDate(effectiveFrom)})}
             keyboardType="default"
-          color={Color.veryLightPink}
+            color={Color.veryLightPink}
+            value={this.state.effectiveFrom}
+            editable={this.state.editable}
+          example="DD/MM/YYYY"
           />
         </View>
         <View style={styles.miniInputContainer}>
-          <ModalPicker label="Owned Property" onPress={() => alert('Type')} />
+          <ModalPicker
+            label={
+              this.state.ownedProperty.length === 0
+                ? 'Owned Property'
+                : this.state.ownedProperty
+            }
+            onPress={() => this.filterOwnedProperty()}
+            color={Color.veryLightBlue}
+            editable={this.state.editable}
+            name="Owned Property"
+          />
         </View>
       </View>
     </View>
   );
+
+  filterOwnedProperty = () => {
+    const {ownedPropertyArr} = this.state;
+    let arr = [];
+    ownedPropertyArr.map((label) => {
+      arr.push(label.label);
+    });
+    this.setState({
+      modal: true,
+      array: arr,
+      key: 'ownedProperty',
+    });
+  };
 
   insuranceDetails = () => (
     <View>
@@ -256,6 +485,9 @@ class PropertyInsurance extends Component {
         <InputTextIconDynamic
           placeholder="Dwelling Coverage (A)"
           onChangeText={(dwellingCoverage) => this.setState({dwellingCoverage})}
+          color={Color.veryLightPink}
+          value={this.state.dwellingCoverage}
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -264,12 +496,18 @@ class PropertyInsurance extends Component {
           onChangeText={(liabilityCoverage) =>
             this.setState({liabilityCoverage})
           }
+          color={Color.veryLightPink}
+          value={this.state.liabilityCoverage}
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.inputContainer}>
         <InputTextIconDynamic
           placeholder="Medical Payment Coverage (C)"
           onChangeText={(medicalPayment) => this.setState({medicalPayment})}
+          color={Color.veryLightPink}
+          value={this.state.medicalPayment}
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -278,12 +516,18 @@ class PropertyInsurance extends Component {
           onChangeText={(dwellingCoverageDeductoble) =>
             this.setState({dwellingCoverageDeductoble})
           }
+          color={Color.veryLightPink}
+          value={this.state.dwellingCoverageDeductoble}
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.inputContainer}>
         <InputTextIconDynamic
           placeholder="Loss of Use Coverage (F)"
           onChangeText={(lossOfCoverage) => this.setState({lossOfCoverage})}
+          color={Color.veryLightPink}
+          value={this.state.lossOfCoverage}
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.miniContainer}>
@@ -301,7 +545,9 @@ class PropertyInsurance extends Component {
                 key: 'replacementContentCoverage',
               })
             }
-            onPress={() => alert('Type')}
+            color={Color.veryLightBlue}
+            editable={this.state.editable}
+            name="Replacement of Contents Coverage"
           />
         </View>
         <View style={styles.miniInputContainer}>
@@ -318,6 +564,9 @@ class PropertyInsurance extends Component {
                 key: 'lossAssessmentCoverage',
               })
             }
+            color={Color.veryLightBlue}
+            editable={this.state.editable}
+            name="Loss Assessment Coverage"
           />
         </View>
       </View>
@@ -336,6 +585,9 @@ class PropertyInsurance extends Component {
                 key: 'sewerBackupCoverage',
               })
             }
+            color={Color.veryLightBlue}
+            editable={this.state.editable}
+            name="Sewer Backup Coverage"
           />
         </View>
         <View style={styles.miniInputContainer}>
@@ -344,6 +596,9 @@ class PropertyInsurance extends Component {
             onChangeText={(ordianceCoverage) =>
               this.setState({ordianceCoverage})
             }
+            color={Color.veryLightPink}
+            value={this.state.ordianceCoverage}
+            editable={this.state.editable}
           />
         </View>
       </View>
@@ -353,6 +608,9 @@ class PropertyInsurance extends Component {
           onChangeText={(personalItemInsured) =>
             this.setState({personalItemInsured})
           }
+          color={Color.veryLightPink}
+          value={this.state.personalItemInsured}
+          editable={this.state.editable}
         />
       </View>
     </View>
@@ -368,6 +626,8 @@ class PropertyInsurance extends Component {
           }
           keyboardType="default"
           color={Color.veryLightPink}
+          value={this.state.jointPolicyHolderTwo}
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -378,6 +638,8 @@ class PropertyInsurance extends Component {
           }
           keyboardType="default"
           color={Color.veryLightPink}
+          value={this.state.jointPolicyHolderThree}
+          editable={this.state.editable}
         />
       </View>
     </View>
@@ -387,40 +649,130 @@ class PropertyInsurance extends Component {
     this.setState({modal: bool});
   };
 
+  changeRefBusinessmModal = (bool) => {
+    this.setState({refBusModal: bool});
+  };
+
+  refreshingList = () => {
+    this.getBusinessEntity();
+  };
+
+  showAutoComplete = (issuer) => {
+    if (issuer.label === 'Add') this.setState({refBusModal: true});
+    else {
+      this.setState(
+        {
+          issuer: issuer.label,
+          issuerId: issuer.id,
+        },
+        () => this.setState({hideResult: true}),
+      );
+    }
+  };
+
   changeState = (key, value) => {
     this.setState({[key]: value});
   };
 
+  editComponent = (isLoader, modal, array, key, editable) => (
+    <View style={styles.container}>
+      <Text style={styles.title}>Basic Information</Text>
+      {this.basicInformation()}
+      <View style={styles.gap} />
+      <Text style={styles.title}>Property Details</Text>
+      {this.propertyDetails()}
+      <View style={styles.gap} />
+      <Text style={styles.title}>Insurance Details</Text>
+      {this.insuranceDetails()}
+      <View style={styles.gap} />
+      <Text style={styles.title}>Additional Information</Text>
+      {this.additionalInfo()}
+      <Loader isLoader={isLoader} />
+      <ModalScreen
+        isModalVisible={modal}
+        list={array}
+        changeModalVisibility={this.changeModalVisibility}
+        id={key}
+        changeState={this.changeState}
+      />
+      <RefBusinessModal
+        isModalVisible={this.state.refBusModal}
+        changeModalVisibility={this.changeRefBusinessmModal}
+        access_token={this.props.userData.userData.access_token}
+        refreshingList={this.refreshingList}
+      />
+    </View>
+  );
+
+  onSave = () => {
+    this.submit();
+  };
+
+  onEdit = () => {
+    this.setState({editable: false}, () => console.log(this.state.editable));
+  };
+
+  onDelete = () => {
+    Alert.alert(
+      //title
+      'Delete',
+      //body
+      'Are you sure you want to delete ?',
+      [
+        {text: 'Yes', onPress: () => this.delete()},
+        {text: 'No', onPress: () => console.log('No Pressed'), style: 'cancel'},
+      ],
+      {cancelable: false},
+      //clicking out side of alert will not cancel
+    );
+  };
+
+  onArchive = () => {
+    this.archive();
+  };
+
   render() {
-    const {isLoader, modal, array, key} = this.state;
+    const {isLoader, modal, array, key, editable} = this.state;
+    const {route, navigation} = this.props;
+    const {title, type, background, theme, mode} = route.params;
     return (
-      <View style={styles.container}>
-        <Text style={styles.title}>Basic Information</Text>
-        {this.basicInformation()}
-        <View style={styles.gap}/>
-        <Text style={styles.title}>Property Details</Text>
-        {this.propertyDetails()}
-        <View style={styles.gap}/>
-        <Text style={styles.title}>Insurance Details</Text>
-        {this.insuranceDetails()}
-        <View style={styles.gap}/>
-        <Text style={styles.title}>Additional Information</Text>
-        {this.additionalInfo()}
-        <View style={styles.gap}/>
-        <View style={styles.buttonContainer}>
-          <Button onPress={this.handleClick} title="Submit" />
-        </View>
-        <Loader isLoader={isLoader} />
-        <ModalScreen
-          isModalVisible={modal}
-          list={array}
-          changeModalVisibility={this.changeModalVisibility}
-          id={key}
-          changeState={this.changeState}
-        />
-      </View>
+      <Root>
+        <SafeAreaView style={styles.outerView}>
+          <ImageBackground source={background} style={styles.backgroundImage}>
+            <View style={styles.titleView}>
+              <TitleView
+                navigation={navigation}
+                mode={mode}
+                theme={theme}
+                title={title}
+                type={type}
+                save={this.onSave}
+                edit={this.onEdit}
+                delete={this.onDelete}
+                archive={this.onArchive}
+                editable={editable}
+              />
+            </View>
+            <ScrollView
+              ref={(ref) => (this.scroll = ref)}
+              onContentSizeChange={() => {
+                this.scroll.scrollTo({y: 0});
+              }}
+              style={styles.outerContainerView}
+              keyboardShouldPersistTaps="handled">
+              <View style={styles.container}>
+                {this.editComponent(isLoader, modal, array, key, editable)}
+              </View>
+            </ScrollView>
+          </ImageBackground>
+        </SafeAreaView>
+      </Root>
     );
   }
 }
 
-export default PropertyInsurance;
+const mapStateToProps = ({userData}) => ({
+  userData,
+});
+
+export default connect(mapStateToProps)(PropertyInsurance);

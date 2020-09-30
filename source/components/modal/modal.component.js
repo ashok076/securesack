@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {View, Modal, FlatList} from 'react-native';
+import {View, Modal, FlatList, TouchableOpacity} from 'react-native';
 import {Text, TouchableRipple} from 'react-native-paper';
 
 import styles from './modal.style';
@@ -36,16 +36,20 @@ class ModalScreen extends Component {
   render() {
     const {isModalVisible, list} = this.props;
     console.log('List: ', JSON.stringify(list));
+    console.log('Visible: ', isModalVisible);
+
     return (
       <Modal visible={isModalVisible} transparent={true} animationType="fade">
-        <View style={styles.modalBackground}>
+        <TouchableOpacity style={styles.modalBackground} onPressOut={() => this.closeModal()}>
           <View style={styles.modalList}>
-            <FlatList
+            {list.length !== 0 ? <FlatList
               data={list}
               renderItem={({item}) => this.displayLabel(item)}
-            />
+            /> : <View style={styles.labelView}>
+        <Text style={styles.label}> No Current Data </Text>
+      </View>}
           </View>
-        </View>
+        </TouchableOpacity>
       </Modal>
     );
   }

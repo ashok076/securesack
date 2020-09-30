@@ -1,73 +1,155 @@
 import React, {Component} from 'react';
-import {View, ScrollView, Modal} from 'react-native';
+import {
+  View,
+  ScrollView,
+  Modal,
+  ImageBackground,
+  SafeAreaView,
+  Alert,
+} from 'react-native';
 import {Text} from 'react-native-paper';
 import qs from 'qs';
+import {connect} from 'react-redux';
+import {Root} from 'native-base';
 
 import InputTextDynamic from '../../../components/input-text-dynamic/input-text-dynamic.component.js';
 import InputTextIconDynamic from '../../../components/input-text-icon-dynamic/input-text-icon-dynamic.component.js';
 import ModalPicker from '../../../components/modal-picker/modal-picker.component.js';
+import TitleView from '../../../components/title-view/title-view.component';
 import Button from '../../../components/button/button.component';
 import Loader from '../../../components/loader/loader.component';
 import ModalScreen from '../../../components/modal/modal.component';
-import {createOrUpdateRecord} from '../../../configuration/api/api.functions';
+import AutoCompleteText from '../../../components/auto-complete-text-input/auto-complete-text-input.component';
+import {
+  createOrUpdateRecord,
+  viewRecords,
+  deleteRecords,
+  archiveRecords,
+} from '../../../configuration/api/api.functions';
 import {insurance_type, plan_type, payment_due_type} from './health-care.list';
+import {formatDate} from '../../../configuration/card-formatter/card-formatter';
 import {Color} from '../../../assets/color/color.js';
 
 import styles from './health-care.style';
 
-class HealthCare extends Component {
+class HealthCareProvider extends Component {
+  initialState = {
+    isLoader: false,
+    editable: true,
+    access_token: '',
+    modal: '',
+    array: [],
+    key: '',
+    insuranceProvider: '',
+    insuranceType: '',
+    planType: '',
+    groupIdNumber: '',
+    planCoverage: '',
+    deductible: '',
+    url: '',
+    username: '',
+    password: '',
+    customerServiceNo: '',
+    emailProvided: '',
+    effectiveFrom: '',
+    expiration: '',
+    installment: '',
+    from: '',
+    to: '',
+    total: '',
+    paymentDueType: '',
+    address1: '',
+    address2: '',
+    city: '',
+    state: '',
+    zip: '',
+    country: '',
+    dependent1: '',
+    dependent2: '',
+    dependent3: '',
+    dependent4: '',
+  };
+
   constructor(props) {
     super(props);
     this.state = {
-      isLoader: false,
-      navigation: props.navigation,
-      access_token: props.access_token,
-      countries: props.countries.country,
-      recid: props.recid,
-      modal: '',
-      array: [],
-      key: '',
-      insuranceProvider: '',
-      insuranceType: '',
-      planType: '',
-      groupIdNumber: '',
-      planCoverage: '',
-      deductible: '',
-      url: '',
-      username: '',
-      password: '',
-      customerServiceNo: '',
-      emailProvided: '',
-      effectiveFrom: '',
-      expiration: '',
-      installment: '',
-      from: '',
-      to: '',
-      total: '',
-      paymentDueType: '',
-      address1: '',
-      address2: '',
-      city: '',
-      state: '',
-      zip: '',
-      country: '',
-      dependent1: '',
-      dependent2: '',
-      dependent3: '',
-      dependent4: '',
+      ...this.initialState,
     };
   }
 
-  handleClick = () => {
-    this.submit();
+  componentDidMount() {
+    const {navigation, route} = this.props;
+    navigation.addListener('focus', () => {
+      this.setState(this.initialState);
+      if (this.props.userData && this.props.userData.userData)
+        this.setState(
+          {
+            access_token: this.props.userData.userData.access_token,
+          },
+          () => this.viewRecord(),
+        );
+    });
+  }
+
+  viewRecord = async () => {
+    const {recid, mode} = this.props.route.params;
+    this.setState({isLoader: true});
+    await viewRecords(
+      'HealthCareProvider',
+      recid,
+      this.props.userData.userData.access_token,
+    )
+      .then((response) => {
+        console.log('View res: ', response);
+        this.setViewData(response.data);
+        this.setState({isLoader: false});
+      })
+      .catch((error) => {
+        console.log('Error: ', error);
+        this.setState({isLoader: false});
+      });
+    this.setState({isLoader: false});
+    if (mode === 'Add') this.setState({editable: false, hideResult: false});
+  };
+
+  setViewData = (data) => {
+    console.log('Data: ', data);
+    this.setState({
+      insuranceProvider: data.ProviderName,
+      groupIdNumber: data.GroupID,
+      planCoverage: data.PlanCoverage,
+      deductible: data.Deductible,
+      url: data.URL,
+      insuranceType: data.ProviderType,
+      planType: data.PlanType,
+      username: data.WebsiteUserName,
+      password: data.WebsitePassword,
+      customerServiceNo: data.Phone,
+      emailProvided: data.EmailAddress,
+      effectiveFrom: data.ServiceEffectiveDate,
+      expiration: data.ServiceTerminationDate,
+      installment: data.PaymentSchedule.InstallmentAmount,
+      from: data.PaymentSchedule.InstallmentStartDate,
+      to: data.PaymentSchedule.InstallmentEndDate,
+      total: data.PaymentSchedule.TotalAmount,
+      paymentDueType: data.PaymentSchedule.PaymentDueType,
+      address1: data.ClaimsMailingAddress.Line1,
+      address2: data.ClaimsMailingAddress.Line2,
+      city: data.ClaimsMailingAddress.City,
+      state: data.ClaimsMailingAddress.State,
+      zip: data.ClaimsMailingAddress.Zip,
+      country: data.ClaimsMailingAddress.Country,
+      dependent1: data.Dependent1,
+      dependent2: data.Dependent2,
+      dependent3: data.Dependent3,
+      dependent4: data.Dependent4,
+    });
   };
 
   submit = async () => {
     this.setState({isLoader: true});
     const {
-      navigation,
       access_token,
-      recid,
       insuranceProvider,
       insuranceType,
       planType,
@@ -97,6 +179,9 @@ class HealthCare extends Component {
       dependent3,
       dependent4,
     } = this.state;
+
+    const {navigation, route} = this.props;
+    const {recid} = route.params;
 
     let data = qs.stringify({
       ProviderName: insuranceProvider,
@@ -129,18 +214,49 @@ class HealthCare extends Component {
       Dependent4: dependent4,
     });
 
-    await createOrUpdateRecord(
-      'HealthCareProvider',
-      recid,
-      data,
-      access_token,
-    )
+    await createOrUpdateRecord('HealthCareProvider', recid, data, access_token)
       .then((response) => {
         this.setState({isLoader: false});
         navigation.goBack();
       })
       .catch((error) => {
         this.setState({isLoader: false});
+      });
+  };
+
+  delete = async () => {
+    const {navigation, route} = this.props;
+    const {recid} = route.params;
+    await deleteRecords(
+      'HealthCareProvider',
+      recid,
+      this.props.userData.userData.access_token,
+    )
+      .then((response) => navigation.goBack())
+      .catch((error) => console.log('Error in delete', error));
+  };
+
+  archive = async () => {
+    this.setState({isLoader: true});
+    const {navigation, route} = this.props;
+    const {recid} = route.params;
+    let data = qs.stringify({
+      IsArchived: true,
+    });
+    await archiveRecords(
+      'HealthCareProvider',
+      recid,
+      this.props.userData.userData.access_token,
+      data,
+    )
+      .then((response) => {
+        this.setState({isLoader: false});
+        console.log('Response', response);
+        navigation.goBack();
+      })
+      .catch((error) => {
+        this.setState({isLoader: false});
+        console.log('Error in delete', error);
       });
   };
 
@@ -154,6 +270,8 @@ class HealthCare extends Component {
           }
           keyboardType="default"
           color={Color.veryLightPink}
+          value={this.state.insuranceProvider}
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -170,6 +288,9 @@ class HealthCare extends Component {
               key: 'insuranceType',
             })
           }
+          color={Color.veryLightPink}
+          editable={this.state.editable}
+          name="Insurance Type"
         />
       </View>
       <View style={styles.inputContainer}>
@@ -184,6 +305,9 @@ class HealthCare extends Component {
               key: 'planType',
             })
           }
+          color={Color.veryLightPink}
+          editable={this.state.editable}
+          name="Plan Type"
         />
       </View>
       <View style={styles.inputContainer}>
@@ -192,6 +316,8 @@ class HealthCare extends Component {
           onChangeText={(groupIdNumber) => this.setState({groupIdNumber})}
           keyboardType="default"
           color={Color.veryLightPink}
+          value={this.state.groupIdNumber}
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -200,6 +326,8 @@ class HealthCare extends Component {
           onChangeText={(planCoverage) => this.setState({planCoverage})}
           keyboardType="default"
           color={Color.veryLightPink}
+          value={this.state.planCoverage}
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -208,6 +336,8 @@ class HealthCare extends Component {
           onChangeText={(deductible) => this.setState({deductible})}
           icon="percent"
           keyboardType="default"
+          value={this.state.deductible}
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -216,6 +346,8 @@ class HealthCare extends Component {
           onChangeText={(url) => this.setState({url})}
           keyboardType="default"
           color={Color.veryLightPink}
+          value={this.state.url}
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -224,6 +356,8 @@ class HealthCare extends Component {
           onChangeText={(username) => this.setState({username})}
           keyboardType="default"
           color={Color.veryLightPink}
+          value={this.state.username}
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -232,6 +366,8 @@ class HealthCare extends Component {
           onChangeText={(password) => this.setState({password})}
           keyboardType="default"
           color={Color.veryLightPink}
+          value={this.state.password}
+          editable={this.state.editable}
         />
       </View>
     </View>
@@ -247,6 +383,8 @@ class HealthCare extends Component {
           }
           keyboardType="default"
           color={Color.veryLightPink}
+          value={this.state.customerServiceNo}
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -255,23 +393,31 @@ class HealthCare extends Component {
           onChangeText={(emailProvided) => this.setState({emailProvided})}
           keyboardType="default"
           color={Color.veryLightPink}
+          value={this.state.emailProvided}
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.miniContainer}>
         <View style={[styles.miniInputContainer, {marginRight: 10}]}>
           <InputTextDynamic
             placeholder="Effective From"
-            onChangeText={(effectiveFrom) => this.setState({effectiveFrom})}
+            onChangeText={(effectiveFrom) => this.setState({effectiveFrom: formatDate(effectiveFrom)})}
             keyboardType="default"
-          color={Color.veryLightPink}
+            color={Color.veryLightPink}
+            value={this.state.effectiveFrom}
+            editable={this.state.editable}
+            example="DD/MM/YYYY"
           />
         </View>
         <View style={styles.miniInputContainer}>
           <InputTextDynamic
             placeholder="Expiration"
-            onChangeText={(expiration) => this.setState({expiration})}
+            onChangeText={(expiration) => this.setState({expiration: formatDate(expiration)})}
             keyboardType="default"
-          color={Color.veryLightPink}
+            color={Color.veryLightPink}
+            value={this.state.expiration}
+            editable={this.state.editable}
+            example="DD/MM/YYYY"
           />
         </View>
       </View>
@@ -280,6 +426,8 @@ class HealthCare extends Component {
           placeholder="Installment"
           icon="dollar-sign"
           onChangeText={(installment) => this.setState({installment})}
+          value={this.state.installment}
+          editable={this.state.editable}
         />
       </View>
       <View style={[styles.inputContainer, {marginRight: 10}]}>
@@ -296,22 +444,31 @@ class HealthCare extends Component {
               key: 'paymentDueType',
             })
           }
+          color={Color.veryLightPink}
+          editable={this.state.editable}
+          name="Due"
         />
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="From"
           icon="dollar-sign"
-          onChangeText={(from) => this.setState({from})}
+          onChangeText={(from) => this.setState({from: formatDate(from)})}
           color={Color.veryLightPink}
+          value={this.state.from}
+          editable={this.state.editable}
+          example="DD/MM/YYYY"
         />
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="To"
           icon="dollar-sign"
-          onChangeText={(to) => this.setState({to})}
+          onChangeText={(to) => this.setState({to: formatDate(to)})}
           color={Color.veryLightPink}
+          value={this.state.to}
+          editable={this.state.editable}
+          example="DD/MM/YYYY"
         />
       </View>
       <View style={styles.inputContainer}>
@@ -320,6 +477,8 @@ class HealthCare extends Component {
           icon="dollar-sign"
           onChangeText={(total) => this.setState({total})}
           color={Color.veryLightPink}
+          value={this.state.total}
+          editable={this.state.editable}
         />
       </View>
     </View>
@@ -333,6 +492,8 @@ class HealthCare extends Component {
           onChangeText={(address1) => this.setState({address1})}
           keyboardType="default"
           color={Color.veryLightPink}
+          value={this.state.address1}
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -341,6 +502,8 @@ class HealthCare extends Component {
           onChangeText={(address2) => this.setState({address2})}
           keyboardType="default"
           color={Color.veryLightPink}
+          value={this.state.address2}
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -349,6 +512,8 @@ class HealthCare extends Component {
           onChangeText={(city) => this.setState({city})}
           keyboardType="default"
           color={Color.veryLightPink}
+          value={this.state.city}
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -357,6 +522,8 @@ class HealthCare extends Component {
           onChangeText={(state) => this.setState({state})}
           keyboardType="default"
           color={Color.veryLightPink}
+          value={this.state.state}
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -365,6 +532,8 @@ class HealthCare extends Component {
           onChangeText={(zip) => this.setState({zip})}
           keyboardType="default"
           color={Color.veryLightPink}
+          value={this.state.zip}
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -375,10 +544,13 @@ class HealthCare extends Component {
           onPress={() =>
             this.setState({
               modal: true,
-              array: this.state.countries,
+              array: this.props.country.country,
               key: 'country',
             })
           }
+          color={Color.veryLightPink}
+          editable={this.state.editable}
+          name="Country"
         />
       </View>
     </View>
@@ -392,6 +564,8 @@ class HealthCare extends Component {
           onChangeText={(dependent1) => this.setState({dependent1})}
           keyboardType="default"
           color={Color.veryLightPink}
+          value={this.state.dependent1}
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -400,6 +574,8 @@ class HealthCare extends Component {
           onChangeText={(dependent2) => this.setState({dependent2})}
           keyboardType="default"
           color={Color.veryLightPink}
+          value={this.state.dependent2}
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -408,6 +584,8 @@ class HealthCare extends Component {
           onChangeText={(dependent3) => this.setState({dependent3})}
           keyboardType="default"
           color={Color.veryLightPink}
+          value={this.state.dependent3}
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -416,6 +594,8 @@ class HealthCare extends Component {
           onChangeText={(dependent4) => this.setState({dependent4})}
           keyboardType="default"
           color={Color.veryLightPink}
+          value={this.state.dependent4}
+          editable={this.state.editable}
         />
       </View>
     </View>
@@ -429,36 +609,100 @@ class HealthCare extends Component {
     this.setState({[key]: value});
   };
 
+  editComponent = (isLoader, modal, array, key, editable) => (
+    <View style={styles.container}>
+      <Text style={styles.title}>Basic Information</Text>
+      {this.baiscInformation()}
+      <View style={styles.gap} />
+      <Text style={styles.title}>Additional Information</Text>
+      {this.additionalInformation()}
+      <View style={styles.gap} />
+      <Text style={styles.title}>Claims Mailing Address</Text>
+      {this.claimMailingAddress()}
+      <View style={styles.gap} />
+      <Text style={styles.title}>Dependent Information</Text>
+      {this.dependentInfo()}
+      <Loader isLoader={isLoader} />
+      <ModalScreen
+        isModalVisible={modal}
+        list={array}
+        changeModalVisibility={this.changeModalVisibility}
+        id={key}
+        changeState={this.changeState}
+      />
+    </View>
+  );
+
+  onSave = () => {
+    this.submit();
+  };
+
+  onEdit = () => {
+    this.setState({editable: false}, () => console.log(this.state.editable));
+  };
+
+  onDelete = () => {
+    Alert.alert(
+      //title
+      'Delete',
+      //body
+      'Are you sure you want to delete ?',
+      [
+        {text: 'Yes', onPress: () => this.delete()},
+        {text: 'No', onPress: () => console.log('No Pressed'), style: 'cancel'},
+      ],
+      {cancelable: false},
+      //clicking out side of alert will not cancel
+    );
+  };
+
+  onArchive = () => {
+    this.archive();
+  };
+
   render() {
-    const {isLoader, modal, array, key} = this.state;
+    const {isLoader, modal, array, key, editable} = this.state;
+    const {route, navigation} = this.props;
+    const {title, type, background, theme, mode} = route.params;
     return (
-      <View style={styles.container}>
-        <Text style={styles.title}>Basic Information</Text>
-        {this.baiscInformation()}
-        <View style={styles.gap}/>
-        <Text style={styles.title}>Additional Information</Text>
-        {this.additionalInformation()}
-        <View style={styles.gap}/>
-        <Text style={styles.title}>Claims Mailing Address</Text>
-        {this.claimMailingAddress()}
-        <View style={styles.gap}/>
-        <Text style={styles.title}>Dependent Information</Text>
-        {this.dependentInfo()}
-        <View style={styles.gap}/>
-        <View style={styles.buttonContainer}>
-          <Button onPress={this.handleClick} title="Submit" />
-        </View>
-        <Loader isLoader={isLoader} />
-        <ModalScreen
-          isModalVisible={modal}
-          list={array}
-          changeModalVisibility={this.changeModalVisibility}
-          id={key}
-          changeState={this.changeState}
-        />
-      </View>
+      <Root>
+        <SafeAreaView style={styles.outerView}>
+          <ImageBackground source={background} style={styles.backgroundImage}>
+            <View style={styles.titleView}>
+              <TitleView
+                navigation={navigation}
+                mode={mode}
+                theme={theme}
+                title={title}
+                type={type}
+                save={this.onSave}
+                edit={this.onEdit}
+                delete={this.onDelete}
+                archive={this.onArchive}
+                editable={editable}
+              />
+            </View>
+            <ScrollView
+              ref={(ref) => (this.scroll = ref)}
+              onContentSizeChange={() => {
+                this.scroll.scrollTo({y: 0});
+              }}
+              style={styles.outerContainerView}
+              keyboardShouldPersistTaps="handled">
+              <View style={styles.container}>
+                {this.editComponent(isLoader, modal, array, key, editable)}
+              </View>
+            </ScrollView>
+          </ImageBackground>
+        </SafeAreaView>
+      </Root>
     );
   }
 }
 
-export default HealthCare;
+const mapStateToProps = ({userData, country}) => ({
+  userData,
+  country,
+});
+
+export default connect(mapStateToProps)(HealthCareProvider);

@@ -4,7 +4,7 @@ import {Title} from 'react-native-paper';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Feather from 'react-native-vector-icons/Feather';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
-import AntDesign from 'react-native-vector-icons/AntDesign';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import styles from './title-view.style';
 
@@ -29,7 +29,7 @@ class TitleView extends Component {
   add = (theme, type, editable) => (
     <View style={styles.icons}>
       <TouchableOpacity onPress={() => this.saveInfo()}>
-        <AntDesign
+        <MaterialIcons
           name="save"
           color={theme !== 'dark' ? 'rgb(255, 255, 255)' : 'rgb(33, 47, 60)'}
           size={20}
@@ -44,8 +44,8 @@ class TitleView extends Component {
         <TouchableOpacity
           style={styles.iconView}
           onPress={() => this.editInfo()}>
-          <SimpleLineIcons
-            name="pencil"
+          <MaterialIcons
+            name="edit"
             color={theme !== 'dark' ? 'rgb(255, 255, 255)' : 'rgb(33, 47, 60)'}
             size={20}
           />
@@ -53,15 +53,15 @@ class TitleView extends Component {
         <TouchableOpacity
           style={styles.iconView}
           onPress={() => this.archive()}>
-          <Feather
+          <MaterialIcons
             name="archive"
             color={theme !== 'dark' ? 'rgb(255, 255, 255)' : 'rgb(33, 47, 60)'}
             size={20}
           />
         </TouchableOpacity>
         <TouchableOpacity onPress={() => this.deleteInfo()}>
-          <SimpleLineIcons
-            name="trash"
+          <MaterialIcons
+            name="delete"
             color={theme !== 'dark' ? 'rgb(255, 255, 255)' : 'rgb(33, 47, 60)'}
             size={20}
           />
