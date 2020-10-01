@@ -336,21 +336,21 @@ class LifeInsurance extends Component {
       </View>
       <View style={styles.miniContainer}>
         <View style={[styles.miniInputContainer, {marginRight: 10}]}>
-          <InputTextIconDynamic
+          <InputTextDynamic
             placeholder="Premium Amount"
             onChangeText={(premiumAmnt) => this.setState({premiumAmnt})}
-            icon="dollar-sign"
             keyboardType="default"
+          color={Color.veryLightPink}
             value={this.state.premiumAmnt}
             editable={this.state.editable}
           />
         </View>
         <View style={styles.miniInputContainer}>
-          <InputTextIconDynamic
+          <InputTextDynamic
             placeholder="Insured Amount"
             onChangeText={(insuredAmnt) => this.setState({insuredAmnt})}
-            icon="dollar-sign"
             keyboardType="default"
+          color={Color.veryLightPink}
             value={this.state.insuredAmnt}
             editable={this.state.editable}
           />

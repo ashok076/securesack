@@ -331,12 +331,12 @@ class HealthCareProvider extends Component {
         />
       </View>
       <View style={styles.inputContainer}>
-        <InputTextIconDynamic
+        <InputTextDynamic
           placeholder="Deductible"
           onChangeText={(deductible) => this.setState({deductible})}
-          icon="percent"
           keyboardType="default"
           value={this.state.deductible}
+          color={Color.veryLightPink}
           editable={this.state.editable}
         />
       </View>
@@ -422,10 +422,11 @@ class HealthCareProvider extends Component {
         </View>
       </View>
       <View style={styles.inputContainer}>
-        <InputTextIconDynamic
+        <InputTextDynamic
           placeholder="Installment"
-          icon="dollar-sign"
           onChangeText={(installment) => this.setState({installment})}
+          keyboardType="default"
+          color={Color.veryLightPink}
           value={this.state.installment}
           editable={this.state.editable}
         />
@@ -452,7 +453,6 @@ class HealthCareProvider extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="From"
-          icon="dollar-sign"
           onChangeText={(from) => this.setState({from: formatDate(from)})}
           color={Color.veryLightPink}
           value={this.state.from}
@@ -463,7 +463,6 @@ class HealthCareProvider extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="To"
-          icon="dollar-sign"
           onChangeText={(to) => this.setState({to: formatDate(to)})}
           color={Color.veryLightPink}
           value={this.state.to}
@@ -472,9 +471,8 @@ class HealthCareProvider extends Component {
         />
       </View>
       <View style={styles.inputContainer}>
-        <InputTextIconDynamic
+        <InputTextDynamic
           placeholder="Total"
-          icon="dollar-sign"
           onChangeText={(total) => this.setState({total})}
           color={Color.veryLightPink}
           value={this.state.total}

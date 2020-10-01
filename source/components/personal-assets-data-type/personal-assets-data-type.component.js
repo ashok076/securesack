@@ -23,7 +23,10 @@ class PersonalAssetsData extends Component {
   }
 
   componentDidMount() {
-    this.getType();
+    const {navigation} = this.props;
+    navigation.addListener('focus', () => {
+      this.getType();
+    })
   }
 
   getType = () => {
@@ -72,34 +75,35 @@ class PersonalAssetsData extends Component {
           <Text style={styles.title}>{title}</Text>
           <TouchableOpacity
             style={styles.addView}
-            onPress={() => this.navigation(type, title, `__NEW__`)}>
+            onPress={() => this.navigation(type, title, `__NEW__`, 'Add')}>
             <Icon name="plus" color="rgb(33, 47, 60)" size={20} />
           </TouchableOpacity>
         </View>
         <FlatList
           data={category}
-          renderItem={({item}) => this.renderTitleSubtitle(item, type)}
+          renderItem={({item}) => this.renderTitleSubtitle(item, type, title)}
         />
       </View>
     );
   };
 
-  navigation = (type, title, recid) => {
+  navigation = (type, title, recid, mode) => {
     const {navigation} = this.props;
-    navigation.navigate('CommonView', {
+    navigation.navigate(title, {
       type: type,
       category: 'Personal Assets',
       title: title,
       background: require('../../assets/jpg-images/Personal-Assets-Background/personal-assets-background.jpg'),
       recid: recid,
-      theme: 'light'
+      theme: 'light',
+      mode: mode
     });
   };
 
-  renderTitleSubtitle = (item, type) => {
+  renderTitleSubtitle = (item, type, title) => {
     console.log(item);
     return (
-      <TouchableRipple rippleColor="rgba(0, 0, 0, .32)">
+      <TouchableRipple rippleColor="rgba(0, 0, 0, .32)" onPress={() => this.navigation(type, title, item.id, 'View')}>
         <View>
           <View style={styles.titleSubTitle}>
             <Title style={styles.catTitle}>{this.getTitle(type, item)}</Title>

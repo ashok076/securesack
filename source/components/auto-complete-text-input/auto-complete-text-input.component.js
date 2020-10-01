@@ -35,7 +35,7 @@ class AutoCompleteText extends Component {
       keyboardType,
       editable,
       color,
-      array,
+      array, 
       show,
       hideResult,
     } = this.props;
