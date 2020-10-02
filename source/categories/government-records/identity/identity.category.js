@@ -27,6 +27,7 @@ import {
 } from '../../../configuration/api/api.functions';
 import {Color} from '../../../assets/color/color.js';
 import {formatDate} from '../../../configuration/card-formatter/card-formatter';
+import CopyClipboard from '../../../components/copy-clipboard/copy-clipboard.component';
 
 import styles from './identity.style';
 
@@ -294,6 +295,12 @@ class IdentificationCards extends Component {
           value={this.state.idNo}
           editable={this.state.editable}
         />
+        <View style={styles.clipboard}>
+          <CopyClipboard
+            text={this.state.idNo}
+            editable={this.state.editable}
+          />
+        </View>
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic

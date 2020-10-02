@@ -29,6 +29,7 @@ import {
 import {insurance_type, plan_type, payment_due_type} from './health-care.list';
 import {formatDate} from '../../../configuration/card-formatter/card-formatter';
 import {Color} from '../../../assets/color/color.js';
+import CopyClipboard from '../../../components/copy-clipboard/copy-clipboard.component';
 
 import styles from './health-care.style';
 
@@ -359,6 +360,12 @@ class HealthCareProvider extends Component {
           value={this.state.username}
           editable={this.state.editable}
         />
+        <View style={styles.clipboard}>
+          <CopyClipboard
+            text={this.state.username}
+            editable={this.state.editable}
+          />
+        </View>
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
@@ -369,6 +376,12 @@ class HealthCareProvider extends Component {
           value={this.state.password}
           editable={this.state.editable}
         />
+        <View style={styles.clipboard}>
+          <CopyClipboard
+            text={this.state.password}
+            editable={this.state.editable}
+          />
+        </View>
       </View>
     </View>
   );

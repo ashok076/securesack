@@ -30,7 +30,8 @@ import {
 } from '../../../configuration/api/api.functions';
 import {boolean_value} from './property.list';
 import {formatDate} from '../../../configuration/card-formatter/card-formatter';
-import {Color} from '../../../assets/color/color.js';
+import {Color} from '../../../assets/color/color';
+import CopyClipboard from '../../../components/copy-clipboard/copy-clipboard.component';
 
 import styles from './property.style';
 
@@ -329,6 +330,12 @@ class PropertyInsurance extends Component {
           value={this.state.policyNo}
           editable={this.state.editable}
         />
+        <View style={styles.clipboard}>
+          <CopyClipboard
+            text={this.state.policyNo}
+            editable={this.state.editable}
+          />
+        </View>
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
@@ -402,6 +409,12 @@ class PropertyInsurance extends Component {
           value={this.state.username}
           editable={this.state.editable}
         />
+        <View style={styles.clipboard}>
+          <CopyClipboard
+            text={this.state.username}
+            editable={this.state.editable}
+          />
+        </View>
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
@@ -412,6 +425,12 @@ class PropertyInsurance extends Component {
           value={this.state.password}
           editable={this.state.editable}
         />
+        <View style={styles.clipboard}>
+          <CopyClipboard
+            text={this.state.password}
+            editable={this.state.editable}
+          />
+        </View>
       </View>
     </View>
   );

@@ -28,6 +28,7 @@ import {
 import {gender, martial_status, software_used} from './tax-ssn.list';
 import {formatDate} from '../../../configuration/card-formatter/card-formatter';
 import {Color} from '../../../assets/color/color.js';
+import CopyClipboard from '../../../components/copy-clipboard/copy-clipboard.component';
 
 import styles from './tax-ssn.style';
 
@@ -347,7 +348,7 @@ class TaxIdentification extends Component {
           onPress={() =>
             this.setState({
               modal: true,
-              array: this.state.countries,
+              array: this.props.country.country,
               key: 'countryofbirth',
             })
           }
@@ -400,6 +401,12 @@ class TaxIdentification extends Component {
           value={this.state.ssn}
           editable={this.state.editable}
         />
+        <View style={styles.clipboard}>
+          <CopyClipboard
+            text={this.state.ssn}
+            editable={this.state.editable}
+          />
+        </View>
       </View>
       <View style={styles.inputContainer}>
         <ModalPicker

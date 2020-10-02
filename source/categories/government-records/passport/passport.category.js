@@ -27,6 +27,7 @@ import {
 } from '../../../configuration/api/api.functions';
 import {Color} from '../../../assets/color/color.js';
 import {formatDate} from '../../../configuration/card-formatter/card-formatter';
+import CopyClipboard from '../../../components/copy-clipboard/copy-clipboard.component';
 
 import styles from './passport.style';
 
@@ -260,6 +261,12 @@ class Passport extends Component {
           value={this.state.passportNo}
           editable={this.state.editable}
         />
+        <View style={styles.clipboard}>
+          <CopyClipboard
+            text={this.state.passportNo}
+            editable={this.state.editable}
+          />
+        </View>
       </View>
       <View style={styles.miniContainer}>
         <View style={[styles.miniInputContainer, {marginRight: 10}]}>
@@ -391,7 +398,7 @@ class Passport extends Component {
           <InputTextDynamic
             placeholder="Date of Issue"
             onChangeText={(dateOfIssue1) =>
-              this.setState({dateOfIssue1: formatDate(dateOfIssue)})
+              this.setState({dateOfIssue1: formatDate(dateOfIssue1)})
             }
             keyboardType="default"
             color={Color.salmon}

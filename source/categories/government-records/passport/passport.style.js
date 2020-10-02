@@ -49,7 +49,7 @@ const styles = {
     fontFamily: 'PublicSans-Regular',
     fontSize: 12,
   },
-  icon: {
+  clipboard: {
     position: 'absolute',
     right: 0,
   },

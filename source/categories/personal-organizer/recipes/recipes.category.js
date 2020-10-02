@@ -106,7 +106,7 @@ class Recipies extends Component {
       name,
       url,
       username,
-      password,
+      passwrd,
       recipe,
       cuisine,
       access_token,

@@ -30,6 +30,7 @@ import {
 import {formatDate} from '../../../configuration/card-formatter/card-formatter';
 import {term, refiance_repayment} from './mortgages.list';
 import {Color} from '../../../assets/color/color.js';
+import CopyClipboard from '../../../components/copy-clipboard/copy-clipboard.component';
 
 import styles from './mortgages.style';
 
@@ -286,6 +287,12 @@ class Mortgage extends Component {
           value={this.state.loanNo}
           editable={this.state.editable}
         />
+        <View style={styles.clipboard}>
+          <CopyClipboard
+            text={this.state.loanNo}
+            editable={this.state.editable}
+          />
+        </View>
       </View>
       <View style={styles.inputContainer}>
         <AutoCompleteText
@@ -383,6 +390,12 @@ class Mortgage extends Component {
           value={this.state.username}
           editable={this.state.editable}
         />
+        <View style={styles.clipboard}>
+          <CopyClipboard
+            text={this.state.username}
+            editable={this.state.editable}
+          />
+        </View>
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
@@ -393,6 +406,12 @@ class Mortgage extends Component {
           value={this.state.password}
           editable={this.state.editable}
         />
+        <View style={styles.clipboard}>
+          <CopyClipboard
+            text={this.state.password}
+            editable={this.state.editable}
+          />
+        </View>
       </View>
     </View>
   );
@@ -408,6 +427,12 @@ class Mortgage extends Component {
           value={this.state.securityQ1}
           editable={this.state.editable}
         />
+        <View style={styles.clipboard}>
+          <CopyClipboard
+            text={this.state.securityQ1}
+            editable={this.state.editable}
+          />
+        </View>
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
@@ -428,6 +453,12 @@ class Mortgage extends Component {
           value={this.state.securityQ2}
           editable={this.state.editable}
         />
+        <View style={styles.clipboard}>
+          <CopyClipboard
+            text={this.state.securityQ2}
+            editable={this.state.editable}
+          />
+        </View>
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
@@ -448,6 +479,12 @@ class Mortgage extends Component {
           value={this.state.securityQ3}
           editable={this.state.editable}
         />
+        <View style={styles.clipboard}>
+          <CopyClipboard
+            text={this.state.securityQ3}
+            editable={this.state.editable}
+          />
+        </View>
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic

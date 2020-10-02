@@ -30,6 +30,7 @@ import {
 } from '../../../configuration/api/api.functions';
 import {reward_type} from './rewards-programs.list';
 import {Color} from '../../../assets/color/color.js';
+import CopyClipboard from '../../../components/copy-clipboard/copy-clipboard.component';
 
 import styles from './rewards-programs.style';
 
@@ -262,6 +263,12 @@ class RewardProgram extends Component {
           value={this.state.accountNo}
           editable={this.state.editable}
         />
+        <View style={styles.clipboard}>
+          <CopyClipboard
+            text={this.state.accountNo}
+            editable={this.state.editable}
+          />
+        </View>
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
@@ -311,6 +318,12 @@ class RewardProgram extends Component {
           value={this.state.username}
           editable={this.state.editable}
         />
+        <View style={styles.clipboard}>
+          <CopyClipboard
+            text={this.state.username}
+            editable={this.state.editable}
+          />
+        </View>
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
@@ -321,6 +334,12 @@ class RewardProgram extends Component {
           value={this.state.password}
           editable={this.state.editable}
         />
+        <View style={styles.clipboard}>
+          <CopyClipboard
+            text={this.state.password}
+            editable={this.state.editable}
+          />
+        </View>
       </View>
     </View>
   );

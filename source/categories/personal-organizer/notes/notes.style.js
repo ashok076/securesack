@@ -49,21 +49,9 @@ const styles = {
     fontFamily: 'PublicSans-Regular',
     fontSize: 12,
   },
-  icon: {
+  clipboard: {
     position: 'absolute',
     right: 0,
-  },
-    input: {
-    color: 'rgb(33, 47, 60)',
-    fontFamily: 'PublicSans-Regular',
-    width: '100%',
-    fontSize: 15,
-    backgroundColor: '#80000000',
-    paddingHorizontal: 0,
-    paddingVertical: 0,
-    height: 55,
-    textAlignVertical: "top",
-    lineHeight: 23,
   },
 };
 

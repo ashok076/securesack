@@ -10,7 +10,9 @@ const styles = {
     fontSize: 20,
     color: 'rgb(33, 47, 60)',
   },
-  inputContainer: {},
+  inputContainer: {
+    justifyContent: 'center',
+  },
   miniContainer: {
     paddingTop: 1,
     flexDirection: 'row',
@@ -46,6 +48,10 @@ const styles = {
     height: 100,
     justifyContent: 'center',
     padding: 15,
+  },
+  clipboard: {
+    position: 'absolute',
+    right: 0,
   },
 };
 

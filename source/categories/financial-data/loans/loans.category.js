@@ -29,7 +29,8 @@ import {
 } from '../../../configuration/api/api.functions';
 import {formatDate} from '../../../configuration/card-formatter/card-formatter';
 import {refianced} from './loans.list';
-import {Color} from '../../../assets/color/color.js';
+import {Color} from '../../../assets/color/color';
+import CopyClipboard from '../../../components/copy-clipboard/copy-clipboard.component';
 
 import styles from './loans.style';
 
@@ -245,6 +246,12 @@ class ConsumerLoan extends Component {
           value={this.state.loanNo}
           editable={this.state.editable}
         />
+        <View style={styles.clipboard}>
+          <CopyClipboard
+            text={this.state.loanNo}
+            editable={this.state.editable}
+          />
+        </View>
       </View>
       <View style={styles.inputContainer}>
         <AutoCompleteText
@@ -300,6 +307,12 @@ class ConsumerLoan extends Component {
           value={this.state.username}
           editable={this.state.editable}
         />
+        <View style={styles.clipboard}>
+          <CopyClipboard
+            text={this.state.username}
+            editable={this.state.editable}
+          />
+        </View>
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
@@ -310,6 +323,12 @@ class ConsumerLoan extends Component {
           value={this.state.password}
           editable={this.state.editable}
         />
+        <View style={styles.clipboard}>
+          <CopyClipboard
+            text={this.state.password}
+            editable={this.state.editable}
+          />
+        </View>
       </View>
     </View>
   );

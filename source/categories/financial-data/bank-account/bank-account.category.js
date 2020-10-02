@@ -34,6 +34,7 @@ import {
   formatExpiry,
   formatDate,
 } from '../../../configuration/card-formatter/card-formatter';
+import CopyClipboard from '../../../components/copy-clipboard/copy-clipboard.component.js';
 
 import styles from './bank-account.style';
 
@@ -267,6 +268,12 @@ class BankAccounts extends Component {
           color={Color.lightishBlue}
           editable={this.state.editable}
         />
+        <View style={styles.clipboard}>
+          <CopyClipboard
+            text={this.state.accountNumber}
+            editable={this.state.editable}
+          />
+        </View>
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
@@ -279,6 +286,12 @@ class BankAccounts extends Component {
           color={Color.lightishBlue}
           editable={this.state.editable}
         />
+        <View style={styles.clipboard}>
+          <CopyClipboard
+            text={this.state.bankRoutingNumber}
+            editable={this.state.editable}
+          />
+        </View>
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
@@ -289,6 +302,12 @@ class BankAccounts extends Component {
           color={Color.lightishBlue}
           editable={this.state.editable}
         />
+        <View style={styles.clipboard}>
+          <CopyClipboard
+            text={this.state.userName}
+            editable={this.state.editable}
+          />
+        </View>
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
@@ -299,6 +318,12 @@ class BankAccounts extends Component {
           color={Color.lightishBlue}
           editable={this.state.editable}
         />
+        <View style={styles.clipboard}>
+          <CopyClipboard
+            text={this.state.password}
+            editable={this.state.editable}
+          />
+        </View>
       </View>
     </View>
   );
@@ -420,6 +445,12 @@ class BankAccounts extends Component {
           color={Color.lightishBlue}
           editable={this.state.editable}
         />
+        <View style={styles.clipboard}>
+          <CopyClipboard
+            text={this.state.securityQ1}
+            editable={this.state.editable}
+          />
+        </View>
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
@@ -440,6 +471,12 @@ class BankAccounts extends Component {
           color={Color.lightishBlue}
           editable={this.state.editable}
         />
+        <View style={styles.clipboard}>
+          <CopyClipboard
+            text={this.state.securityQ2}
+            editable={this.state.editable}
+          />
+        </View>
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
@@ -460,6 +497,12 @@ class BankAccounts extends Component {
           color={Color.lightishBlue}
           editable={this.state.editable}
         />
+        <View style={styles.clipboard}>
+          <CopyClipboard
+            text={this.state.securityQ3}
+            editable={this.state.editable}
+          />
+        </View>
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic

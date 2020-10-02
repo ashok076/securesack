@@ -27,6 +27,7 @@ import {
 } from '../../../configuration/api/api.functions';
 import {formatDate} from '../../../configuration/card-formatter/card-formatter';
 import {Color} from '../../../assets/color/color.js';
+import CopyClipboard from '../../../components/copy-clipboard/copy-clipboard.component';
 
 import styles from './driving-license.style';
 
@@ -271,6 +272,12 @@ class DriverLicense extends Component {
           value={this.state.license}
           editable={this.state.editable}
         />
+        <View style={styles.clipboard}>
+          <CopyClipboard
+            text={this.state.license}
+            editable={this.state.editable}
+          />
+        </View>
       </View>
       <View style={styles.miniContainer}>
         <View style={[styles.miniInputContainer, {marginRight: 10}]}>

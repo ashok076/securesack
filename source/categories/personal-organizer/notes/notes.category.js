@@ -25,6 +25,7 @@ import {
   archiveRecords,
 } from '../../../configuration/api/api.functions';
 import {Color} from '../../../assets/color/color.js';
+import CopyClipboard from '../../../components/copy-clipboard/copy-clipboard.component.js';
 
 import styles from './notes.style';
 
@@ -61,11 +62,7 @@ class Notes extends Component {
   viewRecord = async () => {
     const {recid, mode} = this.props.route.params;
     this.setState({isLoader: true});
-    await viewRecords(
-      'Notes',
-      recid,
-      this.props.userData.userData.access_token,
-    )
+    await viewRecords('Notes', recid, this.props.userData.userData.access_token)
       .then((response) => {
         console.log('View res: ', response);
         this.setViewData(response.data);
@@ -164,6 +161,12 @@ class Notes extends Component {
           value={this.state.notes}
           editable={this.state.editable}
         />
+        <View style={styles.clipboard}>
+          <CopyClipboard
+            text={this.state.notes}
+            editable={this.state.editable}
+          />
+        </View>
       </View>
     </View>
   );

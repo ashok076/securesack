@@ -12,9 +12,9 @@ import qs from 'qs';
 import {connect} from 'react-redux';
 import {Root} from 'native-base';
 
-import InputTextDynamic from '../../../components/input-text-dynamic/input-text-dynamic.component.js';
-import InputTextIconDynamic from '../../../components/input-text-icon-dynamic/input-text-icon-dynamic.component.js';
-import ModalPicker from '../../../components/modal-picker/modal-picker.component.js';
+import InputTextDynamic from '../../../components/input-text-dynamic/input-text-dynamic.component';
+import InputTextIconDynamic from '../../../components/input-text-icon-dynamic/input-text-icon-dynamic.component';
+import ModalPicker from '../../../components/modal-picker/modal-picker.component';
 import Button from '../../../components/button/button.component';
 import Loader from '../../../components/loader/loader.component';
 import TitleView from '../../../components/title-view/title-view.component';
@@ -24,7 +24,8 @@ import {
   deleteRecords,
   archiveRecords,
 } from '../../../configuration/api/api.functions';
-import {Color} from '../../../assets/color/color.js';
+import {Color} from '../../../assets/color/color';
+import CopyClipboard from '../../../components/copy-clipboard/copy-clipboard.component';
 
 import styles from './website-password.style';
 
@@ -210,6 +211,12 @@ class WebSiteAccount extends Component {
           value={this.state.username}
           editable={this.state.editable}
         />
+        <View style={styles.clipboard}>
+          <CopyClipboard
+            text={this.state.username}
+            editable={this.state.editable}
+          />
+        </View>
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
@@ -220,6 +227,12 @@ class WebSiteAccount extends Component {
           value={this.state.password}
           editable={this.state.editable}
         />
+        <View style={styles.clipboard}>
+          <CopyClipboard
+            text={this.state.password}
+            editable={this.state.editable}
+          />
+        </View>
       </View>
     </View>
   );
@@ -235,6 +248,12 @@ class WebSiteAccount extends Component {
           value={this.state.securityQ1}
           editable={this.state.editable}
         />
+        <View style={styles.clipboard}>
+          <CopyClipboard
+            text={this.state.securityQ1}
+            editable={this.state.editable}
+          />
+        </View>
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
@@ -255,6 +274,12 @@ class WebSiteAccount extends Component {
           value={this.state.securityQ2}
           editable={this.state.editable}
         />
+        <View style={styles.clipboard}>
+          <CopyClipboard
+            text={this.state.securityQ2}
+            editable={this.state.editable}
+          />
+        </View>
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
@@ -275,6 +300,12 @@ class WebSiteAccount extends Component {
           value={this.state.securityQ3}
           editable={this.state.editable}
         />
+        <View style={styles.clipboard}>
+          <CopyClipboard
+            text={this.state.securityQ3}
+            editable={this.state.editable}
+          />
+        </View>
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
