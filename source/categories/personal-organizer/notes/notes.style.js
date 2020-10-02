@@ -1,4 +1,4 @@
-import {StyleSheet} from 'react-native';
+import {StyleSheet, StatusBar} from 'react-native';
 
 const styles = {
   container: {
@@ -8,10 +8,10 @@ const styles = {
   title: {
     fontFamily: 'PublicSans-Regular',
     fontSize: 20,
-    color: 'rgb(248, 249, 250)',
+    color: 'rgb(33, 47, 60)',
   },
   inputContainer: {
-    paddingTop: 1,
+    justifyContent: 'center',
   },
   miniContainer: {
     paddingTop: 1,
@@ -22,11 +22,48 @@ const styles = {
   miniInputContainer: {
     flex: 1,
   },
-  buttonContainer: {
-    paddingTop: 5,
-  },
   gap: {
     marginTop: 50,
+  },
+  outerView: {
+    backgroundColor: 'rgb(248, 249, 250)',
+    paddingTop: StatusBar.HEIGHT,
+  },
+  backgroundImage: {
+    height: '100%',
+    width: '100%',
+  },
+  outerContainerView: {
+    borderTopLeftRadius: 15,
+    borderTopRightRadius: 15,
+    width: '100%',
+    height: '100%',
+  },
+  titleView: {
+    width: '100%',
+    height: 100,
+    justifyContent: 'center',
+    padding: 15,
+  },
+  labelText: {
+    fontFamily: 'PublicSans-Regular',
+    fontSize: 12,
+  },
+  icon: {
+    position: 'absolute',
+    right: 0,
+  },
+    input: {
+    color: 'rgb(33, 47, 60)',
+    fontFamily: 'PublicSans-Regular',
+    width: '100%',
+    fontSize: 15,
+    backgroundColor: '#80000000',
+    paddingHorizontal: 0,
+    paddingVertical: 0,
+    height: 55,
+    textAlignVertical: "top",
+    lineHeight: 23,
   },
 };
 

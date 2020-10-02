@@ -23,7 +23,10 @@ class PersonalOrganisationData extends Component {
   }
 
   componentDidMount() {
-    this.getType();
+    const {navigation} = this.props;
+    navigation.addListener('focus', () => {
+      this.getType();
+    });
   }
 
   getType = () => {
@@ -73,34 +76,37 @@ class PersonalOrganisationData extends Component {
           <Text style={styles.title}>{title}</Text>
           <TouchableOpacity
             style={styles.addView}
-            onPress={() => this.navigation(type, title, `__NEW__`)}>
+            onPress={() => this.navigation(type, title, `__NEW__`, 'Add')}>
             <Icon name="plus" color="rgb(33, 47, 60)" size={20} />
           </TouchableOpacity>
         </View>
         <FlatList
           data={category}
-          renderItem={({item}) => this.renderTitleSubtitle(item, type)}
+          renderItem={({item}) => this.renderTitleSubtitle(item, type, title)}
         />
       </View>
     );
   };
 
-  navigation = (type, title, recid) => {
+  navigation = (type, title, recid, mode) => {
     const {navigation} = this.props;
-    console.log("Personal: ", navigation, this.props)
-    navigation.navigate('CommonView', {
+    console.log('Personal: ', navigation, this.props);
+    navigation.navigate(type, {
       type: type,
       category: 'Personal Organisation',
       title: title,
       background: require('../../assets/jpg-images/Personal-Organisation-Background/personal-organisation-background.jpg'),
       recid: recid,
-      theme: 'light'
+      theme: 'light',
+      mode: mode,
     });
   };
 
-  renderTitleSubtitle = (item, type) => {
+  renderTitleSubtitle = (item, type, title) => {
     return (
-      <TouchableRipple rippleColor="rgba(0, 0, 0, .32)">
+      <TouchableRipple
+        rippleColor="rgba(0, 0, 0, .32)"
+        onPress={() => this.navigation(type, title, item.id, 'View')}>
         <View>
           <View style={styles.titleSubTitle}>
             <Title style={styles.catTitle}>{this.getTitle(type, item)}</Title>

@@ -352,7 +352,7 @@ class Passport extends Component {
           onPress={() =>
             this.setState({
               modal: true,
-              array: this.state.countries,
+              array: this.props.country.country,
               key: 'country',
             })
           }

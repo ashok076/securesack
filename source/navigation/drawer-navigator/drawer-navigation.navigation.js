@@ -39,9 +39,9 @@ import Passport from '../../categories/government-records/passport/passport.cate
 import TaxIdentification from '../../categories/government-records/tax-ssn/tax-ssn.category.js';
 
 //personal organisation
-import WebsitePassword from '../../categories/personal-organizer/website-password/website-password.category.js';
+import WebSiteAccount from '../../categories/personal-organizer/website-password/website-password.category.js';
 import Notes from '../../categories/personal-organizer/notes/notes.category.js';
-import Recipes from '../../categories/personal-organizer/recipes/recipes.category.js';
+import Recipies from '../../categories/personal-organizer/recipes/recipes.category.js';
 
 
 const Drawer = createDrawerNavigator();
@@ -74,9 +74,9 @@ const DrawerNavigator = () => {
       <Drawer.Screen name="IdentificationCards" component={IdentificationCards}/>
       <Drawer.Screen name="Passport" component={Passport}/>
       <Drawer.Screen name="TaxIdentification" component={TaxIdentification}/>
-      <Drawer.Screen name="WebsitePassword" component={WebsitePassword}/>
+      <Drawer.Screen name="WebSiteAccount" component={WebSiteAccount}/>
       <Drawer.Screen name="Notes" component={Notes}/>
-      <Drawer.Screen name="Recipes" component={Recipes}/>
+      <Drawer.Screen name="Recipies" component={Recipies}/>
     </Drawer.Navigator>
   );
 };

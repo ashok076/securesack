@@ -1,7 +1,16 @@
 import React, {Component} from 'react';
-import {View, ScrollView, Modal} from 'react-native';
+import {
+  View,
+  ScrollView,
+  Modal,
+  ImageBackground,
+  SafeAreaView,
+  Alert,
+} from 'react-native';
 import {Text} from 'react-native-paper';
 import qs from 'qs';
+import {connect} from 'react-redux';
+import {Root} from 'native-base';
 
 import InputTextDynamic from '../../../components/input-text-dynamic/input-text-dynamic.component.js';
 import InputTextIconDynamic from '../../../components/input-text-icon-dynamic/input-text-icon-dynamic.component.js';
@@ -9,55 +18,108 @@ import ModalPicker from '../../../components/modal-picker/modal-picker.component
 import Button from '../../../components/button/button.component';
 import Loader from '../../../components/loader/loader.component';
 import ModalScreen from '../../../components/modal/modal.component';
-import {createOrUpdateRecord} from '../../../configuration/api/api.functions';
+import TitleView from '../../../components/title-view/title-view.component';
+import {
+  createOrUpdateRecord,
+  viewRecords,
+  deleteRecords,
+  archiveRecords,
+} from '../../../configuration/api/api.functions';
 import {cuisine} from './recipes.list';
 import {Color} from '../../../assets/color/color.js';
 
 import styles from './recipes.style';
 
-class Recipes extends Component {
+class Recipies extends Component {
+  initialState = {
+    isLoader: false,
+    editable: true,
+    modal: false,
+    array: [],
+    key: '',
+    access_token: '',
+    name: '',
+    url: '',
+    username: '',
+    passwrd: '',
+    recipe: '',
+    cuisine: '',
+  };
+
   constructor(props) {
     super(props);
     this.state = {
-      active: 0,
-      isLoader: false,
-      modal: false,
-      array: [],
-      key: '',
-      navigation: props.navigation,
-      access_token: props.access_token,
-      recid: props.recid,
-      name: '',
-      url: '',
-      username: '',
-      passwrd: '',
-      recipe: '',
-      cuisine: '',
+      ...this.initialState,
     };
   }
 
-  subComponet = () => {
-    const {active} = this.state;
-    switch (active) {
-      case 0:
-        return this.basicInformation();
-        break;
-    }
+  componentDidMount() {
+    const {navigation, route} = this.props;
+    navigation.addListener('focus', () => {
+      this.setState(this.initialState);
+      if (this.props.userData && this.props.userData.userData)
+        this.setState(
+          {
+            access_token: this.props.userData.userData.access_token,
+          },
+          () => this.viewRecord(),
+        );
+    });
+  }
+
+  viewRecord = async () => {
+    const {recid, mode} = this.props.route.params;
+    this.setState({isLoader: true});
+    await viewRecords(
+      'Recipies',
+      recid,
+      this.props.userData.userData.access_token,
+    )
+      .then((response) => {
+        console.log('View res: ', response);
+        this.setViewData(response.data);
+        this.setState({isLoader: false});
+      })
+      .catch((error) => {
+        console.log('Error: ', error);
+        this.setState({isLoader: false});
+      });
+    this.setState({isLoader: false});
+    if (mode === 'Add') this.setState({editable: false, hideResult: false});
   };
 
-  handleClick = () => {
-    this.submit();
+  setViewData = (data) => {
+    console.log('Data: ', data);
+    this.setState({
+      name: data.Name,
+      url: data.URL,
+      username: data.WebSiteUsername,
+      passwrd: data.WebSitePassword,
+      recipe: data.RecipeText,
+      cuisine: data.CuisineType,
+    });
   };
 
   submit = async () => {
     this.setState({isLoader: true});
-    const {name, url, username, password, recipe, cuisine, access_token, navigation, recid} = this.state;
+    const {
+      name,
+      url,
+      username,
+      password,
+      recipe,
+      cuisine,
+      access_token,
+    } = this.state;
+    const {navigation, route} = this.props;
+    const {recid} = route.params;
     let data = qs.stringify({
       Name: name,
       URL: url,
       WebSiteUsername: username,
       WebSitePassword: passwrd,
       RecipeText: recipe,
+      CuisineType: cuisine,
     });
 
     await createOrUpdateRecord('Recipies', recid, data, access_token)
@@ -70,6 +132,42 @@ class Recipes extends Component {
       });
   };
 
+  delete = async () => {
+    const {navigation, route} = this.props;
+    const {recid} = route.params;
+    await deleteRecords(
+      'WebSiteAccount',
+      recid,
+      this.props.userData.userData.access_token,
+    )
+      .then((response) => navigation.goBack())
+      .catch((error) => console.log('Error in delete', error));
+  };
+
+  archive = async () => {
+    this.setState({isLoader: true});
+    const {navigation, route} = this.props;
+    const {recid} = route.params;
+    let data = qs.stringify({
+      IsArchived: true,
+    });
+    await archiveRecords(
+      'WebSiteAccount',
+      recid,
+      this.props.userData.userData.access_token,
+      data,
+    )
+      .then((response) => {
+        this.setState({isLoader: false});
+        console.log('Response', response);
+        navigation.goBack();
+      })
+      .catch((error) => {
+        this.setState({isLoader: false});
+        console.log('Error in delete', error);
+      });
+  };
+
   basicInformation = () => (
     <View>
       <View style={styles.inputContainer}>
@@ -78,6 +176,8 @@ class Recipes extends Component {
           onChangeText={(name) => this.setState({name})}
           keyboardType="default"
           color={Color.lightNavyBlue}
+          value={this.state.name}
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -92,6 +192,9 @@ class Recipes extends Component {
               key: 'cuisine',
             })
           }
+          color={Color.veryLightPink}
+          editable={this.state.editable}
+          name="Cuisine"
         />
       </View>
       <View style={styles.inputContainer}>
@@ -100,6 +203,8 @@ class Recipes extends Component {
           onChangeText={(url) => this.setState({url})}
           keyboardType="default"
           color={Color.lightNavyBlue}
+          value={this.state.url}
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -108,6 +213,8 @@ class Recipes extends Component {
           onChangeText={(username) => this.setState({username})}
           keyboardType="default"
           color={Color.lightNavyBlue}
+          value={this.state.username}
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -116,6 +223,8 @@ class Recipes extends Component {
           onChangeText={(passwrd) => this.setState({passwrd})}
           keyboardType="default"
           color={Color.lightNavyBlue}
+          value={this.state.passwrd}
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -124,21 +233,12 @@ class Recipes extends Component {
           onChangeText={(recipe) => this.setState({recipe})}
           keyboardType="default"
           color={Color.lightNavyBlue}
+          value={this.state.recipe}
+          editable={this.state.editable}
         />
-      </View>
-      <View style={styles.buttonContainer}>
-        <Button onPress={this.handleClick} title="Submit" />
       </View>
     </View>
   );
-
-  title = (active) => {
-    switch (active) {
-      case 0:
-        return 'Basic Information';
-        break;
-    }
-  };
 
   changeModalVisibility = (bool) => {
     this.setState({modal: bool});
@@ -148,23 +248,94 @@ class Recipes extends Component {
     this.setState({[key]: value});
   };
 
+  editComponent = (isLoader, modal, array, key) => (
+    <View>
+      <Text style={styles.title}>Basic basicInformation</Text>
+      {this.basicInformation()}
+      <Loader isLoader={isLoader} />
+      <ModalScreen
+        isModalVisible={modal}
+        list={array}
+        changeModalVisibility={this.changeModalVisibility}
+        id={key}
+        changeState={this.changeState}
+      />
+    </View>
+  );
+
+  onSave = () => {
+    this.submit();
+  };
+
+  onEdit = () => {
+    this.setState({editable: false}, () => console.log(this.state.editable));
+  };
+
+  onDelete = () => {
+    Alert.alert(
+      //title
+      'Delete',
+      //body
+      'Are you sure you want to delete ?',
+      [
+        {text: 'Yes', onPress: () => this.delete()},
+        {text: 'No', onPress: () => console.log('No Pressed'), style: 'cancel'},
+      ],
+      {cancelable: false},
+      //clicking out side of alert will not cancel
+    );
+  };
+
+  onArchive = () => {
+    this.archive();
+  };
+
   render() {
-    const {active, isLoader, modal, array, key} = this.state;
+    const {isLoader, modal, array, key, editable} = this.state;
+    const {route, navigation} = this.props;
+    const {title, type, background, theme, mode} = route.params;
     return (
-      <View style={styles.container}>
-        <Text style={styles.title}>{this.title(active)}</Text>
-        {this.subComponet()}
-        <Loader isLoader={isLoader} />
-        <ModalScreen
-          isModalVisible={modal}
-          list={array}
-          changeModalVisibility={this.changeModalVisibility}
-          id={key}
-          changeState={this.changeState}
-        />
-      </View>
+      <Root>
+        <SafeAreaView style={styles.outerView}>
+          <ImageBackground source={background} style={styles.backgroundImage}>
+            <View style={styles.titleView}>
+              <TitleView
+                navigation={navigation}
+                mode={mode}
+                theme={theme}
+                title={title}
+                type={type}
+                save={this.onSave}
+                edit={this.onEdit}
+                delete={this.onDelete}
+                archive={this.onArchive}
+                editable={editable}
+              />
+            </View>
+            <ScrollView
+              ref={(ref) => (this.scroll = ref)}
+              onContentSizeChange={() => {
+                this.scroll.scrollTo({y: 0});
+              }}
+              style={[
+                styles.outerContainerView,
+                {
+                  backgroundColor:
+                    theme !== 'dark' ? 'rgb(255, 255, 255)' : 'rgb(33, 47, 60)',
+                },
+              ]}
+              keyboardShouldPersistTaps="handled">
+              <View style={styles.container}>
+                {this.editComponent(isLoader, modal, array, key)}
+              </View>
+            </ScrollView>
+          </ImageBackground>
+        </SafeAreaView>
+      </Root>
     );
   }
 }
-
-export default Recipes;
+const mapStateToProps = ({userData}) => ({
+  userData,
+});
+export default connect(mapStateToProps)(Recipies);
