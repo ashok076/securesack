@@ -34,9 +34,9 @@ import Property from '../../categories/personal-assets/property/property.categor
 
 //government records
 import DriverLicense from '../../categories/government-records/driving-license/driving-license.category.js';
-import Identity from '../../categories/government-records/identity/identity.category.js';
+import IdentificationCards from '../../categories/government-records/identity/identity.category.js';
 import Passport from '../../categories/government-records/passport/passport.category.js';
-import TaxSSN from '../../categories/government-records/tax-ssn/tax-ssn.category.js';
+import TaxIdentification from '../../categories/government-records/tax-ssn/tax-ssn.category.js';
 
 //personal organisation
 import WebsitePassword from '../../categories/personal-organizer/website-password/website-password.category.js';
@@ -71,9 +71,9 @@ const DrawerNavigator = () => {
       <Drawer.Screen name="Vehicle" component={Vehicle}/>
       <Drawer.Screen name="Property" component={Property}/>
       <Drawer.Screen name="DriverLicense" component={DriverLicense}/>
-      <Drawer.Screen name="Identity" component={Identity}/>
+      <Drawer.Screen name="IdentificationCards" component={IdentificationCards}/>
       <Drawer.Screen name="Passport" component={Passport}/>
-      <Drawer.Screen name="TaxSSN" component={TaxSSN}/>
+      <Drawer.Screen name="TaxIdentification" component={TaxIdentification}/>
       <Drawer.Screen name="WebsitePassword" component={WebsitePassword}/>
       <Drawer.Screen name="Notes" component={Notes}/>
       <Drawer.Screen name="Recipes" component={Recipes}/>

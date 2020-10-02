@@ -88,6 +88,7 @@ class TitleView extends Component {
 
   render() {
     const {mode, theme, save, type, navigation, title} = this.props;
+    console.log("Mode: ", mode)
     return (
       <View style={styles.rowObject}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
