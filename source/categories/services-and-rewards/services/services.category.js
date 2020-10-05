@@ -156,7 +156,10 @@ class ServiceAccount extends Component {
         additionalAcHolder2: data.AdditionalAccountHolder2,
         serviceType: data.ServiceType,
         isCreditCardProvided: data.IsCreditCardProvided,
-        creditCardProvided: data.CreditCardProvided.label === undefined ? '' : data.CreditCardProvided.label ,
+        creditCardProvided:
+          data.CreditCardProvided.label === undefined
+            ? ''
+            : data.CreditCardProvided.label,
       },
       () => this.referenceObj(),
     );
@@ -199,7 +202,7 @@ class ServiceAccount extends Component {
       name,
       accNo,
       primaryAcHolder,
-      provider,
+      providerId,
       username,
       password,
       installment,
@@ -232,7 +235,7 @@ class ServiceAccount extends Component {
       ServiceName: name,
       AccountNumber: accNo,
       PrimaryAccountHolder: primaryAcHolder,
-      Provider: provider,
+      Provider: providerId,
       WebsiteUserName: username,
       WebsitePassword: password,
       'PaymentSchedule-InstallmentAmount': installment,

@@ -3,8 +3,6 @@ import {View, Clipboard, TouchableOpacity} from 'react-native';
 import {Toast} from 'native-base';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
-import styles from './copy-clipboard.style';
-
 const CopyClipboard = ({text, editable}) => (
   <View>
     {editable ? (

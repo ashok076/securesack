@@ -34,6 +34,7 @@ import {
   formatExpiry,
 } from '../../../configuration/card-formatter/card-formatter';
 import CopyClipboard from '../../../components/copy-clipboard/copy-clipboard.component';
+import ExternalLink from '../../../components/external-link/external-link.component'
 
 import styles from './credit-card.style';
 
@@ -363,6 +364,12 @@ class CreditCard extends Component {
           value={this.state.url}
           editable={this.state.editable}
         />
+        <View style={styles.clipboard}>
+          <ExternalLink
+            link={this.state.url}
+            editable={this.state.editable}
+          />
+        </View>
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic

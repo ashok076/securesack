@@ -19,6 +19,8 @@ class PersonalOrganisationData extends Component {
     super(props);
     this.state = {
       dataType: personalOrganisationDataTypeList,
+      viewAll: 2,
+      isExpanded: false,
     };
   }
 
@@ -69,6 +71,7 @@ class PersonalOrganisationData extends Component {
   };
 
   category = ({title, id, category, type, icon}) => {
+    const {viewAll} = this.state;
     return (
       <View style={styles.container}>
         <View style={styles.titleIcon}>
@@ -81,10 +84,43 @@ class PersonalOrganisationData extends Component {
           </TouchableOpacity>
         </View>
         <FlatList
-          data={category}
+          data={category === undefined ? category : category.slice(0, viewAll)}
           renderItem={({item}) => this.renderTitleSubtitle(item, type, title)}
+          maxToRenderPerBatch={viewAll}
         />
+        {this.viewAll(category)}
       </View>
+    );
+  };
+
+    viewAll = (category) => {
+    const {isExpanded} = this.state;
+    if (category !== undefined) {
+      if (category.length > 2) return this.viewAllComponent(category);
+    }
+  };
+
+  viewAllComponent = (category) => {
+    const {isExpanded, viewAll} = this.state;
+    return (
+      <TouchableRipple
+        rippleColor="rgba(0, 0, 0, .32)"
+        onPress={() =>
+          this.setState({
+            viewAll: viewAll === 2 ? category.length : 2,
+            isExpanded: !isExpanded,
+          })
+        }>
+        {isExpanded ? (
+          <View style={styles.viewAll}>
+            <Text style={styles.viewAllText}> Close </Text>
+          </View>
+        ) : (
+          <View style={styles.viewAll}>
+            <Text style={styles.viewAllText}> View all </Text>
+          </View>
+        )}
+      </TouchableRipple>
     );
   };
 
