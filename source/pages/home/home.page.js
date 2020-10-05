@@ -20,6 +20,7 @@ import {END_POINTS, BASE_URL} from '../../configuration/api/api.types';
 import MainContent from '../../components/main-content/main-content.component';
 import InputTextSearch from '../../components/input-text-search/input-text-search.component';
 import Header from '../../components/header/header.component';
+import HomeBody from '../../components/home-body/home-body.category.js';
 import {userInfo} from '../../redux/user-info/actions/user-info.action';
 
 import styles from './home.style';
@@ -32,7 +33,6 @@ class Home extends Component {
       isSensorAvailable: false,
       enable_fingerprint: false,
       showPopup: true,
-      search: '',
       access_token: '',
     };
   }
@@ -70,16 +70,14 @@ class Home extends Component {
       let userInfo = await AsyncStorage.getItem('user_info');
       if (userInfo !== null) {
         userInfo(userInfo);
-        console.log("Access Token: ", userInfo.access_token)
-      }else {
-        console.log("HI")
+        console.log('Access Token: ', userInfo.access_token);
+      } else {
+        console.log('HI');
       }
     } catch (error) {
       console.log('Error in getting user info: ', error);
     }
   };
-
-
 
   detectFingerprintAvailable = () => {
     const {showPopup} = this.state;
@@ -208,10 +206,8 @@ class Home extends Component {
     </View>
   );
 
-  handleSearch = ({nativeEvent: {eventCount, target, text}}) => {};
-
   render() {
-    const {isFingerPrintSettings, isSensorAvailable, search} = this.state;
+    const {isFingerPrintSettings, isSensorAvailable} = this.state;
     const {navigation, userData} = this.props;
     let name = '';
     if (userData && userData.userData) {
@@ -229,16 +225,7 @@ class Home extends Component {
               Good morning,<Text style={styles.name}> {name} </Text>
             </Text>
           </View>
-          <View style={styles.searchView}>
-            <InputTextSearch
-              placeholder="Search"
-              onChange={this.handleSearch}
-              value={search}
-            />
-          </View>
-          <View style={styles.mainContent}>
-            <MainContent navigation={navigation} />
-          </View>
+          <HomeBody navigation={navigation} />
         </ScrollView>
       </SafeAreaView>
     );

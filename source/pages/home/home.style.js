@@ -75,21 +75,8 @@ const styles = StyleSheet.create({
   grettingView: {
     marginTop: 23,
   },
-  searchView: {
-    marginTop: 20,
-  },
-  mainContent: {
-    alignItems: 'center',
-    marginTop: 15,
-  },
   name: {
     fontFamily: 'PublicSans-Bold',
-  },
-  fab: {
-    position: 'absolute',
-    margin: 16,
-    right: 0,
-    bottom: 0,
   },
 });
 
