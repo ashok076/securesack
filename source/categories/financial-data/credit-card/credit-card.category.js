@@ -10,6 +10,7 @@ import {
 import {Text} from 'react-native-paper';
 import qs from 'qs';
 import {connect} from 'react-redux';
+import {Root} from 'native-base';
 
 import InputTextDynamic from '../../../components/input-text-dynamic/input-text-dynamic.component.js';
 import InputTextIconDynamic from '../../../components/input-text-icon-dynamic/input-text-icon-dynamic.component.js';
@@ -34,7 +35,7 @@ import {
   formatExpiry,
 } from '../../../configuration/card-formatter/card-formatter';
 import CopyClipboard from '../../../components/copy-clipboard/copy-clipboard.component';
-import ExternalLink from '../../../components/external-link/external-link.component'
+import ExternalLink from '../../../components/external-link/external-link.component';
 
 import styles from './credit-card.style';
 
@@ -365,10 +366,7 @@ class CreditCard extends Component {
           editable={this.state.editable}
         />
         <View style={styles.clipboard}>
-          <ExternalLink
-            link={this.state.url}
-            editable={this.state.editable}
-          />
+          <ExternalLink link={this.state.url} editable={this.state.editable} />
         </View>
       </View>
       <View style={styles.inputContainer}>
@@ -753,44 +751,46 @@ class CreditCard extends Component {
     const {route, navigation} = this.props;
     const {title, type, background, theme, mode} = route.params;
     return (
-      <SafeAreaView style={styles.outerView}>
-        <ImageBackground source={background} style={styles.backgroundImage}>
-          <View style={styles.titleView}>
-            <TitleView
-              navigation={navigation}
-              mode={mode}
-              theme={theme}
-              title={title}
-              type={type}
-              save={this.onSave}
-              edit={this.onEdit}
-              delete={this.onDelete}
-              archive={this.onArchive}
-              editable={editable}
-            />
-          </View>
-          <ScrollView
-            style={[
-              styles.outerContainerView,
-              {
-                backgroundColor:
-                  theme !== 'dark' ? 'rgb(255, 255, 255)' : 'rgb(33, 47, 60)',
-              },
-            ]}
-            keyboardShouldPersistTaps="handled">
-            <View style={styles.container}>
-              {this.editComponent(
-                isLoader,
-                modal,
-                array,
-                key,
-                editable,
-                refBusModal,
-              )}
+      <Root>
+        <SafeAreaView style={styles.outerView}>
+          <ImageBackground source={background} style={styles.backgroundImage}>
+            <View style={styles.titleView}>
+              <TitleView
+                navigation={navigation}
+                mode={mode}
+                theme={theme}
+                title={title}
+                type={type}
+                save={this.onSave}
+                edit={this.onEdit}
+                delete={this.onDelete}
+                archive={this.onArchive}
+                editable={editable}
+              />
             </View>
-          </ScrollView>
-        </ImageBackground>
-      </SafeAreaView>
+            <ScrollView
+              style={[
+                styles.outerContainerView,
+                {
+                  backgroundColor:
+                    theme !== 'dark' ? 'rgb(255, 255, 255)' : 'rgb(33, 47, 60)',
+                },
+              ]}
+              keyboardShouldPersistTaps="handled">
+              <View style={styles.container}>
+                {this.editComponent(
+                  isLoader,
+                  modal,
+                  array,
+                  key,
+                  editable,
+                  refBusModal,
+                )}
+              </View>
+            </ScrollView>
+          </ImageBackground>
+        </SafeAreaView>
+      </Root>
     );
   }
 }

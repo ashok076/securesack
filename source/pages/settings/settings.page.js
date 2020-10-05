@@ -1,170 +1,122 @@
 import React, {Component} from 'react';
-import {
-  View,
-  Text,
-  SafeAreaView,
-  TouchableOpacity,
-  ImageBackground,
-  ScrollView,
-} from 'react-native';
-import {connect} from 'react-redux';
-import qs from 'qs';
-import {Title} from 'react-native-paper';
-import Icons from 'react-native-vector-icons/MaterialIcons';
-
-import Loader from '../../components/loader/loader.component';
+import {View, Image} from 'react-native';
+import {Text, TouchableRipple, Switch} from 'react-native-paper';
+import HeaderView from '../../components/header-view/header-view.component';
+import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import AsyncStorage from '@react-native-community/async-storage';
-import InputTextDynamic from '../../components/input-text-dynamic/input-text-dynamic.component';
-import {
-  changePassword,
-  resetPasswordStepOne,
-} from '../../configuration/api/api.functions';
+import FingerprintScanner from 'react-native-fingerprint-scanner';
 
 import styles from './settings.style';
 
 class SettingsPage extends Component {
-  initialState = {
-    oldPass: '',
-    newPass: '',
-    conPass: '',
-    isLoader: false,
-  };
-
-  constructor(props) {
-    super(props);
+  constructor() {
+    super();
     this.state = {
-      ...this.initialState,
+      isSensorAvailable: true,
+      fingerSwitch: false,
     };
   }
 
-  changePass = async () => {
-    this.setState({isLoader: true});
-    const {oldPass, newPass, conPass} = this.state;
-    const access_token = this.props.userData.userData.access_token;
-    const data = qs.stringify({
-      oldPassword: oldPass,
-      password: newPass,
-      password2: conPass,
+  componentDidMount() {
+    const {navigation} = this.props;
+    navigation.addListener('focus', () => {
+      this.fingerprintCheck();
     });
-    console.log(access_token, 'token');
-    await changePassword(access_token, data)
-      .then((response) => {
-        console.log('Ref Password: ', response);
+  }
 
-        this.setState({isLoader: false});
+  fingerprintCheck = async () => {
+    FingerprintScanner.isSensorAvailable()
+      .then((result) => {
+        this.setState({isSensorAvailable: false}, () => this.disablityCheck());
       })
       .catch((error) => {
-        console.log('Error: ', error);
-
-        this.setState({isLoader: false});
-        alert(error);
+        console.log(error);
       });
   };
 
-  dataEncryption = async () => {
-    const email = await AsyncStorage.getItem('email');
-    console.log(email, 'async');
-    var data = qs.stringify({email: email});
-    await resetPasswordStepOne(data)
-      .then((response) => {
-        console.log('Ref Business: ', response);
-        this.setState({isLoader: false});
-      })
-      .catch((error) => {
-        console.log('Error: ', error.message);
-        this.setState({isLoader: false});
-      });
+  disablityCheck = async () => {
+    try {
+      let enablingFingerprint = await AsyncStorage.getItem(
+        'enable_fingerprint',
+      );
+      if (enablingFingerprint !== null) {
+        console.log('Enabling Fingerprint: ', enablingFingerprint);
+        this.setState({fingerSwitch: JSON.parse(enablingFingerprint)}, () => console.log("Type check: ", typeof(this.state.fingerSwitch)));
+      } else {
+        console.log('Null ');
+      }
+    } catch (error) {
+      console.log('Error in getting user info: ', error);
+    }
+  };
+
+  title = (title) => (
+    <View>
+      <Text style={styles.title}>{title}</Text>
+    </View>
+  );
+
+  caption = (caption) => (
+    <View>
+      <Text style={styles.caption}>{caption}</Text>
+    </View>
+  );
+
+  captionView = (icon, title) => (
+    <View style={styles.alignHor}>
+      <MaterialIcons name={icon} size={24} color={'rgb(33, 47, 60)'} />
+      {this.caption(title)}
+    </View>
+  );
+
+  toggleSwitch = () => {
+    this.setState({fingerSwitch: !this.state.fingerSwitch}, () =>
+      this.setFingerprintValue(),
+    );
+  };
+
+  setFingerprintValue = async () => {
+    const {fingerSwitch} = this.state;
+    try {
+      await AsyncStorage.setItem('enable_fingerprint', JSON.stringify(fingerSwitch));
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   render() {
     const {navigation} = this.props;
+    const {isSensorAvailable, fingerSwitch} = this.state;
+    console.log('Sensor: ', isSensorAvailable);
     return (
-      <SafeAreaView style={styles.root_container}>
-        <ImageBackground
-          source={require('../../assets/jpg-images/Service-Reward-Background/service-and-reward-background.jpg')}
-          style={styles.backgroundImage}>
-          <View style={styles.titleView}>
-            <View style={styles.rowObject}>
-              <TouchableOpacity onPress={() => navigation.goBack()}>
-                <Icons name="arrow-back" color="#000000" size={24} />
-              </TouchableOpacity>
-              <Title style={styles.title}>Setting</Title>
-            </View>
+      <View style={styles.container}>
+        <HeaderView navigation={navigation} title="Settings" theme={'dark'} />
+        <View style={styles.outerView}>
+          {this.title('Biometrics')}
+          <View style={styles.contentView}>
+            {this.captionView('fingerprint', 'Biometrics Setting')}
+            <Switch
+              value={fingerSwitch}
+              color={'#FB9337'}
+              disabled={isSensorAvailable}
+              onValueChange={() => this.toggleSwitch()}
+            />
           </View>
-
-          <ScrollView>
-            <View style={styles.body}>
-              <View style={styles.header}>
-                <Text style={styles.headerText}>Change Password</Text>
-              </View>
-              <View style={{width: '96%', alignSelf: 'center'}}>
-                <View style={styles.Spacing_Input}>
-                  <InputTextDynamic
-                    value={this.state.oldPass}
-                    onChangeText={(text) => {
-                      this.setState({oldPass: text});
-                    }}
-                    secureTextEntry={true}
-                    placeholder="Old Password"
-                  />
-                </View>
-                <View style={styles.Spacing_Input}>
-                  <InputTextDynamic
-                    value={this.state.newPass}
-                    onChangeText={(text) => {
-                      this.setState({newPass: text});
-                    }}
-                    secureTextEntry={true}
-                    placeholder="New Password"
-                  />
-                </View>
-                <View style={styles.Spacing_Input}>
-                  <InputTextDynamic
-                    value={this.state.conPass}
-                    onChangeText={(text) => {
-                      this.setState({conPass: text});
-                    }}
-                    secureTextEntry={true}
-                    placeholder="Confirm New Password"
-                  />
-                </View>
-                <TouchableOpacity onPress={() => this.changePass()}>
-                  <View style={styles.buttonView}>
-                    <Text style={styles.text_Btn_View}>Change Password</Text>
-                  </View>
-                </TouchableOpacity>
-              </View>
-              <View>
-                <View style={styles.header_Sub}>
-                  <Text style={styles.headerText}>Data Encryption Key</Text>
-                </View>
-                <View>
-                  <Text style={styles.header_text_Sub}>
-                    To reset your password in the future you will need your
-                    personalized 16 digit data encryption key first sent to you
-                    by SecureSack. If you have misplaced it SecureSack highly
-                    recommends you get a copy sent to your email now so that you
-                    can reset your password in the future.
-                  </Text>
-                </View>
-                <TouchableOpacity onPress={() => this.dataEncryption()}>
-                  <View style={styles.buttonView_Email}>
-                    <Text style={styles.text_Btn_View}>
-                      Email my Data Encryption Key now
-                    </Text>
-                  </View>
-                </TouchableOpacity>
-              </View>
+        </View>
+        <View style={styles.outerView}>
+          {this.title('Account')}
+          <TouchableRipple
+            rippleColor="rgba(0, 0, 0, .32)"
+            onPress={() => navigation.navigate('AccountSettings')}>
+            <View style={styles.contentView}>
+              {this.captionView('person', 'Profile Setting')}
             </View>
-          </ScrollView>
-        </ImageBackground>
-        <Loader isLoader={this.state.isLoader} />
-      </SafeAreaView>
+          </TouchableRipple>
+        </View>
+      </View>
     );
   }
 }
-const mapStateToProps = ({userData}) => ({
-  userData,
-});
 
-export default connect(mapStateToProps)(SettingsPage);
+export default SettingsPage;

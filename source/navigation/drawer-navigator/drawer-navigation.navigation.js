@@ -44,6 +44,7 @@ import Notes from '../../categories/personal-organizer/notes/notes.category.js';
 import Recipies from '../../categories/personal-organizer/recipes/recipes.category.js';
 
 
+
 const Drawer = createDrawerNavigator();
 
 const DrawerNavigator = () => {

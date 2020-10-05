@@ -4,5 +4,6 @@ export const Color = {
     veryLightPink: 'rgb(33, 47, 60)',
     paleRed: 'rgb(228, 91, 72)',
     salmon: 'rgb(255, 132, 110)',
-    lightNavyBlue: 'rgb(45, 73, 141)'
+    lightNavyBlue: 'rgb(45, 73, 141)',
+    orange: '#FB9337'
 }
