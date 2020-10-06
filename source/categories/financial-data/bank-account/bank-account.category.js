@@ -967,20 +967,25 @@ class BankAccounts extends Component {
     this.archive();
   };
 
+  background = () =>
+    require('../../../assets/jpg-images/Financial-Data-Background/financial-data-background.jpg');
+
   render() {
     const {isLoader, modal, array, key, editable, refBusModal} = this.state;
     const {route, navigation} = this.props;
-    const {title, type, background, theme, mode} = route.params;
+    const {title, type, mode} = route.params;
     return (
       <Root>
         <SafeAreaView style={styles.outerView}>
-          <ImageBackground source={background} style={styles.backgroundImage}>
+          <ImageBackground
+            source={this.background()}
+            style={styles.backgroundImage}>
             <View style={styles.titleView}>
               <TitleView
                 navigation={navigation}
                 mode={mode}
-                theme={theme}
                 title={title}
+                theme={'light'}
                 type={type}
                 save={this.onSave}
                 edit={this.onEdit}
@@ -994,13 +999,7 @@ class BankAccounts extends Component {
               onContentSizeChange={() => {
                 this.scroll.scrollTo({y: 0});
               }}
-              style={[
-                styles.outerContainerView,
-                {
-                  backgroundColor:
-                    theme !== 'dark' ? 'rgb(255, 255, 255)' : 'rgb(33, 47, 60)',
-                },
-              ]}
+              style={styles.outerContainerView}
               keyboardShouldPersistTaps="handled">
               <View style={styles.container}>
                 {this.editComponent(

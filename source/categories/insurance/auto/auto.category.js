@@ -198,7 +198,7 @@ class AutoInsurance extends Component {
       securityA2,
       securityQ3,
       securityA3,
-      issuerId
+      issuerId,
     } = this.state;
 
     const {navigation, route} = this.props;
@@ -412,7 +412,9 @@ class AutoInsurance extends Component {
       <View style={[styles.miniInputContainer, {marginRight: 10}]}>
         <InputTextDynamic
           placeholder="Effective From"
-          onChangeText={(effectiveFrom) => this.setState({effectiveFrom: formatDate(effectiveFrom)})}
+          onChangeText={(effectiveFrom) =>
+            this.setState({effectiveFrom: formatDate(effectiveFrom)})
+          }
           keyboardType="default"
           color={Color.veryLightPink}
           value={this.state.effectiveFrom}
@@ -656,19 +658,22 @@ class AutoInsurance extends Component {
     this.archive();
   };
 
+  background = () =>
+    require('../../../assets/jpg-images/Insurance-Background/insurance-background.jpg');
+
   render() {
     const {isLoader, modal, array, key, editable} = this.state;
     const {route, navigation} = this.props;
-    const {title, type, background, theme, mode} = route.params;
+    const {title, type, mode} = route.params;
     return (
       <Root>
         <SafeAreaView style={styles.outerView}>
-          <ImageBackground source={background} style={styles.backgroundImage}>
+          <ImageBackground source={this.background()} style={styles.backgroundImage}>
             <View style={styles.titleView}>
               <TitleView
                 navigation={navigation}
                 mode={mode}
-                theme={theme}
+                theme={'dark'}
                 title={title}
                 type={type}
                 save={this.onSave}

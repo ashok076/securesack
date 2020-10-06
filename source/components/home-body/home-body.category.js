@@ -1,8 +1,11 @@
 import React, {Component} from 'react';
 import {View} from 'react-native';
+import {connect} from 'react-redux';
 
-import MainContent from '../../components/main-content/main-content.component';
-import InputTextSearch from '../../components/input-text-search/input-text-search.component';
+import MainContent from '../main-content/main-content.component';
+import InputTextSearch from '../input-text-search/input-text-search.component';
+import SearchList from '../search-list/search-list.component.js'
+import {search} from '../../configuration/api/api.functions';
 
 import styles from './home-body.style';
 
@@ -11,14 +14,29 @@ class HomeBody extends Component {
     super();
     this.state = {
       search: '',
+      searchData: ''
     };
   }
 
-  handleSearch = ({nativeEvent: {eventCount, target, text}}) => {};
+  handleSearch = ({nativeEvent: {eventCount, target, text}}) => {
+    this.setState({search: text});
+    this.searchTitle(text);
+  };
+
+  searchTitle = async (text) => {
+    const {access_token} = this.props.userData.userData;
+    console.log('Access: ', access_token);
+    await search(access_token, text)
+      .then((response) => {
+        console.log('Search Res: ', response);
+        this.setState({ searchData: response })
+      })
+      .catch((err) => console.log('Err: ', err));
+  };
 
   render() {
     const {navigation} = this.props;
-    const {search} = this.state;
+    const {search, searchData} = this.state;
     return (
       <View>
         <View style={styles.searchView}>
@@ -29,11 +47,19 @@ class HomeBody extends Component {
           />
         </View>
         <View style={styles.mainContent}>
-          <MainContent navigation={navigation} />
+          {search.length === 0 ? (
+            <MainContent navigation={navigation} />
+          ) : (
+            <SearchList searchData={searchData} navigation={navigation}/>
+          )}
         </View>
       </View>
     );
   }
 }
 
-export default HomeBody;
+const mapStateToProps = ({userData}) => ({
+  userData,
+});
+
+export default connect(mapStateToProps)(HomeBody);

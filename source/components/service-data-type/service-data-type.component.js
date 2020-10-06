@@ -124,11 +124,8 @@ class ServiceDataType extends Component {
     const {navigation} = this.props;
     navigation.navigate(type, {
       type: type,
-      category: 'Services and Rewards',
       title: title,
-      background: require('../../assets/jpg-images/Service-Reward-Background/service-and-reward-background.jpg'),
       recid: recid,
-      theme: 'dark',
       mode: mode,
     });
   };

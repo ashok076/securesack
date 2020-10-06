@@ -14,6 +14,7 @@ const InputTextSearch = ({placeholder, onChange, value}) => (
       placeholderTextColor="#212F3C"
       onChange={onChange}
       value={value}
+      color="#212F3C"
     />
     <TouchableOpacity>
       <View style={styles.iconBackgroundView}>

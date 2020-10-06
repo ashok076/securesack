@@ -124,11 +124,8 @@ class InsuranceDataType extends Component {
     const {navigation} = this.props;
     navigation.navigate(type, {
       type: type,
-      category: 'Insurance',
       title: title,
-      background: require('../../assets/jpg-images/Insurance-Background/insurance-background.jpg'),
       recid: recid,
-      theme: 'dark',
       mode: mode
     });
   };

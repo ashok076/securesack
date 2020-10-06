@@ -805,20 +805,22 @@ class ServiceAccount extends Component {
     this.archive();
   };
 
+background = () => require('../../../assets/jpg-images/Service-Reward-Background/service-and-reward-background.jpg')
+
   render() {
     const {isLoader, modal, array, key, editable, refBusModal} = this.state;
     const {route, navigation} = this.props;
-    const {title, type, background, theme, mode} = route.params;
+    const {title, type, mode} = route.params;
     console.log('Array: ', this.state.creditCardArray);
     return (
       <Root>
         <SafeAreaView style={styles.outerView}>
-          <ImageBackground source={background} style={styles.backgroundImage}>
+          <ImageBackground source={this.background()} style={styles.backgroundImage}>
             <View style={styles.titleView}>
               <TitleView
                 navigation={navigation}
                 mode={mode}
-                theme={theme}
+                theme={'dark'}
                 title={title}
                 type={type}
                 save={this.onSave}

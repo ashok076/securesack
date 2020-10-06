@@ -129,11 +129,8 @@ class GovernmentRecordsData extends Component {
     const {navigation} = this.props;
     navigation.navigate(type, {
       type: type,
-      category: 'Government Records',
       title: title,
-      background: require('../../assets/jpg-images/Government-Record-Background/government-records-background.jpg'),
       recid: recid,
-      theme: 'light',
       mode: mode,
     });
   };

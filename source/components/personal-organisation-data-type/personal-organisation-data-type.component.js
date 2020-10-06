@@ -129,11 +129,8 @@ class PersonalOrganisationData extends Component {
     console.log('Personal: ', navigation, this.props);
     navigation.navigate(type, {
       type: type,
-      category: 'Personal Organisation',
       title: title,
-      background: require('../../assets/jpg-images/Personal-Organisation-Background/personal-organisation-background.jpg'),
       recid: recid,
-      theme: 'light',
       mode: mode,
     });
   };

@@ -38,6 +38,7 @@ const styles = {
     width: '100%',
   },
   outerContainerView: {
+    backgroundColor: 'rgb(248, 249, 250)',
     borderTopLeftRadius: 15,
     borderTopRightRadius: 15,
     width: '100%',

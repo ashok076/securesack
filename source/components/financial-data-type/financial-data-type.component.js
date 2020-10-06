@@ -187,17 +187,15 @@ class FinancialDataType extends Component {
     const {navigation} = this.props;
     navigation.navigate(type, {
       type: type,
-      category: 'Financial Data',
       title: title,
-      background: require('../../assets/jpg-images/Financial-Data-Background/financial-data-background.jpg'),
       recid: recid,
-      theme: 'light',
       mode: mode,
     });
   };
 
   render() {
     const {dataType} = this.state;
+    console.log("Data type: ", dataType)
     return (
       <View style={styles.view}>
         <FlatList

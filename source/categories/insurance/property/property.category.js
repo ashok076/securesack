@@ -751,6 +751,9 @@ class PropertyInsurance extends Component {
     this.archive();
   };
 
+  background = () =>
+    require('../../../assets/jpg-images/Insurance-Background/insurance-background.jpg');
+
   render() {
     const {isLoader, modal, array, key, editable} = this.state;
     const {route, navigation} = this.props;
@@ -758,12 +761,12 @@ class PropertyInsurance extends Component {
     return (
       <Root>
         <SafeAreaView style={styles.outerView}>
-          <ImageBackground source={background} style={styles.backgroundImage}>
+          <ImageBackground source={this.background()} style={styles.backgroundImage}>
             <View style={styles.titleView}>
               <TitleView
                 navigation={navigation}
                 mode={mode}
-                theme={theme}
+                theme={'dark'}
                 title={title}
                 type={type}
                 save={this.onSave}

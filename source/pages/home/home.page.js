@@ -70,6 +70,7 @@ class Home extends Component {
       let userInfo = await AsyncStorage.getItem('user_info');
       if (userInfo !== null) {
         userInfo(userInfo);
+        this.setState({access_token: userInfo.access_token});
         console.log('Access Token: ', userInfo.access_token);
       } else {
         console.log('HI');
@@ -207,7 +208,7 @@ class Home extends Component {
   );
 
   render() {
-    const {isFingerPrintSettings, isSensorAvailable} = this.state;
+    const {isFingerPrintSettings, isSensorAvailable, access_token} = this.state;
     const {navigation, userData} = this.props;
     let name = '';
     if (userData && userData.userData) {

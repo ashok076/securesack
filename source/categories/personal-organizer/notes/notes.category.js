@@ -206,6 +206,9 @@ class Notes extends Component {
     this.archive();
   };
 
+  background = () =>
+    require('../../../assets/jpg-images/Personal-Organisation-Background/personal-organisation-background.jpg');
+
   render() {
     const {editable, isLoader} = this.state;
     const {route, navigation} = this.props;
@@ -213,12 +216,14 @@ class Notes extends Component {
     return (
       <Root>
         <SafeAreaView style={styles.outerView}>
-          <ImageBackground source={background} style={styles.backgroundImage}>
+          <ImageBackground
+            source={this.background()}
+            style={styles.backgroundImage}>
             <View style={styles.titleView}>
               <TitleView
                 navigation={navigation}
                 mode={mode}
-                theme={theme}
+                theme={'light'}
                 title={title}
                 type={type}
                 save={this.onSave}
@@ -233,13 +238,7 @@ class Notes extends Component {
               onContentSizeChange={() => {
                 this.scroll.scrollTo({y: 0});
               }}
-              style={[
-                styles.outerContainerView,
-                {
-                  backgroundColor:
-                    theme !== 'dark' ? 'rgb(255, 255, 255)' : 'rgb(33, 47, 60)',
-                },
-              ]}
+              style={styles.outerContainerView}
               keyboardShouldPersistTaps="handled">
               {this.editComponent(isLoader)}
             </ScrollView>

@@ -127,11 +127,8 @@ class PersonalAssetsData extends Component {
     const {navigation} = this.props;
     navigation.navigate(title, {
       type: type,
-      category: 'Personal Assets',
       title: title,
-      background: require('../../assets/jpg-images/Personal-Assets-Background/personal-assets-background.jpg'),
       recid: recid,
-      theme: 'light',
       mode: mode
     });
   };
