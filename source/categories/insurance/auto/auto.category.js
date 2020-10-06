@@ -32,6 +32,7 @@ import {payment_due_type} from './auto.list';
 import {formatDate} from '../../../configuration/card-formatter/card-formatter';
 import {Color} from '../../../assets/color/color.js';
 import CopyClipboard from '../../../components/copy-clipboard/copy-clipboard.component';
+import ExternalLink from '../../../components/external-link/external-link.component';
 
 import styles from './auto.style';
 
@@ -403,6 +404,51 @@ class AutoInsurance extends Component {
           value={this.state.total}
           editable={this.state.editable}
         />
+      </View>
+      <View style={styles.inputContainer}>
+        <InputTextDynamic
+          placeholder="URL"
+          onChangeText={(url) => this.setState({url})}
+          keyboardType="default"
+          color={Color.veryLightBlue}
+          value={this.state.url}
+          editable={this.state.editable}
+        />
+        <View style={styles.clipboard}>
+          <ExternalLink link={this.state.url} editable={this.state.editable} />
+        </View>
+      </View>
+      <View style={styles.inputContainer}>
+        <InputTextDynamic
+          placeholder="User Name"
+          onChangeText={(username) => this.setState({username})}
+          keyboardType="default"
+          color={Color.veryLightBlue}
+          value={this.state.username}
+          editable={this.state.editable}
+        />
+        <View style={styles.clipboard}>
+          <CopyClipboard
+            text={this.state.username}
+            editable={this.state.editable}
+          />
+        </View>
+      </View>
+      <View style={styles.inputContainer}>
+        <InputTextDynamic
+          placeholder="Password"
+          onChangeText={(password) => this.setState({password})}
+          keyboardType="default"
+          color={Color.veryLightBlue}
+          value={this.state.password}
+          editable={this.state.editable}
+        />
+        <View style={styles.clipboard}>
+          <CopyClipboard
+            text={this.state.password}
+            editable={this.state.editable}
+          />
+        </View>
       </View>
     </View>
   );

@@ -18,7 +18,7 @@ const ExternalLink = ({link, editable}) => (
 const openLink = (link) => {
   console.log('Link: ', link);
   if (link !== undefined && link !== null && link !== '' && link.length > 0) {
-    Linking.openURL(link);
+    Linking.openURL(`https://${link}`);
   }
 };
 

@@ -250,7 +250,7 @@ class Recipies extends Component {
 
   editComponent = (isLoader, modal, array, key) => (
     <View>
-      <Text style={styles.title}>Basic basicInformation</Text>
+      <Text style={styles.title}>Basic Information</Text>
       {this.basicInformation()}
       <Loader isLoader={isLoader} />
       <ModalScreen

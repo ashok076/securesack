@@ -93,7 +93,7 @@ class GovernmentRecordsData extends Component {
     );
   };
 
-    viewAll = (category) => {
+  viewAll = (category) => {
     const {isExpanded} = this.state;
     console.log("Category: ", category)
     if (category !== undefined) {
@@ -164,10 +164,10 @@ class GovernmentRecordsData extends Component {
         return item.LicenseNumber;
         break;
       case 'Passport':
-        return item.PassportNumber;
+        return item.Name;
         break;
       case 'TaxIdentification':
-        return item.StateIdentificationNumber;
+        return item.Name;
         break;
       case 'IdentificationCards':
         return item.IDName;
@@ -181,10 +181,10 @@ class GovernmentRecordsData extends Component {
         return item.CountryOfIssue;
         break;
       case 'Passport':
-        return item.PlaceOfIssue;
+        return item.PassportNumber;
         break;
       case 'TaxIdentification':
-        return item.TaxFilingNumber;
+        return item.StateIdentificationNumber;
         break;
       case 'IdentificationCards':
         return item.IDNumber;

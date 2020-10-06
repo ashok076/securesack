@@ -32,6 +32,7 @@ import {payment_due_type} from './life.list';
 import {formatDate} from '../../../configuration/card-formatter/card-formatter';
 import {Color} from '../../../assets/color/color';
 import CopyClipboard from '../../../components/copy-clipboard/copy-clipboard.component';
+import ExternalLink from '../../../components/external-link/external-link.component';
 
 import styles from './life.style';
 
@@ -208,7 +209,7 @@ class LifeInsurance extends Component {
       beneficiaries2,
       beneficiaries3,
       beneficiaries4,
-      issuerId
+      issuerId,
     } = this.state;
 
     const {navigation, route} = this.props;
@@ -347,7 +348,7 @@ class LifeInsurance extends Component {
             placeholder="Premium Amount"
             onChangeText={(premiumAmnt) => this.setState({premiumAmnt})}
             keyboardType="default"
-          color={Color.veryLightPink}
+            color={Color.veryLightPink}
             value={this.state.premiumAmnt}
             editable={this.state.editable}
           />
@@ -357,7 +358,7 @@ class LifeInsurance extends Component {
             placeholder="Insured Amount"
             onChangeText={(insuredAmnt) => this.setState({insuredAmnt})}
             keyboardType="default"
-          color={Color.veryLightPink}
+            color={Color.veryLightPink}
             value={this.state.insuredAmnt}
             editable={this.state.editable}
           />
@@ -372,6 +373,9 @@ class LifeInsurance extends Component {
           value={this.state.url}
           editable={this.state.editable}
         />
+        <View style={styles.clipboard}>
+          <ExternalLink link={this.state.url} editable={this.state.editable} />
+        </View>
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
@@ -436,7 +440,9 @@ class LifeInsurance extends Component {
         <View style={[styles.miniInputContainer, {marginRight: 10}]}>
           <InputTextDynamic
             placeholder="Effective From"
-            onChangeText={(effectiveFrom) => this.setState({effectiveFrom: formatDate(effectiveFrom)})}
+            onChangeText={(effectiveFrom) =>
+              this.setState({effectiveFrom: formatDate(effectiveFrom)})
+            }
             keyboardType="default"
             color={Color.veryLightPink}
             value={this.state.effectiveFrom}
@@ -447,7 +453,9 @@ class LifeInsurance extends Component {
         <View style={styles.miniInputContainer}>
           <InputTextDynamic
             placeholder="Expiration"
-            onChangeText={(endsOn) => this.setState({endsOn: formatDate(endsOn)})}
+            onChangeText={(endsOn) =>
+              this.setState({endsOn: formatDate(endsOn)})
+            }
             keyboardType="default"
             color={Color.veryLightPink}
             value={this.state.endsOn}
@@ -737,7 +745,9 @@ class LifeInsurance extends Component {
     return (
       <Root>
         <SafeAreaView style={styles.outerView}>
-          <ImageBackground source={this.background()} style={styles.backgroundImage}>
+          <ImageBackground
+            source={this.background()}
+            style={styles.backgroundImage}>
             <View style={styles.titleView}>
               <TitleView
                 navigation={navigation}

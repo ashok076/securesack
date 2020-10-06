@@ -30,6 +30,7 @@ import {insurance_type, plan_type, payment_due_type} from './health-care.list';
 import {formatDate} from '../../../configuration/card-formatter/card-formatter';
 import {Color} from '../../../assets/color/color.js';
 import CopyClipboard from '../../../components/copy-clipboard/copy-clipboard.component';
+import ExternalLink from '../../../components/external-link/external-link.component';
 
 import styles from './health-care.style';
 
@@ -350,6 +351,9 @@ class HealthCareProvider extends Component {
           value={this.state.url}
           editable={this.state.editable}
         />
+        <View style={styles.clipboard}>
+          <ExternalLink link={this.state.url} editable={this.state.editable} />
+        </View>
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
@@ -414,7 +418,9 @@ class HealthCareProvider extends Component {
         <View style={[styles.miniInputContainer, {marginRight: 10}]}>
           <InputTextDynamic
             placeholder="Effective From"
-            onChangeText={(effectiveFrom) => this.setState({effectiveFrom: formatDate(effectiveFrom)})}
+            onChangeText={(effectiveFrom) =>
+              this.setState({effectiveFrom: formatDate(effectiveFrom)})
+            }
             keyboardType="default"
             color={Color.veryLightPink}
             value={this.state.effectiveFrom}
@@ -425,7 +431,9 @@ class HealthCareProvider extends Component {
         <View style={styles.miniInputContainer}>
           <InputTextDynamic
             placeholder="Expiration"
-            onChangeText={(expiration) => this.setState({expiration: formatDate(expiration)})}
+            onChangeText={(expiration) =>
+              this.setState({expiration: formatDate(expiration)})
+            }
             keyboardType="default"
             color={Color.veryLightPink}
             value={this.state.expiration}
@@ -681,7 +689,9 @@ class HealthCareProvider extends Component {
     return (
       <Root>
         <SafeAreaView style={styles.outerView}>
-          <ImageBackground source={this.background()} style={styles.backgroundImage}>
+          <ImageBackground
+            source={this.background()}
+            style={styles.backgroundImage}>
             <View style={styles.titleView}>
               <TitleView
                 navigation={navigation}

@@ -31,6 +31,7 @@ import {
 import {reward_type} from './rewards-programs.list';
 import {Color} from '../../../assets/color/color.js';
 import CopyClipboard from '../../../components/copy-clipboard/copy-clipboard.component';
+import ExternalLink from '../../../components/external-link/external-link.component';
 
 import styles from './rewards-programs.style';
 
@@ -308,6 +309,9 @@ class RewardProgram extends Component {
           value={this.state.url}
           editable={this.state.editable}
         />
+        <View style={styles.clipboard}>
+          <ExternalLink link={this.state.url} editable={this.state.editable} />
+        </View>
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic

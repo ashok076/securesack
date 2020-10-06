@@ -32,6 +32,7 @@ import {boolean_value} from './property.list';
 import {formatDate} from '../../../configuration/card-formatter/card-formatter';
 import {Color} from '../../../assets/color/color';
 import CopyClipboard from '../../../components/copy-clipboard/copy-clipboard.component';
+import ExternalLink from '../../../components/external-link/external-link.component';
 
 import styles from './property.style';
 
@@ -399,6 +400,9 @@ class PropertyInsurance extends Component {
           value={this.state.url}
           editable={this.state.editable}
         />
+        <View style={styles.clipboard}>
+          <ExternalLink link={this.state.url} editable={this.state.editable} />
+        </View>
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
