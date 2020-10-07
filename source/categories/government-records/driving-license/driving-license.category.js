@@ -46,6 +46,7 @@ class DriverLicense extends Component {
     drivingViolationType1: '',
     drivingViolationType2: '',
     modal: '',
+    notes: '',
     array: [],
   };
 
@@ -102,6 +103,7 @@ class DriverLicense extends Component {
       noOfDrivingVoilation: data.DrivingViolation,
       drivingViolationType1: data.DrivingViolationType1,
       drivingViolationType2: data.DrivingViolationType2,
+      notes: data.Comment
     });
   };
 
@@ -118,6 +120,7 @@ class DriverLicense extends Component {
       drivingViolationType1,
       drivingViolationType2,
       access_token,
+      notes,
     } = this.state;
 
     const {navigation, route} = this.props;
@@ -133,6 +136,7 @@ class DriverLicense extends Component {
       DrivingViolation: noOfDrivingVoilation,
       DrivingViolationType1: drivingViolationType1,
       DrivingViolationType2: drivingViolationType2,
+      Comment: notes
     });
 
     await createOrUpdateRecord('DriverLicense', recid, data, access_token)
@@ -318,6 +322,27 @@ class DriverLicense extends Component {
     this.setState({modal: bool});
   };
 
+  notes = () => (
+    <View>
+      <View style={styles.inputContainer}>
+        <InputTextDynamic
+          placeholder="Notes"
+          onChangeText={(notes) => this.setState({notes})}
+          keyboardType="default"
+          value={this.state.notes}
+          color={Color.salmon}
+          editable={this.state.editable}
+        />
+        <View style={styles.clipboard}>
+          <CopyClipboard
+            text={this.state.notes}
+            editable={this.state.editable}
+          />
+        </View>
+      </View>
+    </View>
+  );
+
   editComponent = (isLoader, modal, array, key, editable) => (
     <View>
       <Text style={styles.title}>Basic Information</Text>
@@ -326,6 +351,8 @@ class DriverLicense extends Component {
       <Text style={styles.title}>Driving Violations</Text>
       {this.drivingVoilations()}
       <View style={styles.gap} />
+      <Text style={styles.title}>Notes</Text>
+      {this.notes()}
       <Loader isLoader={isLoader} />
       <ModalScreen
         isModalVisible={modal}
@@ -364,7 +391,8 @@ class DriverLicense extends Component {
     this.archive();
   };
 
-background = () => require('../../../assets/jpg-images/Government-Record-Background/government-records-background.jpg')
+  background = () =>
+    require('../../../assets/jpg-images/Government-Record-Background/government-records-background.jpg');
 
   render() {
     const {isLoader, modal, array, key, editable} = this.state;
@@ -373,7 +401,9 @@ background = () => require('../../../assets/jpg-images/Government-Record-Backgro
     return (
       <Root>
         <SafeAreaView style={styles.outerView}>
-          <ImageBackground source={this.background()} style={styles.backgroundImage}>
+          <ImageBackground
+            source={this.background()}
+            style={styles.backgroundImage}>
             <View style={styles.titleView}>
               <TitleView
                 navigation={navigation}
@@ -393,13 +423,7 @@ background = () => require('../../../assets/jpg-images/Government-Record-Backgro
               onContentSizeChange={() => {
                 this.scroll.scrollTo({y: 0});
               }}
-              style={[
-                styles.outerContainerView,
-                {
-                  backgroundColor:
-                    theme !== 'dark' ? 'rgb(255, 255, 255)' : 'rgb(33, 47, 60)',
-                },
-              ]}
+              style={styles.outerContainerView}
               keyboardShouldPersistTaps="handled">
               <View style={styles.container}>
                 {this.editComponent(isLoader, modal, array, key, editable)}

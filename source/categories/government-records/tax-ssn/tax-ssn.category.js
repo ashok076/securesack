@@ -56,6 +56,7 @@ class TaxIdentification extends Component {
     countryofbirth: '',
     sob: '',
     cob: '',
+    notes: '',
   };
 
   constructor(props) {
@@ -119,6 +120,7 @@ class TaxIdentification extends Component {
       countryofbirth: data.CountryOfBirth,
       sob: data.StateOfBirth,
       cob: data.CityOfBirth,
+      notes: data.Comment
     });
   };
 
@@ -142,6 +144,7 @@ class TaxIdentification extends Component {
       sob,
       cob,
       access_token,
+      notes
     } = this.state;
 
     const {navigation, route} = this.props;
@@ -164,6 +167,7 @@ class TaxIdentification extends Component {
       CountryOfBirth: countryofbirth,
       StateOfBirth: sob,
       CityOfBirth: cob,
+      Comment: notes
     });
 
     await createOrUpdateRecord('TaxIdentification', recid, data, access_token)
@@ -402,10 +406,7 @@ class TaxIdentification extends Component {
           editable={this.state.editable}
         />
         <View style={styles.clipboard}>
-          <CopyClipboard
-            text={this.state.ssn}
-            editable={this.state.editable}
-          />
+          <CopyClipboard text={this.state.ssn} editable={this.state.editable} />
         </View>
       </View>
       <View style={styles.inputContainer}>
@@ -422,6 +423,27 @@ class TaxIdentification extends Component {
           editable={this.state.editable}
           name="Gender"
         />
+      </View>
+    </View>
+  );
+
+  notes = () => (
+    <View>
+      <View style={styles.inputContainer}>
+        <InputTextDynamic
+          placeholder="Notes"
+          onChangeText={(notes) => this.setState({notes})}
+          keyboardType="default"
+          value={this.state.notes}
+          color={Color.salmon}
+          editable={this.state.editable}
+        />
+        <View style={styles.clipboard}>
+          <CopyClipboard
+            text={this.state.notes}
+            editable={this.state.editable}
+          />
+        </View>
       </View>
     </View>
   );
@@ -444,6 +466,8 @@ class TaxIdentification extends Component {
       <View style={styles.gap} />
       <Text style={styles.title}>Birth Details</Text>
       {this.birthDetails()}
+      <Text style={styles.title}>Notes</Text>
+      {this.notes()}
       <View style={styles.gap} />
       <Loader isLoader={isLoader} />
       <ModalScreen
@@ -483,7 +507,8 @@ class TaxIdentification extends Component {
     this.archive();
   };
 
-background = () => require('../../../assets/jpg-images/Government-Record-Background/government-records-background.jpg')
+  background = () =>
+    require('../../../assets/jpg-images/Government-Record-Background/government-records-background.jpg');
 
   render() {
     const {isLoader, modal, array, key, editable} = this.state;
@@ -492,7 +517,9 @@ background = () => require('../../../assets/jpg-images/Government-Record-Backgro
     return (
       <Root>
         <SafeAreaView style={styles.outerView}>
-          <ImageBackground source={this.background()} style={styles.backgroundImage}>
+          <ImageBackground
+            source={this.background()}
+            style={styles.backgroundImage}>
             <View style={styles.titleView}>
               <TitleView
                 navigation={navigation}
@@ -512,13 +539,7 @@ background = () => require('../../../assets/jpg-images/Government-Record-Backgro
               onContentSizeChange={() => {
                 this.scroll.scrollTo({y: 0});
               }}
-              style={[
-                styles.outerContainerView,
-                {
-                  backgroundColor:
-                    theme !== 'dark' ? 'rgb(255, 255, 255)' : 'rgb(33, 47, 60)',
-                },
-              ]}
+              style={styles.outerContainerView}
               keyboardShouldPersistTaps="handled">
               <View style={styles.container}>
                 {this.editComponent(isLoader, modal, array, key, editable)}

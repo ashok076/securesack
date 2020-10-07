@@ -56,6 +56,7 @@ class BrokerageAccount extends Component {
     stockTransactionFee: '',
     openedOn: '',
     closedOn: '',
+    notes: '',
     editable: true,
     hideResult: true,
     refArray: [],
@@ -121,6 +122,7 @@ class BrokerageAccount extends Component {
         stockTransactionFee: data.StockTransactionFee,
         openedOn: data.AccountOpeningDate,
         closedOn: data.AccountClosingDate,
+        notes: data.Comment,
         isLoader: false,
       },
       () => this.referenceObj(),
@@ -157,6 +159,7 @@ class BrokerageAccount extends Component {
       stockTransactionFee,
       openedOn,
       closedOn,
+      notes
     } = this.state;
     const {navigation, route} = this.props;
     const {recid} = route.params;
@@ -179,6 +182,7 @@ class BrokerageAccount extends Component {
       StockTransactionFee: stockTransactionFee,
       AccountOpeningDate: openedOn,
       AccountClosingDate: closedOn,
+      Comment: notes
     });
     await createOrUpdateRecord('BrokerageAccount', recid, data, access_token)
       .then((response) => {
@@ -484,6 +488,27 @@ class BrokerageAccount extends Component {
     this.getBusinessEntity();
   };
 
+  notes = () => (
+    <View>
+      <View style={styles.inputContainer}>
+        <InputTextDynamic
+          placeholder="Notes"
+          onChangeText={(notes) => this.setState({notes})}
+          keyboardType="default"
+          value={this.state.notes}
+          color={Color.lightishBlue}
+          editable={this.state.editable}
+        />
+        <View style={styles.clipboard}>
+          <CopyClipboard
+            text={this.state.notes}
+            editable={this.state.editable}
+          />
+        </View>
+      </View>
+    </View>
+  );
+
   editComponent = (isLoader, editable, refBusModal) => (
     <View>
       <Text style={styles.title}>Basic Information</Text>
@@ -494,6 +519,9 @@ class BrokerageAccount extends Component {
       <View style={styles.gap} />
       <Text style={styles.title}>Additional Information</Text>
       {this.additionalInformation()}
+      <View style={styles.gap} />
+      <Text style={styles.title}>Notes</Text>
+      {this.notes()}
       <View style={styles.gap} />
       <Loader isLoader={isLoader} />
       <RefBusinessModal

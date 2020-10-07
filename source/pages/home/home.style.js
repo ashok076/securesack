@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
     fontFamily: 'PublicSans-ExtraLight',
   },
   grettingView: {
-    marginTop: 23,
+    marginTop: 18,
   },
   name: {
     fontFamily: 'PublicSans-Bold',

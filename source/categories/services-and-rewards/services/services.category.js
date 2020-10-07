@@ -76,6 +76,7 @@ class ServiceAccount extends Component {
     isCreditCardProvided: '',
     creditCardProvided: '',
     serviceType: '',
+    notes: '',
     creditCardArray: [],
     editable: true,
     refArray: [],
@@ -155,6 +156,7 @@ class ServiceAccount extends Component {
         additionalAcHolder1: data.AdditionalAccountHolder1,
         additionalAcHolder2: data.AdditionalAccountHolder2,
         serviceType: data.ServiceType,
+        notes: data.Comment,
         isCreditCardProvided: data.IsCreditCardProvided,
         creditCardProvided:
           data.CreditCardProvided.label === undefined
@@ -228,6 +230,7 @@ class ServiceAccount extends Component {
       paymentDueType,
       isCreditCardProvided,
       creditCardProvided,
+      notes
     } = this.state;
     const {navigation, route} = this.props;
     const {recid} = route.params;
@@ -259,6 +262,7 @@ class ServiceAccount extends Component {
       AdditionalAccountHolder2: additionalAcHolder2,
       ServiceType: serviceType,
       IsCreditCardProvided: isCreditCardProvided,
+      Comment: notes,
       CreditCardProvided: this.getSelectedCreditId(creditCardProvided),
     });
 
@@ -719,6 +723,27 @@ class ServiceAccount extends Component {
     });
   };
 
+  notes = () => (
+    <View>
+      <View style={styles.inputContainer}>
+        <InputTextDynamic
+          placeholder="Notes"
+          onChangeText={(notes) => this.setState({notes})}
+          keyboardType="default"
+          value={this.state.notes}
+          color={Color.veryLightBlue}
+          editable={this.state.editable}
+        />
+        <View style={styles.clipboard}>
+          <CopyClipboard
+            text={this.state.notes}
+            editable={this.state.editable}
+          />
+        </View>
+      </View>
+    </View>
+  );
+
   changeModalVisibility = (bool) => {
     this.setState({modal: bool});
   };
@@ -761,6 +786,9 @@ class ServiceAccount extends Component {
       <View style={styles.gap} />
       <Text style={styles.title}>Additional Information</Text>
       {this.additionalInformation()}
+      <View style={styles.gap} />
+      <Text style={styles.title}>Notes</Text>
+      {this.notes()}
       <Loader isLoader={isLoader} />
       <ModalScreen
         isModalVisible={modal}

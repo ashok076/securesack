@@ -32,7 +32,7 @@ class TitleView extends Component {
         <MaterialIcons
           name="save"
           color={theme !== 'dark' ? 'rgb(255, 255, 255)' : 'rgb(33, 47, 60)'}
-          size={20}
+          size={24}
         />
       </TouchableOpacity>
     </View>
@@ -47,7 +47,7 @@ class TitleView extends Component {
           <MaterialIcons
             name="edit"
             color={theme !== 'dark' ? 'rgb(255, 255, 255)' : 'rgb(33, 47, 60)'}
-            size={20}
+            size={24}
           />
         </TouchableOpacity>
         <TouchableOpacity
@@ -56,14 +56,14 @@ class TitleView extends Component {
           <MaterialIcons
             name="archive"
             color={theme !== 'dark' ? 'rgb(255, 255, 255)' : 'rgb(33, 47, 60)'}
-            size={20}
+            size={24}
           />
         </TouchableOpacity>
         <TouchableOpacity onPress={() => this.deleteInfo()}>
           <MaterialIcons
             name="delete"
             color={theme !== 'dark' ? 'rgb(255, 255, 255)' : 'rgb(33, 47, 60)'}
-            size={20}
+            size={24}
           />
         </TouchableOpacity>
       </View>

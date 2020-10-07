@@ -70,6 +70,7 @@ class CreditCard extends Component {
     state: '',
     zip: '',
     country: '',
+    notes: '',
     creditCardType: '',
     access_token: '',
     editable: true,
@@ -147,6 +148,7 @@ class CreditCard extends Component {
         zip: data.PaymentMailingAddress.Zip,
         country: data.PaymentMailingAddress.Country,
         creditCardType: data.CreditCardType,
+        notes: data.Comment,
         isLoader: false,
       },
       () => this.referenceObj(),
@@ -190,6 +192,7 @@ class CreditCard extends Component {
       access_token,
       creditCardType,
       issuerId,
+      notes
     } = this.state;
     const {navigation, route} = this.props;
     const {recid} = route.params;
@@ -220,6 +223,7 @@ class CreditCard extends Component {
       'PaymentMailingAddress-Country': country,
       CreditCardType: creditCardType,
       Issuer: issuerId,
+      Comment: notes
     });
     console.log('Check data: ', data);
     await createOrUpdateRecord('CreditCard', recid, data, access_token)
@@ -686,6 +690,27 @@ class CreditCard extends Component {
     this.setState({[key]: value});
   };
 
+  notes = () => (
+    <View>
+      <View style={styles.inputContainer}>
+        <InputTextDynamic
+          placeholder="Notes"
+          onChangeText={(notes) => this.setState({notes})}
+          keyboardType="default"
+          value={this.state.notes}
+          color={Color.lightishBlue}
+          editable={this.state.editable}
+        />
+        <View style={styles.clipboard}>
+          <CopyClipboard
+            text={this.state.notes}
+            editable={this.state.editable}
+          />
+        </View>
+      </View>
+    </View>
+  );
+
   editComponent = (isLoader, modal, array, key, editable, refBusModal) => (
     <View>
       <Text style={styles.title}>Primary Card</Text>
@@ -699,6 +724,9 @@ class CreditCard extends Component {
       <View style={styles.gap} />
       <Text style={styles.title}>Payment Mailing Address</Text>
       {this.paymentMailingAddress()}
+      <View style={styles.gap} />
+      <Text style={styles.title}>Notes</Text>
+      {this.notes()}
       <View style={styles.gap} />
       {/* <Text style={styles.title}>Additional Information</Text>
         {this.additionalInformation()} */}

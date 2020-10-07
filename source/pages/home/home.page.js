@@ -216,14 +216,14 @@ class Home extends Component {
     }
     return (
       <SafeAreaView style={styles.container}>
-        <ScrollView style={styles.innerContainer}>
+        <ScrollView style={styles.innerContainer} showsVerticalScrollIndicator={false}>
           {this.fingerPrintPopup(isFingerPrintSettings, isSensorAvailable)}
           <View>
             <Header navigation={navigation} />
           </View>
           <View style={styles.grettingView}>
             <Text style={styles.grettingText}>
-              Good morning,<Text style={styles.name}> {name} </Text>
+              Good Morning,<Text style={styles.name}> {name} </Text>
             </Text>
           </View>
           <HomeBody navigation={navigation} />

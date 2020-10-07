@@ -71,6 +71,7 @@ class AutoInsurance extends Component {
     securityQ3: '',
     securityA3: '',
     issuerId: '',
+    notes: '',
     refArray: [],
   };
 
@@ -146,6 +147,7 @@ class AutoInsurance extends Component {
         securityA2: data.SecurityAnswer2,
         securityQ3: data.SecurityQuestion3,
         securityA3: data.SecurityAnswer3,
+        notes: data.Comment,
       },
       () => this.referenceObj(),
     );
@@ -200,6 +202,7 @@ class AutoInsurance extends Component {
       securityQ3,
       securityA3,
       issuerId,
+      notes,
     } = this.state;
 
     const {navigation, route} = this.props;
@@ -230,6 +233,7 @@ class AutoInsurance extends Component {
       SecurityAnswer2: securityA2,
       SecurityQuestion3: securityQ3,
       SecurityAnswer3: securityA3,
+      Comment: notes,
     });
 
     await createOrUpdateRecord('AutoInsurance', recid, data, access_token)
@@ -618,6 +622,27 @@ class AutoInsurance extends Component {
     </View>
   );
 
+  notes = () => (
+    <View>
+      <View style={styles.inputContainer}>
+        <InputTextDynamic
+          placeholder="Notes"
+          onChangeText={(notes) => this.setState({notes})}
+          keyboardType="default"
+          value={this.state.notes}
+          color={Color.veryLightPink}
+          editable={this.state.editable}
+        />
+        <View style={styles.clipboard}>
+          <CopyClipboard
+            text={this.state.notes}
+            editable={this.state.editable}
+          />
+        </View>
+      </View>
+    </View>
+  );
+
   showAutoComplete = (issuer) => {
     if (issuer.label === 'Add') this.setState({refBusModal: true});
     else {
@@ -660,6 +685,9 @@ class AutoInsurance extends Component {
       <View style={styles.gap} />
       <Text style={styles.title}>Security Questions</Text>
       {this.securityQuestions()}
+      <View style={styles.gap} />
+      <Text style={styles.title}>Notes</Text>
+      {this.notes()}
       <Loader isLoader={isLoader} />
       <ModalScreen
         isModalVisible={modal}
@@ -714,7 +742,9 @@ class AutoInsurance extends Component {
     return (
       <Root>
         <SafeAreaView style={styles.outerView}>
-          <ImageBackground source={this.background()} style={styles.backgroundImage}>
+          <ImageBackground
+            source={this.background()}
+            style={styles.backgroundImage}>
             <View style={styles.titleView}>
               <TitleView
                 navigation={navigation}

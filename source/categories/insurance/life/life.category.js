@@ -75,6 +75,7 @@ class LifeInsurance extends Component {
     beneficiaries3: '',
     beneficiaries4: '',
     issuerId: '',
+    notes: ''
   };
 
   constructor(props) {
@@ -153,6 +154,7 @@ class LifeInsurance extends Component {
         beneficiaries2: data.Beneficiary2,
         beneficiaries3: data.Beneficiary3,
         beneficiaries4: data.Beneficiary4,
+        notes: data.Comment
       },
       () => this.referenceObj(),
     );
@@ -210,6 +212,7 @@ class LifeInsurance extends Component {
       beneficiaries3,
       beneficiaries4,
       issuerId,
+      notes
     } = this.state;
 
     const {navigation, route} = this.props;
@@ -244,6 +247,7 @@ class LifeInsurance extends Component {
       Beneficiary2: beneficiaries2,
       Beneficiary3: beneficiaries3,
       Beneficiary4: beneficiaries4,
+      Comment: notes
     });
 
     await createOrUpdateRecord('LifeInsurance', recid, data, access_token)
@@ -649,6 +653,27 @@ class LifeInsurance extends Component {
     </View>
   );
 
+  notes = () => (
+    <View>
+      <View style={styles.inputContainer}>
+        <InputTextDynamic
+          placeholder="Notes"
+          onChangeText={(notes) => this.setState({notes})}
+          keyboardType="default"
+          value={this.state.notes}
+          color={Color.veryLightPink}
+          editable={this.state.editable}
+        />
+        <View style={styles.clipboard}>
+          <CopyClipboard
+            text={this.state.notes}
+            editable={this.state.editable}
+          />
+        </View>
+      </View>
+    </View>
+  );
+
   changeModalVisibility = (bool) => {
     this.setState({modal: bool});
   };
@@ -691,6 +716,9 @@ class LifeInsurance extends Component {
       <View style={styles.gap} />
       <Text style={styles.title}>Beneficiaries</Text>
       {this.beneficiaries()}
+      <View style={styles.gap} />
+      <Text style={styles.title}>Notes</Text>
+      {this.notes()}
       <Loader isLoader={isLoader} />
       <ModalScreen
         isModalVisible={modal}

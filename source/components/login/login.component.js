@@ -196,63 +196,43 @@ class LoginComponent extends Component {
     const {username, password, clientid} = this.state;
     console.log('Login api client id: ', clientid);
     if (this.validation(username, password)) {
-      if (this.savePasswordError(password)) {
-        let data = qs.stringify({
-          email: username,
-          password,
-          clientid,
-        });
-        let config = {
-          method: 'post',
-          url: `${BASE_URL}${END_POINTS.LOGIN_API}`,
-          headers: {
-            'Content-type': 'application/x-www-form-urlencoded',
-          },
-          data,
-        };
-        console.log('Login api config: ', config);
-        await axios(config)
-          .then((response) => {
-            console.log('Response Login Api: ', JSON.stringify(response));
-            this.status(response.data);
-            this.setState({isLoader: false});
-          })
-          .catch((error) => {
-            console.log('Error in Login api: ', error.response);
-            Toast.show({
-              text: error.response.data.message,
-              type: 'danger',
-              position: 'bottom',
-              textStyle: styles.toastText,
-              buttonText: 'DISMISS',
-              duration: 7000,
-            });
-            this.setState({isLoader: false});
+      let data = qs.stringify({
+        email: username,
+        password,
+        clientid,
+      });
+      let config = {
+        method: 'post',
+        url: `${BASE_URL}${END_POINTS.LOGIN_API}`,
+        headers: {
+          'Content-type': 'application/x-www-form-urlencoded',
+        },
+        data,
+      };
+      console.log('Login api config: ', config);
+      await axios(config)
+        .then((response) => {
+          console.log('Response Login Api: ', JSON.stringify(response));
+          this.status(response.data);
+          this.setState({isLoader: false});
+        })
+        .catch((error) => {
+          console.log('Error in Login api: ', error.response);
+          Toast.show({
+            text: error.response.data.message,
+            type: 'danger',
+            position: 'bottom',
+            textStyle: styles.toastText,
+            buttonText: 'DISMISS',
+            duration: 7000,
           });
-      } else {
-        this.setState({isLoader: false});
-      }
+          this.setState({isLoader: false});
+        });
     } else {
       this.setState({isLoader: false});
     }
   };
 
-  savePasswordError = (password) => {
-    let reg = /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,16}$/;
-    let cancel = false;
-
-    if (reg.test(password) === false) {
-      cancel = true;
-    }
-    if (cancel) {
-      console.log('Password ', password);
-      this.setState({isShowPasswordError: true});
-    } else {
-      this.setState({isShowPasswordError: false});
-      return true;
-    }
-    return false;
-  };
 
   saveClientId = async (clientid) => {
     try {
@@ -406,16 +386,6 @@ class LoginComponent extends Component {
             show={isShowPassword}
             onPress={this.handleTogglePassword}
           />
-          {isShowPasswordError && (
-            <View style={styles.extras}>
-              <Text style={styles.extrasText}>
-                {' '}
-                Your password must be minimum 8 characters to 16 characters and
-                must contain one uppercase, one digit and special character
-                '?!@#$%^&*'{' '}
-              </Text>
-            </View>
-          )}
         </View>
         <View style={styles.buttonContainer}>
           <Button onPress={this.handleClick} title="Login" />

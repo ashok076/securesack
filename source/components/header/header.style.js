@@ -6,6 +6,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'space-between',
+    marginTop: 15
   },
   menu: {
     justifyContent: 'flex-start',

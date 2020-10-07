@@ -45,6 +45,7 @@ class WebSiteAccount extends Component {
     securityA2: '',
     securityQ3: '',
     securityA3: '',
+    notes: ''
   };
 
   constructor(props) {
@@ -102,6 +103,7 @@ class WebSiteAccount extends Component {
       securityA2: data.SecurityAnswer2,
       securityQ3: data.SecurityQuestion3,
       securityA3: data.SecurityAnswer3,
+      notes: data.Comment
     });
   };
 
@@ -119,6 +121,7 @@ class WebSiteAccount extends Component {
       securityQ3,
       securityA3,
       access_token,
+      notes
     } = this.state;
     const {navigation, route} = this.props;
     const {recid} = route.params;
@@ -133,6 +136,7 @@ class WebSiteAccount extends Component {
       SecurityAnswer2: securityA2,
       SecurityQuestion3: securityQ3,
       SecurityAnswer3: securityA3,
+      Comment: notes
     });
 
     await createOrUpdateRecord('WebSiteAccount', recid, data, access_token)
@@ -325,6 +329,27 @@ class WebSiteAccount extends Component {
     </View>
   );
 
+  notes = () => (
+    <View>
+      <View style={styles.inputContainer}>
+        <InputTextDynamic
+          placeholder="Notes"
+          onChangeText={(notes) => this.setState({notes})}
+          keyboardType="default"
+          value={this.state.notes}
+          color={Color.lightNavyBlue}
+          editable={this.state.editable}
+        />
+        <View style={styles.clipboard}>
+          <CopyClipboard
+            text={this.state.notes}
+            editable={this.state.editable}
+          />
+        </View>
+      </View>
+    </View>
+  );
+
   editComponent = (isLoader) => (
     <View style={styles.container}>
       <Text style={styles.title}>Basic Information</Text>
@@ -332,6 +357,9 @@ class WebSiteAccount extends Component {
       <View style={styles.gap} />
       <Text style={styles.title}>Security Questions</Text>
       {this.securityQuestions()}
+      <View style={styles.gap} />
+      <Text style={styles.title}>Notes</Text>
+      {this.notes()}
       <View style={styles.gap} />
       <Loader isLoader={isLoader} />
     </View>

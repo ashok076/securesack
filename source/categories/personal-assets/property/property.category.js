@@ -78,6 +78,7 @@ class Property extends Component {
       burgularAlarmType: '',
       smokeDetector: '',
       isFireHydrant: '',
+      notes: '',
   }
 
   constructor(props) {
@@ -156,6 +157,7 @@ class Property extends Component {
       burgularAlarmType: data.BurglarAlarmType,
       smokeDetector: data.HasSmokeDetectors ? 'Yes' : 'No',
       isFireHydrant: data.IsFireHydrantWithinThousandFeet ? 'Yes' : 'No',
+      notes: data.Comment
       });
   };
 
@@ -193,6 +195,7 @@ class Property extends Component {
       burgularAlarmType,
       smokeDetector,
       isFireHydrant,
+      notes
     } = this.state;
 
     const {navigation, route} = this.props;
@@ -229,6 +232,7 @@ class Property extends Component {
       BurglarAlarmType: burgularAlarmType,
       HasSmokeDetectors: smokeDetector === 'Yes' ? true : false,
       IsFireHydrantWithinThousandFeet: isFireHydrant === 'Yes' ? true : false,
+      Comment: notes
     });
 
     await createOrUpdateRecord('Property', recid, data, access_token)
@@ -698,6 +702,27 @@ class Property extends Component {
     this.setState({[key]: value});
   };
 
+  notes = () => (
+    <View>
+      <View style={styles.inputContainer}>
+        <InputTextDynamic
+          placeholder="Notes"
+          onChangeText={(notes) => this.setState({notes})}
+          keyboardType="default"
+          value={this.state.notes}
+          color={Color.paleRed}
+          editable={this.state.editable}
+        />
+        <View style={styles.clipboard}>
+          <CopyClipboard
+            text={this.state.notes}
+            editable={this.state.editable}
+          />
+        </View>
+      </View>
+    </View>
+  );
+
   editComponent = (isLoader, modal, array, key) => (
     <View>
       <Text style={styles.title}>Basic Information</Text>
@@ -709,6 +734,8 @@ class Property extends Component {
       <Text style={styles.title}>Additional Information</Text>
       {this.additionalInformation()}
       <View style={styles.gap} />
+      <Text style={styles.title}>Notes</Text>
+      {this.notes()}
       <Loader isLoader={isLoader} />
       <ModalScreen
         isModalVisible={modal}

@@ -57,6 +57,7 @@ class Passport extends Component {
     placeOfIssue2: '',
     dateOfIssue2: '',
     expiredOn2: '',
+    notes: '',
   };
   constructor(props) {
     super(props);
@@ -122,6 +123,7 @@ class Passport extends Component {
       placeOfIssue2: data.PreviousPlaceOfIssue2,
       dateOfIssue2: data.PreviousDateOfIssue2,
       expiredOn2: data.PreviousExpirationDate2,
+      notes: data.Comment,
     });
   };
 
@@ -148,6 +150,7 @@ class Passport extends Component {
       dateOfIssue2,
       expiredOn2,
       access_token,
+      notes,
     } = this.state;
 
     const {navigation, route} = this.props;
@@ -173,6 +176,7 @@ class Passport extends Component {
       PreviousPlaceOfIssue2: placeOfIssue2,
       PreviousDateOfIssue2: dateOfIssue2,
       PreviousExpirationDate2: expiredOn2,
+      Comment: notes,
     });
 
     await createOrUpdateRecord('Passport', recid, data, access_token)
@@ -472,6 +476,27 @@ class Passport extends Component {
     </View>
   );
 
+  notes = () => (
+    <View>
+      <View style={styles.inputContainer}>
+        <InputTextDynamic
+          placeholder="Notes"
+          onChangeText={(notes) => this.setState({notes})}
+          keyboardType="default"
+          value={this.state.notes}
+          color={Color.salmon}
+          editable={this.state.editable}
+        />
+        <View style={styles.clipboard}>
+          <CopyClipboard
+            text={this.state.notes}
+            editable={this.state.editable}
+          />
+        </View>
+      </View>
+    </View>
+  );
+
   changeState = (key, value) => {
     this.setState({[key]: value});
   };
@@ -491,6 +516,8 @@ class Passport extends Component {
       <Text style={styles.title}>Previous Passports</Text>
       {this.previousPassports()}
       <View style={styles.gap} />
+      <Text style={styles.title}>Notes</Text>
+      {this.notes()}
       <Loader isLoader={isLoader} />
       <ModalScreen
         isModalVisible={modal}
@@ -529,7 +556,8 @@ class Passport extends Component {
     this.archive();
   };
 
-background = () => require('../../../assets/jpg-images/Government-Record-Background/government-records-background.jpg')
+  background = () =>
+    require('../../../assets/jpg-images/Government-Record-Background/government-records-background.jpg');
 
   render() {
     const {isLoader, modal, array, key, editable} = this.state;
@@ -538,7 +566,9 @@ background = () => require('../../../assets/jpg-images/Government-Record-Backgro
     return (
       <Root>
         <SafeAreaView style={styles.outerView}>
-          <ImageBackground source={this.background()} style={styles.backgroundImage}>
+          <ImageBackground
+            source={this.background()}
+            style={styles.backgroundImage}>
             <View style={styles.titleView}>
               <TitleView
                 navigation={navigation}
@@ -558,13 +588,7 @@ background = () => require('../../../assets/jpg-images/Government-Record-Backgro
               onContentSizeChange={() => {
                 this.scroll.scrollTo({y: 0});
               }}
-              style={[
-                styles.outerContainerView,
-                {
-                  backgroundColor:
-                    theme !== 'dark' ? 'rgb(255, 255, 255)' : 'rgb(33, 47, 60)',
-                },
-              ]}
+              style={styles.outerContainerView}
               keyboardShouldPersistTaps="handled">
               <View style={styles.container}>
                 {this.editComponent(isLoader, modal, array, key, editable)}

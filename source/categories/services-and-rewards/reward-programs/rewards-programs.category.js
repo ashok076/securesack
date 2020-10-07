@@ -58,6 +58,7 @@ class RewardProgram extends Component {
     securityQ3: '',
     securityA3: '',
     programType: '',
+    notes: '',
     editable: true,
     refArray: [],
   };
@@ -122,6 +123,7 @@ class RewardProgram extends Component {
         securityQ3: data.SecurityQuestion3,
         securityA3: data.SecurityAnswer3,
         programType: data.ProgramType,
+        notes: data.Comment,
       },
       () => this.referenceObj(),
     );
@@ -164,6 +166,7 @@ class RewardProgram extends Component {
       securityQ3,
       securityA3,
       programType,
+      notes
     } = this.state;
     const {navigation, route} = this.props;
     const {recid} = route.params;
@@ -183,6 +186,7 @@ class RewardProgram extends Component {
       SecurityQuestion3: securityQ3,
       SecurityAnswer3: securityA3,
       ProgramType: programType,
+      Comment: notes
     });
 
     await createOrUpdateRecord('RewardProgram', recid, data, access_token)
@@ -413,6 +417,27 @@ class RewardProgram extends Component {
     </View>
   );
 
+  notes = () => (
+    <View>
+      <View style={styles.inputContainer}>
+        <InputTextDynamic
+          placeholder="Notes"
+          onChangeText={(notes) => this.setState({notes})}
+          keyboardType="default"
+          value={this.state.notes}
+          color={Color.veryLightBlue}
+          editable={this.state.editable}
+        />
+        <View style={styles.clipboard}>
+          <CopyClipboard
+            text={this.state.notes}
+            editable={this.state.editable}
+          />
+        </View>
+      </View>
+    </View>
+  );
+
   changeRefBusinessmModal = (bool) => {
     this.setState({refBusModal: bool});
   };
@@ -449,6 +474,9 @@ class RewardProgram extends Component {
       <View style={styles.gap} />
       <Text style={styles.title}>Security Questions</Text>
       {this.securityQuestions()}
+      <View style={styles.gap} />
+      <Text style={styles.title}>Notes</Text>
+      {this.notes()}
       <Loader isLoader={isLoader} />
       <ModalScreen
         isModalVisible={modal}
@@ -492,7 +520,8 @@ class RewardProgram extends Component {
     this.archive();
   };
 
-background = () => require('../../../assets/jpg-images/Service-Reward-Background/service-and-reward-background.jpg')
+  background = () =>
+    require('../../../assets/jpg-images/Service-Reward-Background/service-and-reward-background.jpg');
 
   render() {
     const {isLoader, modal, array, key, editable, refBusModal} = this.state;
@@ -501,7 +530,9 @@ background = () => require('../../../assets/jpg-images/Service-Reward-Background
     return (
       <Root>
         <SafeAreaView style={styles.outerView}>
-          <ImageBackground source={this.background()} style={styles.backgroundImage}>
+          <ImageBackground
+            source={this.background()}
+            style={styles.backgroundImage}>
             <View style={styles.titleView}>
               <TitleView
                 navigation={navigation}

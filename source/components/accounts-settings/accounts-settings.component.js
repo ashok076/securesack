@@ -8,6 +8,7 @@ import {
   ScrollView,
 } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
+import {Toast} from 'native-base';
 import qs from 'qs';
 import {connect} from 'react-redux';
 
@@ -50,12 +51,11 @@ class AccountSettings extends Component {
     await changePassword(access_token, data)
       .then((response) => {
         console.log('Ref Password: ', response);
-
+        this.showToast('Password reset successfully');
         this.setState({isLoader: false});
       })
       .catch((error) => {
         console.log('Error: ', error);
-
         this.setState({isLoader: false});
         alert(error);
       });
@@ -68,12 +68,24 @@ class AccountSettings extends Component {
     await resetPasswordStepOne(data)
       .then((response) => {
         console.log('Ref Business: ', response);
+        this.showToast('Data encryption key sent');
         this.setState({isLoader: false});
       })
       .catch((error) => {
         console.log('Error: ', error.message);
         this.setState({isLoader: false});
       });
+  };
+
+  showToast = (message) => {
+    Toast.show({
+      text: message,
+      buttonText: 'DISMISS',
+      type: 'success',
+      position: 'bottom',
+      duration: 3000,
+      textStyle: styles.toastText,
+    });
   };
 
   title = (title) => (
@@ -130,7 +142,7 @@ class AccountSettings extends Component {
       </Text>
       <View style={styles.buttonContainer}>
         <Button
-          onPress={() => this.changePass()}
+          onPress={() => this.dataEncryption()}
           title="Email my Data Encryption Key"
         />
       </View>

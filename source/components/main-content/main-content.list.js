@@ -41,7 +41,7 @@ export const mainContentList = [
   },
   {
     key: 6,
-    title: 'Personal' + '\n' + 'Organisation',
+    title: 'Personal' + '\n' + 'Organization',
     background: require('../../assets/png-images/Personal-Organisation/personal-organisation.png'),
     icon: require('../../assets/png-images/Personal-Organisation-Icon/personal-organisation-icon.png'),
     titleColor: '#FFFFFF',

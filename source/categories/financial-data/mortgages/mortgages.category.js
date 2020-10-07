@@ -75,6 +75,7 @@ class Mortgage extends Component {
     refArray: [],
     issuer: '',
     issuerId: '',
+    notes: ''
   };
 
   constructor(props) {
@@ -149,6 +150,7 @@ class Mortgage extends Component {
         term: data.Term,
         refiance: data.Refinanced ? 'Yes' : 'No',
         repayment: data.repayment ? 'Yes' : 'No',
+        notes: data.Comment,
         isLoader: false,
       },
       () => this.referenceObj(),
@@ -191,6 +193,7 @@ class Mortgage extends Component {
       refiance,
       repayment,
       access_token,
+      notes
     } = this.state;
 
     const {navigation, route} = this.props;
@@ -222,6 +225,7 @@ class Mortgage extends Component {
       Term: term,
       Refinanced: refiance === 'Yes' ? true : false,
       repayment: repayment === 'Yes' ? true : false,
+      Comment: notes
     });
 
     await createOrUpdateRecord('Mortgage', recid, data, access_token)
@@ -618,6 +622,27 @@ class Mortgage extends Component {
     </View>
   );
 
+  notes = () => (
+    <View>
+      <View style={styles.inputContainer}>
+        <InputTextDynamic
+          placeholder="Notes"
+          onChangeText={(notes) => this.setState({notes})}
+          keyboardType="default"
+          value={this.state.notes}
+          color={Color.lightishBlue}
+          editable={this.state.editable}
+        />
+        <View style={styles.clipboard}>
+          <CopyClipboard
+            text={this.state.notes}
+            editable={this.state.editable}
+          />
+        </View>
+      </View>
+    </View>
+  );
+
   changeModalVisibility = (bool) => {
     this.setState({modal: bool});
   };
@@ -673,6 +698,9 @@ class Mortgage extends Component {
       <View style={styles.gap} />
       <Text style={styles.title}>Additional Information</Text>
       {this.additionalInformation()}
+      <View style={styles.gap} />
+      <Text style={styles.title}>Notes</Text>
+      {this.notes()}
       <Loader isLoader={isLoader} />
       <ModalScreen
         isModalVisible={modal}

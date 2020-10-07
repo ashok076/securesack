@@ -50,6 +50,7 @@ class IdentificationCards extends Component {
     state: '',
     zip: '',
     country: '',
+    notes: ''
   };
   constructor(props) {
     super(props);
@@ -107,6 +108,7 @@ class IdentificationCards extends Component {
       state: data.AddressGiven.State,
       zip: data.AddressGiven.Zip,
       country: data.AddressGiven.Country,
+      notes: data.Comment
     });
   };
 
@@ -126,6 +128,7 @@ class IdentificationCards extends Component {
       zip,
       country,
       access_token,
+      notes
     } = this.state;
 
     const {navigation, route} = this.props;
@@ -144,6 +147,7 @@ class IdentificationCards extends Component {
       'AddressGiven-State': state,
       'AddressGiven-Zip': zip,
       'AddressGiven-Country': country,
+      Comment: notes
     });
 
     await createOrUpdateRecord('IdentificationCards', recid, data, access_token)
@@ -343,6 +347,27 @@ class IdentificationCards extends Component {
     </View>
   );
 
+  notes = () => (
+    <View>
+      <View style={styles.inputContainer}>
+        <InputTextDynamic
+          placeholder="Notes"
+          onChangeText={(notes) => this.setState({notes})}
+          keyboardType="default"
+          value={this.state.notes}
+          color={Color.salmon}
+          editable={this.state.editable}
+        />
+        <View style={styles.clipboard}>
+          <CopyClipboard
+            text={this.state.notes}
+            editable={this.state.editable}
+          />
+        </View>
+      </View>
+    </View>
+  );
+
   changeState = (key, value) => {
     this.setState({[key]: value});
   };
@@ -359,6 +384,8 @@ class IdentificationCards extends Component {
       <Text style={styles.title}>Additional Information</Text>
       {this.additionalInfo()}
       <View style={styles.gap} />
+      <Text style={styles.title}>Notes</Text>
+      {this.notes()}
       <Loader isLoader={isLoader} />
       <ModalScreen
         isModalVisible={modal}
@@ -397,7 +424,8 @@ class IdentificationCards extends Component {
     this.archive();
   };
 
-background = () => require('../../../assets/jpg-images/Government-Record-Background/government-records-background.jpg')
+  background = () =>
+    require('../../../assets/jpg-images/Government-Record-Background/government-records-background.jpg');
 
   render() {
     const {isLoader, modal, array, key, editable} = this.state;
@@ -406,7 +434,9 @@ background = () => require('../../../assets/jpg-images/Government-Record-Backgro
     return (
       <Root>
         <SafeAreaView style={styles.outerView}>
-          <ImageBackground source={this.background()} style={styles.backgroundImage}>
+          <ImageBackground
+            source={this.background()}
+            style={styles.backgroundImage}>
             <View style={styles.titleView}>
               <TitleView
                 navigation={navigation}
@@ -426,13 +456,7 @@ background = () => require('../../../assets/jpg-images/Government-Record-Backgro
               onContentSizeChange={() => {
                 this.scroll.scrollTo({y: 0});
               }}
-              style={[
-                styles.outerContainerView,
-                {
-                  backgroundColor:
-                    theme !== 'dark' ? 'rgb(255, 255, 255)' : 'rgb(33, 47, 60)',
-                },
-              ]}
+              style={styles.outerContainerView}
               keyboardShouldPersistTaps="handled">
               <View style={styles.container}>
                 {this.editComponent(isLoader, modal, array, key, editable)}

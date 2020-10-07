@@ -162,3 +162,18 @@ export const uploadFile = async (access_token, ldata) => {
       throw error;
     });
 };
+
+export const resetPasswordStepOne = async(data) =>{
+  console.log(data,"email")
+  return axios(`${BASE_URL}/actions/resetPassword/startReset`,{
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    data
+  })
+    .then((response) => response.data)
+    .catch((error) => {
+      throw error;
+    });
+}

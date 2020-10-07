@@ -186,7 +186,7 @@ class AuthCode extends Component {
               placeholder="Enter 6-digit code"
               onChange={this.handleAuthCode}
               value={authcode}
-              keyboardType="numeric"
+              keyboardType="number-pad"
               icon={'lock'}
               show={true}
             />

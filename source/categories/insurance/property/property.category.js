@@ -71,7 +71,8 @@ class PropertyInsurance extends Component {
     sewerBackupCoverage: '',
     ownedProperty: '',
     ownedPropertyArr: [],
-    issuerId: ''
+    issuerId: '',
+    notes: ''
   };
 
   constructor(props) {
@@ -167,16 +168,16 @@ class PropertyInsurance extends Component {
         jointPolicyHolderTwo: data.AdditionalPolicyHolder1,
         jointPolicyHolderThree: data.AdditionalPolicyHolder2,
         escrowAccount: data.EscrowAccount ? 'Yes' : 'No',
-        replacementContentCoverage:
-          data.ReplacementOfContentsCoverage ? 'Yes' : 'No',
-        lossAssessmentCoverage:
-          data.LossAssessmentCoverage ? 'Yes' : 'No',
-        sewerBackupCoverage:
-          data.SewerWaterBackupCoverage ? 'Yes' : 'No',
+        replacementContentCoverage: data.ReplacementOfContentsCoverage
+          ? 'Yes'
+          : 'No',
+        lossAssessmentCoverage: data.LossAssessmentCoverage ? 'Yes' : 'No',
+        sewerBackupCoverage: data.SewerWaterBackupCoverage ? 'Yes' : 'No',
         ownedProperty:
           data.OwnedProperty.label === undefined
             ? ''
             : data.OwnedProperty.label,
+        notes: data.Comment,
       },
       () => this.referenceObj(),
     );
@@ -230,6 +231,7 @@ class PropertyInsurance extends Component {
       sewerBackupCoverage,
       access_token,
       ownedProperty,
+      notes,
     } = this.state;
 
     const {navigation, route} = this.props;
@@ -262,6 +264,7 @@ class PropertyInsurance extends Component {
       LossAssessmentCoverage: lossAssessmentCoverage === 'Yes' ? true : false,
       SewerWaterBackupCoverage: sewerBackupCoverage === 'Yes' ? true : false,
       OwnedProperty: this.getOwnedPropertyId(ownedProperty),
+      Comment: notes,
     });
 
     await createOrUpdateRecord('PropertyInsurance', recid, data, access_token)
@@ -465,12 +468,14 @@ class PropertyInsurance extends Component {
         <View style={[styles.miniInputContainer, {marginRight: 10}]}>
           <InputTextDynamic
             placeholder="Effective From"
-            onChangeText={(effectiveFrom) => this.setState({effectiveFrom: formatDate(effectiveFrom)})}
+            onChangeText={(effectiveFrom) =>
+              this.setState({effectiveFrom: formatDate(effectiveFrom)})
+            }
             keyboardType="default"
             color={Color.veryLightPink}
             value={this.state.effectiveFrom}
             editable={this.state.editable}
-          example="DD/MM/YYYY"
+            example="DD/MM/YYYY"
           />
         </View>
         <View style={styles.miniInputContainer}>
@@ -669,6 +674,27 @@ class PropertyInsurance extends Component {
     </View>
   );
 
+  notes = () => (
+    <View>
+      <View style={styles.inputContainer}>
+        <InputTextDynamic
+          placeholder="Notes"
+          onChangeText={(notes) => this.setState({notes})}
+          keyboardType="default"
+          value={this.state.notes}
+          color={Color.veryLightPink}
+          editable={this.state.editable}
+        />
+        <View style={styles.clipboard}>
+          <CopyClipboard
+            text={this.state.notes}
+            editable={this.state.editable}
+          />
+        </View>
+      </View>
+    </View>
+  );
+
   changeModalVisibility = (bool) => {
     this.setState({modal: bool});
   };
@@ -711,6 +737,9 @@ class PropertyInsurance extends Component {
       <View style={styles.gap} />
       <Text style={styles.title}>Additional Information</Text>
       {this.additionalInfo()}
+      <View style={styles.gap} />
+      <Text style={styles.title}>Notes</Text>
+      {this.notes()}
       <Loader isLoader={isLoader} />
       <ModalScreen
         isModalVisible={modal}
@@ -765,7 +794,9 @@ class PropertyInsurance extends Component {
     return (
       <Root>
         <SafeAreaView style={styles.outerView}>
-          <ImageBackground source={this.background()} style={styles.backgroundImage}>
+          <ImageBackground
+            source={this.background()}
+            style={styles.backgroundImage}>
             <View style={styles.titleView}>
               <TitleView
                 navigation={navigation}

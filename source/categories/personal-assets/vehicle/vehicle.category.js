@@ -50,6 +50,7 @@ class Vehicle extends Component {
       boughtOn: '',
       soldOn: '',
       isStillOwned: '',
+      notes: ''
   }
   constructor(props) {
     super(props);
@@ -109,6 +110,7 @@ class Vehicle extends Component {
       boughtOn: data.DateAcquired,
       soldOn: data.DateReleased,
       isStillOwned: data.IsOwned ? 'Yes' : 'No',
+      notes: data.Comment
       });
   };
 
@@ -128,6 +130,7 @@ class Vehicle extends Component {
       boughtOn,
       soldOn,
       isStillOwned,
+      notes
     } = this.state;
     const {navigation, route} = this.props;
     const {recid} = route.params;
@@ -144,6 +147,7 @@ class Vehicle extends Component {
       DateAcquired: boughtOn,
       DateReleased: soldOn,
       IsOwned: isStillOwned === 'Yes' ? true : false,
+      Comment: notes
     });
     await createOrUpdateRecord('Vehicle', recid, data, access_token)
       .then((response) => {
@@ -363,6 +367,27 @@ class Vehicle extends Component {
     this.setState({[key]: value});
   };
 
+  notes = () => (
+    <View>
+      <View style={styles.inputContainer}>
+        <InputTextDynamic
+          placeholder="Notes"
+          onChangeText={(notes) => this.setState({notes})}
+          keyboardType="default"
+          value={this.state.notes}
+          color={Color.paleRed}
+          editable={this.state.editable}
+        />
+        <View style={styles.clipboard}>
+          <CopyClipboard
+            text={this.state.notes}
+            editable={this.state.editable}
+          />
+        </View>
+      </View>
+    </View>
+  );
+
   editComponent = (isLoader, modal, array, key, editable) => (
     <View>
       <Text style={styles.title}>Basic Information</Text>
@@ -371,6 +396,8 @@ class Vehicle extends Component {
         <Text style={styles.title}>Additional Information</Text>
         {this.additionalInformation()}
         <View style={styles.gap} />
+        <Text style={styles.title}>Notes</Text>
+        {this.notes()}
         <Loader isLoader={isLoader} />
         <ModalScreen
           isModalVisible={modal}

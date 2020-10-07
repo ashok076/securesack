@@ -145,6 +145,7 @@ class HealthCareProvider extends Component {
       dependent2: data.Dependent2,
       dependent3: data.Dependent3,
       dependent4: data.Dependent4,
+      notes: data.Comment
     });
   };
 
@@ -180,6 +181,7 @@ class HealthCareProvider extends Component {
       dependent2,
       dependent3,
       dependent4,
+      notes,
     } = this.state;
 
     const {navigation, route} = this.props;
@@ -214,6 +216,7 @@ class HealthCareProvider extends Component {
       Dependent2: dependent2,
       Dependent3: dependent3,
       Dependent4: dependent4,
+      Comment: notes,
     });
 
     await createOrUpdateRecord('HealthCareProvider', recid, data, access_token)
@@ -620,6 +623,27 @@ class HealthCareProvider extends Component {
     </View>
   );
 
+  notes = () => (
+    <View>
+      <View style={styles.inputContainer}>
+        <InputTextDynamic
+          placeholder="Notes"
+          onChangeText={(notes) => this.setState({notes})}
+          keyboardType="default"
+          value={this.state.notes}
+          color={Color.veryLightPink}
+          editable={this.state.editable}
+        />
+        <View style={styles.clipboard}>
+          <CopyClipboard
+            text={this.state.notes}
+            editable={this.state.editable}
+          />
+        </View>
+      </View>
+    </View>
+  );
+
   changeModalVisibility = (bool) => {
     this.setState({modal: bool});
   };
@@ -641,6 +665,9 @@ class HealthCareProvider extends Component {
       <View style={styles.gap} />
       <Text style={styles.title}>Dependent Information</Text>
       {this.dependentInfo()}
+      <View style={styles.gap} />
+      <Text style={styles.title}>Notes</Text>
+      {this.notes()}
       <Loader isLoader={isLoader} />
       <ModalScreen
         isModalVisible={modal}
