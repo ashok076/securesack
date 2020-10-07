@@ -80,6 +80,7 @@ class ServiceAccount extends Component {
     creditCardArray: [],
     editable: true,
     refArray: [],
+    showQuestion: false,
   };
   constructor(props) {
     super(props);
@@ -115,6 +116,9 @@ class ServiceAccount extends Component {
       .then((response) => {
         console.log('View res: ', response);
         this.setViewData(response.data);
+        if (mode === 'View') {
+          this.checkSecurityQuestions(response.data);
+        }
         this.setState({isLoader: false});
       })
       .catch((error) => {
@@ -165,6 +169,18 @@ class ServiceAccount extends Component {
       },
       () => this.referenceObj(),
     );
+  };
+
+  checkSecurityQuestions = (data) => {
+    if (
+      data.SecurityQuestion1.length !== 0 ||
+      data.SecurityQuestion2.length !== 0 ||
+      data.SecurityQuestion3.length !== 0
+    ) {
+      this.setState({showQuestion: false});
+    } else {
+      this.setState({showQuestion: true});
+    }
   };
 
   referenceObj = () => {
@@ -230,7 +246,7 @@ class ServiceAccount extends Component {
       paymentDueType,
       isCreditCardProvided,
       creditCardProvided,
-      notes
+      notes,
     } = this.state;
     const {navigation, route} = this.props;
     const {recid} = route.params;
@@ -781,9 +797,15 @@ class ServiceAccount extends Component {
       <Text style={styles.title}>Payment Mailing Address</Text>
       {this.paymentMailingAddress()}
       <View style={styles.gap} />
-      <Text style={styles.title}>Security Questions</Text>
-      {this.securityQuestions()}
-      <View style={styles.gap} />
+      <View>
+        {!this.state.showQuestion && (
+          <View>
+            <Text style={styles.title}>Security Questions</Text>
+            {this.securityQuestions()}
+            <View style={styles.gap} />
+          </View>
+        )}
+      </View>
       <Text style={styles.title}>Additional Information</Text>
       {this.additionalInformation()}
       <View style={styles.gap} />
@@ -833,7 +855,8 @@ class ServiceAccount extends Component {
     this.archive();
   };
 
-background = () => require('../../../assets/jpg-images/Service-Reward-Background/service-and-reward-background.jpg')
+  background = () =>
+    require('../../../assets/jpg-images/Service-Reward-Background/service-and-reward-background.jpg');
 
   render() {
     const {isLoader, modal, array, key, editable, refBusModal} = this.state;
@@ -843,7 +866,9 @@ background = () => require('../../../assets/jpg-images/Service-Reward-Background
     return (
       <Root>
         <SafeAreaView style={styles.outerView}>
-          <ImageBackground source={this.background()} style={styles.backgroundImage}>
+          <ImageBackground
+            source={this.background()}
+            style={styles.backgroundImage}>
             <View style={styles.titleView}>
               <TitleView
                 navigation={navigation}

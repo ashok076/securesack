@@ -61,6 +61,7 @@ class RewardProgram extends Component {
     notes: '',
     editable: true,
     refArray: [],
+    showQuestion: false,
   };
   constructor(props) {
     super(props);
@@ -95,6 +96,9 @@ class RewardProgram extends Component {
       .then((response) => {
         console.log('View res: ', response);
         this.setViewData(response.data);
+        if (mode === 'View') {
+          this.checkSecurityQuestions(response.data);
+        }
         this.setState({isLoader: false});
       })
       .catch((error) => {
@@ -148,6 +152,18 @@ class RewardProgram extends Component {
     }
   };
 
+  checkSecurityQuestions = (data) => {
+    if (
+      data.SecurityQuestion1.length !== 0 ||
+      data.SecurityQuestion2.length !== 0 ||
+      data.SecurityQuestion3.length !== 0
+    ) {
+      this.setState({showQuestion: false});
+    } else {
+      this.setState({showQuestion: true});
+    }
+  };
+
   submit = async () => {
     this.setState({isLoader: true});
     const {
@@ -166,7 +182,7 @@ class RewardProgram extends Component {
       securityQ3,
       securityA3,
       programType,
-      notes
+      notes,
     } = this.state;
     const {navigation, route} = this.props;
     const {recid} = route.params;
@@ -186,7 +202,7 @@ class RewardProgram extends Component {
       SecurityQuestion3: securityQ3,
       SecurityAnswer3: securityA3,
       ProgramType: programType,
-      Comment: notes
+      Comment: notes,
     });
 
     await createOrUpdateRecord('RewardProgram', recid, data, access_token)
@@ -472,9 +488,15 @@ class RewardProgram extends Component {
       <Text style={styles.title}>Basic Information</Text>
       {this.basicInformation()}
       <View style={styles.gap} />
-      <Text style={styles.title}>Security Questions</Text>
-      {this.securityQuestions()}
-      <View style={styles.gap} />
+      <View>
+        {!this.state.showQuestion && (
+          <View>
+            <Text style={styles.title}>Security Questions</Text>
+            {this.securityQuestions()}
+            <View style={styles.gap} />
+          </View>
+        )}
+      </View>
       <Text style={styles.title}>Notes</Text>
       {this.notes()}
       <Loader isLoader={isLoader} />

@@ -76,6 +76,7 @@ class CreditCard extends Component {
     editable: true,
     issuer: '',
     issuerId: '',
+    showQuestion: false,
     hideResult: true,
     refArray: [],
   };
@@ -110,6 +111,9 @@ class CreditCard extends Component {
       .then((response) => {
         console.log('View res: ', response);
         this.setViewData(response.data);
+        if (mode === 'View') {
+          this.checkSecurityQuestions(response.data);
+        }
       })
       .catch((error) => {
         console.log('Error: ', error);
@@ -155,6 +159,18 @@ class CreditCard extends Component {
     );
   };
 
+  checkSecurityQuestions = (data) => {
+    if (
+      data.SecurityQuestion1.length !== 0 ||
+      data.SecurityQuestion2.length !== 0 ||
+      data.SecurityQuestion3.length !== 0
+    ) {
+      this.setState({showQuestion: false});
+    } else {
+      this.setState({showQuestion: true});
+    }
+  };
+
   referenceObj = () => {
     const {refArray} = this.state;
     refArray
@@ -192,7 +208,7 @@ class CreditCard extends Component {
       access_token,
       creditCardType,
       issuerId,
-      notes
+      notes,
     } = this.state;
     const {navigation, route} = this.props;
     const {recid} = route.params;
@@ -223,7 +239,7 @@ class CreditCard extends Component {
       'PaymentMailingAddress-Country': country,
       CreditCardType: creditCardType,
       Issuer: issuerId,
-      Comment: notes
+      Comment: notes,
     });
     console.log('Check data: ', data);
     await createOrUpdateRecord('CreditCard', recid, data, access_token)
@@ -719,9 +735,15 @@ class CreditCard extends Component {
       <Text style={styles.title}>Additional Card Information</Text>
       {this.additionalCardInfo()}
       <View style={styles.gap} />
-      <Text style={styles.title}>Security Questions</Text>
-      {this.securityQuestions()}
-      <View style={styles.gap} />
+      <View>
+        {!this.state.showQuestion && (
+          <View>
+            <Text style={styles.title}>Security Questions</Text>
+            {this.securityQuestions()}
+            <View style={styles.gap} />
+          </View>
+        )}
+      </View>
       <Text style={styles.title}>Payment Mailing Address</Text>
       {this.paymentMailingAddress()}
       <View style={styles.gap} />

@@ -34,6 +34,7 @@ class WebSiteAccount extends Component {
   initialState = {
     isLoader: false,
     editable: true,
+    showQuestion: false,
     access_token: '',
     name: '',
     url: '',
@@ -45,7 +46,7 @@ class WebSiteAccount extends Component {
     securityA2: '',
     securityQ3: '',
     securityA3: '',
-    notes: ''
+    notes: '',
   };
 
   constructor(props) {
@@ -80,6 +81,9 @@ class WebSiteAccount extends Component {
       .then((response) => {
         console.log('View res: ', response);
         this.setViewData(response.data);
+        if (mode === 'View') {
+          this.checkSecurityQuestions(response.data);
+        }
         this.setState({isLoader: false});
       })
       .catch((error) => {
@@ -103,8 +107,20 @@ class WebSiteAccount extends Component {
       securityA2: data.SecurityAnswer2,
       securityQ3: data.SecurityQuestion3,
       securityA3: data.SecurityAnswer3,
-      notes: data.Comment
+      notes: data.Comment,
     });
+  };
+
+  checkSecurityQuestions = (data) => {
+    if (
+      data.SecurityQuestion1.length !== 0 ||
+      data.SecurityQuestion2.length !== 0 ||
+      data.SecurityQuestion3.length !== 0
+    ) {
+      this.setState({showQuestion: false});
+    } else {
+      this.setState({showQuestion: true});
+    }
   };
 
   submit = async () => {
@@ -121,7 +137,7 @@ class WebSiteAccount extends Component {
       securityQ3,
       securityA3,
       access_token,
-      notes
+      notes,
     } = this.state;
     const {navigation, route} = this.props;
     const {recid} = route.params;
@@ -136,7 +152,7 @@ class WebSiteAccount extends Component {
       SecurityAnswer2: securityA2,
       SecurityQuestion3: securityQ3,
       SecurityAnswer3: securityA3,
-      Comment: notes
+      Comment: notes,
     });
 
     await createOrUpdateRecord('WebSiteAccount', recid, data, access_token)
@@ -184,7 +200,6 @@ class WebSiteAccount extends Component {
         console.log('Error in delete', error);
       });
   };
-
 
   basicInformation = () => (
     <View>
@@ -355,9 +370,15 @@ class WebSiteAccount extends Component {
       <Text style={styles.title}>Basic Information</Text>
       {this.basicInformation()}
       <View style={styles.gap} />
-      <Text style={styles.title}>Security Questions</Text>
-      {this.securityQuestions()}
-      <View style={styles.gap} />
+      <View>
+        {!this.state.showQuestion && (
+          <View>
+            <Text style={styles.title}>Security Questions</Text>
+            {this.securityQuestions()}
+            <View style={styles.gap} />
+          </View>
+        )}
+      </View>
       <Text style={styles.title}>Notes</Text>
       {this.notes()}
       <View style={styles.gap} />
@@ -395,7 +416,6 @@ class WebSiteAccount extends Component {
   background = () =>
     require('../../../assets/jpg-images/Personal-Organisation-Background/personal-organisation-background.jpg');
 
-
   render() {
     const {isLoader, editable} = this.state;
     const {route, navigation} = this.props;
@@ -403,7 +423,9 @@ class WebSiteAccount extends Component {
     return (
       <Root>
         <SafeAreaView style={styles.outerView}>
-          <ImageBackground source={this.background()} style={styles.backgroundImage}>
+          <ImageBackground
+            source={this.background()}
+            style={styles.backgroundImage}>
             <View style={styles.titleView}>
               <TitleView
                 navigation={navigation}

@@ -42,11 +42,20 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   view: {
-    padding: 15
+    padding: 15,
   },
   contentContainerStyle: {
-    paddingVertical: 20
-  }
+    paddingVertical: 20,
+  },
+  viewAll: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  viewAllText: {
+    fontFamily: 'PublicSans-Regular',
+    color: 'rgb(33, 47, 60)',
+    fontSize: 11,
+  },
 });
 
 export default styles;

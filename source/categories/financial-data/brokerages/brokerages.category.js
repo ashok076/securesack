@@ -57,6 +57,7 @@ class BrokerageAccount extends Component {
     openedOn: '',
     closedOn: '',
     notes: '',
+    showQuestion: false,
     editable: true,
     hideResult: true,
     refArray: [],
@@ -92,6 +93,9 @@ class BrokerageAccount extends Component {
       .then((response) => {
         console.log('View res: ', response);
         this.setViewData(response.data);
+        if (mode === 'View') {
+          this.checkSecurityQuestions(response.data);
+        }
       })
       .catch((error) => {
         console.log('Error: ', error);
@@ -136,6 +140,18 @@ class BrokerageAccount extends Component {
       .map((val) => this.setState({financialInstitution: val.label}));
   };
 
+  checkSecurityQuestions = (data) => {
+    if (
+      data.SecurityQuestion1.length !== 0 ||
+      data.SecurityQuestion2.length !== 0 ||
+      data.SecurityQuestion3.length !== 0
+    ) {
+      this.setState({showQuestion: false});
+    } else {
+      this.setState({showQuestion: true});
+    }
+  };
+
   submit = async () => {
     this.setState({isLoader: true});
     const {
@@ -159,7 +175,7 @@ class BrokerageAccount extends Component {
       stockTransactionFee,
       openedOn,
       closedOn,
-      notes
+      notes,
     } = this.state;
     const {navigation, route} = this.props;
     const {recid} = route.params;
@@ -182,7 +198,7 @@ class BrokerageAccount extends Component {
       StockTransactionFee: stockTransactionFee,
       AccountOpeningDate: openedOn,
       AccountClosingDate: closedOn,
-      Comment: notes
+      Comment: notes,
     });
     await createOrUpdateRecord('BrokerageAccount', recid, data, access_token)
       .then((response) => {
@@ -514,9 +530,15 @@ class BrokerageAccount extends Component {
       <Text style={styles.title}>Basic Information</Text>
       {this.basicInformation()}
       <View style={styles.gap} />
-      <Text style={styles.title}>Security Questions</Text>
-      {this.securityQuestions()}
-      <View style={styles.gap} />
+      <View>
+        {!this.state.showQuestion && (
+          <View>
+            <Text style={styles.title}>Security Questions</Text>
+            {this.securityQuestions()}
+            <View style={styles.gap} />
+          </View>
+        )}
+      </View>
       <Text style={styles.title}>Additional Information</Text>
       {this.additionalInformation()}
       <View style={styles.gap} />

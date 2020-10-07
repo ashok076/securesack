@@ -75,7 +75,8 @@ class Mortgage extends Component {
     refArray: [],
     issuer: '',
     issuerId: '',
-    notes: ''
+    notes: '',
+    showQuestion: false,
   };
 
   constructor(props) {
@@ -113,6 +114,9 @@ class Mortgage extends Component {
       .then((response) => {
         console.log('View res: ', response);
         this.setViewData(response.data);
+        if (mode === 'View') {
+          this.checkSecurityQuestions(response.data);
+        }
       })
       .catch((error) => {
         console.log('Error: ', error);
@@ -157,6 +161,18 @@ class Mortgage extends Component {
     );
   };
 
+  checkSecurityQuestions = (data) => {
+    if (
+      data.SecurityQuestion1.length !== 0 ||
+      data.SecurityQuestion2.length !== 0 ||
+      data.SecurityQuestion3.length !== 0
+    ) {
+      this.setState({showQuestion: false});
+    } else {
+      this.setState({showQuestion: true});
+    }
+  };
+
   referenceObj = () => {
     const {refArray} = this.state;
     refArray
@@ -193,7 +209,7 @@ class Mortgage extends Component {
       refiance,
       repayment,
       access_token,
-      notes
+      notes,
     } = this.state;
 
     const {navigation, route} = this.props;
@@ -225,7 +241,7 @@ class Mortgage extends Component {
       Term: term,
       Refinanced: refiance === 'Yes' ? true : false,
       repayment: repayment === 'Yes' ? true : false,
-      Comment: notes
+      Comment: notes,
     });
 
     await createOrUpdateRecord('Mortgage', recid, data, access_token)
@@ -690,9 +706,15 @@ class Mortgage extends Component {
       <Text style={styles.title}>Basic Information</Text>
       {this.basicInformation()}
       <View style={styles.gap} />
-      <Text style={styles.title}>Security Questions</Text>
-      {this.securityQuestions()}
-      <View style={styles.gap} />
+      <View>
+        {!this.state.showQuestion && (
+          <View>
+            <Text style={styles.title}>Security Questions</Text>
+            {this.securityQuestions()}
+            <View style={styles.gap} />
+          </View>
+        )}
+      </View>
       <Text style={styles.title}>Payment Mailing Address</Text>
       {this.paymentMailingAddress()}
       <View style={styles.gap} />

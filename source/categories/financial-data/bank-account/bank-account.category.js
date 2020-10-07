@@ -6,6 +6,7 @@ import {
   ImageBackground,
   SafeAreaView,
   Alert,
+  BackHandler,
 } from 'react-native';
 import {Text} from 'react-native-paper';
 import qs from 'qs';
@@ -96,9 +97,11 @@ class BankAccounts extends Component {
     save: '',
     access_token: '',
     notes: '',
+    showQuestion: false,
     editable: true,
     hideResult: true,
     refArray: [],
+    changes: false,
   };
   constructor(props) {
     super(props);
@@ -133,7 +136,9 @@ class BankAccounts extends Component {
       .then((response) => {
         console.log('View res: ', response);
         this.setViewData(response.data);
-        this.setState({isLoader: false});
+        if (mode === 'View') {
+          this.checkSecurityQuestions(response.data);
+        }
       })
       .catch((error) => {
         console.log('Error: ', error);
@@ -197,6 +202,18 @@ class BankAccounts extends Component {
       },
       () => this.referenceObj(),
     );
+  };
+
+  checkSecurityQuestions = (data) => {
+    if (
+      data.SecurityQuestion1.length !== 0 ||
+      data.SecurityQuestion2.length !== 0 ||
+      data.SecurityQuestion3.length !== 0
+    ) {
+      this.setState({showQuestion: false});
+    }else {
+      this.setState({showQuestion: true});
+    }
   };
 
   referenceObj = () => {
@@ -780,7 +797,7 @@ class BankAccounts extends Component {
       paymentDueType1,
       paymentDueType2,
       issuingBankId,
-      notes
+      notes,
     } = this.state;
     const {navigation, route} = this.props;
     const {recid} = route.params;
@@ -831,7 +848,7 @@ class BankAccounts extends Component {
       'BankBranchAddress-Country': country,
       AccountType: accountType,
       FinancialInstitution: issuingBankId,
-      Comment: notes
+      Comment: notes,
     });
     await createOrUpdateRecord('BankAccounts', recid, data, access_token)
       .then((response) => {
@@ -940,9 +957,15 @@ class BankAccounts extends Component {
       <Text style={styles.title}>Debit Card</Text>
       {this.debitCard()}
       <View style={styles.gap} />
-      <Text style={styles.title}>Security Questions</Text>
-      {this.securityQuestions()}
-      <View style={styles.gap} />
+      <View>
+        {!this.state.showQuestion && (
+          <View>
+            <Text style={styles.title}>Security Questions</Text>
+            {this.securityQuestions()}
+            <View style={styles.gap} />
+          </View>
+        )}
+      </View>
       <Text style={styles.title}>Safety Deposit Box</Text>
       {this.safetyDepositBox()}
       <View style={styles.gap} />
@@ -973,7 +996,7 @@ class BankAccounts extends Component {
   };
 
   onEdit = () => {
-    this.setState({editable: false}, () => console.log(this.state.editable));
+    this.setState({editable: false, showQuestion: false}, () => console.log(this.state.editable));
   };
 
   onDelete = () => {
@@ -993,6 +1016,10 @@ class BankAccounts extends Component {
 
   onArchive = () => {
     this.archive();
+  };
+
+  onChangeTextEvent = () => {
+    this.setState({change: true});
   };
 
   background = () =>

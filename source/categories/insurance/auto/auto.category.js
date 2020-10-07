@@ -73,6 +73,7 @@ class AutoInsurance extends Component {
     issuerId: '',
     notes: '',
     refArray: [],
+    showQuestion: false,
   };
 
   constructor(props) {
@@ -108,6 +109,9 @@ class AutoInsurance extends Component {
       .then((response) => {
         console.log('View res: ', response);
         this.setViewData(response.data);
+        if (mode === 'View') {
+          this.checkSecurityQuestions(response.data);
+        }
         this.setState({isLoader: false});
       })
       .catch((error) => {
@@ -158,6 +162,18 @@ class AutoInsurance extends Component {
     refArray
       .filter((item) => item.id === this.state.issuingBankId)
       .map((val) => this.setState({issuer: val.label}));
+  };
+
+  checkSecurityQuestions = (data) => {
+    if (
+      data.SecurityQuestion1.length !== 0 ||
+      data.SecurityQuestion2.length !== 0 ||
+      data.SecurityQuestion3.length !== 0
+    ) {
+      this.setState({showQuestion: false});
+    } else {
+      this.setState({showQuestion: true});
+    }
   };
 
   getBusinessEntity = async () => {
@@ -682,10 +698,15 @@ class AutoInsurance extends Component {
       <View style={styles.gap} />
       <Text style={styles.title}>Additional Policy Holder</Text>
       {this.additionalPolicyHolders()}
-      <View style={styles.gap} />
-      <Text style={styles.title}>Security Questions</Text>
-      {this.securityQuestions()}
-      <View style={styles.gap} />
+      <View>
+        {!this.state.showQuestion && (
+          <View>
+            <Text style={styles.title}>Security Questions</Text>
+            {this.securityQuestions()}
+            <View style={styles.gap} />
+          </View>
+        )}
+      </View>
       <Text style={styles.title}>Notes</Text>
       {this.notes()}
       <Loader isLoader={isLoader} />
