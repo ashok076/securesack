@@ -95,7 +95,7 @@ class FinancialDataType extends Component {
       case 'BankAccounts':
         return item.AccountName;
       case 'CreditCard':
-        return item.CardNumber;
+        return item.Name;
         break;
       case 'BrokerageAccount':
         return item.BrokerageName;
@@ -115,7 +115,7 @@ class FinancialDataType extends Component {
       case 'BankAccounts':
         return item.AccountNumber;
       case 'CreditCard':
-        return item.Name;
+        return item.CardNumber;
         break;
       case 'BrokerageAccount':
         return item.AccountNumber;

@@ -48,6 +48,7 @@ class DriverLicense extends Component {
     modal: '',
     notes: '',
     array: [],
+    changes: false,
   };
 
   constructor(props) {
@@ -191,7 +192,7 @@ class DriverLicense extends Component {
         <InputTextDynamic
           placeholder="Number of Driving Violations"
           onChangeText={(noOfDrivingVoilation) =>
-            this.setState({noOfDrivingVoilation})
+            this.setState({noOfDrivingVoilation}, () => this.changesMade())
           }
           keyboardType="default"
           color={Color.salmon}
@@ -203,7 +204,7 @@ class DriverLicense extends Component {
         <InputTextDynamic
           placeholder="Driving Violation Type"
           onChangeText={(drivingViolationType1) =>
-            this.setState({drivingViolationType1})
+            this.setState({drivingViolationType1}, () => this.changesMade())
           }
           keyboardType="default"
           color={Color.salmon}
@@ -215,7 +216,7 @@ class DriverLicense extends Component {
         <InputTextDynamic
           placeholder="Driving Violation Type"
           onChangeText={(drivingViolationType2) =>
-            this.setState({drivingViolationType2})
+            this.setState({drivingViolationType2}, () => this.changesMade())
           }
           keyboardType="default"
           color={Color.salmon}
@@ -231,7 +232,7 @@ class DriverLicense extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Name"
-          onChangeText={(name) => this.setState({name})}
+          onChangeText={(name) => this.setState({name}, () => this.changesMade())}
           keyboardType="default"
           color={Color.salmon}
           value={this.state.name}
@@ -250,7 +251,7 @@ class DriverLicense extends Component {
               modal: true,
               array: this.props.country.country,
               key: 'countryOfIssue',
-            })
+            }, () => this.changesMade())
           }
           color={Color.veryLightPink}
           editable={this.state.editable}
@@ -260,7 +261,7 @@ class DriverLicense extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="State of Issue"
-          onChangeText={(stateOfIssue) => this.setState({stateOfIssue})}
+          onChangeText={(stateOfIssue) => this.setState({stateOfIssue}, () => this.changesMade())}
           keyboardType="default"
           color={Color.salmon}
           value={this.state.stateOfIssue}
@@ -270,7 +271,7 @@ class DriverLicense extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="License #"
-          onChangeText={(license) => this.setState({license})}
+          onChangeText={(license) => this.setState({license}, () => this.changesMade())}
           keyboardType="default"
           color={Color.salmon}
           value={this.state.license}
@@ -288,7 +289,7 @@ class DriverLicense extends Component {
           <InputTextDynamic
             placeholder="Date of Issue"
             onChangeText={(dateOfIssue) =>
-              this.setState({dateOfIssue: formatDate(dateOfIssue)})
+              this.setState({dateOfIssue: formatDate(dateOfIssue)}, () => this.changesMade())
             }
             keyboardType="default"
             color={Color.salmon}
@@ -301,7 +302,7 @@ class DriverLicense extends Component {
           <InputTextDynamic
             placeholder="Expiration Date"
             onChangeText={(expiryDate) =>
-              this.setState({expiryDate: formatDate(expiryDate)})
+              this.setState({expiryDate: formatDate(expiryDate)}, () => this.changesMade())
             }
             keyboardType="default"
             color={Color.salmon}
@@ -314,20 +315,12 @@ class DriverLicense extends Component {
     </View>
   );
 
-  changeState = (key, value) => {
-    this.setState({[key]: value});
-  };
-
-  changeModalVisibility = (bool) => {
-    this.setState({modal: bool});
-  };
-
   notes = () => (
     <View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Notes"
-          onChangeText={(notes) => this.setState({notes})}
+          onChangeText={(notes) => this.setState({notes}, () => this.changesMade())}
           keyboardType="default"
           value={this.state.notes}
           color={Color.salmon}
@@ -342,6 +335,20 @@ class DriverLicense extends Component {
       </View>
     </View>
   );
+
+  changeState = (key, value) => {
+    this.setState({[key]: value});
+  };
+
+  changeModalVisibility = (bool) => {
+    this.setState({modal: bool});
+  };
+
+changesMade = () => {
+  const {mode} = this.props.route.params;
+  const {editable} = this.state;
+  if (!editable) this.setState({ changes: true }, () => console.log("Check: "));
+}
 
   editComponent = (isLoader, modal, array, key, editable) => (
     <View>
@@ -391,6 +398,27 @@ class DriverLicense extends Component {
     this.archive();
   };
 
+  onBack = () => {
+    const {navigation} = this.props;
+    const {changes} = this.state;
+    if (changes){
+      Alert.alert(
+      //title
+      'Save',
+      //body
+      'Do you want to save changes ?',
+      [
+        {text: 'Save', onPress: () => this.submit()},
+        {text: 'Cancel', onPress: () => console.log('No Pressed'), style: 'cancel'},
+      ],
+      {cancelable: false},
+      //clicking out side of alert will not cancel
+    );
+    }else {
+      navigation.goBack();
+    }
+  }
+
   background = () =>
     require('../../../assets/jpg-images/Government-Record-Background/government-records-background.jpg');
 
@@ -415,6 +443,7 @@ class DriverLicense extends Component {
                 edit={this.onEdit}
                 delete={this.onDelete}
                 archive={this.onArchive}
+                backpress={this.onBack}
                 editable={editable}
               />
             </View>

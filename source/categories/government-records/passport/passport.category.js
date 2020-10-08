@@ -58,6 +58,7 @@ class Passport extends Component {
     dateOfIssue2: '',
     expiredOn2: '',
     notes: '',
+    changes: false
   };
   constructor(props) {
     super(props);
@@ -230,7 +231,7 @@ class Passport extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Name"
-          onChangeText={(name) => this.setState({name})}
+          onChangeText={(name) => this.setState({name}, () => this.changesMade())}
           keyboardType="default"
           color={Color.salmon}
           value={this.state.name}
@@ -249,7 +250,7 @@ class Passport extends Component {
               modal: true,
               array: this.props.country.country,
               key: 'countryofIssue',
-            })
+            }, () => this.changesMade())
           }
           color={Color.veryLightPink}
           editable={this.state.editable}
@@ -259,7 +260,7 @@ class Passport extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Passport Number"
-          onChangeText={(passportNo) => this.setState({passportNo})}
+          onChangeText={(passportNo) => this.setState({passportNo}, () => this.changesMade())}
           keyboardType="default"
           color={Color.salmon}
           value={this.state.passportNo}
@@ -277,7 +278,7 @@ class Passport extends Component {
           <InputTextDynamic
             placeholder="Date of Issue"
             onChangeText={(dateOfIssue) =>
-              this.setState({dateOfIssue: formatDate(dateOfIssue)})
+              this.setState({dateOfIssue: formatDate(dateOfIssue)}, () => this.changesMade())
             }
             keyboardType="default"
             color={Color.salmon}
@@ -290,7 +291,7 @@ class Passport extends Component {
           <InputTextDynamic
             placeholder="Expiration Date"
             onChangeText={(expirationDate) =>
-              this.setState({expirationDate: formatDate(expirationDate)})
+              this.setState({expirationDate: formatDate(expirationDate)}, () => this.changesMade())
             }
             keyboardType="default"
             color={Color.salmon}
@@ -308,7 +309,7 @@ class Passport extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Address Line 1"
-          onChangeText={(address1) => this.setState({address1})}
+          onChangeText={(address1) => this.setState({address1}, () => this.changesMade())}
           keyboardType="default"
           color={Color.salmon}
           value={this.state.address1}
@@ -318,7 +319,7 @@ class Passport extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Address Line 2"
-          onChangeText={(address2) => this.setState({address2})}
+          onChangeText={(address2) => this.setState({address2}, () => this.changesMade())}
           keyboardType="default"
           color={Color.salmon}
           value={this.state.address2}
@@ -328,7 +329,7 @@ class Passport extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="City"
-          onChangeText={(city) => this.setState({city})}
+          onChangeText={(city) => this.setState({city}, () => this.changesMade())}
           keyboardType="default"
           color={Color.salmon}
           value={this.state.city}
@@ -338,7 +339,7 @@ class Passport extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="State"
-          onChangeText={(state) => this.setState({state})}
+          onChangeText={(state) => this.setState({state}, () => this.changesMade())}
           keyboardType="default"
           color={Color.salmon}
           value={this.state.state}
@@ -348,7 +349,7 @@ class Passport extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Zip/Postal"
-          onChangeText={(zip) => this.setState({zip})}
+          onChangeText={(zip) => this.setState({zip}, () => this.changesMade())}
           keyboardType="default"
           color={Color.salmon}
           value={this.state.zip}
@@ -365,7 +366,7 @@ class Passport extends Component {
               modal: true,
               array: this.props.country.country,
               key: 'country',
-            })
+            }, () => this.changesMade())
           }
           color={Color.veryLightPink}
           editable={this.state.editable}
@@ -380,7 +381,7 @@ class Passport extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Old Passport Number 1"
-          onChangeText={(oldPassportNo1) => this.setState({oldPassportNo1})}
+          onChangeText={(oldPassportNo1) => this.setState({oldPassportNo1}, () => this.changesMade())}
           keyboardType="default"
           color={Color.salmon}
           value={this.state.oldPassportNo1}
@@ -390,7 +391,7 @@ class Passport extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Place of Issue"
-          onChangeText={(placeOfIssue1) => this.setState({placeOfIssue1})}
+          onChangeText={(placeOfIssue1) => this.setState({placeOfIssue1}, () => this.changesMade())}
           keyboardType="default"
           color={Color.salmon}
           value={this.state.placeOfIssue1}
@@ -402,7 +403,7 @@ class Passport extends Component {
           <InputTextDynamic
             placeholder="Date of Issue"
             onChangeText={(dateOfIssue1) =>
-              this.setState({dateOfIssue1: formatDate(dateOfIssue1)})
+              this.setState({dateOfIssue1: formatDate(dateOfIssue1)}, () => this.changesMade())
             }
             keyboardType="default"
             color={Color.salmon}
@@ -415,7 +416,7 @@ class Passport extends Component {
           <InputTextDynamic
             placeholder="Expired On"
             onChangeText={(expiredOn1) =>
-              this.setState({expiredOn1: formatDate(expiredOn1)})
+              this.setState({expiredOn1: formatDate(expiredOn1)}, () => this.changesMade())
             }
             keyboardType="default"
             color={Color.salmon}
@@ -428,7 +429,7 @@ class Passport extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Old Passport Number 2"
-          onChangeText={(oldPassportNo2) => this.setState({oldPassportNo2})}
+          onChangeText={(oldPassportNo2) => this.setState({oldPassportNo2}, () => this.changesMade())}
           keyboardType="default"
           color={Color.salmon}
           value={this.state.oldPassportNo2}
@@ -438,7 +439,7 @@ class Passport extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Place of Issue"
-          onChangeText={(placeOfIssue2) => this.setState({placeOfIssue2})}
+          onChangeText={(placeOfIssue2) => this.setState({placeOfIssue2}, () => this.changesMade())}
           keyboardType="default"
           color={Color.salmon}
           value={this.state.placeOfIssue2}
@@ -450,7 +451,7 @@ class Passport extends Component {
           <InputTextDynamic
             placeholder="Date of Issue"
             onChangeText={(dateOfIssue2) =>
-              this.setState({dateOfIssue2: formatDate(dateOfIssue2)})
+              this.setState({dateOfIssue2: formatDate(dateOfIssue2)}, () => this.changesMade())
             }
             keyboardType="default"
             color={Color.salmon}
@@ -463,7 +464,7 @@ class Passport extends Component {
           <InputTextDynamic
             placeholder="Expired On"
             onChangeText={(expiredOn2) =>
-              this.setState({expiredOn2: formatDate(expiredOn2)})
+              this.setState({expiredOn2: formatDate(expiredOn2)}, () => this.changesMade())
             }
             keyboardType="default"
             color={Color.salmon}
@@ -481,7 +482,7 @@ class Passport extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Notes"
-          onChangeText={(notes) => this.setState({notes})}
+          onChangeText={(notes) => this.setState({notes}, () => this.changesMade())}
           keyboardType="default"
           value={this.state.notes}
           color={Color.salmon}
@@ -504,6 +505,12 @@ class Passport extends Component {
   changeModalVisibility = (bool) => {
     this.setState({modal: bool});
   };
+
+changesMade = () => {
+  const {mode} = this.props.route.params;
+  const {editable} = this.state;
+  if (!editable) this.setState({ changes: true }, () => console.log("Check: "));
+}
 
   editComponent = (isLoader, modal, array, key, editable) => (
     <View>
@@ -556,6 +563,27 @@ class Passport extends Component {
     this.archive();
   };
 
+  onBack = () => {
+    const {navigation} = this.props;
+    const {changes} = this.state;
+    if (changes){
+      Alert.alert(
+      //title
+      'Save',
+      //body
+      'Do you want to save changes ?',
+      [
+        {text: 'Save', onPress: () => this.submit()},
+        {text: 'Cancel', onPress: () => console.log('No Pressed'), style: 'cancel'},
+      ],
+      {cancelable: false},
+      //clicking out side of alert will not cancel
+    );
+    }else {
+      navigation.goBack();
+    }
+  }
+
   background = () =>
     require('../../../assets/jpg-images/Government-Record-Background/government-records-background.jpg');
 
@@ -580,6 +608,7 @@ class Passport extends Component {
                 edit={this.onEdit}
                 delete={this.onDelete}
                 archive={this.onArchive}
+                backpress={this.onBack}
                 editable={editable}
               />
             </View>
