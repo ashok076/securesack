@@ -72,7 +72,8 @@ class PropertyInsurance extends Component {
     ownedProperty: '',
     ownedPropertyArr: [],
     issuerId: '',
-    notes: ''
+    notes: '',
+    changes: false,
   };
 
   constructor(props) {
@@ -318,7 +319,7 @@ class PropertyInsurance extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Name"
-          onChangeText={(name) => this.setState({name})}
+          onChangeText={(name) => this.setState({name}, () => this.changesMade())}
           keyboardType="default"
           color={Color.veryLightPink}
           value={this.state.name}
@@ -328,7 +329,7 @@ class PropertyInsurance extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Policy Number"
-          onChangeText={(policyNo) => this.setState({policyNo})}
+          onChangeText={(policyNo) => this.setState({policyNo}, () => this.changesMade())}
           keyboardType="default"
           color={Color.veryLightPink}
           value={this.state.policyNo}
@@ -344,7 +345,7 @@ class PropertyInsurance extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Policy Holder"
-          onChangeText={(policyHolder) => this.setState({policyHolder})}
+          onChangeText={(policyHolder) => this.setState({policyHolder}, () => this.changesMade())}
           keyboardType="default"
           color={Color.veryLightPink}
           value={this.state.policyHolder}
@@ -354,7 +355,7 @@ class PropertyInsurance extends Component {
       <View style={styles.inputContainer}>
         <AutoCompleteText
           placeholder="Issuer"
-          onChangeText={(issuer) => this.setState({issuer})}
+          onChangeText={(issuer) => this.setState({issuer}, () => this.changesMade())}
           keyboardType="default"
           value={this.state.issuer}
           color={Color.veryLightBlue}
@@ -367,7 +368,7 @@ class PropertyInsurance extends Component {
         <View style={[styles.miniInputContainer, {marginRight: 10}]}>
           <InputTextDynamic
             placeholder="Installment Amount"
-            onChangeText={(installmentAmnt) => this.setState({installmentAmnt})}
+            onChangeText={(installmentAmnt) => this.setState({installmentAmnt}, () => this.changesMade())}
             keyboardType="default"
             color={Color.veryLightPink}
             value={this.state.installmentAmnt}
@@ -386,7 +387,7 @@ class PropertyInsurance extends Component {
                 modal: true,
                 array: boolean_value,
                 key: 'escrowAccount',
-              })
+              }, () => this.changesMade())
             }
             color={Color.veryLightBlue}
             editable={this.state.editable}
@@ -397,7 +398,7 @@ class PropertyInsurance extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="URL"
-          onChangeText={(url) => this.setState({url})}
+          onChangeText={(url) => this.setState({url}, () => this.changesMade())}
           keyboardType="default"
           color={Color.veryLightPink}
           value={this.state.url}
@@ -410,7 +411,7 @@ class PropertyInsurance extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Username"
-          onChangeText={(username) => this.setState({username})}
+          onChangeText={(username) => this.setState({username}, () => this.changesMade())}
           keyboardType="default"
           color={Color.veryLightPink}
           value={this.state.username}
@@ -426,7 +427,7 @@ class PropertyInsurance extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Password"
-          onChangeText={(password) => this.setState({password})}
+          onChangeText={(password) => this.setState({password}, () => this.changesMade())}
           keyboardType="default"
           color={Color.veryLightPink}
           value={this.state.password}
@@ -447,7 +448,7 @@ class PropertyInsurance extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="County"
-          onChangeText={(county) => this.setState({county})}
+          onChangeText={(county) => this.setState({county}, () => this.changesMade())}
           keyboardType="default"
           color={Color.veryLightPink}
           value={this.state.county}
@@ -457,7 +458,7 @@ class PropertyInsurance extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Parcel Number"
-          onChangeText={(parcelNo) => this.setState({parcelNo})}
+          onChangeText={(parcelNo) => this.setState({parcelNo}, () => this.changesMade())}
           keyboardType="default"
           color={Color.veryLightPink}
           value={this.state.parcelNo}
@@ -469,7 +470,7 @@ class PropertyInsurance extends Component {
           <InputTextDynamic
             placeholder="Effective From"
             onChangeText={(effectiveFrom) =>
-              this.setState({effectiveFrom: formatDate(effectiveFrom)})
+              this.setState({effectiveFrom: formatDate(effectiveFrom)}, () => this.changesMade())
             }
             keyboardType="default"
             color={Color.veryLightPink}
@@ -505,7 +506,7 @@ class PropertyInsurance extends Component {
       modal: true,
       array: arr,
       key: 'ownedProperty',
-    });
+    }, () => this.changesMade());
   };
 
   insuranceDetails = () => (
@@ -513,7 +514,7 @@ class PropertyInsurance extends Component {
       <View style={styles.inputContainer}>
         <InputTextIconDynamic
           placeholder="Dwelling Coverage (A)"
-          onChangeText={(dwellingCoverage) => this.setState({dwellingCoverage})}
+          onChangeText={(dwellingCoverage) => this.setState({dwellingCoverage}, () => this.changesMade())}
           color={Color.veryLightPink}
           value={this.state.dwellingCoverage}
           editable={this.state.editable}
@@ -523,7 +524,7 @@ class PropertyInsurance extends Component {
         <InputTextIconDynamic
           placeholder="Liability Coverage (B)"
           onChangeText={(liabilityCoverage) =>
-            this.setState({liabilityCoverage})
+            this.setState({liabilityCoverage}, () => this.changesMade())
           }
           color={Color.veryLightPink}
           value={this.state.liabilityCoverage}
@@ -533,7 +534,7 @@ class PropertyInsurance extends Component {
       <View style={styles.inputContainer}>
         <InputTextIconDynamic
           placeholder="Medical Payment Coverage (C)"
-          onChangeText={(medicalPayment) => this.setState({medicalPayment})}
+          onChangeText={(medicalPayment) => this.setState({medicalPayment}, () => this.changesMade())}
           color={Color.veryLightPink}
           value={this.state.medicalPayment}
           editable={this.state.editable}
@@ -543,7 +544,7 @@ class PropertyInsurance extends Component {
         <InputTextIconDynamic
           placeholder="Dwelling Coverage Deductible"
           onChangeText={(dwellingCoverageDeductoble) =>
-            this.setState({dwellingCoverageDeductoble})
+            this.setState({dwellingCoverageDeductoble}, () => this.changesMade())
           }
           color={Color.veryLightPink}
           value={this.state.dwellingCoverageDeductoble}
@@ -553,7 +554,7 @@ class PropertyInsurance extends Component {
       <View style={styles.inputContainer}>
         <InputTextIconDynamic
           placeholder="Loss of Use Coverage (F)"
-          onChangeText={(lossOfCoverage) => this.setState({lossOfCoverage})}
+          onChangeText={(lossOfCoverage) => this.setState({lossOfCoverage}, () => this.changesMade())}
           color={Color.veryLightPink}
           value={this.state.lossOfCoverage}
           editable={this.state.editable}
@@ -572,7 +573,7 @@ class PropertyInsurance extends Component {
                 modal: true,
                 array: boolean_value,
                 key: 'replacementContentCoverage',
-              })
+              }, () => this.changesMade())
             }
             color={Color.veryLightBlue}
             editable={this.state.editable}
@@ -591,7 +592,7 @@ class PropertyInsurance extends Component {
                 modal: true,
                 array: boolean_value,
                 key: 'lossAssessmentCoverage',
-              })
+              }, () => this.changesMade())
             }
             color={Color.veryLightBlue}
             editable={this.state.editable}
@@ -612,7 +613,7 @@ class PropertyInsurance extends Component {
                 modal: true,
                 array: boolean_value,
                 key: 'sewerBackupCoverage',
-              })
+              }, () => this.changesMade())
             }
             color={Color.veryLightBlue}
             editable={this.state.editable}
@@ -623,7 +624,7 @@ class PropertyInsurance extends Component {
           <InputTextIconDynamic
             placeholder="Ordiance/Legal Coverage"
             onChangeText={(ordianceCoverage) =>
-              this.setState({ordianceCoverage})
+              this.setState({ordianceCoverage}, () => this.changesMade())
             }
             color={Color.veryLightPink}
             value={this.state.ordianceCoverage}
@@ -635,7 +636,7 @@ class PropertyInsurance extends Component {
         <InputTextIconDynamic
           placeholder="Personal Items Insured"
           onChangeText={(personalItemInsured) =>
-            this.setState({personalItemInsured})
+            this.setState({personalItemInsured}, () => this.changesMade())
           }
           color={Color.veryLightPink}
           value={this.state.personalItemInsured}
@@ -651,7 +652,7 @@ class PropertyInsurance extends Component {
         <InputTextDynamic
           placeholder="Joint Policy Holder 2"
           onChangeText={(jointPolicyHolderTwo) =>
-            this.setState({jointPolicyHolderTwo})
+            this.setState({jointPolicyHolderTwo}, () => this.changesMade())
           }
           keyboardType="default"
           color={Color.veryLightPink}
@@ -663,7 +664,7 @@ class PropertyInsurance extends Component {
         <InputTextDynamic
           placeholder="Joint Policy Holder 3"
           onChangeText={(jointPolicyHolderThree) =>
-            this.setState({jointPolicyHolderThree})
+            this.setState({jointPolicyHolderThree}, () => this.changesMade())
           }
           keyboardType="default"
           color={Color.veryLightPink}
@@ -679,7 +680,7 @@ class PropertyInsurance extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Notes"
-          onChangeText={(notes) => this.setState({notes})}
+          onChangeText={(notes) => this.setState({notes}, () => this.changesMade())}
           keyboardType="default"
           value={this.state.notes}
           color={Color.veryLightPink}
@@ -719,6 +720,12 @@ class PropertyInsurance extends Component {
       );
     }
   };
+
+  changesMade = () => {
+    const {mode} = this.props.route.params;
+    const {editable} = this.state;
+    if (!editable) this.setState({ changes: true }, () => console.log("Check: "));
+  }
 
   changeState = (key, value) => {
     this.setState({[key]: value});
@@ -784,6 +791,27 @@ class PropertyInsurance extends Component {
     this.archive();
   };
 
+  onBack = () => {
+    const {navigation} = this.props;
+    const {changes} = this.state;
+    if (changes){
+      Alert.alert(
+      //title
+      'Save',
+      //body
+      'Do you want to save changes ?',
+      [
+        {text: 'Save', onPress: () => this.submit()},
+        {text: 'Cancel', onPress: () => console.log('No Pressed'), style: 'cancel'},
+      ],
+      {cancelable: false},
+      //clicking out side of alert will not cancel
+    );
+    }else {
+      navigation.goBack();
+    }
+  }
+
   background = () =>
     require('../../../assets/jpg-images/Insurance-Background/insurance-background.jpg');
 
@@ -808,6 +836,7 @@ class PropertyInsurance extends Component {
                 edit={this.onEdit}
                 delete={this.onDelete}
                 archive={this.onArchive}
+                backpress={this.onBack}
                 editable={editable}
               />
             </View>

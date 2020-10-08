@@ -74,6 +74,7 @@ class AutoInsurance extends Component {
     notes: '',
     refArray: [],
     showQuestion: false,
+    changes: false,
   };
 
   constructor(props) {
@@ -303,7 +304,7 @@ class AutoInsurance extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Name"
-          onChangeText={(name) => this.setState({name})}
+          onChangeText={(name) => this.setState({name}, () => this.changesMade())}
           keyboardType="default"
           color={Color.veryLightPink}
           value={this.state.name}
@@ -314,7 +315,7 @@ class AutoInsurance extends Component {
         <InputTextDynamic
           placeholder="Primary Policy Holder"
           onChangeText={(primaryPolicyHolder) =>
-            this.setState({primaryPolicyHolder})
+            this.setState({primaryPolicyHolder}, () => this.changesMade())
           }
           keyboardType="default"
           color={Color.veryLightPink}
@@ -325,7 +326,7 @@ class AutoInsurance extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Policy Number"
-          onChangeText={(policyNumber) => this.setState({policyNumber})}
+          onChangeText={(policyNumber) => this.setState({policyNumber}, () => this.changesMade())}
           keyboardType="number-pad"
           color={Color.veryLightPink}
           value={this.state.policyNumber}
@@ -341,7 +342,7 @@ class AutoInsurance extends Component {
       <View style={styles.inputContainer}>
         <AutoCompleteText
           placeholder="Issuer"
-          onChangeText={(issuer) => this.setState({issuer})}
+          onChangeText={(issuer) => this.setState({issuer}, () => this.changesMade())}
           keyboardType="default"
           value={this.state.issuer}
           color={Color.veryLightBlue}
@@ -354,7 +355,7 @@ class AutoInsurance extends Component {
         <InputTextIconDynamic
           placeholder="Premium"
           icon="dollar-sign"
-          onChangeText={(premium) => this.setState({premium})}
+          onChangeText={(premium) => this.setState({premium}, () => this.changesMade())}
           color={Color.veryLightPink}
           value={this.state.premium}
           editable={this.state.editable}
@@ -365,7 +366,7 @@ class AutoInsurance extends Component {
           placeholder="Installment"
           icon="dollar-sign"
           keyboardType="number-pad"
-          onChangeText={(installment) => this.setState({installment})}
+          onChangeText={(installment) => this.setState({installment}, () => this.changesMade())}
           color={Color.veryLightPink}
           value={this.state.installment}
           editable={this.state.editable}
@@ -383,7 +384,7 @@ class AutoInsurance extends Component {
               modal: true,
               array: payment_due_type,
               key: 'paymentDueType',
-            })
+            }, () => this.changesMade())
           }
           color={Color.veryLightPink}
           editable={this.state.editable}
@@ -395,7 +396,7 @@ class AutoInsurance extends Component {
           placeholder="From"
           icon="dollar-sign"
           keyboardType="number-pad"
-          onChangeText={(from) => this.setState({from: formatDate(from)})}
+          onChangeText={(from) => this.setState({from: formatDate(from)}, () => this.changesMade())}
           color={Color.veryLightPink}
           value={this.state.from}
           editable={this.state.editable}
@@ -407,7 +408,7 @@ class AutoInsurance extends Component {
           placeholder="To"
           icon="dollar-sign"
           keyboardType="number-pad"
-          onChangeText={(to) => this.setState({to: formatDate(to)})}
+          onChangeText={(to) => this.setState({to: formatDate(to)}, () => this.changesMade())}
           color={Color.veryLightPink}
           value={this.state.to}
           editable={this.state.editable}
@@ -419,7 +420,7 @@ class AutoInsurance extends Component {
           placeholder="Total"
           icon="dollar-sign"
           keyboardType="number-pad"
-          onChangeText={(total) => this.setState({total})}
+          onChangeText={(total) => this.setState({total}, () => this.changesMade())}
           color={Color.veryLightPink}
           value={this.state.total}
           editable={this.state.editable}
@@ -428,7 +429,7 @@ class AutoInsurance extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="URL"
-          onChangeText={(url) => this.setState({url})}
+          onChangeText={(url) => this.setState({url}, () => this.changesMade())}
           keyboardType="default"
           color={Color.veryLightBlue}
           value={this.state.url}
@@ -441,7 +442,7 @@ class AutoInsurance extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="User Name"
-          onChangeText={(username) => this.setState({username})}
+          onChangeText={(username) => this.setState({username}, () => this.changesMade())}
           keyboardType="default"
           color={Color.veryLightBlue}
           value={this.state.username}
@@ -457,7 +458,7 @@ class AutoInsurance extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Password"
-          onChangeText={(password) => this.setState({password})}
+          onChangeText={(password) => this.setState({password}, () => this.changesMade())}
           keyboardType="default"
           color={Color.veryLightBlue}
           value={this.state.password}
@@ -479,7 +480,7 @@ class AutoInsurance extends Component {
         <InputTextDynamic
           placeholder="Effective From"
           onChangeText={(effectiveFrom) =>
-            this.setState({effectiveFrom: formatDate(effectiveFrom)})
+            this.setState({effectiveFrom: formatDate(effectiveFrom)}, () => this.changesMade())
           }
           keyboardType="default"
           color={Color.veryLightPink}
@@ -491,7 +492,7 @@ class AutoInsurance extends Component {
       <View style={styles.miniInputContainer}>
         <InputTextDynamic
           placeholder="Ends On"
-          onChangeText={(endsOn) => this.setState({endsOn: formatDate(endsOn)})}
+          onChangeText={(endsOn) => this.setState({endsOn: formatDate(endsOn)}, () => this.changesMade())}
           keyboardType="default"
           color={Color.veryLightPink}
           value={this.state.endsOn}
@@ -508,7 +509,7 @@ class AutoInsurance extends Component {
         <InputTextDynamic
           placeholder="Additional Policy Holder 1"
           onChangeText={(additionalPolicyHolder1) =>
-            this.setState({additionalPolicyHolder1})
+            this.setState({additionalPolicyHolder1}, () => this.changesMade())
           }
           keyboardType="default"
           color={Color.veryLightPink}
@@ -520,7 +521,7 @@ class AutoInsurance extends Component {
         <InputTextDynamic
           placeholder="Additional Policy Holder 2"
           onChangeText={(additionalPolicyHolder2) =>
-            this.setState({additionalPolicyHolder2})
+            this.setState({additionalPolicyHolder2}, () => this.changesMade())
           }
           keyboardType="default"
           color={Color.veryLightPink}
@@ -532,7 +533,7 @@ class AutoInsurance extends Component {
         <InputTextDynamic
           placeholder="Additional Policy Holder 3"
           onChangeText={(additionalPolicyHolder3) =>
-            this.setState({additionalPolicyHolder3})
+            this.setState({additionalPolicyHolder3}, () => this.changesMade())
           }
           keyboardType="default"
           color={Color.veryLightPink}
@@ -544,7 +545,7 @@ class AutoInsurance extends Component {
         <InputTextDynamic
           placeholder="Additional Policy Holder 4"
           onChangeText={(additionalPolicyHolder4) =>
-            this.setState({additionalPolicyHolder4})
+            this.setState({additionalPolicyHolder4}, () => this.changesMade())
           }
           keyboardType="default"
           color={Color.veryLightPink}
@@ -560,7 +561,7 @@ class AutoInsurance extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Security Question 1"
-          onChangeText={(securityQ1) => this.setState({securityQ1})}
+          onChangeText={(securityQ1) => this.setState({securityQ1}, () => this.changesMade())}
           keyboardType="default"
           color={Color.veryLightPink}
           value={this.state.securityQ1}
@@ -576,7 +577,7 @@ class AutoInsurance extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Answer 1"
-          onChangeText={(securityA1) => this.setState({securityA1})}
+          onChangeText={(securityA1) => this.setState({securityA1}, () => this.changesMade())}
           keyboardType="default"
           color={Color.veryLightPink}
           value={this.state.securityA1}
@@ -586,7 +587,7 @@ class AutoInsurance extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Security Question 2"
-          onChangeText={(securityQ2) => this.setState({securityQ2})}
+          onChangeText={(securityQ2) => this.setState({securityQ2}, () => this.changesMade())}
           keyboardType="default"
           color={Color.veryLightPink}
           value={this.state.securityQ2}
@@ -602,7 +603,7 @@ class AutoInsurance extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Answer 2"
-          onChangeText={(securityA2) => this.setState({securityA2})}
+          onChangeText={(securityA2) => this.setState({securityA2}, () => this.changesMade())}
           keyboardType="default"
           color={Color.veryLightPink}
           value={this.state.securityA2}
@@ -612,7 +613,7 @@ class AutoInsurance extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Security Question 3"
-          onChangeText={(securityQ3) => this.setState({securityQ3})}
+          onChangeText={(securityQ3) => this.setState({securityQ3}, () => this.changesMade())}
           keyboardType="default"
           color={Color.veryLightPink}
           value={this.state.securityQ3}
@@ -628,7 +629,7 @@ class AutoInsurance extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Answer 3"
-          onChangeText={(securityA3) => this.setState({securityA3})}
+          onChangeText={(securityA3) => this.setState({securityA3}, () => this.changesMade())}
           keyboardType="default"
           color={Color.veryLightPink}
           value={this.state.securityA3}
@@ -643,7 +644,7 @@ class AutoInsurance extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Notes"
-          onChangeText={(notes) => this.setState({notes})}
+          onChangeText={(notes) => this.setState({notes}, () => this.changesMade())}
           keyboardType="default"
           value={this.state.notes}
           color={Color.veryLightPink}
@@ -671,6 +672,12 @@ class AutoInsurance extends Component {
       );
     }
   };
+
+changesMade = () => {
+  const {mode} = this.props.route.params;
+  const {editable} = this.state;
+  if (!editable) this.setState({ changes: true }, () => console.log("Check: "));
+}
 
   changeRefBusinessmModal = (bool) => {
     this.setState({refBusModal: bool});
@@ -753,6 +760,27 @@ class AutoInsurance extends Component {
     this.archive();
   };
 
+  onBack = () => {
+    const {navigation} = this.props;
+    const {changes} = this.state;
+    if (changes){
+      Alert.alert(
+      //title
+      'Save',
+      //body
+      'Do you want to save changes ?',
+      [
+        {text: 'Save', onPress: () => this.submit()},
+        {text: 'Cancel', onPress: () => console.log('No Pressed'), style: 'cancel'},
+      ],
+      {cancelable: false},
+      //clicking out side of alert will not cancel
+    );
+    }else {
+      navigation.goBack();
+    }
+  }
+
   background = () =>
     require('../../../assets/jpg-images/Insurance-Background/insurance-background.jpg');
 
@@ -777,6 +805,7 @@ class AutoInsurance extends Component {
                 edit={this.onEdit}
                 delete={this.onDelete}
                 archive={this.onArchive}
+                backpress={this.onBack}
                 editable={editable}
               />
             </View>
