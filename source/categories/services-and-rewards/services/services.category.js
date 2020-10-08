@@ -81,6 +81,7 @@ class ServiceAccount extends Component {
     editable: true,
     refArray: [],
     showQuestion: false,
+    changes: false,
   };
   constructor(props) {
     super(props);
@@ -344,7 +345,7 @@ class ServiceAccount extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Name"
-          onChangeText={(name) => this.setState({name})}
+          onChangeText={(name) => this.setState({name}, () => this.changesMade())}
           keyboardType="default"
           color={Color.veryLightBlue}
           value={this.state.name}
@@ -354,7 +355,7 @@ class ServiceAccount extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Account Number"
-          onChangeText={(accNo) => this.setState({accNo})}
+          onChangeText={(accNo) => this.setState({accNo}, () => this.changesMade())}
           keyboardType="number-pad"
           color={Color.veryLightBlue}
           value={this.state.accNo}
@@ -370,7 +371,7 @@ class ServiceAccount extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Primary Account Holder"
-          onChangeText={(primaryAcHolder) => this.setState({primaryAcHolder})}
+          onChangeText={(primaryAcHolder) => this.setState({primaryAcHolder}, () => this.changesMade())}
           keyboardType="default"
           color={Color.veryLightBlue}
           value={this.state.primaryAcHolder}
@@ -380,7 +381,7 @@ class ServiceAccount extends Component {
       <View style={styles.inputContainer}>
         <AutoCompleteText
           placeholder="Provider"
-          onChangeText={(provider) => this.setState({provider})}
+          onChangeText={(provider) => this.setState({provider}, () => this.changesMade())}
           keyboardType="default"
           value={this.state.provider}
           color={Color.veryLightBlue}
@@ -401,7 +402,7 @@ class ServiceAccount extends Component {
               modal: true,
               array: serviceType,
               key: 'serviceType',
-            })
+            }, () => this.changesMade())
           }
           color={Color.veryLightBlue}
           editable={this.state.editable}
@@ -411,7 +412,7 @@ class ServiceAccount extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="User Name"
-          onChangeText={(username) => this.setState({username})}
+          onChangeText={(username) => this.setState({username}, () => this.changesMade())}
           keyboardType="default"
           color={Color.veryLightBlue}
           value={this.state.username}
@@ -427,7 +428,7 @@ class ServiceAccount extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Password"
-          onChangeText={(password) => this.setState({password})}
+          onChangeText={(password) => this.setState({password}, () => this.changesMade())}
           keyboardType="default"
           color={Color.veryLightBlue}
           value={this.state.password}
@@ -443,7 +444,7 @@ class ServiceAccount extends Component {
       <View style={styles.inputContainer}>
         <InputTextIconDynamic
           placeholder="Installment"
-          onChangeText={(installment) => this.setState({installment})}
+          onChangeText={(installment) => this.setState({installment}, () => this.changesMade())}
           icon="dollar-sign"
           keyboardType="number-pad"
           color={Color.veryLightBlue}
@@ -463,7 +464,7 @@ class ServiceAccount extends Component {
               modal: true,
               array: payment_due_type,
               key: 'paymentDueType',
-            })
+            }, () => this.changesMade())
           }
           color={Color.veryLightBlue}
           editable={this.state.editable}
@@ -474,7 +475,7 @@ class ServiceAccount extends Component {
         <View style={[styles.miniInputContainer, {marginRight: 10}]}>
           <InputTextDynamic
             placeholder="From"
-            onChangeText={(from) => this.setState({from: formatDate(from)})}
+            onChangeText={(from) => this.setState({from: formatDate(from)}, () => this.changesMade())}
             keyboardType="number-pad"
             color={Color.veryLightBlue}
             value={this.state.from}
@@ -485,7 +486,7 @@ class ServiceAccount extends Component {
         <View style={styles.miniInputContainer}>
           <InputTextDynamic
             placeholder="To"
-            onChangeText={(to) => this.setState({to: formatDate(to)})}
+            onChangeText={(to) => this.setState({to: formatDate(to)}, () => this.changesMade())}
             keyboardType="number-pad"
             color={Color.veryLightBlue}
             value={this.state.to}
@@ -497,7 +498,7 @@ class ServiceAccount extends Component {
       <View style={styles.inputContainer}>
         <InputTextIconDynamic
           placeholder="Total"
-          onChangeText={(total) => this.setState({total})}
+          onChangeText={(total) => this.setState({total}, () => this.changesMade())}
           icon="dollar-sign"
           keyboardType="number-pad"
           color={Color.veryLightBlue}
@@ -513,7 +514,7 @@ class ServiceAccount extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Address Line 1"
-          onChangeText={(address1) => this.setState({address1})}
+          onChangeText={(address1) => this.setState({address1}, () => this.changesMade())}
           keyboardType="default"
           color={Color.veryLightBlue}
           value={this.state.address1}
@@ -523,7 +524,7 @@ class ServiceAccount extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Address Line 2"
-          onChangeText={(address2) => this.setState({address2})}
+          onChangeText={(address2) => this.setState({address2}, () => this.changesMade())}
           keyboardType="default"
           color={Color.veryLightBlue}
           value={this.state.address2}
@@ -533,7 +534,7 @@ class ServiceAccount extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="City"
-          onChangeText={(city) => this.setState({city})}
+          onChangeText={(city) => this.setState({city}, () => this.changesMade())}
           keyboardType="default"
           color={Color.veryLightBlue}
           value={this.state.city}
@@ -543,7 +544,7 @@ class ServiceAccount extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="State"
-          onChangeText={(state) => this.setState({state})}
+          onChangeText={(state) => this.setState({state}, () => this.changesMade())}
           keyboardType="default"
           color={Color.veryLightBlue}
           value={this.state.state}
@@ -553,7 +554,7 @@ class ServiceAccount extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Zip/Postal"
-          onChangeText={(zip) => this.setState({zip})}
+          onChangeText={(zip) => this.setState({zip}, () => this.changesMade())}
           keyboardType="number-pad"
           color={Color.veryLightBlue}
           value={this.state.zip}
@@ -570,7 +571,7 @@ class ServiceAccount extends Component {
               modal: true,
               array: this.props.country.country,
               key: 'country',
-            })
+            }, () => this.changesMade())
           }
           color={Color.veryLightBlue}
           editable={this.state.editable}
@@ -585,7 +586,7 @@ class ServiceAccount extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Security Question 1"
-          onChangeText={(securityQ1) => this.setState({securityQ1})}
+          onChangeText={(securityQ1) => this.setState({securityQ1}, () => this.changesMade())}
           keyboardType="default"
           color={Color.veryLightBlue}
           value={this.state.securityQ1}
@@ -601,7 +602,7 @@ class ServiceAccount extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Answer 1"
-          onChangeText={(securityA1) => this.setState({securityA1})}
+          onChangeText={(securityA1) => this.setState({securityA1}, () => this.changesMade())}
           keyboardType="default"
           color={Color.veryLightBlue}
           value={this.state.securityA1}
@@ -611,7 +612,7 @@ class ServiceAccount extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Security Question 2"
-          onChangeText={(securityQ2) => this.setState({securityQ2})}
+          onChangeText={(securityQ2) => this.setState({securityQ2}, () => this.changesMade())}
           keyboardType="default"
           color={Color.veryLightBlue}
           value={this.state.securityQ2}
@@ -627,7 +628,7 @@ class ServiceAccount extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Answer 2"
-          onChangeText={(securityA2) => this.setState({securityA2})}
+          onChangeText={(securityA2) => this.setState({securityA2}, () => this.changesMade())}
           keyboardType="default"
           color={Color.veryLightBlue}
           value={this.state.securityA2}
@@ -637,7 +638,7 @@ class ServiceAccount extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Security Question 3"
-          onChangeText={(securityQ3) => this.setState({securityQ3})}
+          onChangeText={(securityQ3) => this.setState({securityQ3}, () => this.changesMade())}
           keyboardType="default"
           color={Color.veryLightBlue}
           value={this.state.securityQ3}
@@ -653,7 +654,7 @@ class ServiceAccount extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Answer 3"
-          onChangeText={(securityA3) => this.setState({securityA3})}
+          onChangeText={(securityA3) => this.setState({securityA3}, () => this.changesMade())}
           keyboardType="default"
           color={Color.veryLightBlue}
           value={this.state.securityA3}
@@ -670,7 +671,7 @@ class ServiceAccount extends Component {
           <InputTextDynamic
             placeholder="Additional Account Holder 1"
             onChangeText={(additionalAcHolder1) =>
-              this.setState({additionalAcHolder1})
+              this.setState({additionalAcHolder1}, () => this.changesMade())
             }
             keyboardType="default"
             color={Color.veryLightBlue}
@@ -682,7 +683,7 @@ class ServiceAccount extends Component {
           <InputTextDynamic
             placeholder="Additional Account Holder 2"
             onChangeText={(additionalAcHolder2) =>
-              this.setState({additionalAcHolder2})
+              this.setState({additionalAcHolder2}, () => this.changesMade())
             }
             keyboardType="default"
             color={Color.veryLightBlue}
@@ -702,7 +703,7 @@ class ServiceAccount extends Component {
                 modal: true,
                 array: is_credit_card_provided,
                 key: 'isCreditCardProvided',
-              })
+              }, () => this.changesMade())
             }
             color={Color.veryLightBlue}
             editable={this.state.editable}
@@ -736,7 +737,7 @@ class ServiceAccount extends Component {
       modal: true,
       array: arr,
       key: 'creditCardProvided',
-    });
+    }, () => this.changesMade());
   };
 
   notes = () => (
@@ -744,7 +745,7 @@ class ServiceAccount extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Notes"
-          onChangeText={(notes) => this.setState({notes})}
+          onChangeText={(notes) => this.setState({notes}, () => this.changesMade())}
           keyboardType="default"
           value={this.state.notes}
           color={Color.veryLightBlue}
@@ -855,6 +856,27 @@ class ServiceAccount extends Component {
     this.archive();
   };
 
+  onBack = () => {
+    const {navigation} = this.props;
+    const {changes} = this.state;
+    if (changes){
+      Alert.alert(
+      //title
+      'Save',
+      //body
+      'Do you want to save changes ?',
+      [
+        {text: 'Save', onPress: () => this.submit()},
+        {text: 'Cancel', onPress: () => console.log('No Pressed'), style: 'cancel'},
+      ],
+      {cancelable: false},
+      //clicking out side of alert will not cancel
+    );
+    }else {
+      navigation.goBack();
+    }
+  }
+
   background = () =>
     require('../../../assets/jpg-images/Service-Reward-Background/service-and-reward-background.jpg');
 
@@ -880,6 +902,7 @@ class ServiceAccount extends Component {
                 edit={this.onEdit}
                 delete={this.onDelete}
                 archive={this.onArchive}
+                backpress={this.onBack}
                 editable={editable}
               />
             </View>
