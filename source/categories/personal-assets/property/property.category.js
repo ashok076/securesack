@@ -79,6 +79,7 @@ class Property extends Component {
       smokeDetector: '',
       isFireHydrant: '',
       notes: '',
+    changes: false,
   }
 
   constructor(props) {
@@ -296,7 +297,7 @@ class Property extends Component {
                 modal: true,
                 array: sprinkler_type,
                 key: 'sprinklerType',
-              })
+              }, () => this.changesMade())
             }
           color={Color.veryLightBlue}
           editable={this.state.editable}
@@ -315,7 +316,7 @@ class Property extends Component {
                 modal: true,
                 array: alarm_type,
                 key: 'fireAlarmType',
-              })
+              }, () => this.changesMade())
             }
           color={Color.veryLightBlue}
           editable={this.state.editable}
@@ -336,7 +337,7 @@ class Property extends Component {
                 modal: true,
                 array: alarm_type,
                 key: 'burgularAlarmType',
-              })
+              }, () => this.changesMade())
             }
           color={Color.veryLightBlue}
           editable={this.state.editable}
@@ -355,7 +356,7 @@ class Property extends Component {
                 modal: true,
                 array: boolean_value,
                 key: 'smokeDetector',
-              })
+              }, () => this.changesMade())
             }
           color={Color.veryLightBlue}
           editable={this.state.editable}
@@ -367,7 +368,7 @@ class Property extends Component {
         <InputTextDynamic
           placeholder="Responding Fire Department"
           onChangeText={(respondingFireDepartment) =>
-            this.setState({respondingFireDepartment})
+            this.setState({respondingFireDepartment}, () => this.changesMade())
           }
           keyboardType="default"
           color={Color.paleRed}
@@ -379,7 +380,7 @@ class Property extends Component {
         <InputTextDynamic
           placeholder="Distance To Fire Department"
           onChangeText={(distanceToFireDepartment) =>
-            this.setState({distanceToFireDepartment})
+            this.setState({distanceToFireDepartment}, () => this.changesMade())
           }
           keyboardType="default"
           color={Color.paleRed}
@@ -399,7 +400,7 @@ class Property extends Component {
               modal: true,
               array: boolean_value,
               key: 'isFireHydrant',
-            })
+            }, () => this.changesMade())
           }
           color={Color.veryLightBlue}
           editable={this.state.editable}
@@ -409,7 +410,7 @@ class Property extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Sold On"
-          onChangeText={(soldOn) => this.setState({soldOn: formatDate(soldOn)})}
+          onChangeText={(soldOn) => this.setState({soldOn: formatDate(soldOn)}, () => this.changesMade())}
           keyboardType="default"
           color={Color.paleRed}
           value={this.state.soldOn}
@@ -425,7 +426,7 @@ class Property extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Name"
-          onChangeText={(name) => this.setState({name})}
+          onChangeText={(name) => this.setState({name}, () => this.changesMade())}
           keyboardType="default"
           color={Color.paleRed}
           value={this.state.name}
@@ -442,7 +443,7 @@ class Property extends Component {
               modal: true,
               array: purpose,
               key: 'purpose',
-            })
+            }, () => this.changesMade())
           }
           color={Color.veryLightBlue}
           editable={this.state.editable}
@@ -461,7 +462,7 @@ class Property extends Component {
               modal: true,
               array: residence_type,
               key: 'residenceType',
-            })
+            }, () => this.changesMade())
           }
           color={Color.veryLightBlue}
           editable={this.state.editable}
@@ -471,7 +472,7 @@ class Property extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Address Line 1"
-          onChangeText={(address1) => this.setState({address1})}
+          onChangeText={(address1) => this.setState({address1}, () => this.changesMade())}
           keyboardType="default"
           color={Color.paleRed}
           value={this.state.address1}
@@ -481,7 +482,7 @@ class Property extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Address Line 2"
-          onChangeText={(address2) => this.setState({address2})}
+          onChangeText={(address2) => this.setState({address2}, () => this.changesMade())}
           keyboardType="default"
           color={Color.paleRed}
           value={this.state.address2}
@@ -491,7 +492,7 @@ class Property extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="City"
-          onChangeText={(city) => this.setState({city})}
+          onChangeText={(city) => this.setState({city}, () => this.changesMade())}
           keyboardType="default"
           color={Color.paleRed}
           value={this.state.city}
@@ -501,7 +502,7 @@ class Property extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="State"
-          onChangeText={(state) => this.setState({state})}
+          onChangeText={(state) => this.setState({state}, () => this.changesMade())}
           keyboardType="default"
           color={Color.paleRed}
           value={this.state.state}
@@ -511,7 +512,7 @@ class Property extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Zip/Postal"
-          onChangeText={(zip) => this.setState({zip})}
+          onChangeText={(zip) => this.setState({zip}, () => this.changesMade())}
           keyboardType="default"
           color={Color.paleRed}
           value={this.state.zip}
@@ -528,7 +529,7 @@ class Property extends Component {
               modal: true,
               array: this.props.country.country,
               key: 'country',
-            })
+            }, () => this.changesMade())
           }
           color={Color.veryLightBlue}
           editable={this.state.editable}
@@ -538,7 +539,7 @@ class Property extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Bought On"
-          onChangeText={(boughtOn) => this.setState({boughtOn: formatDate(boughtOn)})}
+          onChangeText={(boughtOn) => this.setState({boughtOn: formatDate(boughtOn)}, () => this.changesMade())}
           keyboardType="default"
           color={Color.paleRed}
           value={this.state.boughtOn}
@@ -549,7 +550,7 @@ class Property extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="House Size"
-          onChangeText={(houseSize) => this.setState({houseSize})}
+          onChangeText={(houseSize) => this.setState({houseSize}, () => this.changesMade())}
           keyboardType="default"
           color={Color.paleRed}
           value={this.state.houseSize}
@@ -559,7 +560,7 @@ class Property extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Lot Size"
-          onChangeText={(lotSize) => this.setState({lotSize})}
+          onChangeText={(lotSize) => this.setState({lotSize}, () => this.changesMade())}
           keyboardType="default"
           color={Color.paleRed}
           value={this.state.lotSize}
@@ -569,7 +570,7 @@ class Property extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="County"
-          onChangeText={(county) => this.setState({county})}
+          onChangeText={(county) => this.setState({county}, () => this.changesMade())}
           keyboardType="default"
           color={Color.paleRed}
           value={this.state.county}
@@ -579,7 +580,7 @@ class Property extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="School District"
-          onChangeText={(schoolDistrict) => this.setState({schoolDistrict})}
+          onChangeText={(schoolDistrict) => this.setState({schoolDistrict}, () => this.changesMade())}
           keyboardType="default"
           color={Color.paleRed}
           value={this.state.schoolDistrict}
@@ -589,7 +590,7 @@ class Property extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="APN #"
-          onChangeText={(apn) => this.setState({apn})}
+          onChangeText={(apn) => this.setState({apn}, () => this.changesMade())}
           keyboardType="default"
           color={Color.paleRed}
           value={this.state.apn}
@@ -604,7 +605,7 @@ class Property extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Property Tax Amount"
-          onChangeText={(propertyTaxAmnt) => this.setState({propertyTaxAmnt})}
+          onChangeText={(propertyTaxAmnt) => this.setState({propertyTaxAmnt}, () => this.changesMade())}
           keyboardType="default"
           color={Color.paleRed}
           value={this.state.propertyTaxAmnt}
@@ -615,7 +616,7 @@ class Property extends Component {
         <InputTextDynamic
           placeholder="Year of Construction"
           onChangeText={(yearOfConstruction) =>
-            this.setState({yearOfConstruction})
+            this.setState({yearOfConstruction}, () => this.changesMade())
           }
           keyboardType="default"
           color={Color.paleRed}
@@ -626,7 +627,7 @@ class Property extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Age"
-          onChangeText={(age) => this.setState({age})}
+          onChangeText={(age) => this.setState({age}, () => this.changesMade())}
           keyboardType="default"
           color={Color.paleRed}
           value={this.state.age}
@@ -636,7 +637,7 @@ class Property extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Number of Levels"
-          onChangeText={(numberOfLevels) => this.setState({numberOfLevels})}
+          onChangeText={(numberOfLevels) => this.setState({numberOfLevels}, () => this.changesMade())}
           keyboardType="default"
           color={Color.paleRed}
           value={this.state.numberOfLevels}
@@ -655,7 +656,7 @@ class Property extends Component {
               modal: true,
               array: construction_type,
               key: 'constructionType',
-            })
+            }, () => this.changesMade())
           }
           color={Color.veryLightBlue}
           editable={this.state.editable}
@@ -665,7 +666,7 @@ class Property extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Garage Size"
-          onChangeText={(garageSize) => this.setState({garageSize})}
+          onChangeText={(garageSize) => this.setState({garageSize}, () => this.changesMade())}
           keyboardType="default"
           color={Color.paleRed}
           value={this.state.garageSize}
@@ -684,11 +685,26 @@ class Property extends Component {
               modal: true,
               array: garage_type,
               key: 'garageType',
-            })
+            }, () => this.changesMade())
           }
           color={Color.veryLightBlue}
           editable={this.state.editable}
           name="Garage Type"
+        />
+      </View>
+    </View>
+  );
+
+  notes = () => (
+    <View>
+      <View style={styles.inputContainer}>
+        <InputTextDynamic
+          placeholder="Notes"
+          onChangeText={(notes) => this.setState({notes}, () => this.changesMade())}
+          keyboardType="default"
+          value={this.state.notes}
+          color={Color.paleRed}
+          editable={this.state.editable}
         />
       </View>
     </View>
@@ -702,20 +718,11 @@ class Property extends Component {
     this.setState({[key]: value});
   };
 
-  notes = () => (
-    <View>
-      <View style={styles.inputContainer}>
-        <InputTextDynamic
-          placeholder="Notes"
-          onChangeText={(notes) => this.setState({notes})}
-          keyboardType="default"
-          value={this.state.notes}
-          color={Color.paleRed}
-          editable={this.state.editable}
-        />
-      </View>
-    </View>
-  );
+  changesMade = () => {
+    const {mode} = this.props.route.params;
+    const {editable} = this.state;
+    if (!editable) this.setState({ changes: true }, () => console.log("Check: "));
+  }
 
   editComponent = (isLoader, modal, array, key) => (
     <View>
@@ -768,6 +775,27 @@ class Property extends Component {
     this.archive();
   };
 
+  onBack = () => {
+    const {navigation} = this.props;
+    const {changes} = this.state;
+    if (changes){
+      Alert.alert(
+      //title
+      'Save',
+      //body
+      'Do you want to save changes ?',
+      [
+        {text: 'Save', onPress: () => this.submit()},
+        {text: 'Cancel', onPress: () => console.log('No Pressed'), style: 'cancel'},
+      ],
+      {cancelable: false},
+      //clicking out side of alert will not cancel
+    );
+    }else {
+      navigation.goBack();
+    }
+  }
+
 background = () => require('../../../assets/jpg-images/Personal-Assets-Background/personal-assets-background.jpg')
 
   render() {
@@ -789,6 +817,7 @@ background = () => require('../../../assets/jpg-images/Personal-Assets-Backgroun
                 edit={this.onEdit}
                 delete={this.onDelete}
                 archive={this.onArchive}
+                backpress={this.onBack}
                 editable={editable}
               />
             </View>
