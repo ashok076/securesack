@@ -8,7 +8,7 @@ import {
   ScrollView,
 } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
-import {Toast} from 'native-base';
+import {Toast, Root} from 'native-base';
 import qs from 'qs';
 import {connect} from 'react-redux';
 
@@ -152,7 +152,8 @@ class AccountSettings extends Component {
   render() {
     const {navigation} = this.props;
     return (
-      <ScrollView>
+      <Root>
+        <ScrollView>
         <View style={styles.container}>
           <HeaderView
             navigation={navigation}
@@ -169,6 +170,7 @@ class AccountSettings extends Component {
           </View>
         </View>
       </ScrollView>
+      </Root>
     );
   }
 }

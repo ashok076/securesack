@@ -77,6 +77,7 @@ class Mortgage extends Component {
     issuerId: '',
     notes: '',
     showQuestion: false,
+    changes: false
   };
 
   constructor(props) {
@@ -293,7 +294,7 @@ class Mortgage extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Name"
-          onChangeText={(name) => this.setState({name})}
+          onChangeText={(name) => this.setState({name}, () => this.changesMade())}
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.name}
@@ -303,7 +304,7 @@ class Mortgage extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Loan Number"
-          onChangeText={(loanNo) => this.setState({loanNo})}
+          onChangeText={(loanNo) => this.setState({loanNo}, () => this.changesMade())}
           keyboardType="number-pad"
           color={Color.lightishBlue}
           value={this.state.loanNo}
@@ -319,7 +320,7 @@ class Mortgage extends Component {
       <View style={styles.inputContainer}>
         <AutoCompleteText
           placeholder="Issuer"
-          onChangeText={(issuer) => this.setState({issuer})}
+          onChangeText={(issuer) => this.setState({issuer}, () => this.changesMade())}
           keyboardType="default"
           value={this.state.issuer}
           color={Color.lightishBlue}
@@ -336,7 +337,7 @@ class Mortgage extends Component {
               modal: true,
               array: term,
               key: 'term',
-            })
+            }, () => this.changesMade())
           }
           editable={this.state.editable}
           name="Term"
@@ -346,7 +347,7 @@ class Mortgage extends Component {
         <InputTextIconDynamic
           placeholder="Loan Amount"
           icon="dollar-sign"
-          onChangeText={(loanAmnt) => this.setState({loanAmnt})}
+          onChangeText={(loanAmnt) => this.setState({loanAmnt}, () => this.changesMade())}
           color={Color.lightishBlue}
           value={this.state.loanAmnt}
           editable={this.state.editable}
@@ -356,7 +357,7 @@ class Mortgage extends Component {
       <View style={styles.inputContainer}>
         <InputTextIconDynamic
           placeholder="Mortgage Rate"
-          onChangeText={(mortgageRate) => this.setState({mortgageRate})}
+          onChangeText={(mortgageRate) => this.setState({mortgageRate}, () => this.changesMade())}
           icon="percent"
           keyboardType="default"
           color={Color.lightishBlue}
@@ -370,7 +371,7 @@ class Mortgage extends Component {
           <InputTextDynamic
             placeholder="Effective From"
             onChangeText={(effectivefrom) =>
-              this.setState({effectivefrom: formatDate(effectivefrom)})
+              this.setState({effectivefrom: formatDate(effectivefrom)}, () => this.changesMade())
             }
             keyboardType="number-pad"
             color={Color.lightishBlue}
@@ -383,7 +384,7 @@ class Mortgage extends Component {
           <InputTextDynamic
             placeholder="Ends On"
             onChangeText={(endsOn) =>
-              this.setState({endsOn: formatDate(endsOn)})
+              this.setState({endsOn: formatDate(endsOn)}, () => this.changesMade())
             }
             keyboardType="number-pad"
             color={Color.lightishBlue}
@@ -396,7 +397,7 @@ class Mortgage extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="URL"
-          onChangeText={(url) => this.setState({url})}
+          onChangeText={(url) => this.setState({url}, () => this.changesMade())}
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.url}
@@ -409,7 +410,7 @@ class Mortgage extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="User Name"
-          onChangeText={(username) => this.setState({username})}
+          onChangeText={(username) => this.setState({username}, () => this.changesMade())}
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.username}
@@ -425,7 +426,7 @@ class Mortgage extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Password"
-          onChangeText={(password) => this.setState({password})}
+          onChangeText={(password) => this.setState({password}, () => this.changesMade())}
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.password}
@@ -446,7 +447,7 @@ class Mortgage extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Security Question 1"
-          onChangeText={(securityQ1) => this.setState({securityQ1})}
+          onChangeText={(securityQ1) => this.setState({securityQ1}, () => this.changesMade())}
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.securityQ1}
@@ -462,7 +463,7 @@ class Mortgage extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Answer 1"
-          onChangeText={(securityA1) => this.setState({securityA1})}
+          onChangeText={(securityA1) => this.setState({securityA1}, () => this.changesMade())}
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.securityA1}
@@ -472,7 +473,7 @@ class Mortgage extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Security Question 2"
-          onChangeText={(securityQ2) => this.setState({securityQ2})}
+          onChangeText={(securityQ2) => this.setState({securityQ2}, () => this.changesMade())}
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.securityQ2}
@@ -488,7 +489,7 @@ class Mortgage extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Answer 2"
-          onChangeText={(securityA2) => this.setState({securityA2})}
+          onChangeText={(securityA2) => this.setState({securityA2}, () => this.changesMade())}
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.securityA2}
@@ -498,7 +499,7 @@ class Mortgage extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Security Question 3"
-          onChangeText={(securityQ3) => this.setState({securityQ3})}
+          onChangeText={(securityQ3) => this.setState({securityQ3}, () => this.changesMade())}
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.securityQ3}
@@ -529,7 +530,7 @@ class Mortgage extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Address Line 1"
-          onChangeText={(address1) => this.setState({address1})}
+          onChangeText={(address1) => this.setState({address1}, () => this.changesMade())}
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.address1}
@@ -539,7 +540,7 @@ class Mortgage extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Address Line 2"
-          onChangeText={(address2) => this.setState({address2})}
+          onChangeText={(address2) => this.setState({address2}, () => this.changesMade())}
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.address2}
@@ -549,7 +550,7 @@ class Mortgage extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="City"
-          onChangeText={(city) => this.setState({city})}
+          onChangeText={(city) => this.setState({city}, () => this.changesMade())}
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.city}
@@ -559,7 +560,7 @@ class Mortgage extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="State"
-          onChangeText={(state) => this.setState({state})}
+          onChangeText={(state) => this.setState({state}, () => this.changesMade())}
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.state}
@@ -569,7 +570,7 @@ class Mortgage extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Zip/Postal"
-          onChangeText={(zip) => this.setState({zip})}
+          onChangeText={(zip) => this.setState({zip}, () => this.changesMade())}
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.zip}
@@ -586,7 +587,7 @@ class Mortgage extends Component {
               modal: true,
               array: this.props.country.country,
               key: 'country',
-            })
+            }, () => this.changesMade())
           }
           editable={this.state.editable}
           name="Country"
@@ -610,7 +611,7 @@ class Mortgage extends Component {
                 modal: true,
                 array: refiance_repayment,
                 key: 'refiance',
-              })
+              }, () => this.changesMade())
             }
             editable={this.state.editable}
             name="Refianced"
@@ -628,7 +629,7 @@ class Mortgage extends Component {
                 modal: true,
                 array: refiance_repayment,
                 key: 'repayment',
-              })
+              }, () => this.changesMade())
             }
             editable={this.state.editable}
             name="Prepayment Penalty"
@@ -643,7 +644,7 @@ class Mortgage extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Notes"
-          onChangeText={(notes) => this.setState({notes})}
+          onChangeText={(notes) => this.setState({notes}, () => this.changesMade())}
           keyboardType="default"
           value={this.state.notes}
           color={Color.lightishBlue}
@@ -701,6 +702,12 @@ class Mortgage extends Component {
     }
   };
 
+  changesMade = () => {
+  const {mode} = this.props.route.params;
+  const {editable} = this.state;
+  if (!editable) this.setState({ changes: true }, () => console.log("Check: "));
+  }
+
   editComponent = (isLoader, modal, array, key, editable, refBusModal) => (
     <View>
       <Text style={styles.title}>Basic Information</Text>
@@ -739,6 +746,7 @@ class Mortgage extends Component {
       />
     </View>
   );
+
   onSave = () => {
     this.submit();
   };
@@ -766,6 +774,27 @@ class Mortgage extends Component {
     this.archive();
   };
 
+  onBack = () => {
+    const {navigation} = this.props;
+    const {changes} = this.state;
+    if (changes){
+      Alert.alert(
+      //title
+      'Save',
+      //body
+      'Do you want to save changes ?',
+      [
+        {text: 'Save', onPress: () => this.submit()},
+        {text: 'Cancel', onPress: () => console.log('No Pressed'), style: 'cancel'},
+      ],
+      {cancelable: false},
+      //clicking out side of alert will not cancel
+    );
+    }else {
+      navigation.goBack();
+    }
+  }
+
   background = () =>
     require('../../../assets/jpg-images/Financial-Data-Background/financial-data-background.jpg');
 
@@ -791,6 +820,7 @@ class Mortgage extends Component {
                 edit={this.onEdit}
                 delete={this.onDelete}
                 archive={this.onArchive}
+                backpress={this.onBack}
                 editable={editable}
               />
             </View>

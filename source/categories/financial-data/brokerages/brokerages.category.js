@@ -61,6 +61,7 @@ class BrokerageAccount extends Component {
     editable: true,
     hideResult: true,
     refArray: [],
+    changes: false,
   };
   constructor(props) {
     super(props);
@@ -249,7 +250,7 @@ class BrokerageAccount extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Name"
-          onChangeText={(name) => this.setState({name})}
+          onChangeText={(name) => this.setState({name}, () => this.changesMade())}
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.name}
@@ -260,7 +261,7 @@ class BrokerageAccount extends Component {
         <AutoCompleteText
           placeholder="Financial Institution"
           onChangeText={(financialInstitution) =>
-            this.setState({financialInstitution})
+            this.setState({financialInstitution}, () => this.changesMade())
           }
           keyboardType="default"
           color={Color.lightishBlue}
@@ -276,7 +277,7 @@ class BrokerageAccount extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Account Number"
-          onChangeText={(acNumber) => this.setState({acNumber})}
+          onChangeText={(acNumber) => this.setState({acNumber}, () => this.changesMade())}
           keyboardType="number-pad"
           color={Color.lightishBlue}
           value={this.state.acNumber}
@@ -292,7 +293,7 @@ class BrokerageAccount extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Username"
-          onChangeText={(username) => this.setState({username})}
+          onChangeText={(username) => this.setState({username}, () => this.changesMade())}
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.username}
@@ -308,7 +309,7 @@ class BrokerageAccount extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Password"
-          onChangeText={(password) => this.setState({password})}
+          onChangeText={(password) => this.setState({password}, () => this.changesMade())}
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.password}
@@ -324,7 +325,7 @@ class BrokerageAccount extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="URL"
-          onChangeText={(url) => this.setState({url})}
+          onChangeText={(url) => this.setState({url}, () => this.changesMade())}
           keyboardType="url"
           color={Color.lightishBlue}
           value={this.state.url}
@@ -337,7 +338,7 @@ class BrokerageAccount extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Primary Account Holder"
-          onChangeText={(primaryAcHolder) => this.setState({primaryAcHolder})}
+          onChangeText={(primaryAcHolder) => this.setState({primaryAcHolder}, () => this.changesMade())}
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.primaryAcHolder}
@@ -347,7 +348,7 @@ class BrokerageAccount extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Joint Account Holder 1"
-          onChangeText={(joinAcHolderOne) => this.setState({joinAcHolderOne})}
+          onChangeText={(joinAcHolderOne) => this.setState({joinAcHolderOne}, () => this.changesMade())}
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.joinAcHolderOne}
@@ -357,7 +358,7 @@ class BrokerageAccount extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Joint Account Holder 2"
-          onChangeText={(joinAcHolderTwo) => this.setState({joinAcHolderTwo})}
+          onChangeText={(joinAcHolderTwo) => this.setState({joinAcHolderTwo}, () => this.changesMade())}
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.joinAcHolderTwo}
@@ -372,7 +373,7 @@ class BrokerageAccount extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Security Question 1"
-          onChangeText={(securityQ1) => this.setState({securityQ1})}
+          onChangeText={(securityQ1) => this.setState({securityQ1}, () => this.changesMade())}
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.securityQ1}
@@ -388,7 +389,7 @@ class BrokerageAccount extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Answer 1"
-          onChangeText={(securityA1) => this.setState({securityA1})}
+          onChangeText={(securityA1) => this.setState({securityA1}, () => this.changesMade())}
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.securityA1}
@@ -398,7 +399,7 @@ class BrokerageAccount extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Security Question 2"
-          onChangeText={(securityQ2) => this.setState({securityQ2})}
+          onChangeText={(securityQ2) => this.setState({securityQ2}, () => this.changesMade())}
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.securityQ2}
@@ -414,7 +415,7 @@ class BrokerageAccount extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Answer 2"
-          onChangeText={(securityA2) => this.setState({securityA2})}
+          onChangeText={(securityA2) => this.setState({securityA2}, () => this.changesMade())}
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.securityA2}
@@ -424,7 +425,7 @@ class BrokerageAccount extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Security Question 3"
-          onChangeText={(securityQ3) => this.setState({securityQ3})}
+          onChangeText={(securityQ3) => this.setState({securityQ3}, () => this.changesMade())}
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.securityQ3}
@@ -440,7 +441,7 @@ class BrokerageAccount extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Answer 3"
-          onChangeText={(securityA3) => this.setState({securityA3})}
+          onChangeText={(securityA3) => this.setState({securityA3}, () => this.changesMade())}
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.securityA3}
@@ -456,7 +457,7 @@ class BrokerageAccount extends Component {
         <InputTextIconDynamic
           placeholder="Stock Transaction Fee"
           onChangeText={(stockTransactionFee) =>
-            this.setState({stockTransactionFee})
+            this.setState({stockTransactionFee}, () => this.changesMade())
           }
           icon="dollar-sign"
           keyboardType="number-pad"
@@ -470,7 +471,7 @@ class BrokerageAccount extends Component {
           <InputTextDynamic
             placeholder="Opened On"
             onChangeText={(openedOn) =>
-              this.setState({openedOn: formatDate(openedOn)})
+              this.setState({openedOn: formatDate(openedOn)}, () => this.changesMade())
             }
             keyboardType="number-pad"
             color={Color.lightishBlue}
@@ -483,7 +484,7 @@ class BrokerageAccount extends Component {
           <InputTextDynamic
             placeholder="Closed On"
             onChangeText={(closedOn) =>
-              this.setState({closedOn: formatDate(closedOn)})
+              this.setState({closedOn: formatDate(closedOn)}, () => this.changesMade())
             }
             keyboardType="number-pad"
             color={Color.lightishBlue}
@@ -496,20 +497,12 @@ class BrokerageAccount extends Component {
     </View>
   );
 
-  changeRefBusinessmModal = (bool) => {
-    this.setState({refBusModal: bool});
-  };
-
-  refreshingList = () => {
-    this.getBusinessEntity();
-  };
-
   notes = () => (
     <View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Notes"
-          onChangeText={(notes) => this.setState({notes})}
+          onChangeText={(notes) => this.setState({notes}, () => this.changesMade())}
           keyboardType="default"
           value={this.state.notes}
           color={Color.lightishBlue}
@@ -524,6 +517,14 @@ class BrokerageAccount extends Component {
       </View>
     </View>
   );
+
+  changeRefBusinessmModal = (bool) => {
+    this.setState({refBusModal: bool});
+  };
+
+  refreshingList = () => {
+    this.getBusinessEntity();
+  };
 
   editComponent = (isLoader, editable, refBusModal) => (
     <View>
@@ -580,6 +581,12 @@ class BrokerageAccount extends Component {
     }
   };
 
+changesMade = () => {
+  const {mode} = this.props.route.params;
+  const {editable} = this.state;
+  if (!editable) this.setState({ changes: true }, () => console.log("Check: "));
+}
+
   onSave = () => {
     this.submit();
   };
@@ -591,6 +598,27 @@ class BrokerageAccount extends Component {
   onArchive = () => {
     this.archive();
   };
+
+  onBack = () => {
+    const {navigation} = this.props;
+    const {changes} = this.state;
+    if (changes){
+      Alert.alert(
+      //title
+      'Save',
+      //body
+      'Do you want to save changes ?',
+      [
+        {text: 'Save', onPress: () => this.submit()},
+        {text: 'Cancel', onPress: () => console.log('No Pressed'), style: 'cancel'},
+      ],
+      {cancelable: false},
+      //clicking out side of alert will not cancel
+    );
+    }else {
+      navigation.goBack();
+    }
+  }
 
   onDelete = () => {
     Alert.alert(
@@ -631,6 +659,7 @@ class BrokerageAccount extends Component {
                 edit={this.onEdit}
                 delete={this.onDelete}
                 archive={this.onArchive}
+                backpress={this.onBack}
                 editable={editable}
               />
             </View>

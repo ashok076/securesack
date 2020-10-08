@@ -445,13 +445,8 @@ class WebSiteAccount extends Component {
               onContentSizeChange={() => {
                 this.scroll.scrollTo({y: 0});
               }}
-              style={[
-                styles.outerContainerView,
-                {
-                  backgroundColor:
-                    theme !== 'dark' ? 'rgb(255, 255, 255)' : 'rgb(33, 47, 60)',
-                },
-              ]}
+              style={
+                styles.outerContainerView}
               keyboardShouldPersistTaps="handled">
               {this.editComponent(isLoader)}
             </ScrollView>

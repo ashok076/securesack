@@ -264,7 +264,8 @@ class LoginComponent extends Component {
         this.showToast(message, 'warning', false);
         break;
       case 'UserNotFound':
-        this.showToast(message, 'danger', true);
+        // this.showToast(message, 'danger', true);
+        this.setState({ error: message })
         break;
       case 'DBSystemError':
         this.showToast(message, 'danger', true);
@@ -286,7 +287,8 @@ class LoginComponent extends Component {
         navigation.navigate('AuthCode', {email: email});
         break;
       default:
-        this.showToast(message, 'warning', true);
+        // this.showToast(message, 'warning', true);
+        this.setState({ error: message })
         break;
     }
   };
@@ -366,6 +368,7 @@ class LoginComponent extends Component {
       biometric,
       isSensorAvailable,
       isLoader,
+      error
     } = this.state;
     return (
       <View>
@@ -377,6 +380,7 @@ class LoginComponent extends Component {
             keyboardType="email-address"
           />
         </View>
+  <Text style={styles.extrasText}> {error} </Text>
         <View style={styles.inputContainer}>
           <InputTextIcon
             placeholder="Password"

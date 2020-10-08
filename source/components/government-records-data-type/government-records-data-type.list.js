@@ -1,7 +1,7 @@
 export const governmentRecordsDataTypeList = [
   {
     id: 1,
-    title: 'Driving License',
+    title: 'Driver License',
     type: 'DriverLicense',
     icon: require('../../assets/png-images/Driving-License-Icon/driving-license.png'),
   },

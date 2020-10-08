@@ -378,12 +378,6 @@ class Vehicle extends Component {
           color={Color.paleRed}
           editable={this.state.editable}
         />
-        <View style={styles.clipboard}>
-          <CopyClipboard
-            text={this.state.notes}
-            editable={this.state.editable}
-          />
-        </View>
       </View>
     </View>
   );

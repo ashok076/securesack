@@ -86,12 +86,16 @@ class TitleView extends Component {
     this.props.archive();
   };
 
+  back = () => {
+    this.props.backpress()
+  }
+
   render() {
     const {mode, theme, save, type, navigation, title} = this.props;
     console.log("Mode: ", mode)
     return (
       <View style={styles.rowObject}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
+        <TouchableOpacity onPress={() => this.back()}>
           <MaterialIcons
             name="arrow-back"
             color={theme !== 'dark' ? 'rgb(255, 255, 255)' : 'rgb(33, 47, 60)'}

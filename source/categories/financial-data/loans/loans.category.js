@@ -66,6 +66,7 @@ class ConsumerLoan extends Component {
     editable: true,
     hideResult: true,
     refArray: [],
+    changes: false
   };
 
   constructor(props) {
@@ -236,7 +237,7 @@ class ConsumerLoan extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Name"
-          onChangeText={(name) => this.setState({name})}
+          onChangeText={(name) => this.setState({name}, () => this.changesMade())}
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.name}
@@ -246,7 +247,7 @@ class ConsumerLoan extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Loan Number"
-          onChangeText={(loanNo) => this.setState({loanNo})}
+          onChangeText={(loanNo) => this.setState({loanNo}, () => this.changesMade())}
           keyboardType="number-pad"
           color={Color.lightishBlue}
           value={this.state.loanNo}
@@ -262,7 +263,7 @@ class ConsumerLoan extends Component {
       <View style={styles.inputContainer}>
         <AutoCompleteText
           placeholder="Issuer"
-          onChangeText={(issuer) => this.setState({issuer})}
+          onChangeText={(issuer) => this.setState({issuer}, () => this.changesMade())}
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.issuer}
@@ -276,7 +277,7 @@ class ConsumerLoan extends Component {
         <InputTextIconDynamic
           placeholder="Loan Amount"
           icon="dollar-sign"
-          onChangeText={(loanAmnt) => this.setState({loanAmnt})}
+          onChangeText={(loanAmnt) => this.setState({loanAmnt}, () => this.changesMade())}
           color={Color.lightishBlue}
           value={this.state.loanAmnt}
           editable={this.state.editable}
@@ -286,7 +287,7 @@ class ConsumerLoan extends Component {
       <View style={styles.inputContainer}>
         <InputTextIconDynamic
           placeholder="Interest Rate"
-          onChangeText={(interestRate) => this.setState({interestRate})}
+          onChangeText={(interestRate) => this.setState({interestRate}, () => this.changesMade())}
           icon="percent"
           keyboardType="default"
           color={Color.lightishBlue}
@@ -297,7 +298,7 @@ class ConsumerLoan extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="URL"
-          onChangeText={(url) => this.setState({url})}
+          onChangeText={(url) => this.setState({url}, () => this.changesMade())}
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.url}
@@ -310,7 +311,7 @@ class ConsumerLoan extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="User Name"
-          onChangeText={(username) => this.setState({username})}
+          onChangeText={(username) => this.setState({username}, () => this.changesMade())}
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.username}
@@ -326,7 +327,7 @@ class ConsumerLoan extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Password"
-          onChangeText={(password) => this.setState({password})}
+          onChangeText={(password) => this.setState({password}, () => this.changesMade())}
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.password}
@@ -347,7 +348,7 @@ class ConsumerLoan extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Address Line 1"
-          onChangeText={(address1) => this.setState({address1})}
+          onChangeText={(address1) => this.setState({address1}, () => this.changesMade())}
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.address1}
@@ -357,7 +358,7 @@ class ConsumerLoan extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Address Line 2"
-          onChangeText={(address2) => this.setState({address2})}
+          onChangeText={(address2) => this.setState({address2}, () => this.changesMade())}
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.address2}
@@ -367,7 +368,7 @@ class ConsumerLoan extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="City"
-          onChangeText={(city) => this.setState({city})}
+          onChangeText={(city) => this.setState({city}, () => this.changesMade())}
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.city}
@@ -377,7 +378,7 @@ class ConsumerLoan extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="State"
-          onChangeText={(state) => this.setState({state})}
+          onChangeText={(state) => this.setState({state}, () => this.changesMade())}
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.state}
@@ -387,7 +388,7 @@ class ConsumerLoan extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Zip/Postal"
-          onChangeText={(zip) => this.setState({zip})}
+          onChangeText={(zip) => this.setState({zip}, () => this.changesMade())}
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.zip}
@@ -404,7 +405,7 @@ class ConsumerLoan extends Component {
               modal: true,
               array: this.props.country.country,
               key: 'country',
-            })
+            }, () => this.changesMade())
           }
           editable={this.state.editable}
           name="Country"
@@ -425,7 +426,7 @@ class ConsumerLoan extends Component {
               modal: true,
               array: refianced,
               key: 'refiance',
-            })
+            }, () => this.changesMade())
           }
           editable={this.state.editable}
           name="Refiance"
@@ -436,7 +437,7 @@ class ConsumerLoan extends Component {
           <InputTextDynamic
             placeholder="Effective From"
             onChangeText={(effectiveFrom) =>
-              this.setState({effectiveFrom: formatDate(effectiveFrom)})
+              this.setState({effectiveFrom: formatDate(effectiveFrom)}, () => this.changesMade())
             }
             keyboardType="number-pad"
             color={Color.lightishBlue}
@@ -449,13 +450,34 @@ class ConsumerLoan extends Component {
           <InputTextDynamic
             placeholder="Ends On"
             onChangeText={(endsOn) =>
-              this.setState({endsOn: formatDate(endsOn)})
+              this.setState({endsOn: formatDate(endsOn)}, () => this.changesMade())
             }
             keyboardType="number-pad"
             color={Color.lightishBlue}
             value={this.state.endsOn}
             editable={this.state.editable}
             example="MM/DD/YYYY"
+          />
+        </View>
+      </View>
+    </View>
+  );
+
+  notes = () => (
+    <View>
+      <View style={styles.inputContainer}>
+        <InputTextDynamic
+          placeholder="Notes"
+          onChangeText={(notes) => this.setState({notes}, () => this.changesMade())}
+          keyboardType="default"
+          value={this.state.notes}
+          color={Color.lightishBlue}
+          editable={this.state.editable}
+        />
+        <View style={styles.clipboard}>
+          <CopyClipboard
+            text={this.state.notes}
+            editable={this.state.editable}
           />
         </View>
       </View>
@@ -503,26 +525,11 @@ class ConsumerLoan extends Component {
     this.setState({[key]: value});
   };
 
-  notes = () => (
-    <View>
-      <View style={styles.inputContainer}>
-        <InputTextDynamic
-          placeholder="Notes"
-          onChangeText={(notes) => this.setState({notes})}
-          keyboardType="default"
-          value={this.state.notes}
-          color={Color.lightishBlue}
-          editable={this.state.editable}
-        />
-        <View style={styles.clipboard}>
-          <CopyClipboard
-            text={this.state.notes}
-            editable={this.state.editable}
-          />
-        </View>
-      </View>
-    </View>
-  );
+changesMade = () => {
+  const {mode} = this.props.route.params;
+  const {editable} = this.state;
+  if (!editable) this.setState({ changes: true }, () => console.log("Check: "));
+}
 
   editComponent = (isLoader, modal, array, key, editable, refBusModal) => (
     <View>
@@ -582,6 +589,27 @@ class ConsumerLoan extends Component {
     this.archive();
   };
 
+  onBack = () => {
+    const {navigation} = this.props;
+    const {changes} = this.state;
+    if (changes){
+      Alert.alert(
+      //title
+      'Save',
+      //body
+      'Do you want to save changes ?',
+      [
+        {text: 'Save', onPress: () => this.submit()},
+        {text: 'Cancel', onPress: () => console.log('No Pressed'), style: 'cancel'},
+      ],
+      {cancelable: false},
+      //clicking out side of alert will not cancel
+    );
+    }else {
+      navigation.goBack();
+    }
+  }
+
   background = () =>
     require('../../../assets/jpg-images/Financial-Data-Background/financial-data-background.jpg');
 
@@ -606,6 +634,7 @@ class ConsumerLoan extends Component {
                 edit={this.onEdit}
                 delete={this.onDelete}
                 archive={this.onArchive}
+                backpress={this.onBack}
                 editable={editable}
               />
             </View>
