@@ -36,6 +36,7 @@ class Notes extends Component {
     access_token: '',
     name: '',
     notes: '',
+    changes: false,
   };
 
   constructor(props) {
@@ -145,7 +146,7 @@ class Notes extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Name"
-          onChangeText={(name) => this.setState({name})}
+          onChangeText={(name) => this.setState({name}, () => this.changesMade())}
           keyboardType="default"
           color={Color.lightNavyBlue}
           value={this.state.name}
@@ -155,7 +156,7 @@ class Notes extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Notes"
-          onChangeText={(notes) => this.setState({notes})}
+          onChangeText={(notes) => this.setState({notes}, () => this.changesMade())}
           keyboardType="default"
           color={Color.lightNavyBlue}
           value={this.state.notes}
@@ -178,6 +179,12 @@ class Notes extends Component {
       <Loader isLoader={isLoader} />
     </View>
   );
+
+  changesMade = () => {
+    const {mode} = this.props.route.params;
+    const {editable} = this.state;
+    if (!editable) this.setState({ changes: true }, () => console.log("Check: "));
+  }
 
   onSave = () => {
     this.submit();
@@ -206,6 +213,27 @@ class Notes extends Component {
     this.archive();
   };
 
+  onBack = () => {
+    const {navigation} = this.props;
+    const {changes} = this.state;
+    if (changes){
+      Alert.alert(
+      //title
+      'Save',
+      //body
+      'Do you want to save changes ?',
+      [
+        {text: 'Save', onPress: () => this.submit()},
+        {text: 'Cancel', onPress: () => console.log('No Pressed'), style: 'cancel'},
+      ],
+      {cancelable: false},
+      //clicking out side of alert will not cancel
+    );
+    }else {
+      navigation.goBack();
+    }
+  }
+
   background = () =>
     require('../../../assets/jpg-images/Personal-Organisation-Background/personal-organisation-background.jpg');
 
@@ -230,6 +258,7 @@ class Notes extends Component {
                 edit={this.onEdit}
                 delete={this.onDelete}
                 archive={this.onArchive}
+                backpress={this.onBack}
                 editable={editable}
               />
             </View>

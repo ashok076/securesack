@@ -946,11 +946,11 @@ class BankAccounts extends Component {
     }
   };
 
-changesMade = () => {
-  const {mode} = this.props.route.params;
-  const {editable} = this.state;
-  if (!editable) this.setState({ changes: true }, () => console.log("Check: "));
-}
+  changesMade = () => {
+    const {mode} = this.props.route.params;
+    const {editable} = this.state;
+    if (!editable) this.setState({ changes: true }, () => console.log("Check: "));
+  }
 
   editComponent = (isLoader, modal, array, key, editable, refBusModal) => (
     <View>
