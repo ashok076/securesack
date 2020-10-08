@@ -6,6 +6,7 @@ import {
   ImageBackground,
   SafeAreaView,
   Alert,
+  BackHandler
 } from 'react-native';
 import {Text} from 'react-native-paper';
 import qs from 'qs';
@@ -59,6 +60,7 @@ class WebSiteAccount extends Component {
 
   componentDidMount() {
     const {navigation, route} = this.props;
+    BackHandler.addEventListener('hardwareBackPress', () => this.onBack());
     navigation.addListener('focus', () => {
       this.setState(this.initialState);
       if (this.props.userData && this.props.userData.userData)
@@ -70,6 +72,10 @@ class WebSiteAccount extends Component {
         );
     });
   }
+
+  componentWillUnmount() {
+    BackHandler.removeEventListener('hardwareBackPress');
+}
 
   viewRecord = async () => {
     const {recid, mode} = this.props.route.params;

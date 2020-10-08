@@ -6,6 +6,7 @@ import {
   SafeAreaView,
   ImageBackground,
   Alert,
+  BackHandler
 } from 'react-native';
 import {Text} from 'react-native-paper';
 import qs from 'qs';
@@ -78,6 +79,7 @@ class ConsumerLoan extends Component {
 
   componentDidMount() {
     const {navigation} = this.props;
+    BackHandler.addEventListener('hardwareBackPress', () => this.onBack());
     navigation.addListener('focus', () => {
       this.setState(this.initialState);
       if (this.props.userData && this.props.userData.userData)
@@ -88,6 +90,10 @@ class ConsumerLoan extends Component {
         );
     });
   }
+
+  componentWillUnmount() {
+    BackHandler.removeEventListener('hardwareBackPress');
+}
 
   viewRecord = async () => {
     const {recid, mode} = this.props.route.params;

@@ -5,7 +5,9 @@ import {
   Modal,
   ImageBackground,
   SafeAreaView,
-  Alert} from 'react-native';
+  Alert,
+  BackHandler
+  } from 'react-native';
 import {Text} from 'react-native-paper';
 import qs from 'qs';
 import {connect} from 'react-redux'
@@ -91,6 +93,7 @@ class Property extends Component {
 
   componentDidMount() {
     const {navigation, route} = this.props;
+    BackHandler.addEventListener('hardwareBackPress', () => this.onBack());
     navigation.addListener('focus', () => {
       this.setState(this.initialState);
       if (this.props.userData && this.props.userData.userData)
@@ -102,6 +105,10 @@ class Property extends Component {
         );
     });
   }
+
+  componentWillUnmount() {
+    BackHandler.removeEventListener('hardwareBackPress');
+}
 
   viewRecord = async () => {
     const {recid, mode} = this.props.route.params;
