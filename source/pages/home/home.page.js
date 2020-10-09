@@ -22,6 +22,8 @@ import InputTextSearch from '../../components/input-text-search/input-text-searc
 import Header from '../../components/header/header.component';
 import HomeBody from '../../components/home-body/home-body.category.js';
 import {userInfo} from '../../redux/user-info/actions/user-info.action';
+import {countries} from '../../redux/countries-list/actions/countries-list.actions';
+import {lookupType} from '../../configuration/api/api.functions';
 
 import styles from './home.style';
 
@@ -41,8 +43,12 @@ class Home extends Component {
     // BackgroundTimer.runBackgroundTimer(() => {
     //   this.checkLoginStatus();
     // }, 30000);
+    const {navigation, route} = this.props;
+    console.log('Route: ', route.params);
+    navigation.addListener('focus', () => {
+      this.getUserInfo();
+    });
     this.checkSession();
-    this.getUserInfo();
   }
 
   componentWillUnmount() {
@@ -64,14 +70,35 @@ class Home extends Component {
     }
   };
 
+  getCountry = async () => {
+    const {country} = this.props.country;
+    const {access_token} = this.state
+    if (country.length === 0) {
+      await lookupType(access_token, 'RefCountry')
+        .then((res) => this.filter(res))
+        .catch((err) => console.log('Error in fetching country: ', err));
+    }
+  };
+
+  filter = (data) => {
+    const {countries} = this.props;
+    let arr = [];
+    data.map((country) => arr.push(country.label));
+    countries(arr);
+  };
+
   getUserInfo = async () => {
     const {userInfo} = this.props;
+    console.log('Check user info: ');
     try {
-      let userInfo = await AsyncStorage.getItem('user_info');
-      if (userInfo !== null) {
-        userInfo(userInfo);
-        this.setState({access_token: userInfo.access_token});
-        console.log('Access Token: ', userInfo.access_token);
+      let information = await AsyncStorage.getItem('user_info');
+      if (information !== null) {
+        let info = JSON.parse(information);
+        userInfo(info);
+        this.setState({access_token: info.access_token}, () =>
+          this.getCountry(),
+        );
+        console.log('Access Token: ', info.access_token);
       } else {
         console.log('HI');
       }
@@ -216,7 +243,9 @@ class Home extends Component {
     }
     return (
       <SafeAreaView style={styles.container}>
-        <ScrollView style={styles.innerContainer} showsVerticalScrollIndicator={false}>
+        <ScrollView
+          style={styles.innerContainer}
+          showsVerticalScrollIndicator={false}>
           {this.fingerPrintPopup(isFingerPrintSettings, isSensorAvailable)}
           <View>
             <Header navigation={navigation} />
@@ -233,12 +262,14 @@ class Home extends Component {
   }
 }
 
-const mapStateToProps = ({userData}) => ({
+const mapStateToProps = ({userData, country}) => ({
   userData,
+  country,
 });
 
 const mapDispatchToProps = (dispatch) => ({
   userInfo: (userData) => dispatch(userInfo(userData)),
+  countries: (country) => dispatch(countries(country)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home);

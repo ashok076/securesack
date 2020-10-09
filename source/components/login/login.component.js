@@ -5,6 +5,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import axios from 'axios';
 import qs from 'qs';
 import FingerprintScanner from 'react-native-fingerprint-scanner';
+import { CommonActions } from '@react-navigation/native';
 
 import InputText from '../input-text/input-text.component.js';
 import InputTextIcon from '../input-text-icon/input-text-icon.component.js';
@@ -83,10 +84,13 @@ class LoginComponent extends Component {
               'Scan your fingerprint on the device scanner to continue',
           })
             .then(() => {
-              navigation.reset({
+              console.log("Check: ", navigation)
+              navigation.dispatch(
+                CommonActions.reset({
                 index: 0,
-                routes: [{name: 'Home'}],
-              });
+                routes: [{name: 'Home',params: { user: 'jane' }}],
+              })
+              );
             })
             .catch((error) => console.log('Fingerprint scanner: ', error));
         } else {
@@ -96,6 +100,12 @@ class LoginComponent extends Component {
             false,
           );
         }
+      } else {
+        this.showToast(
+          'Access token is expired please login from email credentials',
+          'warning',
+          false,
+        );
       }
     }
   };
@@ -233,7 +243,6 @@ class LoginComponent extends Component {
     }
   };
 
-
   saveClientId = async (clientid) => {
     try {
       await AsyncStorage.setItem('clientid', clientid);
@@ -265,7 +274,7 @@ class LoginComponent extends Component {
         break;
       case 'UserNotFound':
         // this.showToast(message, 'danger', true);
-        this.setState({ error: message })
+        this.setState({error: message});
         break;
       case 'DBSystemError':
         this.showToast(message, 'danger', true);
@@ -288,7 +297,7 @@ class LoginComponent extends Component {
         break;
       default:
         // this.showToast(message, 'warning', true);
-        this.setState({ error: message })
+        this.setState({error: message});
         break;
     }
   };
@@ -368,7 +377,7 @@ class LoginComponent extends Component {
       biometric,
       isSensorAvailable,
       isLoader,
-      error
+      error,
     } = this.state;
     return (
       <View>
@@ -380,7 +389,7 @@ class LoginComponent extends Component {
             keyboardType="email-address"
           />
         </View>
-  <Text style={styles.extrasText}> {error} </Text>
+        <Text style={styles.extrasText}> {error} </Text>
         <View style={styles.inputContainer}>
           <InputTextIcon
             placeholder="Password"

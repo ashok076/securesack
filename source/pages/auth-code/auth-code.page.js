@@ -102,7 +102,8 @@ class AuthCode extends Component {
 
   saveUserInfo = async (data) => {
     try {
-      await AsyncStorage.setItem('user_info', data);
+      console.log("Check user info auth: ")
+      await AsyncStorage.setItem('user_info', JSON.stringify(data));
     } catch (error) {
       console.log('Error in user info: ', error);
     }
@@ -132,7 +133,6 @@ class AuthCode extends Component {
 
   showMessage = ({status}) => {
     console.log('status: ', status);
-
     if (status !== undefined) {
       console.log('Working', typeof status);
       switch (status) {
