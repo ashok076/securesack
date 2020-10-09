@@ -238,6 +238,7 @@ class Notes extends Component {
     }else {
       navigation.goBack();
     }
+    return true
   }
 
   background = () =>

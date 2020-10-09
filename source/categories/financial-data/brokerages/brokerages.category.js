@@ -6,7 +6,7 @@ import {
   SafeAreaView,
   ImageBackground,
   Alert,
-  BackHandler
+  BackHandler,
 } from 'react-native';
 import {Text} from 'react-native-paper';
 import qs from 'qs';
@@ -73,8 +73,8 @@ class BrokerageAccount extends Component {
 
   componentDidMount() {
     const {navigation} = this.props;
-    BackHandler.addEventListener('hardwareBackPress', () => this.onBack());
     navigation.addListener('focus', () => {
+      BackHandler.addEventListener('hardwareBackPress', () => this.onBack());
       this.setState(this.initialState);
       if (this.props.userData && this.props.userData.userData)
         this.setState(
@@ -86,8 +86,8 @@ class BrokerageAccount extends Component {
   }
 
   componentWillUnmount() {
-    BackHandler.removeEventListener('hardwareBackPress');
-}
+    BackHandler.removeEventListener('hardwareBackPress', () => this.onBack());
+  }
 
   viewRecord = async () => {
     const {recid, mode} = this.props.route.params;
@@ -256,7 +256,9 @@ class BrokerageAccount extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Name"
-          onChangeText={(name) => this.setState({name}, () => this.changesMade())}
+          onChangeText={(name) =>
+            this.setState({name}, () => this.changesMade())
+          }
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.name}
@@ -283,7 +285,9 @@ class BrokerageAccount extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Account Number"
-          onChangeText={(acNumber) => this.setState({acNumber}, () => this.changesMade())}
+          onChangeText={(acNumber) =>
+            this.setState({acNumber}, () => this.changesMade())
+          }
           keyboardType="number-pad"
           color={Color.lightishBlue}
           value={this.state.acNumber}
@@ -299,7 +303,9 @@ class BrokerageAccount extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Username"
-          onChangeText={(username) => this.setState({username}, () => this.changesMade())}
+          onChangeText={(username) =>
+            this.setState({username}, () => this.changesMade())
+          }
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.username}
@@ -315,7 +321,9 @@ class BrokerageAccount extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Password"
-          onChangeText={(password) => this.setState({password}, () => this.changesMade())}
+          onChangeText={(password) =>
+            this.setState({password}, () => this.changesMade())
+          }
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.password}
@@ -344,7 +352,9 @@ class BrokerageAccount extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Primary Account Holder"
-          onChangeText={(primaryAcHolder) => this.setState({primaryAcHolder}, () => this.changesMade())}
+          onChangeText={(primaryAcHolder) =>
+            this.setState({primaryAcHolder}, () => this.changesMade())
+          }
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.primaryAcHolder}
@@ -354,7 +364,9 @@ class BrokerageAccount extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Joint Account Holder 1"
-          onChangeText={(joinAcHolderOne) => this.setState({joinAcHolderOne}, () => this.changesMade())}
+          onChangeText={(joinAcHolderOne) =>
+            this.setState({joinAcHolderOne}, () => this.changesMade())
+          }
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.joinAcHolderOne}
@@ -364,7 +376,9 @@ class BrokerageAccount extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Joint Account Holder 2"
-          onChangeText={(joinAcHolderTwo) => this.setState({joinAcHolderTwo}, () => this.changesMade())}
+          onChangeText={(joinAcHolderTwo) =>
+            this.setState({joinAcHolderTwo}, () => this.changesMade())
+          }
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.joinAcHolderTwo}
@@ -379,7 +393,9 @@ class BrokerageAccount extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Security Question 1"
-          onChangeText={(securityQ1) => this.setState({securityQ1}, () => this.changesMade())}
+          onChangeText={(securityQ1) =>
+            this.setState({securityQ1}, () => this.changesMade())
+          }
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.securityQ1}
@@ -395,7 +411,9 @@ class BrokerageAccount extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Answer 1"
-          onChangeText={(securityA1) => this.setState({securityA1}, () => this.changesMade())}
+          onChangeText={(securityA1) =>
+            this.setState({securityA1}, () => this.changesMade())
+          }
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.securityA1}
@@ -405,7 +423,9 @@ class BrokerageAccount extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Security Question 2"
-          onChangeText={(securityQ2) => this.setState({securityQ2}, () => this.changesMade())}
+          onChangeText={(securityQ2) =>
+            this.setState({securityQ2}, () => this.changesMade())
+          }
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.securityQ2}
@@ -421,7 +441,9 @@ class BrokerageAccount extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Answer 2"
-          onChangeText={(securityA2) => this.setState({securityA2}, () => this.changesMade())}
+          onChangeText={(securityA2) =>
+            this.setState({securityA2}, () => this.changesMade())
+          }
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.securityA2}
@@ -431,7 +453,9 @@ class BrokerageAccount extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Security Question 3"
-          onChangeText={(securityQ3) => this.setState({securityQ3}, () => this.changesMade())}
+          onChangeText={(securityQ3) =>
+            this.setState({securityQ3}, () => this.changesMade())
+          }
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.securityQ3}
@@ -447,7 +471,9 @@ class BrokerageAccount extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Answer 3"
-          onChangeText={(securityA3) => this.setState({securityA3}, () => this.changesMade())}
+          onChangeText={(securityA3) =>
+            this.setState({securityA3}, () => this.changesMade())
+          }
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.securityA3}
@@ -477,7 +503,9 @@ class BrokerageAccount extends Component {
           <InputTextDynamic
             placeholder="Opened On"
             onChangeText={(openedOn) =>
-              this.setState({openedOn: formatDate(openedOn)}, () => this.changesMade())
+              this.setState({openedOn: formatDate(openedOn)}, () =>
+                this.changesMade(),
+              )
             }
             keyboardType="number-pad"
             color={Color.lightishBlue}
@@ -490,7 +518,9 @@ class BrokerageAccount extends Component {
           <InputTextDynamic
             placeholder="Closed On"
             onChangeText={(closedOn) =>
-              this.setState({closedOn: formatDate(closedOn)}, () => this.changesMade())
+              this.setState({closedOn: formatDate(closedOn)}, () =>
+                this.changesMade(),
+              )
             }
             keyboardType="number-pad"
             color={Color.lightishBlue}
@@ -508,7 +538,9 @@ class BrokerageAccount extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Notes"
-          onChangeText={(notes) => this.setState({notes}, () => this.changesMade())}
+          onChangeText={(notes) =>
+            this.setState({notes}, () => this.changesMade())
+          }
           keyboardType="default"
           value={this.state.notes}
           color={Color.lightishBlue}
@@ -587,11 +619,11 @@ class BrokerageAccount extends Component {
     }
   };
 
-changesMade = () => {
-  const {mode} = this.props.route.params;
-  const {editable} = this.state;
-  if (!editable) this.setState({ changes: true }, () => console.log("Check: "));
-}
+  changesMade = () => {
+    const {mode} = this.props.route.params;
+    const {editable} = this.state;
+    if (!editable) this.setState({changes: true}, () => console.log('Check: '));
+  };
 
   onSave = () => {
     this.submit();
@@ -608,23 +640,24 @@ changesMade = () => {
   onBack = () => {
     const {navigation} = this.props;
     const {changes} = this.state;
-    if (changes){
+    if (changes) {
       Alert.alert(
-      //title
-      'Save',
-      //body
-      'Do you want to save changes ?',
-      [
-        {text: 'Save', onPress: () => this.submit()},
-        {text: 'Cancel', onPress: () => navigation.goBack(), style: 'cancel'},
-      ],
-      {cancelable: false},
-      //clicking out side of alert will not cancel
-    );
-    }else {
+        //title
+        'Save',
+        //body
+        'Do you want to save changes ?',
+        [
+          {text: 'Save', onPress: () => this.submit()},
+          {text: 'Cancel', onPress: () => navigation.goBack(), style: 'cancel'},
+        ],
+        {cancelable: false},
+        //clicking out side of alert will not cancel
+      );
+    } else {
       navigation.goBack();
     }
-  }
+    return true
+  };
 
   onDelete = () => {
     Alert.alert(

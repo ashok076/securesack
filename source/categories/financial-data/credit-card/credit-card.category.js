@@ -6,7 +6,7 @@ import {
   SafeAreaView,
   ImageBackground,
   Alert,
-  BackHandler
+  BackHandler,
 } from 'react-native';
 import {Text} from 'react-native-paper';
 import qs from 'qs';
@@ -80,7 +80,7 @@ class CreditCard extends Component {
     showQuestion: false,
     hideResult: true,
     refArray: [],
-    changes: false
+    changes: false,
   };
   constructor(props) {
     super(props);
@@ -91,9 +91,10 @@ class CreditCard extends Component {
 
   componentDidMount() {
     const {navigation} = this.props;
-    BackHandler.addEventListener('hardwareBackPress', () => this.onBack());
     navigation.addListener('focus', () => {
       this.setState(this.initialState);
+      if (this.state.editable)
+        BackHandler.addEventListener('hardwareBackPress', () => this.onBack());
       if (this.props.userData && this.props.userData.userData)
         this.setState(
           {access_token: this.props.userData.userData.access_token},
@@ -104,8 +105,9 @@ class CreditCard extends Component {
   }
 
   componentWillUnmount() {
-    BackHandler.removeEventListener('hardwareBackPress');
-}
+    if (this.state.editable)
+      BackHandler.removeEventListener('hardwareBackPress', () => this.onBack());
+  }
 
   viewRecord = async () => {
     const {recid, mode} = this.props.route.params;
@@ -298,7 +300,9 @@ class CreditCard extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Name"
-          onChangeText={(name) => this.setState({name}, () => this.changesMade())}
+          onChangeText={(name) =>
+            this.setState({name}, () => this.changesMade())
+          }
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.name}
@@ -308,7 +312,9 @@ class CreditCard extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Card Holder Name"
-          onChangeText={(cardHolderName) => this.setState({cardHolderName}, () => this.changesMade())}
+          onChangeText={(cardHolderName) =>
+            this.setState({cardHolderName}, () => this.changesMade())
+          }
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.cardHolderName}
@@ -323,11 +329,14 @@ class CreditCard extends Component {
               : this.state.creditCardType
           }
           onPress={() =>
-            this.setState({
-              modal: true,
-              array: credit_card_type,
-              key: 'creditCardType',
-            }, () => this.changesMade())
+            this.setState(
+              {
+                modal: true,
+                array: credit_card_type,
+                key: 'creditCardType',
+              },
+              () => this.changesMade(),
+            )
           }
           editable={this.state.editable}
           name="Type"
@@ -337,7 +346,9 @@ class CreditCard extends Component {
         <InputTextDynamic
           placeholder="Card Number"
           onChangeText={(cardNo) =>
-            this.setState({cardNo: formatCardNumber(cardNo)}, () => this.changesMade())
+            this.setState({cardNo: formatCardNumber(cardNo)}, () =>
+              this.changesMade(),
+            )
           }
           keyboardType="number-pad"
           color={Color.lightishBlue}
@@ -351,7 +362,9 @@ class CreditCard extends Component {
           <InputTextDynamic
             placeholder="Expiration Date"
             onChangeText={(expiryDate) =>
-              this.setState({expiryDate: formatExpiry(expiryDate)}, () => this.changesMade())
+              this.setState({expiryDate: formatExpiry(expiryDate)}, () =>
+                this.changesMade(),
+              )
             }
             keyboardType="number-pad"
             color={Color.lightishBlue}
@@ -363,7 +376,9 @@ class CreditCard extends Component {
         <View style={styles.miniInputContainer}>
           <InputTextDynamic
             placeholder="CVV"
-            onChangeText={(cvv) => this.setState({cvv}, () => this.changesMade())}
+            onChangeText={(cvv) =>
+              this.setState({cvv}, () => this.changesMade())
+            }
             keyboardType="number-pad"
             color={Color.lightishBlue}
             value={this.state.cvv}
@@ -374,7 +389,9 @@ class CreditCard extends Component {
       <View style={styles.inputContainer}>
         <AutoCompleteText
           placeholder="Issuer"
-          onChangeText={(issuer) => this.setState({issuer}, () => this.changesMade())}
+          onChangeText={(issuer) =>
+            this.setState({issuer}, () => this.changesMade())
+          }
           keyboardType="default"
           value={this.state.issuer}
           color={Color.lightishBlue}
@@ -399,7 +416,9 @@ class CreditCard extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="User Name"
-          onChangeText={(username) => this.setState({username}, () => this.changesMade())}
+          onChangeText={(username) =>
+            this.setState({username}, () => this.changesMade())
+          }
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.username}
@@ -415,7 +434,9 @@ class CreditCard extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Password"
-          onChangeText={(password) => this.setState({password}, () => this.changesMade())}
+          onChangeText={(password) =>
+            this.setState({password}, () => this.changesMade())
+          }
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.password}
@@ -436,7 +457,9 @@ class CreditCard extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Card Holder Name"
-          onChangeText={(cardHolderName2) => this.setState({cardHolderName2}, () => this.changesMade())}
+          onChangeText={(cardHolderName2) =>
+            this.setState({cardHolderName2}, () => this.changesMade())
+          }
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.cardHolderName2}
@@ -447,7 +470,9 @@ class CreditCard extends Component {
         <InputTextDynamic
           placeholder="Card Number"
           onChangeText={(cardNo2) =>
-            this.setState({cardNo2: formatCardNumber(cardNo2)}, () => this.changesMade())
+            this.setState({cardNo2: formatCardNumber(cardNo2)}, () =>
+              this.changesMade(),
+            )
           }
           keyboardType="number-pad"
           color={Color.lightishBlue}
@@ -461,7 +486,9 @@ class CreditCard extends Component {
           <InputTextDynamic
             placeholder="Expiration Date"
             onChangeText={(expiryDate2) =>
-              this.setState({expiryDate2: formatExpiry(expiryDate2)}, () => this.changesMade())
+              this.setState({expiryDate2: formatExpiry(expiryDate2)}, () =>
+                this.changesMade(),
+              )
             }
             keyboardType="number-pad"
             color={Color.lightishBlue}
@@ -473,7 +500,9 @@ class CreditCard extends Component {
         <View style={styles.miniInputContainer}>
           <InputTextDynamic
             placeholder="CVV"
-            onChangeText={(cvv2) => this.setState({cvv2}, () => this.changesMade())}
+            onChangeText={(cvv2) =>
+              this.setState({cvv2}, () => this.changesMade())
+            }
             keyboardType="number-pad"
             color={Color.lightishBlue}
             value={this.state.cvv2}
@@ -489,7 +518,9 @@ class CreditCard extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Security Question 1"
-          onChangeText={(securityQ1) => this.setState({securityQ1}, () => this.changesMade())}
+          onChangeText={(securityQ1) =>
+            this.setState({securityQ1}, () => this.changesMade())
+          }
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.securityQ1}
@@ -505,7 +536,9 @@ class CreditCard extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Answer 1"
-          onChangeText={(securityA1) => this.setState({securityA1}, () => this.changesMade())}
+          onChangeText={(securityA1) =>
+            this.setState({securityA1}, () => this.changesMade())
+          }
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.securityA1}
@@ -515,7 +548,9 @@ class CreditCard extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Security Question 2"
-          onChangeText={(securityQ2) => this.setState({securityQ2}, () => this.changesMade())}
+          onChangeText={(securityQ2) =>
+            this.setState({securityQ2}, () => this.changesMade())
+          }
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.securityQ2}
@@ -531,7 +566,9 @@ class CreditCard extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Answer 2"
-          onChangeText={(securityA2) => this.setState({securityA2}, () => this.changesMade())}
+          onChangeText={(securityA2) =>
+            this.setState({securityA2}, () => this.changesMade())
+          }
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.securityA2}
@@ -541,7 +578,9 @@ class CreditCard extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Security Question 3"
-          onChangeText={(securityQ3) => this.setState({securityQ3}, () => this.changesMade())}
+          onChangeText={(securityQ3) =>
+            this.setState({securityQ3}, () => this.changesMade())
+          }
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.securityQ3}
@@ -557,7 +596,9 @@ class CreditCard extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Answer 3"
-          onChangeText={(securityA3) => this.setState({securityA3}, () => this.changesMade())}
+          onChangeText={(securityA3) =>
+            this.setState({securityA3}, () => this.changesMade())
+          }
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.securityA3}
@@ -572,7 +613,9 @@ class CreditCard extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Address Line 1"
-          onChangeText={(address1) => this.setState({address1}, () => this.changesMade())}
+          onChangeText={(address1) =>
+            this.setState({address1}, () => this.changesMade())
+          }
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.address1}
@@ -582,7 +625,9 @@ class CreditCard extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Address Line 2"
-          onChangeText={(address2) => this.setState({address2}, () => this.changesMade())}
+          onChangeText={(address2) =>
+            this.setState({address2}, () => this.changesMade())
+          }
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.address2}
@@ -592,7 +637,9 @@ class CreditCard extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="City"
-          onChangeText={(city) => this.setState({city}, () => this.changesMade())}
+          onChangeText={(city) =>
+            this.setState({city}, () => this.changesMade())
+          }
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.city}
@@ -602,7 +649,9 @@ class CreditCard extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="State"
-          onChangeText={(state) => this.setState({state}, () => this.changesMade())}
+          onChangeText={(state) =>
+            this.setState({state}, () => this.changesMade())
+          }
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.state}
@@ -625,11 +674,14 @@ class CreditCard extends Component {
             this.state.country.length === 0 ? 'Country' : this.state.country
           }
           onPress={() =>
-            this.setState({
-              modal: true,
-              array: this.props.country.country,
-              key: 'country',
-            }, () => this.changesMade())
+            this.setState(
+              {
+                modal: true,
+                array: this.props.country.country,
+                key: 'country',
+              },
+              () => this.changesMade(),
+            )
           }
           editable={this.state.editable}
           nam="Country"
@@ -643,7 +695,9 @@ class CreditCard extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Notes"
-          onChangeText={(notes) => this.setState({notes}, () => this.changesMade())}
+          onChangeText={(notes) =>
+            this.setState({notes}, () => this.changesMade())
+          }
           keyboardType="default"
           value={this.state.notes}
           color={Color.lightishBlue}
@@ -734,11 +788,11 @@ class CreditCard extends Component {
     this.setState({[key]: value});
   };
 
-changesMade = () => {
-  const {mode} = this.props.route.params;
-  const {editable} = this.state;
-  if (!editable) this.setState({ changes: true }, () => console.log("Check: "));
-}
+  changesMade = () => {
+    const {mode} = this.props.route.params;
+    const {editable} = this.state;
+    if (!editable) this.setState({changes: true}, () => console.log('Check: '));
+  };
 
   editComponent = (isLoader, modal, array, key, editable, refBusModal) => (
     <View>
@@ -812,23 +866,25 @@ changesMade = () => {
   onBack = () => {
     const {navigation} = this.props;
     const {changes} = this.state;
-    if (changes){
+    console.log('Red alert');
+    if (changes) {
       Alert.alert(
-      //title
-      'Save',
-      //body
-      'Do you want to save changes ?',
-      [
-        {text: 'Save', onPress: () => this.submit()},
-        {text: 'Cancel', onPress: () => navigation.goBack(), style: 'cancel'},
-      ],
-      {cancelable: false},
-      //clicking out side of alert will not cancel
-    );
-    }else {
+        //title
+        'Save',
+        //body
+        'Do you want to save changes ?',
+        [
+          {text: 'Save', onPress: () => this.submit()},
+          {text: 'Cancel', onPress: () => navigation.goBack(), style: 'cancel'},
+        ],
+        {cancelable: false},
+        //clicking out side of alert will not cancel
+      );
+    } else {
       navigation.goBack();
     }
-  }
+    return true
+  };
 
   background = () =>
     require('../../../assets/jpg-images/Financial-Data-Background/financial-data-background.jpg');

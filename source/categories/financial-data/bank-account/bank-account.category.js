@@ -127,7 +127,7 @@ class BankAccounts extends Component {
   }
 
   componentWillUnmount() {
-    BackHandler.removeEventListener('hardwareBackPress');
+    BackHandler.removeEventListener('hardwareBackPress', () => this.onBack());
   }
 
   viewRecord = async () => {
@@ -1126,6 +1126,7 @@ class BankAccounts extends Component {
       navigation.goBack();
       console.log('See: ');
     }
+    return true
   };
 
   background = () =>

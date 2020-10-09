@@ -614,6 +614,7 @@ changesMade = () => {
     }else {
       navigation.goBack();
     }
+    return true
   }
 
   background = () =>

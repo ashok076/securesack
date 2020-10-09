@@ -323,6 +323,7 @@ class Recipies extends Component {
     }else {
       navigation.goBack();
     }
+    return true
   }
 
   background = () =>

@@ -801,6 +801,7 @@ class Property extends Component {
     }else {
       navigation.goBack();
     }
+    return true
   }
 
 background = () => require('../../../assets/jpg-images/Personal-Assets-Background/personal-assets-background.jpg')

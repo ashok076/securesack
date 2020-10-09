@@ -881,6 +881,7 @@ class ServiceAccount extends Component {
     }else {
       navigation.goBack();
     }
+    return true
   }
 
   background = () =>

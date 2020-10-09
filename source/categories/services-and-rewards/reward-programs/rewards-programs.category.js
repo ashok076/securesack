@@ -574,6 +574,7 @@ class RewardProgram extends Component {
     }else {
       navigation.goBack();
     }
+    return true
   }
 
   background = () =>
