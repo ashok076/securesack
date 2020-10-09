@@ -5,7 +5,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import axios from 'axios';
 import qs from 'qs';
 import FingerprintScanner from 'react-native-fingerprint-scanner';
-import { CommonActions } from '@react-navigation/native';
+import {CommonActions} from '@react-navigation/native';
 
 import InputText from '../input-text/input-text.component.js';
 import InputTextIcon from '../input-text-icon/input-text-icon.component.js';
@@ -42,7 +42,6 @@ class LoginComponent extends Component {
 
   componentDidMount() {
     this.getAsyncItem();
-    this.addFingerprintEvent();
   }
 
   componentWillUnmount() {
@@ -50,7 +49,7 @@ class LoginComponent extends Component {
     FingerprintScanner.release();
   }
 
-  addFingerprintEvent = () => {
+  addFingerprintEvent = async () => {
     AppState.addEventListener('change', this.handleAppStateChange);
     this.detectFingerprintAvailable();
   };
@@ -58,7 +57,9 @@ class LoginComponent extends Component {
   detectFingerprintAvailable = () => {
     FingerprintScanner.isSensorAvailable()
       .then((result) => {
-        this.setState({isSensorAvailable: true, isPromptShow: true});
+        this.setState({isSensorAvailable: true, isPromptShow: true}, () =>
+          this.startScannerProcess(),
+        );
       })
       .catch((error) => {
         this.setState({
@@ -77,19 +78,22 @@ class LoginComponent extends Component {
       enableFingerprint,
     } = this.state;
     if (isPromptShow) {
+      console.log('Is prompt show: ', 'isPromptShow');
       if (!isAcessTokenExpire) {
+        console.log('Is prompt show: ', 'isAcessTokenExpire');
         if (enableFingerprint) {
+          console.log('Is prompt show: ', 'enableFingerprint');
           FingerprintScanner.authenticate({
             description:
               'Scan your fingerprint on the device scanner to continue',
           })
             .then(() => {
-              console.log("Check: ", navigation)
+              console.log('Check: ', navigation);
               navigation.dispatch(
                 CommonActions.reset({
-                index: 0,
-                routes: [{name: 'Home',params: { user: 'jane' }}],
-              })
+                  index: 0,
+                  routes: [{name: 'Home'}],
+                }),
               );
             })
             .catch((error) => console.log('Fingerprint scanner: ', error));
@@ -151,7 +155,9 @@ class LoginComponent extends Component {
         this.setState({isAcessTokenExpire: true});
         break;
       default:
-        this.setState({isAcessTokenExpire: false});
+        this.setState({isAcessTokenExpire: false}, () =>
+          this.addFingerprintEvent(),
+        );
     }
   };
 
@@ -409,7 +415,7 @@ class LoginComponent extends Component {
             <Text style={styles.extrasText}> Forgot Password? </Text>
           </TouchableOpacity>
         </View>
-        {isSensorAvailable && (
+        {/* {isSensorAvailable && (
           <TouchableOpacity
             style={styles.bottomContainer}
             onPress={() => this.startScannerProcess()}>
@@ -419,7 +425,7 @@ class LoginComponent extends Component {
             />
             <Text style={styles.extrasText}> {errorMessage} </Text>
           </TouchableOpacity>
-        )}
+        )} */}
         <Loader isLoader={isLoader} />
       </View>
     );

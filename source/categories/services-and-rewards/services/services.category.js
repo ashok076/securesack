@@ -873,7 +873,7 @@ class ServiceAccount extends Component {
       'Do you want to save changes ?',
       [
         {text: 'Save', onPress: () => this.submit()},
-        {text: 'Cancel', onPress: () => console.log('No Pressed'), style: 'cancel'},
+        {text: 'Cancel', onPress: () =>  navigation.goBack(), style: 'cancel'},
       ],
       {cancelable: false},
       //clicking out side of alert will not cancel
