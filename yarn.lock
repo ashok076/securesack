@@ -5797,6 +5797,11 @@ react-native-background-timer@^2.3.1:
   resolved "https://registry.yarnpkg.com/react-native-background-timer/-/react-native-background-timer-2.3.1.tgz#83044a4572c62f5b99e929057b7bda5596b033ae"
   integrity sha512-cqsXqNOZYtFYrzdwXdfFciJOXjQwr1DpCb2Oy4Z3+FGETRRl+wH3uf8YuqnYUHFnKulHJ0BwYKTvkmmbY0eTxQ==
 
+react-native-document-picker@^3.5.4:
+  version "3.5.4"
+  resolved "https://registry.yarnpkg.com/react-native-document-picker/-/react-native-document-picker-3.5.4.tgz#4b9f261ea0d52e91d571670caaf55923ceb80f5f"
+  integrity sha512-ZKGAa8ztQ7zA1eE95OCiNsI/Q6fiq1Q3es8MyOEakBkWcX9avWNYaJUrbv/8v80Vo4RzcNxsO3wT6a2hgfpz7A==
+
 react-native-drawer@2.5.1:
   version "2.5.1"
   resolved "https://registry.yarnpkg.com/react-native-drawer/-/react-native-drawer-2.5.1.tgz#08b9314184f48c724f1b467f8859797369798654"

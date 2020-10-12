@@ -47,10 +47,10 @@ const DrawerComponent = ({navigation, userData}) => {
         <Drawer.Section style={styles.drawerSection}>
           <DrawerItem
             icon={({color, size}) => (
-              <Icon name="home" color={color} size={size} />
+              <Icon name="cloud-upload" color={color} size={size} />
             )}
-            label="Home"
-            onPress={() => navigation.navigate('Home')}
+            label="File Upload"
+            onPress={() => navigation.navigate('Fileupload')}
           />
           <DrawerItem
             icon={({color, size}) => (

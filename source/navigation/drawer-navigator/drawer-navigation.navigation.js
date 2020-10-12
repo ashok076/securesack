@@ -9,7 +9,8 @@ import ServiceRewards from '../../pages/service-and-rewards/service-and-rewards.
 import Insurance from '../../pages/insurance/insurance.page';
 import PersonalAssets from '../../pages/personal-assets/personal-assets.page';
 import GovernmentRecords from '../../pages/government-records/government-records.page';
-import PersonalOrganisation from '../../pages/personal-organisation/personal-organisation.page.js';
+import PersonalOrganisation from '../../pages/personal-organisation/personal-organisation.page';
+import Fileupload from '../../pages/file-upload/file-upload.page';
 
 //financial data
 import BankAccounts from '../../categories/financial-data/bank-account/bank-account.category';
@@ -42,7 +43,6 @@ import TaxIdentification from '../../categories/government-records/tax-ssn/tax-s
 import WebSiteAccount from '../../categories/personal-organizer/website-password/website-password.category.js';
 import Notes from '../../categories/personal-organizer/notes/notes.category.js';
 import Recipies from '../../categories/personal-organizer/recipes/recipes.category.js';
-
 
 
 const Drawer = createDrawerNavigator();
@@ -78,6 +78,7 @@ const DrawerNavigator = () => {
       <Drawer.Screen name="WebSiteAccount" component={WebSiteAccount}/>
       <Drawer.Screen name="Notes" component={Notes}/>
       <Drawer.Screen name="Recipies" component={Recipies}/>
+      <Drawer.Screen name="Fileupload" component={Fileupload}/>
     </Drawer.Navigator>
   );
 };

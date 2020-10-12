@@ -31,18 +31,24 @@ class GovernmentRecordsData extends Component {
     });
   }
 
+  componentDidUpdate(prevProps) {
+    if (prevProps.archive !== this.props.archive) {
+      this.getType();
+    }
+  }
+
   getType = () => {
     getDataAsType.map((type) => this.getData(type));
   };
 
   getData = async (type) => {
-    const {userData} = this.props;
+    const {userData, archive} = this.props;
     if (userData !== null) {
       let config = {
-        method: 'get',
+        method: 'GET',
         url: `${BASE_URL}/data/${type}`,
         params: {
-          archive: true,
+          archive: archive,
         },
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',

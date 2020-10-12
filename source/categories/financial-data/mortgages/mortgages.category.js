@@ -283,8 +283,8 @@ class Mortgage extends Component {
     await archiveRecords(
       'Mortgage',
       recid,
-      data,
       this.props.userData.userData.access_token,
+      data,
     )
       .then((response) => {
         this.setState({isLoader: false});

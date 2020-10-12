@@ -15,8 +15,15 @@ import InsuranceDataType from '../../components/insurance-data-type/insurance-da
 import styles from './insurance.style';
 
 class Insurance extends Component {
+    constructor() {
+    super();
+    this.state = {
+      isArchive: false,
+    };
+  }
   render() {
     const {navigation} = this.props;
+    const {isArchive} = this.state;
     return (
       <SafeAreaView style={styles.outerView}>
         <ImageBackground
@@ -28,10 +35,15 @@ class Insurance extends Component {
                 <Icons name="arrow-back" color="rgb(33, 47, 60)" size={24} />
               </TouchableOpacity>
               <Title style={styles.title}>Insurance</Title>
+              <View style={styles.icons}>
+                <TouchableOpacity onPress={() => this.setState({isArchive: !isArchive})}>
+                  <Icons name={isArchive ? "archive" : "unarchive"} color={"rgb(33, 47, 60)"} size={24} />
+                </TouchableOpacity>
+              </View>
             </View>
           </View>
           <ScrollView style={styles.outerContainerView}>
-            <InsuranceDataType navigation={navigation} />
+            <InsuranceDataType navigation={navigation} archive={isArchive}/>
           </ScrollView>
         </ImageBackground>
       </SafeAreaView>

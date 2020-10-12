@@ -239,8 +239,8 @@ class BrokerageAccount extends Component {
     await archiveRecords(
       'BrokerageAccount',
       recid,
-      data,
       this.props.userData.userData.access_token,
+      data,
     )
       .then((response) => {
         this.setState({isLoader: false});

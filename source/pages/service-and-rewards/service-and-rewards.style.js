@@ -33,5 +33,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
+  icons: {
+    position: 'absolute',
+    right: 0,
+  },
 });
 export default styles;

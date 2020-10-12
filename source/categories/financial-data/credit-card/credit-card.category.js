@@ -283,14 +283,16 @@ class CreditCard extends Component {
     await archiveRecords(
       'CreditCard',
       recid,
-      data,
       this.props.userData.userData.access_token,
+      data,
     )
       .then((response) => {
+        console.log("Response: ", response);
         this.setState({isLoader: false});
         navigation.goBack();
       })
       .catch((error) => {
+        console.log("Error Response: ", error);
         this.setState({isLoader: false});
       });
   };

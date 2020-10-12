@@ -15,8 +15,15 @@ import PersonalAssetsData from '../../components/personal-assets-data-type/perso
 import styles from './personal-assets.style';
 
 class PersonalAssets extends Component {
+    constructor() {
+    super();
+    this.state = {
+      isArchive: false,
+    };
+  }
   render() {
     const {navigation} = this.props;
+    const {isArchive} = this.state;
     return (
       <SafeAreaView style={styles.outerView}>
         <ImageBackground
@@ -28,10 +35,15 @@ class PersonalAssets extends Component {
                 <Icons name="arrow-back" color="rgb(255, 255, 255)" size={24} />
               </TouchableOpacity>
               <Title style={styles.title}>Personal Assets</Title>
+              <View style={styles.icons}>
+                <TouchableOpacity onPress={() => this.setState({isArchive: !isArchive})}>
+                  <Icons name={isArchive ? "archive" : "unarchive"} color={"rgb(255, 255, 255)"} size={24} />
+                </TouchableOpacity>
+              </View>
             </View>
           </View>
           <ScrollView style={styles.outerContainerView}>
-            <PersonalAssetsData navigation={navigation} />
+            <PersonalAssetsData navigation={navigation} archive={isArchive}/>
           </ScrollView>
         </ImageBackground>
       </SafeAreaView>

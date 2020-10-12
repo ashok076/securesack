@@ -23,7 +23,7 @@ class FinancialDataType extends Component {
   }
 
   componentDidMount() {
-    const {navigation} = this.props;
+    const {navigation, archive} = this.props;
     navigation.addListener('focus', () => {
       this.getType();
     });
@@ -33,15 +33,20 @@ class FinancialDataType extends Component {
     getDataAsType.map((type) => this.getData(type));
   };
 
+  componentDidUpdate(prevProps) {
+    if (prevProps.archive !== this.props.archive) {
+      this.getType();
+    }
+  }
 
   getData = async (type) => {
-    const {userData} = this.props;
+    const {userData, archive} = this.props;
     if (userData !== null) {
       let config = {
-        method: 'get',
+        method: 'GET',
         url: `${BASE_URL}/data/${type}`,
         params: {
-          archive: true,
+          archive: archive,
         },
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
@@ -50,7 +55,7 @@ class FinancialDataType extends Component {
       };
       await axios(config)
         .then((res) => {
-          console.log('res: ', res.data.datatype.name);
+          console.log('res: ', res.data);
           this.updateArray(res.data.data.items, res.data.datatype.name);
         })
         .catch((error) => console.log('Bank account error: ', error));
@@ -195,7 +200,6 @@ class FinancialDataType extends Component {
 
   render() {
     const {dataType} = this.state;
-    console.log("Data type: ", dataType)
     return (
       <View style={styles.view}>
         <FlatList

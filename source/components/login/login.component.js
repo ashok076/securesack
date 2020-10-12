@@ -228,7 +228,7 @@ class LoginComponent extends Component {
       console.log('Login api config: ', config);
       await axios(config)
         .then((response) => {
-          console.log('Response Login Api: ', JSON.stringify(response));
+          console.log('Response Login Api: ', JSON.stringify(response.data));
           this.status(response.data);
           this.setState({isLoader: false});
         })

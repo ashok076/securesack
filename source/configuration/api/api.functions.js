@@ -133,8 +133,8 @@ export const changePassword = async (access_token, data) => {
     });
 };
 
-export const addTag = async (access_token, tags, fileid) => {
-  return axios(`${BASE_URL}//files/+${fileid}`, {
+export const addTag = async (access_token, tags) => {
+  return axios(`${BASE_URL}/actions/tags/addTag`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
@@ -163,17 +163,60 @@ export const uploadFile = async (access_token, ldata) => {
     });
 };
 
-export const resetPasswordStepOne = async(data) =>{
-  console.log(data,"email")
-  return axios(`${BASE_URL}/actions/resetPassword/startReset`,{
+export const resetPasswordStepOne = async (data) => {
+  console.log(data, 'email');
+  return axios(`${BASE_URL}/actions/resetPassword/startReset`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
     },
-    data
+    data,
   })
     .then((response) => response.data)
     .catch((error) => {
       throw error;
     });
-}
+};
+
+export const updateTagImage = async (fileid, access_token, tags) => {
+  console.log(fileid, 'id file', tags);
+  return axios(`${BASE_URL}/files/${fileid}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      Authorization: 'Bearer ' + access_token,
+    },
+    data: tags,
+  })
+    .then((response) => response.data)
+    .catch((error) => {
+      throw error;
+    });
+};
+
+export const getAllCard = async (access_token) => {
+  return axios(`${BASE_URL}/files/`, {
+    method: 'Get',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      Authorization: 'Bearer ' + access_token,
+    },
+  })
+    .then((response) => response.data)
+    .catch((error) => {
+      throw error;
+    });
+};
+
+export const deleteCardDetail = async (fileid, access_token) => {
+  return axios(`${BASE_URL}/files/${fileid}`, {
+    method: 'Delete',
+    headers: {
+      Authorization: 'Bearer ' + access_token,
+    },
+  })
+    .then((response) => response.data)
+    .catch((error) => {
+      throw error;
+    });
+};

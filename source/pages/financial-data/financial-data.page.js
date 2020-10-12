@@ -15,8 +15,15 @@ import FinancialDataType from '../../components/financial-data-type/financial-da
 import styles from './financial-data.style';
 
 class FinancialData extends Component {
+  constructor() {
+    super();
+    this.state = {
+      isArchive: false,
+    };
+  }
   render() {
     const {navigation} = this.props;
+    const {isArchive} = this.state;
     return (
       <SafeAreaView style={styles.outerView}>
         <ImageBackground
@@ -28,10 +35,15 @@ class FinancialData extends Component {
                 <Icons name="arrow-back" color="rgb(255, 255, 255)" size={24} />
               </TouchableOpacity>
               <Title style={styles.title}>Financial Data</Title>
+              <View style={styles.icons}>
+                <TouchableOpacity onPress={() => this.setState({isArchive: !isArchive})}>
+                  <Icons name={isArchive ? "archive" : "unarchive"} color={"rgb(255, 255, 255)"} size={24} />
+                </TouchableOpacity>
+              </View>
             </View>
           </View>
           <ScrollView style={styles.outerContainerView}>
-            <FinancialDataType navigation={navigation} />
+            <FinancialDataType navigation={navigation} archive={isArchive}/>
           </ScrollView>
         </ImageBackground>
       </SafeAreaView>

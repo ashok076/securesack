@@ -226,8 +226,8 @@ class ConsumerLoan extends Component {
     await archiveRecords(
       'ConsumerLoan',
       recid,
-      data,
       this.props.userData.userData.access_token,
+      data,
     )
       .then((response) => {
         this.setState({isLoader: false});
