@@ -140,7 +140,7 @@ export const addTag = async (access_token, tags) => {
       'Content-Type': 'application/x-www-form-urlencoded',
       Authorization: 'Bearer ' + access_token,
     },
-    tags,
+    data: tags,
   })
     .then((response) => response.data)
     .catch((error) => {
@@ -148,14 +148,14 @@ export const addTag = async (access_token, tags) => {
     });
 };
 
-export const uploadFile = async (access_token, ldata) => {
+export const uploadFile = async (access_token, data) => {
   return axios(`${BASE_URL}/files/__NEW__`, {
     method: 'POST',
     headers: {
       'Content-Type': 'multipart/form-data',
       Authorization: 'Bearer ' + access_token,
-      ldata,
-    },
+      "X-File-Name": data
+    }
   })
     .then((response) => response.data)
     .catch((error) => {
@@ -194,9 +194,9 @@ export const updateTagImage = async (fileid, access_token, tags) => {
     });
 };
 
-export const getAllCard = async (access_token) => {
+export const getAllFiles = async (access_token) => {
   return axios(`${BASE_URL}/files/`, {
-    method: 'Get',
+    method: 'GET',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
       Authorization: 'Bearer ' + access_token,
@@ -208,9 +208,9 @@ export const getAllCard = async (access_token) => {
     });
 };
 
-export const deleteCardDetail = async (fileid, access_token) => {
+export const deleteFile = async (fileid, access_token) => {
   return axios(`${BASE_URL}/files/${fileid}`, {
-    method: 'Delete',
+    method: 'DELETE',
     headers: {
       Authorization: 'Bearer ' + access_token,
     },
@@ -220,3 +220,21 @@ export const deleteCardDetail = async (fileid, access_token) => {
       throw error;
     });
 };
+
+export const downloadFile = async (fileid, access_token, size, filename) => {
+  console.log(fileid, access_token, size, filename)
+  return axios(`${BASE_URL}/files/${fileid}`,{
+    method: 'GET',
+    params: {
+      ac: access_token
+    },
+    headers: {
+    'Content-Type': 'multipart/form-data', 
+    'Content-Size': size, 
+    'Content-Disposition': 'attatchment; filename={' + filename + '}',
+    }
+  }).then((response) => response.data)
+    .catch((error) => {
+      throw error;
+    });
+}

@@ -4,8 +4,6 @@ import {View, Text, FlatList} from 'react-native';
 import {mainContentList} from './main-content.list';
 import Block from '../block/block.component';
 
-import styles from './main-content.style';
-
 const MainContent = ({navigation}) => {
   return (
     <View>

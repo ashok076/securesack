@@ -144,7 +144,7 @@ class Recipies extends Component {
     const {navigation, route} = this.props;
     const {recid} = route.params;
     await deleteRecords(
-      'WebSiteAccount',
+      'Recipies',
       recid,
       this.props.userData.userData.access_token,
     )
@@ -160,7 +160,7 @@ class Recipies extends Component {
       IsArchived: true,
     });
     await archiveRecords(
-      'WebSiteAccount',
+      'Recipies',
       recid,
       this.props.userData.userData.access_token,
       data,

@@ -44,9 +44,14 @@ class AuthCode extends Component {
   getClientid = async () => {
     try {
       let clientid = await AsyncStorage.getItem('clientid');
+      let email = await AsyncStorage.getItem('email', email);
       if (clientid !== null) {
         console.log('User clientid: ', clientid);
         this.setState({clientid});
+      }
+      if (email !== null) {
+        console.log('User emailk: ', email);
+        this.setState({email});
       }
     } catch (error) {
       console.log('Error in getting clientid: ', error);
@@ -77,10 +82,12 @@ class AuthCode extends Component {
         data,
       };
 
+      console.log("Repsonse Email: ", data)
       await axios(config)
         .then((response) => {
           if (response.data !== null) {
-            this.saveSession(response.data.access_token);
+            console.log("Repsonse: ", response)
+            this.saveSession(response.data.access_token, response.data.clientid);
             userInfo(response.data);
             this.saveUserInfo(response.data);
             navigation.reset({
@@ -109,10 +116,11 @@ class AuthCode extends Component {
     }
   };
 
-  saveSession = async (access_token) => {
+  saveSession = async (access_token, clientid) => {
     this.country(access_token);
     try {
       await AsyncStorage.setItem('access_token', access_token);
+      await AsyncStorage.setItem('clientid', clientid);
     } catch (error) {
       console.log('Error in access token: ', error);
     }

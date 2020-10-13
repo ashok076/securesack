@@ -6,13 +6,16 @@ import axios from 'axios';
 import qs from 'qs';
 import FingerprintScanner from 'react-native-fingerprint-scanner';
 import {CommonActions} from '@react-navigation/native';
+import {connect} from 'react-redux';
 
 import InputText from '../input-text/input-text.component.js';
 import InputTextIcon from '../input-text-icon/input-text-icon.component.js';
 import Button from '../button/button.component';
 import Loader from '../loader/loader.component';
 import {END_POINTS, BASE_URL} from '../../configuration/api/api.types';
-import {postApi} from '../../configuration/api/api.functions';
+import {postApi, lookupType} from '../../configuration/api/api.functions';
+import {userInfo} from '../../redux/user-info/actions/user-info.action';
+import {countries} from '../../redux/countries-list/actions/countries-list.actions';
 
 import styles from './login.style';
 
@@ -233,9 +236,9 @@ class LoginComponent extends Component {
           this.setState({isLoader: false});
         })
         .catch((error) => {
-          console.log('Error in Login api: ', error.response);
+          console.log('Error in Login api: ', error);
           Toast.show({
-            text: error.response.data.message,
+            text: error,
             type: 'danger',
             position: 'bottom',
             textStyle: styles.toastText,
@@ -266,8 +269,9 @@ class LoginComponent extends Component {
     }
   };
 
-  status = ({status, message, clientid}) => {
+  status = (response) => {
     const {navigation, email} = this.state;
+    const {status, message, clientid, access_token} = response;
     if (status === undefined) {
       this.showToast(message, 'danger', true);
     }
@@ -292,8 +296,9 @@ class LoginComponent extends Component {
         this.showToast(message, 'danger', true);
         break;
       case 'Success':
-        this.showToast(message, 'success', true);
-        this.saveEmail();
+        this.saveSession(access_token, clientid);
+        userInfo(response);
+        this.saveUserInfo(response);
         navigation.navigate('Home');
         break;
       case 'MFACodeRequired':
@@ -306,6 +311,31 @@ class LoginComponent extends Component {
         this.setState({error: message});
         break;
     }
+  };
+
+  saveUserInfo = async (data) => {
+    try {
+      console.log("Check user info auth: ")
+      await AsyncStorage.setItem('user_info', JSON.stringify(data));
+    } catch (error) {
+      console.log('Error in user info: ', error);
+    }
+  };
+
+  saveSession = async (access_token, clientid) => {
+    this.country(access_token);
+    try {
+      await AsyncStorage.setItem('access_token', access_token);
+      await AsyncStorage.setItem('clientid', clientid);
+    } catch (error) {
+      console.log('Error in access token: ', error);
+    }
+  };
+
+  country = async (access_token) => {
+    await lookupType(access_token, 'RefCountry')
+      .then((res) => this.filter(res))
+      .catch((err) => console.log('Error in fetching country: ', err));
   };
 
   showToast = (message, type, isButtonText) => {
@@ -432,4 +462,9 @@ class LoginComponent extends Component {
   }
 }
 
-export default LoginComponent;
+const mapDispatchToProps = (dispatch) => ({
+  userInfo: (userData) => dispatch(userInfo(userData)),
+  countries: (country) => dispatch(countries(country)),
+});
+
+export default connect(null, mapDispatchToProps)(LoginComponent);
