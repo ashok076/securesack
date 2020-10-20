@@ -5,7 +5,7 @@ import Icon from 'react-native-vector-icons/AntDesign';
 
 import styles from './input-text-search.style';
 
-const InputTextSearch = ({placeholder, onChange, value}) => (
+const InputTextSearch = ({placeholder, onChange, value, onClear}) => (
   <View style={styles.inputContainer}>
     <TextInput
       style={styles.input}
@@ -16,9 +16,9 @@ const InputTextSearch = ({placeholder, onChange, value}) => (
       value={value}
       color="#212F3C"
     />
-    <TouchableOpacity>
+    <TouchableOpacity onPress={onClear}>
       <View style={styles.iconBackgroundView}>
-        <Icon size={20} color="white" name="search1" />
+        <Icon size={20} color="white" name={value.length !== 0 ? 'close' : 'search1'} />
       </View>
     </TouchableOpacity>
   </View>

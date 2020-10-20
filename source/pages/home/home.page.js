@@ -245,7 +245,8 @@ class Home extends Component {
       <SafeAreaView style={styles.container}>
         <ScrollView
           style={styles.innerContainer}
-          showsVerticalScrollIndicator={false}>
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps='handled'>
           {this.fingerPrintPopup(isFingerPrintSettings, isSensorAvailable)}
           <View>
             <Header navigation={navigation} />

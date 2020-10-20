@@ -17,7 +17,7 @@ class FinancialDataType extends Component {
     super(props);
     this.state = {
       dataType: financialDataTypeList,
-      viewAll: 2,
+      viewAll: 3,
       isExpanded: false,
     };
   }

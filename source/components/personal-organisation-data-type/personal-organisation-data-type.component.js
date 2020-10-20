@@ -19,7 +19,7 @@ class PersonalOrganisationData extends Component {
     super(props);
     this.state = {
       dataType: personalOrganisationDataTypeList,
-      viewAll: 2,
+      viewAll: 3,
       isExpanded: false,
     };
   }

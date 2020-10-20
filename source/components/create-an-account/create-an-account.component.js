@@ -77,7 +77,7 @@ class CreateAnAccount extends Component {
             this.status(res.data);
           })
           .catch((error) => {
-            console.log('Error in registration: ', error.message);
+            console.log('Error in registration: ', error);
             this.setState({isLoader: false});
           });
       } else {
@@ -89,6 +89,8 @@ class CreateAnAccount extends Component {
   };
 
   status = ({status, clientid}) => {
+    console.log("Status: ", status, clientid)
+    debugger;
     switch (status) {
       case 'PasswordTooShort':
         Toast.show({
@@ -107,12 +109,12 @@ class CreateAnAccount extends Component {
         });
         break;
       case 'MFACodeRequired':
-        Toast.show({
-          text: 'You have successfully registered',
-          position: 'bottom',
-          type: 'success',
-          duration: 7000,
-        });
+        // Toast.show({
+        //   text: 'You have successfully registered',
+        //   position: 'bottom',
+        //   type: 'success',
+        //   duration: 7000,
+        // });
         this.saveClientid(clientid);
         this.saveEmail();
         break;
@@ -120,9 +122,9 @@ class CreateAnAccount extends Component {
   };
 
   saveEmail = async () => {
-    const {username} = this.state;
+    const {email} = this.state;
     try {
-      await AsyncStorage.setItem('email', username);
+      await AsyncStorage.setItem('email', email);
     } catch (error) {
       console.log('Error while storing email in login: ', error);
     }
@@ -132,7 +134,7 @@ class CreateAnAccount extends Component {
     const {navigation, email} = this.state;
     try {
       await AsyncStorage.setItem('clientid', clientid);
-      navigation.navigate('AuthCode', {email: email});
+      this.props.navigation.navigate('AuthCode', {email: email});
     } catch (error) {
       console.log('Error in storing email in async storage: ', error);
     }

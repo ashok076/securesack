@@ -16,7 +16,7 @@ class InsuranceDataType extends Component {
     super(props);
     this.state = {
       dataType: insuranceDataTypeList,
-      viewAll: 2,
+      viewAll: 3,
       isExpanded: false,
     };
   }

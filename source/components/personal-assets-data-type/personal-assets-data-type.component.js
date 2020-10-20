@@ -19,7 +19,7 @@ class PersonalAssetsData extends Component {
     super(props);
     this.state = {
       dataType: personalAssetsDataTypeList,
-      viewAll: 2,
+      viewAll: 3,
       isExpanded: false,
     };
   }

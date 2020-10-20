@@ -299,7 +299,10 @@ class LoginComponent extends Component {
         this.saveSession(access_token, clientid);
         userInfo(response);
         this.saveUserInfo(response);
-        navigation.navigate('Home');
+        navigation.reset({
+              index: 0,
+              routes: [{name: 'Home'}],
+            });
         break;
       case 'MFACodeRequired':
         this.saveClientId(clientid);

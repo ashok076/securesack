@@ -346,6 +346,12 @@ class ServiceAccount extends Component {
       });
   };
 
+  changesMade = () => {
+    const {mode} = this.props.route.params;
+    const {editable} = this.state;
+    if (!editable) this.setState({changes: true}, () => console.log('Check: '));
+  };
+
   basicInformation = () => (
     <View>
       <View style={styles.inputContainer}>

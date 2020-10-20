@@ -19,7 +19,7 @@ const styles = StyleSheet.create({
         padding: '5%',
         width: '30%',
         alignSelf: "flex-end",
-        marginLeft: '35%',
+        marginLeft: '30%',
         borderRadius: 15,
 
     },

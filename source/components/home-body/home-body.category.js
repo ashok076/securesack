@@ -40,10 +40,11 @@ class HomeBody extends Component {
     return (
       <View>
         <View style={styles.searchView}>
-          <InputTextSearch
+          <InputTextSearch 
             placeholder="Search"
             onChange={this.handleSearch}
             value={search}
+            onClear={() => this.setState({ search : '' })}
           />
         </View>
         <View style={styles.mainContent}>

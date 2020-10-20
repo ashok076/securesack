@@ -245,7 +245,7 @@ class TaxIdentification extends Component {
           onPress={() =>
             this.setState({
               modal: true,
-              array: gender,
+              array: martial_status,
               key: 'martialStatus',
             }, () => this.changesMade())
           }
