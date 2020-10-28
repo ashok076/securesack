@@ -34,7 +34,7 @@ class PersonalOrganisation extends Component {
               <TouchableOpacity onPress={() => navigation.goBack()}>
                 <Icons name="arrow-back" color="rgb(255, 255, 255)" size={24} />
               </TouchableOpacity>
-              <Title style={styles.title}>Personal Organisation</Title>
+              <Title style={styles.title}>Personal Organization</Title>
               <View style={styles.icons}>
                 <TouchableOpacity onPress={() => this.setState({isArchive: !isArchive})}>
                   <Icons name={isArchive ? "archive" : "unarchive"} color={"rgb(255, 255, 255)"} size={24} />

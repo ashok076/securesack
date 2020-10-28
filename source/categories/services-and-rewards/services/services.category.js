@@ -101,7 +101,7 @@ class ServiceAccount extends Component {
           {
             access_token: this.props.userData.userData.access_token,
           },
-          () => this.viewRecord(),
+          () => this.viewRecord(navigation),
           this.getBusinessEntity(),
           this.getCreditCard(),
         );
@@ -112,7 +112,7 @@ class ServiceAccount extends Component {
     BackHandler.removeEventListener('hardwareBackPress');
 }
 
-  viewRecord = async () => {
+  viewRecord = async (navigation) => {
     const {recid, mode} = this.props.route.params;
     this.setState({isLoader: true});
     await viewRecords(
@@ -131,6 +131,10 @@ class ServiceAccount extends Component {
       .catch((error) => {
         console.log('Error: ', error);
         this.setState({isLoader: false});
+        navigation.reset({
+          index: 0,
+          routes: [{name: 'Login'}],
+        })
       });
     this.setState({isLoader: false});
     if (mode === 'Add') this.setState({editable: false, hideResult: false});
@@ -249,7 +253,7 @@ class ServiceAccount extends Component {
       additionalAcHolder1,
       additionalAcHolder2,
       access_token,
-      type,
+      serviceType,
       paymentDueType,
       isCreditCardProvided,
       creditCardProvided,
@@ -295,7 +299,10 @@ class ServiceAccount extends Component {
         navigation.goBack();
       })
       .catch((error) => {
-        this.setState({isLoader: false});
+        this.setState({isLoader: false});navigation.reset({
+          index: 0,
+          routes: [{name: 'Login'}],
+        })
       });
   };
 
@@ -319,7 +326,13 @@ class ServiceAccount extends Component {
       this.props.userData.userData.access_token,
     )
       .then((response) => navigation.goBack())
-      .catch((error) => console.log('Error in delete', error));
+      .catch((error) => {
+        console.log('Error in delete', error)
+        navigation.reset({
+          index: 0,
+          routes: [{name: 'Login'}],
+        })
+      });
   };
 
   archive = async () => {
@@ -342,7 +355,10 @@ class ServiceAccount extends Component {
       })
       .catch((error) => {
         this.setState({isLoader: false});
-        console.log('Error in delete', error);
+        console.log('Error in delete', error);navigation.reset({
+          index: 0,
+          routes: [{name: 'Login'}],
+        })
       });
   };
 

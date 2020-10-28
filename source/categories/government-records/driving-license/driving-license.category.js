@@ -69,7 +69,7 @@ class DriverLicense extends Component {
           {
             access_token: this.props.userData.userData.access_token,
           },
-          () => this.viewRecord(),
+          () => this.viewRecord(navigation),
         );
     });
   }
@@ -78,7 +78,7 @@ class DriverLicense extends Component {
     BackHandler.removeEventListener('hardwareBackPress');
 }
 
-  viewRecord = async () => {
+  viewRecord = async (navigation) => {
     const {recid, mode} = this.props.route.params;
     this.setState({isLoader: true});
     await viewRecords(
@@ -94,6 +94,10 @@ class DriverLicense extends Component {
       .catch((error) => {
         console.log('Error: ', error);
         this.setState({isLoader: false});
+        navigation.reset({
+          index: 0,
+          routes: [{name: 'Login'}],
+        })
       });
     this.setState({isLoader: false});
     if (mode === 'Add') this.setState({editable: false, hideResult: false});
@@ -110,7 +114,7 @@ class DriverLicense extends Component {
       noOfDrivingVoilation: data.DrivingViolation,
       drivingViolationType1: data.DrivingViolationType1,
       drivingViolationType2: data.DrivingViolationType2,
-      notes: data.Comment
+      notes: data.Notes
     });
   };
 
@@ -143,13 +147,17 @@ class DriverLicense extends Component {
       DrivingViolation: noOfDrivingVoilation,
       DrivingViolationType1: drivingViolationType1,
       DrivingViolationType2: drivingViolationType2,
-      Comment: notes
+      Notes: notes
     });
 
     await createOrUpdateRecord('DriverLicense', recid, data, access_token)
       .then((response) => {
         this.setState({isLoader: false});
         navigation.goBack();
+        navigation.reset({
+          index: 0,
+          routes: [{name: 'Login'}],
+        })
       })
       .catch((error) => {
         this.setState({isLoader: false});
@@ -165,7 +173,13 @@ class DriverLicense extends Component {
       this.props.userData.userData.access_token,
     )
       .then((response) => navigation.goBack())
-      .catch((error) => console.log('Error in delete', error));
+      .catch((error) => {
+      console.log('Error in delete', error)
+      navigation.reset({
+          index: 0,
+          routes: [{name: 'Login'}],
+        })
+      });
   };
 
   archive = async () => {
@@ -189,6 +203,10 @@ class DriverLicense extends Component {
       .catch((error) => {
         this.setState({isLoader: false});
         console.log('Error in delete', error);
+        navigation.reset({
+          index: 0,
+          routes: [{name: 'Login'}],
+        })
       });
   };
 

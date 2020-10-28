@@ -71,7 +71,7 @@ class IdentificationCards extends Component {
           {
             access_token: this.props.userData.userData.access_token,
           },
-          () => this.viewRecord(),
+          () => this.viewRecord(navigation),
         );
     });
   }
@@ -80,7 +80,7 @@ class IdentificationCards extends Component {
     BackHandler.removeEventListener('hardwareBackPress');
 }
 
-  viewRecord = async () => {
+  viewRecord = async (navigation) => {
     const {recid, mode} = this.props.route.params;
     this.setState({isLoader: true});
     await viewRecords(
@@ -96,6 +96,10 @@ class IdentificationCards extends Component {
       .catch((error) => {
         console.log('Error: ', error);
         this.setState({isLoader: false});
+        navigation.reset({
+          index: 0,
+          routes: [{name: 'Login'}],
+        })
       });
     this.setState({isLoader: false});
     if (mode === 'Add') this.setState({editable: false, hideResult: false});
@@ -115,7 +119,7 @@ class IdentificationCards extends Component {
       state: data.AddressGiven.State,
       zip: data.AddressGiven.Zip,
       country: data.AddressGiven.Country,
-      notes: data.Comment
+      notes: data.Note
     });
   };
 
@@ -154,7 +158,7 @@ class IdentificationCards extends Component {
       'AddressGiven-State': state,
       'AddressGiven-Zip': zip,
       'AddressGiven-Country': country,
-      Comment: notes
+      Note: notes
     });
 
     await createOrUpdateRecord('IdentificationCards', recid, data, access_token)
@@ -164,6 +168,10 @@ class IdentificationCards extends Component {
       })
       .catch((error) => {
         this.setState({isLoader: false});
+        navigation.reset({
+          index: 0,
+          routes: [{name: 'Login'}],
+        })
       });
   };
 
@@ -176,7 +184,13 @@ class IdentificationCards extends Component {
       this.props.userData.userData.access_token,
     )
       .then((response) => navigation.goBack())
-      .catch((error) => console.log('Error in delete', error));
+      .catch((error) => {
+        console.log('Error in delete', error)
+        navigation.reset({
+          index: 0,
+          routes: [{name: 'Login'}],
+        })
+      });
   };
 
   archive = async () => {
@@ -200,6 +214,10 @@ class IdentificationCards extends Component {
       .catch((error) => {
         this.setState({isLoader: false});
         console.log('Error in delete', error);
+        navigation.reset({
+          index: 0,
+          routes: [{name: 'Login'}],
+        })
       });
   };
 

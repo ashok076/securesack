@@ -161,7 +161,7 @@ class LifeInsurance extends Component {
         beneficiaries2: data.Beneficiary2,
         beneficiaries3: data.Beneficiary3,
         beneficiaries4: data.Beneficiary4,
-        notes: data.Comment
+        notes: data.Note
       },
       () => this.referenceObj(),
     );
@@ -254,7 +254,7 @@ class LifeInsurance extends Component {
       Beneficiary2: beneficiaries2,
       Beneficiary3: beneficiaries3,
       Beneficiary4: beneficiaries4,
-      Comment: notes
+      Note: notes
     });
 
     await createOrUpdateRecord('LifeInsurance', recid, data, access_token)

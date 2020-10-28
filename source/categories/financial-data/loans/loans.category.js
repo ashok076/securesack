@@ -85,7 +85,7 @@ class ConsumerLoan extends Component {
       if (this.props.userData && this.props.userData.userData)
         this.setState(
           {access_token: this.props.userData.userData.access_token},
-          () => this.viewRecord(),
+          () => this.viewRecord(navigation),
           this.getBusinessEntity(),
         );
     });
@@ -95,7 +95,7 @@ class ConsumerLoan extends Component {
     BackHandler.removeEventListener('hardwareBackPress');
 }
 
-  viewRecord = async () => {
+  viewRecord = async (navigation) => {
     const {recid, mode} = this.props.route.params;
     this.setState({isLoader: true});
     await viewRecords(
@@ -110,6 +110,10 @@ class ConsumerLoan extends Component {
       .catch((error) => {
         console.log('Error: ', error);
         this.setState({isLoader: false});
+        navigation.reset({
+          index: 0,
+          routes: [{name: 'Login'}],
+        })
       });
     if (mode === 'Add') this.setState({editable: false, hideResult: false});
   };
@@ -135,7 +139,7 @@ class ConsumerLoan extends Component {
         effectiveFrom: data.StartDate,
         endsOn: data.EndDate,
         refiance: data.Refinanced,
-        notes: data.Comment,
+        notes: data.Note,
         isLoader: false,
       },
       () => this.referenceObj(),
@@ -192,7 +196,7 @@ class ConsumerLoan extends Component {
       StartDate: effectiveFrom,
       EndDate: endsOn,
       Refinanced: refiance === 'Yes' ? true : false,
-      Comment: notes
+      Note: notes
     });
     await createOrUpdateRecord('ConsumerLoan', recid, data, access_token)
       .then((response) => {
@@ -201,6 +205,10 @@ class ConsumerLoan extends Component {
       })
       .catch((error) => {
         this.setState({isLoader: false});
+              navigation.reset({
+          index: 0,
+          routes: [{name: 'Login'}],
+        })
       });
   };
 
@@ -213,7 +221,12 @@ class ConsumerLoan extends Component {
       this.props.userData.userData.access_token,
     )
       .then((response) => navigation.goBack())
-      .catch((error) => console.log('Error in delete', error));
+      .catch((error) => {console.log('Error in delete', error)
+      navigation.reset({
+          index: 0,
+          routes: [{name: 'Login'}],
+        })
+      });
   };
 
   archive = async () => {
@@ -235,6 +248,10 @@ class ConsumerLoan extends Component {
       })
       .catch((error) => {
         this.setState({isLoader: false});
+              navigation.reset({
+          index: 0,
+          routes: [{name: 'Login'}],
+        })
       });
   };
 

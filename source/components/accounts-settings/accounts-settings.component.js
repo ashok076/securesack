@@ -43,6 +43,7 @@ class AccountSettings extends Component {
     this.setState({isLoader: true});
     const {oldPass, newPass, conPass} = this.state;
     const access_token = this.props.userData.userData.access_token;
+    const {navigation} = this.props
     const data = qs.stringify({
       oldPassword: oldPass,
       password: newPass,
@@ -57,12 +58,17 @@ class AccountSettings extends Component {
       .catch((error) => {
         console.log('Error: ', error);
         this.setState({isLoader: false});
+        navigation.reset({
+            index: 0,
+            routes: [{name: 'Login'}],
+          }),
         alert(error);
       });
   };
 
   dataEncryption = async () => {
     const email = await AsyncStorage.getItem('email');
+    const {navigation} = this.props
     console.log(email, 'async');
     var data = qs.stringify({email: email});
     await resetPasswordStepOne(data)
@@ -74,6 +80,10 @@ class AccountSettings extends Component {
       .catch((error) => {
         console.log('Error: ', error.message);
         this.setState({isLoader: false});
+        navigation.reset({
+            index: 0,
+            routes: [{name: 'Login'}],
+          })
       });
   };
 

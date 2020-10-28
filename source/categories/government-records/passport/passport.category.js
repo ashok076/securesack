@@ -78,7 +78,7 @@ class Passport extends Component {
           {
             access_token: this.props.userData.userData.access_token,
           },
-          () => this.viewRecord(),
+          () => this.viewRecord(navigation),
         );
     });
   }
@@ -87,7 +87,7 @@ class Passport extends Component {
     BackHandler.removeEventListener('hardwareBackPress');
 }
 
-  viewRecord = async () => {
+  viewRecord = async (navigation) => {
     const {recid, mode} = this.props.route.params;
     this.setState({isLoader: true});
     await viewRecords(
@@ -103,6 +103,10 @@ class Passport extends Component {
       .catch((error) => {
         console.log('Error: ', error);
         this.setState({isLoader: false});
+        navigation.reset({
+          index: 0,
+          routes: [{name: 'Login'}],
+        })
       });
     this.setState({isLoader: false});
     if (mode === 'Add') this.setState({editable: false, hideResult: false});
@@ -130,7 +134,7 @@ class Passport extends Component {
       placeOfIssue2: data.PreviousPlaceOfIssue2,
       dateOfIssue2: data.PreviousDateOfIssue2,
       expiredOn2: data.PreviousExpirationDate2,
-      notes: data.Comment,
+      notes: data.Note,
     });
   };
 
@@ -183,7 +187,7 @@ class Passport extends Component {
       PreviousPlaceOfIssue2: placeOfIssue2,
       PreviousDateOfIssue2: dateOfIssue2,
       PreviousExpirationDate2: expiredOn2,
-      Comment: notes,
+      Note: notes,
     });
 
     await createOrUpdateRecord('Passport', recid, data, access_token)
@@ -193,6 +197,10 @@ class Passport extends Component {
       })
       .catch((error) => {
         this.setState({isLoader: false});
+        navigation.reset({
+          index: 0,
+          routes: [{name: 'Login'}],
+        })
       });
   };
 
@@ -205,7 +213,13 @@ class Passport extends Component {
       this.props.userData.userData.access_token,
     )
       .then((response) => navigation.goBack())
-      .catch((error) => console.log('Error in delete', error));
+      .catch((error) => {
+        console.log('Error in delete', error)
+        navigation.reset({
+          index: 0,
+          routes: [{name: 'Login'}],
+        })
+      });
   };
 
   archive = async () => {
@@ -229,6 +243,10 @@ class Passport extends Component {
       .catch((error) => {
         this.setState({isLoader: false});
         console.log('Error in delete', error);
+        navigation.reset({
+          index: 0,
+          routes: [{name: 'Login'}],
+        })
       });
   };
 

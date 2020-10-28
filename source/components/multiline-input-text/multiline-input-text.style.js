@@ -9,7 +9,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#80000000',
     paddingHorizontal: 0,
     paddingVertical: 0,
-    minHeight: 20,
+    height: 150,
   },
 });
 

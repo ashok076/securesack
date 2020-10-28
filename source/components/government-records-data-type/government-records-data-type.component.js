@@ -15,12 +15,15 @@ import {BASE_URL} from '../../configuration/api/api.types';
 import styles from './government-records-data-type.style';
 
 class GovernmentRecordsData extends Component {
+  initialState = {
+    dataType: governmentRecordsDataTypeList,
+    viewAll: 3,
+    isExpanded: false,
+  }
   constructor(props) {
     super(props);
     this.state = {
-      dataType: governmentRecordsDataTypeList,
-      viewAll: 3,
-      isExpanded: false,
+      ...this.initialState
     };
   }
 
@@ -28,6 +31,7 @@ class GovernmentRecordsData extends Component {
     const {navigation} = this.props;
     navigation.addListener('focus', () => {
       this.getType();
+      this.setState(this.initialState)
     });
   }
 
@@ -42,13 +46,14 @@ class GovernmentRecordsData extends Component {
   };
 
   getData = async (type) => {
-    const {userData, archive} = this.props;
+    const {userData, archive, navigation} = this.props;
     if (userData !== null) {
       let config = {
         method: 'GET',
         url: `${BASE_URL}/data/${type}`,
         params: {
           archive: archive,
+          sortBy: 'lastAccessed'
         },
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
@@ -60,7 +65,13 @@ class GovernmentRecordsData extends Component {
           console.log('res: ', res.data.datatype.name);
           this.updateArray(res.data.data.items, res.data.datatype.name);
         })
-        .catch((error) => console.log('Bank account error: ', error));
+        .catch((error) => {
+          console.log('Bank account error: ', error)
+          navigation.reset({
+            index: 0,
+            routes: [{name: 'Login'}],
+        })
+          });
     }
   };
 
@@ -103,7 +114,7 @@ class GovernmentRecordsData extends Component {
     const {isExpanded} = this.state;
     console.log("Category: ", category)
     if (category !== undefined) {
-      if (category.length > 2) return this.viewAllComponent(category);
+      if (category.length > 3) return this.viewAllComponent(category);
     }
   };
 
@@ -114,7 +125,7 @@ class GovernmentRecordsData extends Component {
         rippleColor="rgba(0, 0, 0, .32)"
         onPress={() =>
           this.setState({
-            viewAll: viewAll === 2 ? category.length : 2,
+            viewAll: viewAll === 3 ? category.length : 3,
             isExpanded: !isExpanded,
           })
         }>

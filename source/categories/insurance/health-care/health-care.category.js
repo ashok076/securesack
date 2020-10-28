@@ -152,7 +152,7 @@ class HealthCareProvider extends Component {
       dependent2: data.Dependent2,
       dependent3: data.Dependent3,
       dependent4: data.Dependent4,
-      notes: data.Comment
+      notes: data.Note
     });
   };
 
@@ -223,7 +223,7 @@ class HealthCareProvider extends Component {
       Dependent2: dependent2,
       Dependent3: dependent3,
       Dependent4: dependent4,
-      Comment: notes,
+      Note: notes,
     });
 
     await createOrUpdateRecord('HealthCareProvider', recid, data, access_token)

@@ -82,7 +82,7 @@ class RewardProgram extends Component {
           {
             access_token: this.props.userData.userData.access_token,
           },
-          () => this.viewRecord(),
+          () => this.viewRecord(navigation),
           this.getBusinessEntity(),
         );
     });
@@ -92,7 +92,7 @@ class RewardProgram extends Component {
     BackHandler.removeEventListener('hardwareBackPress');
 }
 
-  viewRecord = async () => {
+  viewRecord = async (navigation) => {
     const {recid, mode} = this.props.route.params;
     this.setState({isLoader: true});
     await viewRecords(
@@ -111,6 +111,10 @@ class RewardProgram extends Component {
       .catch((error) => {
         console.log('Error: ', error);
         this.setState({isLoader: false});
+        navigation.reset({
+          index: 0,
+          routes: [{name: 'Login'}],
+        })
       });
     this.setState({isLoader: false});
     if (mode === 'Add') this.setState({editable: false, hideResult: false});
@@ -134,7 +138,7 @@ class RewardProgram extends Component {
         securityQ3: data.SecurityQuestion3,
         securityA3: data.SecurityAnswer3,
         programType: data.ProgramType,
-        notes: data.Comment,
+        notes: data.Notes,
       },
       () => this.referenceObj(),
     );
@@ -209,7 +213,7 @@ class RewardProgram extends Component {
       SecurityQuestion3: securityQ3,
       SecurityAnswer3: securityA3,
       ProgramType: programType,
-      Comment: notes,
+      Notes: notes,
     });
 
     await createOrUpdateRecord('RewardProgram', recid, data, access_token)
@@ -219,6 +223,10 @@ class RewardProgram extends Component {
       })
       .catch((error) => {
         this.setState({isLoader: false});
+        navigation.reset({
+          index: 0,
+          routes: [{name: 'Login'}],
+        })
       });
   };
 
@@ -231,7 +239,12 @@ class RewardProgram extends Component {
       this.props.userData.userData.access_token,
     )
       .then((response) => navigation.goBack())
-      .catch((error) => console.log('Error in delete', error));
+      .catch((error) => {console.log('Error in delete', error)
+      navigation.reset({
+          index: 0,
+          routes: [{name: 'Login'}],
+        })
+      });
   };
 
   archive = async () => {
@@ -254,7 +267,10 @@ class RewardProgram extends Component {
       })
       .catch((error) => {
         this.setState({isLoader: false});
-        console.log('Error in delete', error);
+        console.log('Error in delete', error);navigation.reset({
+          index: 0,
+          routes: [{name: 'Login'}],
+        })
       });
   };
 
@@ -522,7 +538,7 @@ class RewardProgram extends Component {
       />
       <RefBusinessModal
         isModalVisible={this.state.refBusModal}
-        changeModalVisibility={this.changeRefBusinessModal}
+        changeModalVisibility={this.changeRefBusinessmModal}
         access_token={this.props.userData.userData.access_token}
         refreshingList={this.refreshingList}
       />

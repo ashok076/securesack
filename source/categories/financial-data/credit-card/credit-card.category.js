@@ -98,7 +98,7 @@ class CreditCard extends Component {
       if (this.props.userData && this.props.userData.userData)
         this.setState(
           {access_token: this.props.userData.userData.access_token},
-          () => this.viewRecord(),
+          () => this.viewRecord(navigation),
           this.getBusinessEntity(),
         );
     });
@@ -109,7 +109,7 @@ class CreditCard extends Component {
       BackHandler.removeEventListener('hardwareBackPress', () => this.onBack());
   }
 
-  viewRecord = async () => {
+  viewRecord = async (navigation) => {
     const {recid, mode} = this.props.route.params;
     this.setState({isLoader: true});
     await viewRecords(
@@ -127,6 +127,10 @@ class CreditCard extends Component {
       .catch((error) => {
         console.log('Error: ', error);
         this.setState({isLoader: false});
+        navigation.reset({
+          index: 0,
+          routes: [{name: 'Login'}],
+        })
       });
     if (mode === 'Add') this.setState({editable: false, hideResult: false});
   };
@@ -258,6 +262,10 @@ class CreditCard extends Component {
       })
       .catch((error) => {
         this.setState({isLoader: false});
+        navigation.reset({
+          index: 0,
+          routes: [{name: 'Login'}],
+        })
       });
   };
 
@@ -270,7 +278,12 @@ class CreditCard extends Component {
       this.props.userData.userData.access_token,
     )
       .then((response) => navigation.goBack())
-      .catch((error) => console.log('Error in delete', error));
+      .catch((error) => {console.log('Error in delete', error)
+      navigation.reset({
+          index: 0,
+          routes: [{name: 'Login'}],
+        })
+        });
   };
 
   archive = async () => {
@@ -294,6 +307,10 @@ class CreditCard extends Component {
       .catch((error) => {
         console.log("Error Response: ", error);
         this.setState({isLoader: false});
+        navigation.reset({
+          index: 0,
+          routes: [{name: 'Login'}],
+        })
       });
   };
 

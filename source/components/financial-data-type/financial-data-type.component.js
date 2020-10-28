@@ -13,12 +13,15 @@ import {lookupType} from '../../configuration/api/api.functions';
 import styles from './financial-data-type.style';
 
 class FinancialDataType extends Component {
+  initialState = {
+    dataType: financialDataTypeList,
+    viewAll: 3,
+    isExpanded: false,
+  }
   constructor(props) {
     super(props);
     this.state = {
-      dataType: financialDataTypeList,
-      viewAll: 3,
-      isExpanded: false,
+      ...this.initialState
     };
   }
 
@@ -26,6 +29,7 @@ class FinancialDataType extends Component {
     const {navigation, archive} = this.props;
     navigation.addListener('focus', () => {
       this.getType();
+      this.setState(this.initialState)
     });
   }
 
@@ -40,13 +44,14 @@ class FinancialDataType extends Component {
   }
 
   getData = async (type) => {
-    const {userData, archive} = this.props;
+    const {userData, archive, navigation} = this.props;
     if (userData !== null) {
       let config = {
         method: 'GET',
         url: `${BASE_URL}/data/${type}`,
         params: {
           archive: archive,
+          sortBy: 'lastAccessed'
         },
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
@@ -58,7 +63,12 @@ class FinancialDataType extends Component {
           console.log('res: ', res.data);
           this.updateArray(res.data.data.items, res.data.datatype.name);
         })
-        .catch((error) => console.log('Bank account error: ', error));
+        .catch((error) => {console.log('Bank account error: ', error)
+        navigation.reset({
+          index: 0,
+          routes: [{name: 'Login'}],
+        })
+        });
     }
   };
 
@@ -160,7 +170,7 @@ class FinancialDataType extends Component {
   viewAll = (category) => {
     const {isExpanded} = this.state;
     if (category !== undefined) {
-      if (category.length > 2) return this.viewAllComponent(category);
+      if (category.length > 3) return this.viewAllComponent(category);
     }
   };
 
@@ -171,7 +181,7 @@ class FinancialDataType extends Component {
         rippleColor="rgba(0, 0, 0, .32)"
         onPress={() =>
           this.setState({
-            viewAll: viewAll === 2 ? category.length : 2,
+            viewAll: viewAll === 3 ? category.length : 3,
             isExpanded: !isExpanded,
           })
         }>

@@ -165,7 +165,7 @@ class Property extends Component {
       burgularAlarmType: data.BurglarAlarmType,
       smokeDetector: data.HasSmokeDetectors ? 'Yes' : 'No',
       isFireHydrant: data.IsFireHydrantWithinThousandFeet ? 'Yes' : 'No',
-      notes: data.Comment
+      notes: data.Notes
       });
   };
 
@@ -240,7 +240,7 @@ class Property extends Component {
       BurglarAlarmType: burgularAlarmType,
       HasSmokeDetectors: smokeDetector === 'Yes' ? true : false,
       IsFireHydrantWithinThousandFeet: isFireHydrant === 'Yes' ? true : false,
-      Comment: notes
+      Notes: notes
     });
 
     await createOrUpdateRecord('Property', recid, data, access_token)

@@ -184,7 +184,7 @@ class PropertyInsurance extends Component {
           data.OwnedProperty.label === undefined
             ? ''
             : data.OwnedProperty.label,
-        notes: data.Comment,
+        notes: data.Note,
       },
       () => this.referenceObj(),
     );
@@ -271,7 +271,7 @@ class PropertyInsurance extends Component {
       LossAssessmentCoverage: lossAssessmentCoverage === 'Yes' ? true : false,
       SewerWaterBackupCoverage: sewerBackupCoverage === 'Yes' ? true : false,
       OwnedProperty: this.getOwnedPropertyId(ownedProperty),
-      Comment: notes,
+      Note: notes,
     });
 
     await createOrUpdateRecord('PropertyInsurance', recid, data, access_token)

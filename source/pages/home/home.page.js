@@ -28,6 +28,7 @@ import {lookupType} from '../../configuration/api/api.functions';
 import styles from './home.style';
 
 class Home extends Component {
+  _interval: any
   constructor(props) {
     super(props);
     this.state = {
@@ -40,9 +41,6 @@ class Home extends Component {
   }
 
   componentDidMount() {
-    // BackgroundTimer.runBackgroundTimer(() => {
-    //   this.checkLoginStatus();
-    // }, 30000);
     const {navigation, route} = this.props;
     console.log('Route: ', route.params);
     navigation.addListener('focus', () => {
@@ -149,6 +147,7 @@ class Home extends Component {
 
   actionAsPerStatus = ({status, user}) => {
     const {navigation} = this.props;
+    console.log("status: ", status)
     switch (status) {
       case 'notAuthenticated':
         navigation.reset({

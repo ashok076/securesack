@@ -79,7 +79,7 @@ class BrokerageAccount extends Component {
       if (this.props.userData && this.props.userData.userData)
         this.setState(
           {access_token: this.props.userData.userData.access_token},
-          () => this.viewRecord(),
+          () => this.viewRecord(navigation),
           this.getBusinessEntity(),
         );
     });
@@ -89,7 +89,7 @@ class BrokerageAccount extends Component {
     BackHandler.removeEventListener('hardwareBackPress', () => this.onBack());
   }
 
-  viewRecord = async () => {
+  viewRecord = async (navigation) => {
     const {recid, mode} = this.props.route.params;
     this.setState({isLoader: true});
     await viewRecords(
@@ -107,6 +107,10 @@ class BrokerageAccount extends Component {
       .catch((error) => {
         console.log('Error: ', error);
         this.setState({isLoader: false});
+        navigation.reset({
+          index: 0,
+          routes: [{name: 'Login'}],
+        })
       });
     if (mode === 'Add') this.setState({editable: false, hideResult: false});
   };
@@ -133,7 +137,7 @@ class BrokerageAccount extends Component {
         stockTransactionFee: data.StockTransactionFee,
         openedOn: data.AccountOpeningDate,
         closedOn: data.AccountClosingDate,
-        notes: data.Comment,
+        notes: data.Notes,
         isLoader: false,
       },
       () => this.referenceObj(),
@@ -205,7 +209,7 @@ class BrokerageAccount extends Component {
       StockTransactionFee: stockTransactionFee,
       AccountOpeningDate: openedOn,
       AccountClosingDate: closedOn,
-      Comment: notes,
+      Notes: notes,
     });
     await createOrUpdateRecord('BrokerageAccount', recid, data, access_token)
       .then((response) => {
@@ -214,6 +218,10 @@ class BrokerageAccount extends Component {
       })
       .catch((error) => {
         this.setState({isLoader: false});
+        navigation.reset({
+          index: 0,
+          routes: [{name: 'Login'}],
+        })
       });
   };
 
@@ -226,7 +234,13 @@ class BrokerageAccount extends Component {
       this.props.userData.userData.access_token,
     )
       .then((response) => navigation.goBack())
-      .catch((error) => console.log('Error in delete', error));
+      .catch((error) => {
+        console.log('Error in delete', error)
+        navigation.reset({
+          index: 0,
+          routes: [{name: 'Login'}],
+        })
+        });
   };
 
   archive = async () => {
@@ -248,6 +262,10 @@ class BrokerageAccount extends Component {
       })
       .catch((error) => {
         this.setState({isLoader: false});
+        navigation.reset({
+          index: 0,
+          routes: [{name: 'Login'}],
+        })
       });
   };
 

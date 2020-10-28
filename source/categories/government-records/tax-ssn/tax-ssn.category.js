@@ -78,7 +78,7 @@ class TaxIdentification extends Component {
           {
             access_token: this.props.userData.userData.access_token,
           },
-          () => this.viewRecord(),
+          () => this.viewRecord(navigation),
         );
     });
   }
@@ -87,7 +87,7 @@ class TaxIdentification extends Component {
     BackHandler.removeEventListener('hardwareBackPress');
 }
 
-  viewRecord = async () => {
+  viewRecord = async (navigation) => {
     const {recid, mode} = this.props.route.params;
     this.setState({isLoader: true});
     await viewRecords(
@@ -103,6 +103,10 @@ class TaxIdentification extends Component {
       .catch((error) => {
         console.log('Error: ', error);
         this.setState({isLoader: false});
+        navigation.reset({
+          index: 0,
+          routes: [{name: 'Login'}],
+        })
       });
     this.setState({isLoader: false});
     if (mode === 'Add') this.setState({editable: false, hideResult: false});
@@ -127,7 +131,7 @@ class TaxIdentification extends Component {
       countryofbirth: data.CountryOfBirth,
       sob: data.StateOfBirth,
       cob: data.CityOfBirth,
-      notes: data.Comment
+      notes: data.Note
     });
   };
 
@@ -174,7 +178,7 @@ class TaxIdentification extends Component {
       CountryOfBirth: countryofbirth,
       StateOfBirth: sob,
       CityOfBirth: cob,
-      Comment: notes
+      Note: notes
     });
 
     await createOrUpdateRecord('TaxIdentification', recid, data, access_token)
@@ -184,6 +188,10 @@ class TaxIdentification extends Component {
       })
       .catch((error) => {
         this.setState({isLoader: false});
+        navigation.reset({
+          index: 0,
+          routes: [{name: 'Login'}],
+        })
       });
   };
 
@@ -196,7 +204,13 @@ class TaxIdentification extends Component {
       this.props.userData.userData.access_token,
     )
       .then((response) => navigation.goBack())
-      .catch((error) => console.log('Error in delete', error));
+      .catch((error) => {
+        console.log('Error in delete', error)
+        navigation.reset({
+          index: 0,
+          routes: [{name: 'Login'}],
+        })
+      });
   };
 
   archive = async () => {
@@ -220,6 +234,10 @@ class TaxIdentification extends Component {
       .catch((error) => {
         this.setState({isLoader: false});
         console.log('Error in delete', error);
+        navigation.reset({
+          index: 0,
+          routes: [{name: 'Login'}],
+        })
       });
   };
 
