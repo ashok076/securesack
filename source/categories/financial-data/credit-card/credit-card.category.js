@@ -13,9 +13,9 @@ import qs from 'qs';
 import {connect} from 'react-redux';
 import {Root} from 'native-base';
 
-import InputTextDynamic from '../../../components/input-text-dynamic/input-text-dynamic.component.js';
-import InputTextIconDynamic from '../../../components/input-text-icon-dynamic/input-text-icon-dynamic.component.js';
-import ModalPicker from '../../../components/modal-picker/modal-picker.component.js';
+import InputTextDynamic from '../../../components/input-text-dynamic/input-text-dynamic.component';
+import InputTextIconDynamic from '../../../components/input-text-icon-dynamic/input-text-icon-dynamic.component';
+import ModalPicker from '../../../components/modal-picker/modal-picker.component';
 import Button from '../../../components/button/button.component';
 import Loader from '../../../components/loader/loader.component';
 import RefBusinessModal from '../../../components/ref-business-modal/ref-business-modal.component';

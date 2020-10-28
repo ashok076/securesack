@@ -15,35 +15,35 @@ import FileUploading from '../../pages/file-uploading/file-uploading.page';
 
 //financial data
 import BankAccounts from '../../categories/financial-data/bank-account/bank-account.category';
-import CreditCard from '../../categories/financial-data/credit-card/credit-card.category.js';
+import CreditCard from '../../categories/financial-data/credit-card/credit-card.category';
 import BrokerageAccount from '../../categories/financial-data/brokerages/brokerages.category';
-import Mortgage from '../../categories/financial-data/mortgages/mortgages.category.js';
-import ConsumerLoan from '../../categories/financial-data/loans/loans.category.js';
+import Mortgage from '../../categories/financial-data/mortgages/mortgages.category';
+import ConsumerLoan from '../../categories/financial-data/loans/loans.category';
 
 //services and rewards
-import ServiceAccount from '../../categories/services-and-rewards/services/services.category.js';
-import RewardProgram from '../../categories/services-and-rewards/reward-programs/rewards-programs.category.js';
+import ServiceAccount from '../../categories/services-and-rewards/services/services.category';
+import RewardProgram from '../../categories/services-and-rewards/reward-programs/rewards-programs.category';
 
 //insurance
-import AutoInsurance from '../../categories/insurance/auto/auto.category.js';
-import HealthCareProvider from '../../categories/insurance/health-care/health-care.category.js';
-import LifeInsurance from '../../categories/insurance/life/life.category.js';
-import PropertyInsurance from '../../categories/insurance/property/property.category.js';
+import AutoInsurance from '../../categories/insurance/auto/auto.category';
+import HealthCareProvider from '../../categories/insurance/health-care/health-care.category';
+import LifeInsurance from '../../categories/insurance/life/life.category';
+import PropertyInsurance from '../../categories/insurance/property/property.category';
 
 //personal assets
-import Vehicle from '../../categories/personal-assets/vehicle/vehicle.category.js';
-import Property from '../../categories/personal-assets/property/property.category.js';
+import Vehicle from '../../categories/personal-assets/vehicle/vehicle.category';
+import Property from '../../categories/personal-assets/property/property.category';
 
 //government records
-import DriverLicense from '../../categories/government-records/driving-license/driving-license.category.js';
-import IdentificationCards from '../../categories/government-records/identity/identity.category.js';
-import Passport from '../../categories/government-records/passport/passport.category.js';
-import TaxIdentification from '../../categories/government-records/tax-ssn/tax-ssn.category.js';
+import DriverLicense from '../../categories/government-records/driving-license/driving-license.category';
+import IdentificationCards from '../../categories/government-records/identity/identity.category';
+import Passport from '../../categories/government-records/passport/passport.category';
+import TaxIdentification from '../../categories/government-records/tax-ssn/tax-ssn.category';
 
 //personal organisation
-import WebSiteAccount from '../../categories/personal-organizer/website-password/website-password.category.js';
-import Notes from '../../categories/personal-organizer/notes/notes.category.js';
-import Recipies from '../../categories/personal-organizer/recipes/recipes.category.js';
+import WebSiteAccount from '../../categories/personal-organizer/website-password/website-password.category';
+import Notes from '../../categories/personal-organizer/notes/notes.category';
+import Recipies from '../../categories/personal-organizer/recipes/recipes.category';
 
 
 const Drawer = createDrawerNavigator();
