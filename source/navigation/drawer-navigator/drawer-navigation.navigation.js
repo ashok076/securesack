@@ -10,8 +10,6 @@ import Insurance from '../../pages/insurance/insurance.page';
 import PersonalAssets from '../../pages/personal-assets/personal-assets.page';
 import GovernmentRecords from '../../pages/government-records/government-records.page';
 import PersonalOrganisation from '../../pages/personal-organisation/personal-organisation.page';
-import Fileupload from '../../pages/file-upload-ashok/file-upload.page';
-import FileUploading from '../../pages/file-uploading/file-uploading.page';
 
 //financial data
 import BankAccounts from '../../categories/financial-data/bank-account/bank-account.category';
@@ -79,8 +77,6 @@ const DrawerNavigator = () => {
       <Drawer.Screen name="WebSiteAccount" component={WebSiteAccount}/>
       <Drawer.Screen name="Notes" component={Notes}/>
       <Drawer.Screen name="Recipies" component={Recipies}/>
-      <Drawer.Screen name="Fileupload" component={Fileupload}/>
-      <Drawer.Screen name="FileUploading" component={FileUploading}/>
     </Drawer.Navigator>
   );
 };

@@ -6,8 +6,9 @@ import qs from 'qs';
 import axios from 'axios';
 import {connect} from 'react-redux';
 
-import InputTextIcon from '../../components/input-text-icon/input-text-icon.component.js';
-import Button from '../../components/button/button.component.js';
+import InputTextIcon from '../../components/input-text-icon/input-text-icon.component';
+import Button from '../../components/button/button.component';
+import TextButton from '../../components/text-button/text-button.component'
 import {END_POINTS, BASE_URL} from '../../configuration/api/api.types';
 import {postApi} from '../../configuration/api/api.functions';
 import Loader from '../../components/loader/loader.component';
@@ -23,7 +24,7 @@ class AuthCode extends Component {
     this.state = {
       authcode: '',
       clientid: '',
-      email: props.route.params.email,
+      email: props.route.params.username,
       isLoader: false,
     };
   }
@@ -31,14 +32,14 @@ class AuthCode extends Component {
   componentDidMount() {
     this.getClientid();
     console.log('Checking props: ', this.props);
-    Toast.show({
-      text: 'Please check your registered email id for the auth-code',
-      type: 'success',
-      position: 'bottom',
-      textStyle: styles.toastText,
-      buttonText: 'DISMISS',
-      duration: 7000,
-    });
+    // Toast.show({
+    //   text: 'Please check your registered email id for the auth-code',
+    //   type: 'success',
+    //   position: 'bottom',
+    //   textStyle: styles.toastText,
+    //   buttonText: 'DISMISS',
+    //   duration: 7000,
+    // });
   }
 
   getClientid = async () => {
@@ -174,6 +175,34 @@ class AuthCode extends Component {
     return false;
   };
 
+  resend = async () => {
+    const {email, password, clientid} = this.props.route.params;
+    this.setState({ isLoader: true })
+    let data = qs.stringify({
+        email: email,
+        password,
+        clientid,
+      });
+      let config = {
+        method: 'post',
+        url: `${BASE_URL}${END_POINTS.LOGIN_API}`,
+        headers: {
+          'Content-type': 'application/x-www-form-urlencoded',
+        },
+        data,
+      };
+      console.log("Config: ", config)
+      await axios(config)
+        .then((response) => {
+          console.log('Response Login Api: ', JSON.stringify(response.data));
+          this.setState({ isLoader: false });
+        })
+        .catch((error) => {
+          console.log('Error in Login api: ', error.response.data.message);
+          this.setState({isLoader: false});
+        });
+  }
+
   render() {
     const {authcode, isLoader} = this.state;
     return (
@@ -202,6 +231,7 @@ class AuthCode extends Component {
           <View style={styles.buttonContainer}>
             <Button onPress={this.handleClick} title="Verify security code" />
           </View>
+            <TextButton title='Resend' onPress={() => this.resend()}/>
           <Loader isLoader={isLoader} />
         </SafeAreaView>
       </Root>

@@ -270,7 +270,7 @@ class LoginComponent extends Component {
   };
 
   status = (response) => {
-    const {navigation, email} = this.state;
+    const {navigation, username, password} = this.state;
     const {status, message, clientid, access_token} = response;
     if (status === undefined) {
       this.showToast(message, 'danger', true);
@@ -307,7 +307,7 @@ class LoginComponent extends Component {
       case 'MFACodeRequired':
         this.saveClientId(clientid);
         this.saveEmail();
-        navigation.navigate('AuthCode', {email: email});
+        navigation.navigate('AuthCode', {email: username, clientid: clientid, password: password});
         break;
       default:
         // this.showToast(message, 'warning', true);

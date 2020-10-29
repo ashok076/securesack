@@ -50,7 +50,7 @@ const DrawerComponent = ({navigation, userData}) => {
               <Icon name="cloud-upload" color={color} size={size} />
             )}
             label="File Upload"
-            onPress={() => navigation.navigate('Fileupload')}
+            onPress={() => navigation.navigate('FileUploading')}
           />
           <DrawerItem
             icon={({color, size}) => (

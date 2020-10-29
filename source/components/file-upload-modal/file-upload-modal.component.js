@@ -39,7 +39,7 @@ componentDidMount(){
         fileList: results[0].name,
         countList: this.state.countList + 1,
       });
-      var filedata = {
+      var filedata = { 
         doc: results[0].name,
         id: this.state.countList,
       };

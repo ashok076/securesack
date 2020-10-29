@@ -24,7 +24,8 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 0,
     right: 0,
-    margin: 10
+    margin: 10,
+    zIndex: 9999,
   },
   fileName: {
     fontFamily: 'PublicSans-Regular',

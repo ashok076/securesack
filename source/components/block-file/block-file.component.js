@@ -25,20 +25,23 @@ class BlockFile extends Component{
         <Menu.Item onPress={() => onEdit(item)} title="Edit" />
         <Menu.Item onPress={() => onDownload(item)} title="Download" />
     </Menu>
-)
+) 
 
 render(){
   const {item, onInfo, onDelete, onEdit, onDownload} = this.props;
-  console.log("Items: ", item.item.id, item.item.name)
+  console.log("Items: ", this.state.showMenu)
   return (
     <View  style={styles.container}>
       <View style={styles.fileContainer}>
+      <View style={styles.icon}>{this.popUpMenu(onInfo, onDelete, onEdit, onDownload, item)}</View>
         <View style={styles.fileInnerContainer}>
             <TouchableOpacity onPress={onDownload}>
                 <Icons name="insert-drive-file" color="#FB9337" size={40} />
             </TouchableOpacity>
-            <Text style={styles.fileName}>{ item.name }</Text>
-            <View style={styles.icon}>{this.popUpMenu(onInfo, onDelete, onEdit, onDownload, item)}</View>
+            <Text style={styles.fileName}>{ ((item.item.name).length > 20) ? 
+                  (((item.item.name).substring(0,20-3)) + '...') : 
+                  item.item.name }
+              </Text>
         </View>
       </View>
     </View>
