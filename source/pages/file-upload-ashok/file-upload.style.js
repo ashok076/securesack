@@ -102,7 +102,6 @@ const styles = StyleSheet.create({
     centerView: { alignSelf: 'center' },
     tagList: {
         marginLeft: '3%',
-
     },
     getList: {
         width: '30%',

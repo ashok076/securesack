@@ -1,11 +1,11 @@
 import React, {Component} from 'react';
-import {View, FlatList} from 'react-native';
-import {connect} from 'react-redux';
+import {View, FlatList, PermissionsAndroid} from 'react-native';
+import RNFetchBlob from "rn-fetch-blob";
 import qs from 'qs';
 import {Toast} from 'native-base';
 
 import BlockFile from '../block-file/block-file.component'
-import {getAllFiles, deleteFile} from '../../configuration/api/api.functions'
+import {deleteFile, downloadFile} from '../../configuration/api/api.functions'
 import Loader from '../loader/loader.component';
 
 import styles from './file.style';
@@ -15,40 +15,63 @@ class File extends Component {
     super();
     this.state = {
       show: false,
-      fileList:[],
       isLoader: false
     };
   }
 
-  componentDidMount = () =>{
-    const {navigation} = this.props;
-    navigation.addListener('focus', () => {
-      this.getFileList()
-    })
-  }
-
-getFileList = async ()  => {
-  const {access_token} = this.props.userData.userData;
-  this.setState({ isLoader: true })
-  await getAllFiles(access_token)
-  .then(response => {
-    this.setState({ fileList: response.data.items, isLoader: false })
-  })
-  .catch(error => console.log("File list error: ", error ))
+onDownload = async (item) => {
+  try {
+      this.setState({isLoader: true});
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE
+      );
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        const { config, fs } = RNFetchBlob;
+        //let PictureDir = fs.dirs.PictureDir // this is the pictures directory. You can check the available directories in the wiki.
+        let PictureDir = fs.dirs.DownloadDir;
+        let options = {
+          fileCache: true,
+          addAndroidDownloads: {
+            useDownloadManager: true, // setting it to true will use the device's native download manager and will be shown in the notification bar.
+            notification: true,
+            path: PictureDir + "/Secure Sack/" +item.item.name, // this is the path where your downloaded file will live in
+            description: "Downloading file.",
+          },
+        };
+        // config(options).fetch('GET', "https://mozilla.github.io/pdf.js/web/compressed.tracemonkey-pldi-09.pdf").then((res) => {    console.log('download',res)
+        config(options)
+          .fetch("GET", `https://app.securesack.com/files/${item.item.id}?ac=${this.props.access_token}`, {
+              'Content-Type': 'multipart/form-data', 
+              'Content-Size': item.item.size, 
+              'Content-Disposition': 'attatchment; filename={' + item.item.name + '}',
+              'Cache-Control': 'no-store' 
+            
+          })
+          .then((res) => {
+            console.log("download", res);
+            this.setState({isLoader: false});
+            this.showToast('Downloaded Successfully', 'success', true)
+          });
+      } else {
+            this.setState({isLoader: false});
+            this.showToast('Need permission for downloading file', 'warning', true)
+      }
+    } catch (err) {
+      console.log(err);
+            this.setState({isLoader: false});
+    }
 }
-
-onDownload = (item) => {}
 
 onEdit = (item) => {}
 
 onDelete = async (item) => {
   this.setState({ isLoader: true })
-  const {access_token} = this.props.userData.userData;
+  const {access_token} = this.props;
   await deleteFile(item.item.id, access_token)
   .then(response => {
-    this.showToast('Deleted successfully', 'danger', true)
+    this.showToast('File Deleted', 'danger', false)
   this.setState({ isLoader: false })
-    this.getFileList()
+    this.props.getFileList()
   }).catch(error => {
     console.log("Error in delete file: ", error)
   })
@@ -66,8 +89,9 @@ onDelete = async (item) => {
   };
 
   render() {
-    const {navigation} = this.props;
-    const {fileList, isLoader} = this.state;
+    const {navigation, fileList} = this.props;
+    const {isLoader} = this.state;
+    console.log("File list ", fileList )
     return (
       <View style={styles.container}>
         <FlatList
@@ -81,8 +105,4 @@ onDelete = async (item) => {
   }
 }
 
-const mapStateToProps = ({userData}) => ({
-  userData,
-});
-
-export default connect(mapStateToProps)(File);
+export default File;

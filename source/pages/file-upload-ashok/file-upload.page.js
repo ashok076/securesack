@@ -25,7 +25,7 @@ import {
   uploadFile,
   getAllFiles,
   updateTagImage,
-  deleteFile,
+  deleteFile, 
   downloadFile
 } from '../../configuration/api/api.functions';
 import Header from '../../components/header/header.component';
@@ -214,6 +214,7 @@ class Fileupload extends Component {
       );
     }
   };
+
   renderUploadName(item, index) {
     return (
       <View style={styles.container}>
@@ -384,7 +385,7 @@ downloading = async (item) => {
             <View style={styles.uploadDT}>
               <Text style={styles.fileView}>Tags</Text>
             </View>
-            <View style={styles.flistTags}>
+            <View style={styles.flistTags}> 
               <FlatList
                 data={this.state.tagList}
                 numColumns={4}

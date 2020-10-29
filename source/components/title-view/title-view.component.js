@@ -73,7 +73,7 @@ class TitleView extends Component {
   editInfo = () => {
     this.props.edit();
   };
-
+ 
   saveInfo = () => {
     this.props.save();
   };
