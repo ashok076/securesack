@@ -18,6 +18,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 18,
+    textAlign: 'center'
   },
   searchImage: {
     height: width / 2,
