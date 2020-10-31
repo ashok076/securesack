@@ -57,6 +57,7 @@ const DrawerComponent = ({navigation, userData}) => {
               <Icon name="key" color={color} size={size} />
             )}
             label="Key Ring"
+            onPress={() => navigation.navigate('SharedKeyRing')}
           />
           <DrawerItem
             icon={({color, size}) => (

@@ -6,9 +6,10 @@ import AuthCode from '../../pages/auth-code/auth-code.page';
 import ForgotPassword from '../../pages/forgot-password/forgot-password.page';
 import DrawerNavigator from '../drawer-navigator/drawer-navigation.navigation';
 import Billing from '../../pages/billing/billing.page';
-import Fileupload from '../../pages/file-upload-ashok/file-upload.page';
 import FileUploading from '../../pages/file-uploading/file-uploading.page';
-import AccountSettings from '../../components/accounts-settings/accounts-settings.component.js';
+import AccountSettings from '../../components/accounts-settings/accounts-settings.component';
+import SharedKeyRing from '../../pages/key-ring/shared-key-ring/shared-key-ring.page';
+import YourKeyRing from '../../pages/key-ring/your-key-ring/your-key-ring.page';
 
 const Stack = createStackNavigator();
 
@@ -20,8 +21,9 @@ const MainStackNavigator = () => (
     <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
     <Stack.Screen name="AccountSettings" component={AccountSettings} />
     <Stack.Screen name="Billing" component={Billing}/>
-    <Stack.Screen name="Fileupload" component={Fileupload}/>
     <Stack.Screen name="FileUploading" component={FileUploading}/>
+    <Stack.Screen name="SharedKeyRing" component={SharedKeyRing}/>
+    <Stack.Screen name="YourKeyRing" component={YourKeyRing}/>
   </Stack.Navigator>
 );
 

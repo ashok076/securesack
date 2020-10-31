@@ -238,3 +238,75 @@ export const downloadFile = async (fileid, access_token, size, filename) => {
       throw error;
     });
 }
+
+export const createNewKey = async (access_token, data) => {
+  return axios(`${BASE_URL}/actions/sharing/keys/__NEW__`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      Authorization: 'Bearer ' + access_token,
+    },
+    data
+  })
+    .then((response) => response.data)
+    .catch((error) => {
+      throw error;
+    });
+}
+
+export const updateKey = async (access_token, keyId) => {
+  return axios(`${BASE_URL}/actions/sharing/keys/${keyId}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      Authorization: 'Bearer ' + access_token,
+    },
+  })
+    .then((response) => response.data)
+    .catch((error) => {
+      throw error;
+    });
+}
+
+export const importKey = async (access_token, data, keyId) => {
+  return axios(`${BASE_URL}/actions/sharing/importKey`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      Authorization: 'Bearer ' + access_token,
+    },
+    data
+  })
+    .then((response) => response.data)
+    .catch((error) => {
+      throw error;
+    });
+}
+
+export const getKeys = async (access_token) => {
+  return axios(`${BASE_URL}/actions/sharing/keys`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      Authorization: 'Bearer ' + access_token,
+    },
+  })
+    .then((response) => response.data)
+    .catch((error) => {
+      throw error;
+    });
+};
+
+export const getSharedKeys = async (access_token) => {
+  return axios(`${BASE_URL}/actions/sharing/sharedKeys`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      Authorization: 'Bearer ' + access_token,
+    },
+  })
+    .then((response) => response.data)
+    .catch((error) => {
+      throw error;
+    });
+};
