@@ -194,6 +194,22 @@ export const updateTagImage = async (fileid, access_token, tags) => {
     });
 };
 
+export const updateFileParams = async (access_token, tags, fileid) => {
+  console.log(access_token, tags, fileid)
+  return axios(`${BASE_URL}/files/${fileid}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      Authorization: 'Bearer ' + access_token,
+    },
+    data: tags
+  })
+  .then((response) => response.data)
+    .catch((error) => {
+      throw error;
+    });
+}
+
 export const getAllFiles = async (access_token) => {
   return axios(`${BASE_URL}/files/`, {
     method: 'GET',
@@ -268,7 +284,8 @@ export const updateKey = async (access_token, keyId) => {
     });
 }
 
-export const importKey = async (access_token, data, keyId) => {
+export const importKey = async (access_token, data) => {
+  console.log("Access", access_token, data)
   return axios(`${BASE_URL}/actions/sharing/importKey`, {
     method: 'POST',
     headers: {

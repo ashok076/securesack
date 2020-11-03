@@ -26,7 +26,6 @@ const styles = StyleSheet.create({
           borderWidth: 0.5,
         borderColor: 'black'
       },
-
   gridSystems: {
     flex: 1
   },
@@ -55,7 +54,21 @@ const styles = StyleSheet.create({
   },
   tableView: {
       padding: 5
-  }
+  },
+  importButton : {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 3,
+    padding: 3,
+    alignItems: 'center'
+  },
+  importTxt: {
+    color: '#FB9337',
+    fontFamily: 'PublicSans-Regular'
+  },
+  searchView: {
+    marginTop: 20,
+    margin: 7
+  },
 })
 
 export default styles

@@ -10,6 +10,7 @@ import FileUploading from '../../pages/file-uploading/file-uploading.page';
 import AccountSettings from '../../components/accounts-settings/accounts-settings.component';
 import SharedKeyRing from '../../pages/key-ring/shared-key-ring/shared-key-ring.page';
 import YourKeyRing from '../../pages/key-ring/your-key-ring/your-key-ring.page';
+import KeyRing from '../../pages/key-ring/key-ring-view/key-ring-view.component.js';
 
 const Stack = createStackNavigator();
 
@@ -24,6 +25,7 @@ const MainStackNavigator = () => (
     <Stack.Screen name="FileUploading" component={FileUploading}/>
     <Stack.Screen name="SharedKeyRing" component={SharedKeyRing}/>
     <Stack.Screen name="YourKeyRing" component={YourKeyRing}/>
+    <Stack.Screen name="KeyRing" component={KeyRing}/>
   </Stack.Navigator>
 );
 

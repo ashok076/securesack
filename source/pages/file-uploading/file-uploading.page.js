@@ -12,13 +12,18 @@ import Loader from '../../components/loader/loader.component';
 
 import styles from './file-uploading.style'
 class FileUploading extends Component {
+  initialState = {
+    show: false,
+    isLoader: false,
+    fileList: [],
+    access_token: '',
+    edit: false,
+    data: ''
+  }
   constructor() {
     super();
     this.state = {
-        show: false,
-        isLoader: false,
-        fileList: [],
-        access_token: ''
+        ...this.initialState
     };
   }
 
@@ -26,6 +31,7 @@ class FileUploading extends Component {
     const {navigation} = this.props;
     navigation.addListener('focus', () => {
       this.getFileList()
+      this.setState(this.initialState)
     })
   }
 
@@ -43,17 +49,26 @@ class FileUploading extends Component {
     this.setState({ show: bool })
   }
 
+  changeVisibility = (bool, item) => {
+    this.setState({ show: bool, edit: bool, data: item }, () => console.log("Edit: ", this.state.edit))
+  }
+
+  changeEdit = (bool) => {
+    this.setState({ edit: bool })
+  }
+
   render(){
       const {navigation} = this.props;
-      const {show,access_token, fileList} = this.state
-      console.log("accesss ", access_token )
+      const {show,access_token, fileList, edit, data} = this.state
+      console.log("accesss ", this.props.userData.userData.access_token )
       return (
-          <Provider>
+          <Provider> 
             <Root>
               <View style={styles.container}>
                 <HeaderButton icon="add" title="Upload File" navigation={navigation} iconPress={() => this.setState({ show: true })}/>
-                <File navigation={navigation} getFileList={this.getFileList} access_token={access_token} fileList={fileList}/>
-                <FileUploadModal navigation={navigation} show={show} changeModalVisibility={this.changeModalVisibility} refereshList={this.getFileList} access_token={access_token}/>
+                <File navigation={navigation} getFileList={this.getFileList} access_token={this.props.userData.userData.access_token} fileList={fileList} changeVisibility={this.changeVisibility} />
+                <FileUploadModal navigation={navigation} show={show} changeModalVisibility={this.changeModalVisibility} refereshList={this.getFileList} access_token={this.props.userData.userData.access_token} edit={edit}
+                data={data } changeEdit={this.changeEdit}/>
                 <Loader isLoader={this.state.isLoader} />
               </View>
             </Root>

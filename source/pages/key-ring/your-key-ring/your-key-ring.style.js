@@ -16,10 +16,11 @@ const styles = StyleSheet.create({
       textAlign: 'center',
       fontFamily: 'PublicSans-Regular',
       },
-  row: { 
-      height: 40, 
-      backgroundColor: '#E7E6E1' 
-      },
+  rowObject: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
       headerText: {
           fontFamily: 'PublicSans-SemiBold',
           padding: 15,
@@ -60,6 +61,9 @@ const styles = StyleSheet.create({
     marginTop: 20,
     margin: 7
   },
+  iconView: {
+      marginRight: 15
+  }
 })
 
 export default styles

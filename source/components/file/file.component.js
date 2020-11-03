@@ -62,7 +62,11 @@ onDownload = async (item) => {
     }
 }
 
-onEdit = (item) => {}
+onEdit = (item) => {
+  const {changeVisibility} = this.props;
+  console.log("Change: ", this.props)
+  changeVisibility(true, item);
+}
 
 onDelete = async (item) => {
   this.setState({ isLoader: true })

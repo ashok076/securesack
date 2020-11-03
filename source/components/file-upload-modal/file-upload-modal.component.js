@@ -12,6 +12,7 @@ import {
   uploadFile,
   getAllFiles,
   updateTagImage,
+  updateFileParams
 } from '../../configuration/api/api.functions';
 import Button from '../../components/button/button.component'
 import InputTextDynamic from '../../components/input-text-dynamic/input-text-dynamic.component';
@@ -39,7 +40,7 @@ class FileUploadModal extends Component {
 
 componentDidMount(){
     const {navigation} = this.props;
-        this.setState(this.initialState)
+    this.setState(this.initialState)
 }
 
   uploadFile = async () => {
@@ -118,12 +119,35 @@ componentDidMount(){
   }
 
   addTags = async () => {
-    console.log("Add",this.state.tagCat.length)
     this.setState({isLoader: true});
-    const {access_token} = this.props;
-    const tags = qs.stringify({tag: this.state.tagCat})
+    const {access_token, edit, data} = this.props;
+    console.log("ID: ", access_token)
     if (this.state.tagCat.length > 0) {
-      try {
+      if (edit){
+        console.log("Check true")
+        try {
+          const tags = qs.stringify({tags: this.state.tagCat})
+          await updateFileParams(access_token, tags, data.item.id)
+          .then(response => {
+            if (response.status === 'Success') {
+              this.showToast('Tag added  successfully')
+              this.state.tagList.push(this.state.tagCat);
+              this.setState({isLoader: false, tagCat: ''});
+            } else {
+            this.showToast('Failed')
+            this.setState({isLoader: false});
+            }
+          })
+        } catch (error) {
+          console.log("Edit", error)
+          this.showToast('Something went wrong')
+          this.setState({isLoader: false});
+          console.log("Error: ", error)
+        }
+      }else{
+        console.log("Check false")
+        try {
+          const tags = qs.stringify({tag: this.state.tagCat})
         await addTag(access_token, tags)
           .then((response) => {
             console.log("Res: ", response)
@@ -137,12 +161,13 @@ componentDidMount(){
             }
           })
           .catch((error) => {
-        this.showToast('Something went wrong')
+            this.showToast('Something went wrong')
             this.setState({isLoader: false});
             console.log("Error: ", error)
           });
       } catch (error) {
         console.log(error);
+      }
       }
     } else {
       this.showToast('Please fill the Input text')
@@ -154,22 +179,27 @@ componentDidMount(){
         <Chip onPress={() => this.updateTags(item)}>{item.item}</Chip>
       </View>
     );
-  
 
   closeModal = () => {
-    const {changeModalVisibility} = this.props;
+    const {changeModalVisibility, changeEdit} = this.props;
+    this.state.tagList.length = 0
+    this.setState(this.initialState, () => console.log("state",this.state))
     changeModalVisibility(false);
+    changeEdit(false)
     this.props.refereshList();
   };
 
 listEmptyView = () => (
-  <View style={styles.buttonContainer}>
+  <View>
+    {!this.props.edit ? (
+    <View style={styles.buttonContainer}>
       <Button onPress={() => this.uploadFile()} title="Upload File" />
+  </View>) : this.listFilledView(this.state.fileListData)}
   </View>
 )
 
 listFilledView = (fileListData) => (
-  <View>
+      <View>
     <FileSelected fileList={fileListData}/>
     <Text style={styles.fileView}>Tags</Text>
             <View style={styles.flistTags}>
@@ -200,6 +230,7 @@ listFilledView = (fileListData) => (
     render(){
         const {show} = this.props;
         const {fileListData} = this.state;
+        console.log("Edit: ", this.props)
         return (
             <Modal
                 transparent={false}

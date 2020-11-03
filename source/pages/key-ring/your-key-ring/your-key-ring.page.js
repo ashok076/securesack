@@ -1,8 +1,9 @@
 import React, {Component} from 'react';
-import {View, Text, ScrollView} from 'react-native';
+import {View, Text, ScrollView, TouchableOpacity} from 'react-native';
 import {connect} from 'react-redux';
 import qs from 'qs';
 import { Table, TableWrapper, Row, Rows } from 'react-native-table-component';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 import {getKeys, createNewKey} from '../../../configuration/api/api.functions'
 import HeaderView from '../../../components/header-view/header-view.component';
@@ -14,9 +15,9 @@ class YourKeyRing extends Component {
     constructor(){
         super()
         this.state = {
-            header: ['Key', 'Editors', 'Viewers'],
+            header: ['Key', 'Editors', 'Viewers', 'Actions'],
             showKeyArr: [[]],
-            widthArr: [200, 150, 150],
+            widthArr: [200, 200, 200, 150],
             key: ''
         }
     }
@@ -35,6 +36,47 @@ class YourKeyRing extends Component {
       .catch(error => console.log("Error in get key",error))
   }
 
+  actionButton = () => (
+      <View style={styles.rowObject}>
+        <TouchableOpacity
+          style={styles.iconView}>
+          <MaterialIcons
+            name="edit"
+            color={'#FB9337'}
+            size={24}
+          />
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.iconView}>
+          <MaterialIcons
+            name="delete"
+            color={'#FB9337'}
+            size={24}
+          />
+        </TouchableOpacity>
+      </View>
+  )
+
+  editor = (val) => {
+      let str = '';
+      if (val.editors){
+          val.editors.map(val => {
+              str += val.email + " ";
+          })
+          return str;
+      }
+  }
+
+  viewers = (val) => {
+      let str = '';
+      if (val.viewers){
+          val.viewers.map(val => {
+              str += val.email + " ";
+          })
+          return str;
+      }
+  }
+
   showKey = (data) => {
       console.log("Response get key", JSON.stringify(data))
       this.setState({ showKeyArr: [[]] })
@@ -42,10 +84,11 @@ class YourKeyRing extends Component {
       data.keys.map(val => {
         let join = this.state.showKeyArr.concat([[
             val.name + "\n" + val.code,
-            "val.ownerName",
-            "val.lockCode"
+            this.editor(val),
+            this.viewers(val),
+            this.actionButton()
         ]])
-        this.setState({ showKeyArr: join }, () => console.log("Shared key arr: ", this.state.showKeyArr))
+        this.setState({ showKeyArr: join })
     })
   }
 
@@ -114,7 +157,7 @@ addKey = async () => {
                                 value={key}
                                 onAdd={() => this.addKey()}
                             /> 
-                            </View>
+                        </View>
                 </ScrollView>
             </View>
         )
