@@ -11,7 +11,7 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   outerContainerView: {
-    borderTopLeftRadius: 15,
+    borderTopLeftRadius: 15, 
     borderTopRightRadius: 15,
     width: '100%',
     height: '100%',

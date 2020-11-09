@@ -182,7 +182,8 @@ componentDidMount(){
 
   closeModal = () => {
     const {changeModalVisibility, changeEdit} = this.props;
-    this.state.tagList.length = 0
+    this.state.tagList.length = 0;
+    this.state.fileListData.length = 0
     this.setState(this.initialState, () => console.log("state",this.state))
     changeModalVisibility(false);
     changeEdit(false)
