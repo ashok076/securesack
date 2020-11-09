@@ -270,13 +270,14 @@ export const createNewKey = async (access_token, data) => {
     });
 }
 
-export const updateKey = async (access_token, keyId) => {
+export const updateKey = async (access_token, keyId, data) => {
   return axios(`${BASE_URL}/actions/sharing/keys/${keyId}`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
       Authorization: 'Bearer ' + access_token,
     },
+    data
   })
     .then((response) => response.data)
     .catch((error) => {

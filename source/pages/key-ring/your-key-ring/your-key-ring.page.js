@@ -4,10 +4,12 @@ import {connect} from 'react-redux';
 import qs from 'qs';
 import { Table, TableWrapper, Row, Rows } from 'react-native-table-component';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import RBSheet from "react-native-raw-bottom-sheet";
 
 import {getKeys, createNewKey} from '../../../configuration/api/api.functions'
 import HeaderView from '../../../components/header-view/header-view.component';
-import InputTextAdd from '../../../components/input-text-add/input-text-add.component'
+import InputTextAdd from '../../../components/input-text-add/input-text-add.component';
+import UpdateKeyRing from '../../../components/update-key-ring/update-key-ring.component'
 
 import styles from "./your-key-ring.style";
 
@@ -18,7 +20,8 @@ class YourKeyRing extends Component {
             header: ['Key', 'Editors', 'Viewers', 'Actions'],
             showKeyArr: [[]],
             widthArr: [200, 200, 200, 150],
-            key: ''
+            key: '',
+            val: ''
         }
     }
 
@@ -36,10 +39,13 @@ class YourKeyRing extends Component {
       .catch(error => console.log("Error in get key",error))
   }
 
-  actionButton = () => (
+  actionButton = (val) => (
       <View style={styles.rowObject}>
         <TouchableOpacity
-          style={styles.iconView}>
+          style={styles.iconView} onPress={() => {
+              this.RBSheet.open();
+              this.setState({ val })
+          }}>
           <MaterialIcons
             name="edit"
             color={'#FB9337'}
@@ -86,7 +92,7 @@ class YourKeyRing extends Component {
             val.name + "\n" + val.code,
             this.editor(val),
             this.viewers(val),
-            this.actionButton()
+            this.actionButton(val)
         ]])
         this.setState({ showKeyArr: join })
     })
@@ -118,6 +124,17 @@ addKey = async () => {
         return false
     }
 
+    bottomSheet = () => (
+        <RBSheet
+          ref={ref => {
+            this.RBSheet = ref;
+          }}
+          height={300}
+          openDuration={250}>
+          <UpdateKeyRing data={this.state.val}/>
+        </RBSheet>
+    )
+
     render(){
         const {navigation} = this.props;
         const {header, showKeyArr, key} = this.state;
@@ -126,7 +143,7 @@ addKey = async () => {
                 <View style={styles.container}>
                     <HeaderView navigation={navigation} title="Your keys" theme={'dark'} />
                 </View>
-                <ScrollView >
+                <ScrollView keyboardShouldPersistTaps="handled">
                     <ScrollView horizontal={true}>
                         <View style={styles.tableView}>
                             <Table
@@ -158,6 +175,7 @@ addKey = async () => {
                                 onAdd={() => this.addKey()}
                             /> 
                         </View>
+                        {this.bottomSheet()}
                 </ScrollView>
             </View>
         )

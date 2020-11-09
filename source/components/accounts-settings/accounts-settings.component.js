@@ -35,7 +35,7 @@ class AccountSettings extends Component {
     super(props);
     this.state = {
       ...this.initialState,
-    };
+    }; 
   }
 
   changePass = async () => {
@@ -43,7 +43,10 @@ class AccountSettings extends Component {
     const {oldPass, newPass, conPass} = this.state;
     const access_token = this.props.userData.userData.access_token;
     const {navigation} = this.props
-    const data = qs.stringify({
+    if (this.validation(oldPass, newPass, conPass)){
+      if (this.passwordMatch(newPass, conPass)){
+        if (this.passwordValidation(conPass)){
+          const data = qs.stringify({
       oldPassword: oldPass,
       password: newPass,
       password2: conPass,
@@ -51,7 +54,7 @@ class AccountSettings extends Component {
     await changePassword(access_token, data)
       .then((response) => {
         console.log('Ref Password: ', response);
-        this.showToast('Password reset successfully');
+        this.showToast('Password reset successfully', 'success');
         this.setState({isLoader: false});
       })
       .catch((error) => {
@@ -63,7 +66,61 @@ class AccountSettings extends Component {
           }),
         alert(error);
       });
+        }
+      }
+    }
   };
+
+  passwordValidation = (password) => {
+    let reg = /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,16}$/;
+    let cancel = false;
+    if (reg.test(password) === false) {
+      cancel = true;
+    }
+    if (cancel) {
+      this.showToast("Password should contain alphanumeric and special character", 'danger')
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  passwordMatch = (newPass, conPass) => {
+    if (newPass === conPass){
+      return true;
+    }
+    this.showToast("Password doesn't match", 'danger')
+    return false;
+  }
+
+  validation = (oldPass, newPass, conPass) => {
+    let cancel = false;
+    let message = '';
+    if (oldPass.length == 0) {
+        cancel = true;
+        message = 'Please fill all the inputs';
+      }
+      if (newPass.length == 0) {
+        cancel = true;
+        message = 'Please fill all the inputs';
+      }
+      if (conPass.length == 0) {
+        cancel = true;
+        message = 'Please fill all the inputs';
+      }
+      if (cancel) {
+      Toast.show({
+        text: message,
+        buttonText: 'DISMISS',
+        type: 'danger',
+        position: 'bottom',
+        duration: 10000,
+      });
+    } else {
+      return true;
+    }
+    return false;
+    }
 
   dataEncryption = async () => {
     const email = await AsyncStorage.getItem('email');
@@ -73,7 +130,7 @@ class AccountSettings extends Component {
     await resetPasswordStepOne(data)
       .then((response) => {
         console.log('Ref Business: ', response);
-        this.showToast('Data encryption key sent');
+        this.showToast('Data encryption key sent', 'success');
         this.setState({isLoader: false});
       })
       .catch((error) => {
@@ -86,11 +143,11 @@ class AccountSettings extends Component {
       });
   };
 
-  showToast = (message) => {
+  showToast = (message, type) => {
     Toast.show({
       text: message,
       buttonText: 'DISMISS',
-      type: 'success',
+      type: type,
       position: 'bottom',
       duration: 3000,
       textStyle: styles.toastText,

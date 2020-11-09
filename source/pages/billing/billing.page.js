@@ -201,7 +201,7 @@ class Billing extends Component {
             {this.billingAddress()}
         </View>
       <View style={styles.buttonContainer}>
-        <Button onPress={() => this.upgrade()} title="Upgrade" />
+        <Button title="Upgrade" />
       </View>
         <Loader isLoader={isLoader} />
       <ModalScreen
