@@ -131,9 +131,14 @@ addKey = async () => {
           }}
           height={300}
           openDuration={250}>
-          <UpdateKeyRing data={this.state.val}/>
+          <UpdateKeyRing data={this.state.val} closeSheet={this.closeSheet}/>
         </RBSheet>
     )
+
+    closeSheet = () => {
+        this.RBSheet.close()
+        this.getKeys()
+    }
 
     render(){
         const {navigation} = this.props;

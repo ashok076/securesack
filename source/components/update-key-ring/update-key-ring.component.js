@@ -11,13 +11,16 @@ import InputTextAdd from '../input-text-add/input-text-add.component';
 import styles from './update-key-ring.style';
 
 class UpdateKeyRing extends Component {
+    initialState = {
+        editors: [],
+        viewes: [],
+        edit: '',
+        view: ''
+    }
     constructor(){
         super();
         this.state = {
-            editors: [],
-            viewes: [],
-            edit: '',
-            view: ''
+            ...this.initialState
         }
     }
 
@@ -42,8 +45,10 @@ class UpdateKeyRing extends Component {
 
     editArray = () => {
         const {edit} = this.state
-        this.state.editors.push(edit)
-        this.setState({edit: ''})
+        if (edit.length !== 0){
+            this.state.editors.push(edit)
+            this.setState({edit: ''})
+        }
     }
 
         viewers = () => (
@@ -56,22 +61,27 @@ class UpdateKeyRing extends Component {
 
     viewerArray = () => {
         const {view} = this.state
-        this.state.viewes.push(view)
-        this.setState({view: ''})
+        if (view.length !== 0){
+            this.state.viewes.push(view)
+            this.setState({view: ''})
+        }
     }
 
     addEditorsViewers = async () => {
-        const { data } = this.props;
+        const { data, closeSheet } = this.props;
         const {editors, viewes} = this.state
         if (editors.length !== 0 || viewes.length !== 0){
-            let apidata = qs.stringify({
+            let apidata = JSON.stringify({
             name: data.name,
             editors: editors,
             viewers: viewes
             })
             console.log("DATA: ", apidata, this.props.userData.userData.access_token, data.id)
             await updateKey(this.props.userData.userData.access_token, data.id, apidata)
-            .then(response => console.log("Update response: ", response))
+            .then(response => {
+                console.log("Update response: ", response)
+                closeSheet()
+            })
             .catch(error => console.log("Error: ", error))
         }
     }

@@ -240,12 +240,12 @@ export const deleteFile = async (fileid, access_token) => {
 export const downloadFile = async (fileid, access_token, size, filename) => {
   console.log(fileid, access_token, size, filename)
   return axios(`${BASE_URL}/files/${fileid}`,{
-    method: 'GET',
+    method: 'POST',
     params: {
       ac: access_token
     },
     headers: {
-    'Content-Type': 'multipart/form-data', 
+    'Content-Type': 'multipart/form-data',
     'Content-Size': size, 
     'Content-Disposition': 'attatchment; filename={' + filename + '}',
     }
@@ -271,10 +271,11 @@ export const createNewKey = async (access_token, data) => {
 }
 
 export const updateKey = async (access_token, keyId, data) => {
+  console.log(access_token, keyId, data)
   return axios(`${BASE_URL}/actions/sharing/keys/${keyId}`, {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
+      'Content-Type': 'application/json',
       Authorization: 'Bearer ' + access_token,
     },
     data

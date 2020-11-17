@@ -219,7 +219,7 @@ class AccountSettings extends Component {
     const {navigation} = this.props;
     return (
       <Root>
-        <ScrollView>
+        <ScrollView keyboardShouldPersistTaps="handled">
         <View style={styles.container}>
           <HeaderView
             navigation={navigation}
