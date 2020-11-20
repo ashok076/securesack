@@ -19,6 +19,7 @@ import ModalPicker from '../../../components/modal-picker/modal-picker.component
 import TitleView from '../../../components/title-view/title-view.component';
 import Button from '../../../components/button/button.component';
 import Loader from '../../../components/loader/loader.component';
+import MultilineInput from '../../../components/multiline-input-text/multiline-input-text.component'
 import {
   createOrUpdateRecord,
   viewRecords,
@@ -177,7 +178,7 @@ class Notes extends Component {
         />
       </View>
       <View style={styles.inputContainer}>
-        <InputTextDynamic
+        <MultilineInput
           placeholder="Notes"
           onChangeText={(notes) => this.setState({notes}, () => this.changesMade())}
           keyboardType="default"

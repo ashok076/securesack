@@ -21,6 +21,7 @@ import Button from '../../../components/button/button.component';
 import Loader from '../../../components/loader/loader.component';
 import ModalScreen from '../../../components/modal/modal.component';
 import AutoCompleteText from '../../../components/auto-complete-text-input/auto-complete-text-input.component';
+import MultilineInput from '../../../components/multiline-input-text/multiline-input-text.component'
 import {
   createOrUpdateRecord,
   viewRecords,
@@ -633,12 +634,12 @@ class HealthCareProvider extends Component {
   notes = () => (
     <View>
       <View style={styles.inputContainer}>
-        <InputTextDynamic
+        <MultilineInput
           placeholder="Notes"
           onChangeText={(notes) => this.setState({notes}, () => this.changesMade())}
           keyboardType="default"
-          value={this.state.notes}
           color={Color.veryLightPink}
+          value={this.state.notes}
           editable={this.state.editable}
         />
         <View style={styles.clipboard}>
