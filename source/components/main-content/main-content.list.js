@@ -47,4 +47,12 @@ export const mainContentList = [
     titleColor: '#FFFFFF',
     navigation: 'PersonalOrganisation',
   },
+  {
+    key: 7,
+    title: 'Files',
+    background: require('../../assets/png-images/Financial-Data/financial-data.png'),
+    icon: require('../../assets/png-images/Government-Records-Icon/government-records-icon.png'),
+    titleColor: '#FFFFFF',
+    navigation: 'FileUploading',
+  },
 ];

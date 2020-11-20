@@ -172,7 +172,7 @@ class ServiceAccount extends Component {
         additionalAcHolder2: data.AdditionalAccountHolder2,
         serviceType: data.ServiceType,
         notes: data.Comment,
-        isCreditCardProvided: data.IsCreditCardProvided,
+        isCreditCardProvided: data.IsCreditCardProvided ? 'Yes' : 'No',
         creditCardProvided:
           data.CreditCardProvided.label === undefined
             ? ''

@@ -61,13 +61,6 @@ const DrawerComponent = ({navigation, userData}) => {
           />
           <DrawerItem
             icon={({color, size}) => (
-              <Icon name="credit-card" color={color} size={size} />
-            )}
-            label="Billing Plans"
-            onPress={() => navigation.navigate('Billing')}
-          />
-          <DrawerItem
-            icon={({color, size}) => (
               <Icon name="settings" color={color} size={size} />
             )}
             label="Settings"
