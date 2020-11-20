@@ -15,16 +15,20 @@ import {Toast} from 'native-base';
 import axios from 'axios';
 
 import {END_POINTS, BASE_URL} from '../../configuration/api/api.types';
+import {Color} from '../../assets/color/color'
 
 import styles from './drawer-content.style';
 
 const DrawerComponent = ({navigation, userData}) => {
   let name = 'name';
   let access_token = null;
+  let email = 'email';
   console.log('Draewr: ', userData);
   if (userData && userData.userData) {
     name = userData.userData.fullname;
     access_token = userData.userData.access_token;
+    avatar_text = name.charAt(0);
+    email = userData.userData.email;
   }
   return (
     <View style={styles.drawerContent}>
@@ -32,26 +36,20 @@ const DrawerComponent = ({navigation, userData}) => {
         <View style={styles.drawerContent}>
           <View style={styles.userInfoSection}>
             <View style={styles.avatarView}>
-              <Avatar.Image
-                source={{
-                  uri: 'https://api.adorable.io/avatars/50/abott@adorable.png',
-                }}
+              <Avatar.Text
+                label={avatar_text}
                 size={50}
+                theme={{colors: {primary: Color.orange}}}
+                color={"#FFFFFF"}
               />
               <View style={styles.userInfoView}>
                 <Title style={styles.title}>{name}</Title>
+                <Caption style={styles.caption}>{email}</Caption>
               </View>
             </View>
           </View>
         </View>
         <Drawer.Section style={styles.drawerSection}>
-          <DrawerItem
-            icon={({color, size}) => (
-              <Icon name="cloud-upload" color={color} size={size} />
-            )}
-            label="File Upload"
-            onPress={() => navigation.navigate('FileUploading')}
-          />
           <DrawerItem
             icon={({color, size}) => (
               <Icon name="key" color={color} size={size} />

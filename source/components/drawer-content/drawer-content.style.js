@@ -9,12 +9,13 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 16,
-    marginTop: 3,
     fontWeight: 'bold',
+    fontFamily: 'PublicSans-Bold'
   },
   caption: {
     fontSize: 14,
     lineHeight: 14,
+    fontFamily: 'PublicSans-ExtraLight'
   },
   row: {
     marginTop: 20,
