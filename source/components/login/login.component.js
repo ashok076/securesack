@@ -62,6 +62,7 @@ class LoginComponent extends Component {
       .then((result) => {
         this.setState({isSensorAvailable: true, isPromptShow: true}, () =>
           this.startScannerProcess(),
+          console.log("True")
         );
       })
       .catch((error) => {
@@ -74,6 +75,7 @@ class LoginComponent extends Component {
   };
 
   startScannerProcess = async () => {
+    console.log("Sen sor")
     const {
       navigation,
       isPromptShow,
@@ -82,7 +84,6 @@ class LoginComponent extends Component {
     } = this.state;
     if (isPromptShow) {
       console.log('Is prompt show: ', 'isPromptShow');
-      if (!isAcessTokenExpire) {
         console.log('Is prompt show: ', 'isAcessTokenExpire');
         if (enableFingerprint) {
           console.log('Is prompt show: ', 'enableFingerprint');
@@ -92,12 +93,7 @@ class LoginComponent extends Component {
           })
             .then(() => {
               console.log('Check: ', navigation);
-              navigation.dispatch(
-                CommonActions.reset({
-                  index: 0,
-                  routes: [{name: 'Home'}],
-                }),
-              );
+              this.getStoredVal();
             })
             .catch((error) => console.log('Fingerprint scanner: ', error));
         } else {
@@ -107,15 +103,22 @@ class LoginComponent extends Component {
             false,
           );
         }
-      } else {
-        this.showToast(
-          'Access token is expired please login from email credentials',
-          'warning',
-          false,
-        );
-      }
     }
   };
+
+  getStoredVal = async () => {
+    try {
+      let value = await AsyncStorage.multiGet(['email', 'password', 'clientid']);
+      if (value !== null){
+        let email = value[0][1];
+        let password = JSON.parse(value[1][1]);
+        let clientid = JSON.parse(value[2][1]);
+        this.setState({username: email, password: password, clientid: clientid}, () => this.handleClick())
+      }
+    }catch(e){
+      console.log("Error: ", e)
+    }
+  }
 
   checkAccessToken = async () => {
     this.setState({isLoader: true});
@@ -148,21 +151,8 @@ class LoginComponent extends Component {
   };
 
   actionAsPerStatus = ({status, message}) => {
-    switch (status) {
-      case 'notAuthenticated':
-        this.showToast(
-          'Access token expired. Please log in again',
-          'warning',
-          true,
-        );
-        this.setState({isAcessTokenExpire: true});
-        break;
-      default:
-        this.setState({isAcessTokenExpire: false}, () =>
-          this.addFingerprintEvent(),
-        );
-    }
-  };
+    this.addFingerprintEvent()
+  }
 
   handleAppStateChange = (nextAppState) => {
     if (
@@ -283,7 +273,7 @@ class LoginComponent extends Component {
         this.showToast(message, 'warning', false);
         break;
       case 'UserNotFound':
-        // this.showToast(message, 'danger', true);
+        this.showToast(message, 'danger', true);
         this.setState({error: message});
         break;
       case 'DBSystemError':
@@ -296,7 +286,7 @@ class LoginComponent extends Component {
         this.showToast(message, 'danger', true);
         break;
       case 'Success':
-        this.saveSession(access_token, clientid);
+        this.saveSession(access_token, clientid, password);
         userInfo(response);
         this.saveUserInfo(response);
         navigation.reset({
@@ -325,11 +315,13 @@ class LoginComponent extends Component {
     }
   };
 
-  saveSession = async (access_token, clientid) => {
+  saveSession = async (access_token, clientid, password) => {
     this.country(access_token);
     try {
-      await AsyncStorage.setItem('access_token', access_token);
-      await AsyncStorage.setItem('clientid', clientid);
+      const token = ['access_token', JSON.stringify(access_token)];
+      const id = ['clientid', JSON.stringify(clientid)];
+      const pass = ['password', JSON.stringify(password)];
+      await AsyncStorage.multiSet([token, id, pass]);
     } catch (error) {
       console.log('Error in access token: ', error);
     }
