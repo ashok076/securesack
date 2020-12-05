@@ -39,7 +39,7 @@ class FileUploadModal extends Component {
     }
 
 componentDidMount(){
-    const {navigation} = this.props;
+    const {data, navigation} = this.props;
     this.setState(this.initialState)
 }
 
@@ -199,8 +199,8 @@ listEmptyView = () => (
   </View>
 )
 
-listFilledView = (fileListData) => (
-      <View>
+listFilledView = (fileListData) =>  (
+  <View>
     <FileSelected fileList={fileListData}/>
     <Text style={styles.fileView}>Tags</Text>
             <View style={styles.flistTags}>

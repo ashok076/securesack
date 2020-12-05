@@ -23,6 +23,7 @@ const DrawerComponent = ({navigation, userData}) => {
   let name = 'name';
   let access_token = null;
   let email = 'email';
+  let avatar_text = ''
   console.log('Draewr: ', userData);
   if (userData && userData.userData) {
     name = userData.userData.fullname;
@@ -44,7 +45,6 @@ const DrawerComponent = ({navigation, userData}) => {
               />
               <View style={styles.userInfoView}>
                 <Title style={styles.title}>{name}</Title>
-                <Caption style={styles.caption}>{email}</Caption>
               </View>
             </View>
           </View>

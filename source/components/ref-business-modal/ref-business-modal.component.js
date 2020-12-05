@@ -6,7 +6,7 @@ import qs from 'qs';
 import InputTextDynamic from '../input-text-dynamic/input-text-dynamic.component';
 import Button from '../button/button.component';
 import {addBusinessEntity} from '../../configuration/api/api.functions';
-import {Color} from '../../assets/color/color.js';
+import {Color} from '../../assets/color/color';
 import Loader from '../loader/loader.component';
 
 import styles from './ref-business-modal.style';

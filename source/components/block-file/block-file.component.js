@@ -21,9 +21,9 @@ class BlockFile extends Component{
       anchor={<TouchableOpacity onPress={() => this.setState({ showMenu: true })}>
                 <Entypo name="dots-three-vertical" color="#000000" size={20}/>
               </TouchableOpacity>}>
-        <Menu.Item onPress={() => onDelete(item)} title="Delete" />
-        <Menu.Item onPress={() => onEdit(item)} title="Edit" />
-        <Menu.Item onPress={() => onDownload(item)} title="Download" />
+        <Menu.Item onPress={() => this.setState({ showMenu: false }, () => onDelete(item))} title="Delete" />
+        <Menu.Item onPress={() => this.setState({ showMenu: false }, () => onEdit(item))} title="Edit" />
+        <Menu.Item onPress={() => this.setState({ showMenu: false }, () => onDownload(item))} title="Download" />
     </Menu>
 ) 
 

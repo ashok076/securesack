@@ -25,7 +25,7 @@ class FileUploading extends Component {
   constructor() {
     super();
     this.state = {
-        ...this.initialState
+      ...this.initialState
     };
     this.array = []
   }
@@ -94,7 +94,7 @@ class FileUploading extends Component {
                 </View>
                 <File navigation={navigation} getFileList={this.getFileList} access_token={this.props.userData.userData.access_token} fileList={fileList} changeVisibility={this.changeVisibility} />
                 <FileUploadModal navigation={navigation} show={show} changeModalVisibility={this.changeModalVisibility} refereshList={this.getFileList} access_token={this.props.userData.userData.access_token} edit={edit}
-                data={data } changeEdit={this.changeEdit}/>
+                data={data} changeEdit={this.changeEdit}/>
                 <Loader isLoader={this.state.isLoader} />
               </View>
             </Root>

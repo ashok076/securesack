@@ -329,3 +329,17 @@ export const getSharedKeys = async (access_token) => {
       throw error;
     });
 };
+
+export const deleteKeys = async (access_token, data) => {
+  return axios(`${BASE_URL}/actions/sharing/deleteKey`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      Authorization: 'Bearer ' + access_token,
+    },
+    data
+  }).then((response) => response.data)
+    .catch((error) => {
+      throw error;
+    })
+}
