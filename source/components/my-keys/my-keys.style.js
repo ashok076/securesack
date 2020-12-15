@@ -38,6 +38,10 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: 0,
   },
+  clipboard: {
+    position: 'absolute',
+    right: 0,
+  },
 })
 
 export default styles;

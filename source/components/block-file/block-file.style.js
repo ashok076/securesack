@@ -30,7 +30,9 @@ const styles = StyleSheet.create({
   fileName: {
     fontFamily: 'PublicSans-Regular',
     fontSize: 12,
-  }
+    textAlign: 'center',
+    margin: 5
+  },
 });
 
 export default styles;

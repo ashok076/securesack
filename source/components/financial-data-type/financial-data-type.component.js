@@ -15,13 +15,11 @@ import styles from './financial-data-type.style';
 class FinancialDataType extends Component {
   initialState = {
     dataType: financialDataTypeList,
-    viewAll: 3,
-    isExpanded: false,
-  }
+  };
   constructor(props) {
     super(props);
     this.state = {
-      ...this.initialState
+      ...this.initialState,
     };
   }
 
@@ -29,7 +27,7 @@ class FinancialDataType extends Component {
     const {navigation, archive} = this.props;
     navigation.addListener('focus', () => {
       this.getType();
-      this.setState(this.initialState)
+      this.setState(this.initialState);
     });
   }
 
@@ -51,7 +49,7 @@ class FinancialDataType extends Component {
         url: `${BASE_URL}/data/${type}`,
         params: {
           archive: archive,
-          sortBy: 'lastAccessed'
+          sortBy: 'lastAccessed',
         },
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
@@ -63,11 +61,12 @@ class FinancialDataType extends Component {
           console.log('res: ', res.data);
           this.updateArray(res.data.data.items, res.data.datatype.name);
         })
-        .catch((error) => {console.log('Bank account error: ', error)
-        navigation.reset({
-          index: 0,
-          routes: [{name: 'Login'}],
-        })
+        .catch((error) => {
+          console.log('Bank account error: ', error);
+          navigation.reset({
+            index: 0,
+            routes: [{name: 'Login'}],
+          });
         });
     }
   };
@@ -144,8 +143,8 @@ class FinancialDataType extends Component {
     }
   };
 
-  category = ({title, icon, id, category, type}) => {
-    const {viewAll} = this.state;
+  category = (item, index) => {
+    const {title, icon, id, category, type, show} = item;
     return (
       <View style={styles.container}>
         <View style={styles.titleIcon}>
@@ -158,34 +157,33 @@ class FinancialDataType extends Component {
           </TouchableOpacity>
         </View>
         <FlatList
-          data={category === undefined ? category : category.slice(0, viewAll)}
+          data={
+            category === undefined
+              ? category
+              : category.slice(0, show ? category.length : 3)
+          }
           renderItem={({item}) => this.renderTitleSubtitle(item, type, title)}
-          maxToRenderPerBatch={viewAll}
+          maxToRenderPerBatch={show ? category.length : 3}
         />
-        {this.viewAll(category)}
+        {this.viewAll(category, show, index)}
       </View>
     );
   };
 
-  viewAll = (category) => {
+  viewAll = (category, show, index) => {
     const {isExpanded} = this.state;
     if (category !== undefined) {
-      if (category.length > 3) return this.viewAllComponent(category);
+      if (category.length > 3)
+        return this.viewAllComponent(category, show, index);
     }
   };
 
-  viewAllComponent = (category) => {
-    const {isExpanded, viewAll} = this.state;
+  viewAllComponent = (category, show, index) => {
     return (
       <TouchableRipple
         rippleColor="rgba(0, 0, 0, .32)"
-        onPress={() =>
-          this.setState({
-            viewAll: viewAll === 3 ? category.length : 3,
-            isExpanded: !isExpanded,
-          })
-        }>
-        {isExpanded ? (
+        onPress={() => this.updateViewAll(index)}>
+        {show ? (
           <View style={styles.viewAll}>
             <Text style={styles.viewAllText}> Close </Text>
           </View>
@@ -196,6 +194,12 @@ class FinancialDataType extends Component {
         )}
       </TouchableRipple>
     );
+  };
+
+  updateViewAll = (index) => {
+    const array = [...this.state.dataType];
+    array[index].show = !this.state.dataType[index].show;
+    this.setState({dataType: array});
   };
 
   navigation = (type, title, recid, mode) => {
@@ -214,7 +218,7 @@ class FinancialDataType extends Component {
       <View style={styles.view}>
         <FlatList
           data={dataType}
-          renderItem={({item}) => this.category(item)}
+          renderItem={({item, index}) => this.category(item, index)}
           keyExtractor={(item, index) => index.toString()}
         />
       </View>

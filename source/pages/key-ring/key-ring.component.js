@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import {View, ScrollView, SafeAreaView, Modal} from 'react-native';
+import {Root} from 'native-base'
 import {connect} from 'react-redux';
 import qs from 'qs';
 
@@ -147,7 +148,8 @@ class KeyRing extends Component {
     const {navigation} = this.props;
     const {myKeyList, sharedKeyList} = this.state;
     return (
-      <SafeAreaView style={styles.outerView}>
+      <Root>
+        <SafeAreaView style={styles.outerView}> 
           <ScrollView keyboardShouldPersistTaps="handled">
               <View>
                 <HeaderView navigation={navigation} title="Key Ring" theme={'dark'} />
@@ -161,6 +163,7 @@ class KeyRing extends Component {
             </View>
           </ScrollView>
       </SafeAreaView>
+      </Root>
     );
   }
 }

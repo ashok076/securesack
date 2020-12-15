@@ -14,13 +14,11 @@ import styles from './service-data-type.style';
 class ServiceDataType extends Component {
   initialState = {
     dataType: serviceDataTypeList,
-    viewAll: 3,
-    isExpanded: false,
-  }
+  };
   constructor(props) {
     super(props);
     this.state = {
-      ...this.initialState
+      ...this.initialState,
     };
   }
 
@@ -28,7 +26,7 @@ class ServiceDataType extends Component {
     const {navigation} = this.props;
     navigation.addListener('focus', () => {
       this.getType();
-      this.setState(this.initialState)
+      this.setState(this.initialState);
     });
   }
 
@@ -50,7 +48,7 @@ class ServiceDataType extends Component {
         url: `${BASE_URL}/data/${type}`,
         params: {
           archive: archive,
-          sortBy: 'lastAccessed'
+          sortBy: 'lastAccessed',
         },
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
@@ -63,11 +61,11 @@ class ServiceDataType extends Component {
           this.updateArray(res.data.data.items, res.data.datatype.name);
         })
         .catch((error) => {
-        console.log('Bank account error: ', error)
-        navigation.reset({
-          index: 0,
-          routes: [{name: 'Login'}],
-        })
+          console.log('Bank account error: ', error);
+          navigation.reset({
+            index: 0,
+            routes: [{name: 'Login'}],
+          });
         });
     }
   };
@@ -83,8 +81,8 @@ class ServiceDataType extends Component {
     this.setState({dataType});
   };
 
-  category = ({title, id, category, type, icon}) => {
-    const {viewAll} = this.state;
+  category = (item, index) => {
+    const {title, id, category, type, icon, show} = item;
     return (
       <View style={styles.container}>
         <View style={styles.titleIcon}>
@@ -97,34 +95,27 @@ class ServiceDataType extends Component {
           </TouchableOpacity>
         </View>
         <FlatList
-          data={category === undefined ? category : category.slice(0, viewAll)}
+          data={category === undefined ? category : category.slice(0, show ? category.length : 3)}
           renderItem={({item}) => this.renderTitleSubtitle(item, type, title)}
-          maxToRenderPerBatch={viewAll}
+          maxToRenderPerBatch={show ? category.length : 3}
         />
-        {this.viewAll(category)}
+        {this.viewAll(category, index, show)}
       </View>
     );
   };
 
-  viewAll = (category) => {
-    const {isExpanded} = this.state;
+  viewAll = (category, index, show) => {
     if (category !== undefined) {
-      if (category.length > 3) return this.viewAllComponent(category);
+      if (category.length > 3) return this.viewAllComponent(index, show);
     }
   };
 
-  viewAllComponent = (category) => {
-    const {isExpanded, viewAll} = this.state;
+  viewAllComponent = (index, show) => {
     return (
       <TouchableRipple
         rippleColor="rgba(0, 0, 0, .32)"
-        onPress={() =>
-          this.setState({
-            viewAll: viewAll === 3 ? category.length : 3,
-            isExpanded: !isExpanded,
-          })
-        }>
-        {isExpanded ? (
+        onPress={() => this.updateViewAll(index)}>
+        {show ? (
           <View style={styles.viewAll}>
             <Text style={styles.viewAllText}> Close </Text>
           </View>
@@ -135,6 +126,12 @@ class ServiceDataType extends Component {
         )}
       </TouchableRipple>
     );
+  };
+
+  updateViewAll = (index) => {
+    const array = [...this.state.dataType];
+    array[index].show = !this.state.dataType[index].show;
+    this.setState({dataType: array});
   };
 
   navigation = (type, title, recid, mode) => {
@@ -195,7 +192,7 @@ class ServiceDataType extends Component {
       <View style={styles.view}>
         <FlatList
           data={dataType}
-          renderItem={({item}) => this.category(item)}
+          renderItem={({item, index}) => this.category(item, index)}
           keyExtractor={(item, index) => index.toString()}
         />
       </View>

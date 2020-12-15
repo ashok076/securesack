@@ -80,7 +80,8 @@ componentDidMount() {
     }
 
     addEditorsViewers = async () => {
-        const { data } = this.props.route.params;
+        const {navigation, route} = this.props;
+        const { data } = route.params;
         const {editors, viewers} = this.state
         if (editors.length !== 0 || viewers.length !== 0){
             let apidata = JSON.stringify({
@@ -92,6 +93,7 @@ componentDidMount() {
             await updateKey(this.props.userData.userData.access_token, data.id, apidata)
             .then(response => {
                 console.log("Update response: ", response)
+                navigation.goBack()
             })
             .catch(error => console.log("Error: ", error))
         }
@@ -121,9 +123,10 @@ componentDidMount() {
         const {navigation, route} = this.props;
         const { data } = route.params;
         let apidata = qs.stringify({
-            deleteKeyId: data.code,
+            deleteKeyId: data.id,
             replacementKeyId: replacementKey
         })
+        console.log("DataSh: ", apidata)
         await deleteKeys(this.props.userData.userData.access_token, apidata)
         .then(response => {
             console.log("Res: ", response)

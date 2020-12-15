@@ -10,6 +10,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 0,
     paddingVertical: 0,
     height: 150,
+    textAlignVertical: "top"
   },
 });
 

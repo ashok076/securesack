@@ -17,8 +17,6 @@ import styles from './personal-assets-data-type.style';
 class PersonalAssetsData extends Component {
   initialState = {
     dataType: personalAssetsDataTypeList,
-    viewAll: 3,
-    isExpanded: false,
   }
   constructor(props) {
     super(props);
@@ -86,8 +84,8 @@ class PersonalAssetsData extends Component {
     this.setState({dataType});
   };
 
-  category = ({title, id, category, type, icon}) => {
-    const {viewAll} = this.state;
+  category = (item, index) => {
+    const {title, id, category, type, icon, show} = item;
     return (
       <View style={styles.container}>
         <View style={styles.titleIcon}>
@@ -100,34 +98,28 @@ class PersonalAssetsData extends Component {
           </TouchableOpacity>
         </View>
         <FlatList
-          data={category === undefined ? category : category.slice(0, viewAll)}
+          data={category === undefined ? category : category.slice(0, show ? category.length : 3)}
           renderItem={({item}) => this.renderTitleSubtitle(item, type, title)}
-          maxToRenderPerBatch={viewAll}
+          maxToRenderPerBatch={show ? category.length : 3}
         />
-        {this.viewAll(category)}
+        {this.viewAll(category, show, index)}
       </View>
     );
   };
 
-    viewAll = (category) => {
+    viewAll = (category, show, index) => {
     const {isExpanded} = this.state;
     if (category !== undefined) {
-      if (category.length > 3) return this.viewAllComponent(category);
+      if (category.length > 3) return this.viewAllComponent(show, index);
     }
   };
 
-  viewAllComponent = (category) => {
-    const {isExpanded, viewAll} = this.state;
+  viewAllComponent = (show, index) => {
     return (
       <TouchableRipple
         rippleColor="rgba(0, 0, 0, .32)"
-        onPress={() =>
-          this.setState({
-            viewAll: viewAll === 3 ? category.length : 3,
-            isExpanded: !isExpanded,
-          })
-        }>
-        {isExpanded ? (
+        onPress={() => this.updateViewAll(index)}>
+        {show ? (
           <View style={styles.viewAll}>
             <Text style={styles.viewAllText}> Close </Text>
           </View>
@@ -138,6 +130,12 @@ class PersonalAssetsData extends Component {
         )}
       </TouchableRipple>
     );
+  };
+
+  updateViewAll = (index) => {
+    const array = [...this.state.dataType];
+    array[index].show = !this.state.dataType[index].show;
+    this.setState({dataType: array});
   };
 
   navigation = (type, title, recid, mode) => {
@@ -199,7 +197,7 @@ class PersonalAssetsData extends Component {
       <View style={styles.view}>
         <FlatList
           data={dataType}
-          renderItem={({item}) => this.category(item)}
+          renderItem={({item, index}) => this.category(item, index)}
           keyExtractor={(item, index) => index.toString()}
         />
       </View>

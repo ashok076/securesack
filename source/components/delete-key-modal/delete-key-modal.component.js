@@ -25,7 +25,7 @@ class DeleteKeyModal extends Component {
   addValue = (item) => {
     console.log("Id: ", item)
     const {getReplaceKey} = this.props;
-    getReplaceKey(item.code)
+    getReplaceKey(item.id)
     this.closeModal();
   };
 

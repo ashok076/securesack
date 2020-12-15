@@ -21,6 +21,7 @@ const CopyClipboard = ({text, editable}) => (
 
 const copyToClipboard = (text) => {
   if (text !== undefined || text !== null || text !== '') {
+    console.log("Text: ", text)
     Clipboard.setString(text);
     Toast.show({
       text: 'Copied to clipboard',
