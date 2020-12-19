@@ -26,7 +26,6 @@ const MyKeys = ({keyList, navigation, onPress}) => (
 );
 
 const myKeyList = (item, navigation, keyList) => {
-  console.log('Item: ', item);
   return (
     <TouchableRipple
       rippleColor="rgba(0, 0, 0, .32)"
@@ -35,8 +34,12 @@ const myKeyList = (item, navigation, keyList) => {
         <View style={styles.titleSubTitle}>
           <Title style={styles.catTitle}>{item.name}</Title>
           <Caption>{item.code}</Caption>
-          <View style={styles.clipboard}>
-            <CopyClipboard text={item.code} editable={true} />
+          <View style={styles.arrowView}>
+            <SimpleLineIcons
+              name="arrow-right"
+              color="rgb(33, 47, 60)"
+              size={15}
+            />
           </View>
         </View>
       </View>

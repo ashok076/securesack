@@ -60,9 +60,10 @@ class LoginComponent extends Component {
   detectFingerprintAvailable = () => {
     FingerprintScanner.isSensorAvailable()
       .then((result) => {
-        this.setState({isSensorAvailable: true, isPromptShow: true}, () =>
-          this.startScannerProcess(),
-          console.log("True")
+        this.setState(
+          {isSensorAvailable: true, isPromptShow: true},
+          () => this.startScannerProcess(),
+          console.log('True'),
         );
       })
       .catch((error) => {
@@ -75,7 +76,7 @@ class LoginComponent extends Component {
   };
 
   startScannerProcess = async () => {
-    console.log("Sen sor")
+    console.log('Sen sor');
     const {
       navigation,
       isPromptShow,
@@ -83,42 +84,40 @@ class LoginComponent extends Component {
       enableFingerprint,
     } = this.state;
     if (isPromptShow) {
-      console.log('Is prompt show: ', 'isPromptShow');
-        console.log('Is prompt show: ', 'isAcessTokenExpire');
-        if (enableFingerprint) {
-          console.log('Is prompt show: ', 'enableFingerprint');
-          FingerprintScanner.authenticate({
-            description:
-              'Scan your fingerprint on the device scanner to continue',
+      if (enableFingerprint) {
+        FingerprintScanner.authenticate({
+          description:
+            'Scan your fingerprint on the device scanner to continue',
+        })
+          .then(() => {
+            console.log('Check: ', navigation);
+            this.getStoredVal();
           })
-            .then(() => {
-              console.log('Check: ', navigation);
-              this.getStoredVal();
-            })
-            .catch((error) => console.log('Fingerprint scanner: ', error));
-        } else {
-          this.showToast(
-            'Make sure you have enable biometric from app settings',
-            'warning',
-            false,
-          );
-        }
+          .catch((error) => console.log('Fingerprint scanner: ', error));
+      }
     }
   };
 
   getStoredVal = async () => {
     try {
-      let value = await AsyncStorage.multiGet(['email', 'password', 'clientid']);
-      if (value !== null){
+      let value = await AsyncStorage.multiGet([
+        'email',
+        'password',
+        'clientid',
+      ]);
+      if (value !== null) {
         let email = value[0][1];
         let password = JSON.parse(value[1][1]);
         let clientid = JSON.parse(value[2][1]);
-        this.setState({username: email, password: password, clientid: clientid}, () => this.handleClick())
+        this.setState(
+          {username: email, password: password, clientid: clientid},
+          () => this.handleClick(),
+        );
       }
-    }catch(e){
-      console.log("Error: ", e)
+    } catch (e) {
+      console.log('Error: ', e);
     }
-  }
+  };
 
   checkAccessToken = async () => {
     this.setState({isLoader: true});
@@ -151,8 +150,8 @@ class LoginComponent extends Component {
   };
 
   actionAsPerStatus = ({status, message}) => {
-    this.addFingerprintEvent()
-  }
+    this.addFingerprintEvent();
+  };
 
   handleAppStateChange = (nextAppState) => {
     if (
@@ -290,14 +289,18 @@ class LoginComponent extends Component {
         userInfo(response);
         this.saveUserInfo(response);
         navigation.reset({
-              index: 0,
-              routes: [{name: 'Home'}],
-            });
+          index: 0,
+          routes: [{name: 'Home'}],
+        });
         break;
       case 'MFACodeRequired':
         this.saveClientId(clientid);
         this.saveEmail();
-        navigation.navigate('AuthCode', {email: username, clientid: clientid, password: password});
+        navigation.navigate('AuthCode', {
+          email: username,
+          clientid: clientid,
+          password: password,
+        });
         break;
       default:
         // this.showToast(message, 'warning', true);
@@ -308,7 +311,7 @@ class LoginComponent extends Component {
 
   saveUserInfo = async (data) => {
     try {
-      console.log("Check user info auth: ")
+      console.log('Check user info auth: ');
       await AsyncStorage.setItem('user_info', JSON.stringify(data));
     } catch (error) {
       console.log('Error in user info: ', error);

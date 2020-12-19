@@ -8,8 +8,7 @@ import DrawerNavigator from '../drawer-navigator/drawer-navigation.navigation';
 import FileUploading from '../../pages/file-uploading/file-uploading.page';
 import AccountSettings from '../../components/accounts-settings/accounts-settings.component';
 import KeyRing from '../../pages/key-ring/key-ring.component';
-import MyKey from '../../pages/my-key/my-key.page'
-import KeySharedWithMe from '../../pages/key-shared-with-me/key-shared-with-me.page'
+import MyKey from '../../pages/my-key/my-key.page';
 
 const Stack = createStackNavigator();
 
@@ -23,7 +22,6 @@ const MainStackNavigator = () => (
     <Stack.Screen name="FileUploading" component={FileUploading}/>
     <Stack.Screen name="KeyRing" component={KeyRing}/>
     <Stack.Screen name="MyKey" component={MyKey}/>
-    <Stack.Screen name="KeySharedWithMe" component={KeySharedWithMe}/>
   </Stack.Navigator>
 );
 

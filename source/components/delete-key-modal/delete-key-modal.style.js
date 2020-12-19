@@ -28,6 +28,7 @@ const styles = StyleSheet.create({
     fontSize: 17,
     fontFamily: 'PublicSans-Regular',
     textAlign: 'center',
+    margin: 5
   },
 });
 

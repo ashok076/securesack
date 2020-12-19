@@ -23,9 +23,9 @@ class DeleteKeyModal extends Component {
   );
 
   addValue = (item) => {
-    console.log("Id: ", item)
+    console.log('Id: ', item);
     const {getReplaceKey} = this.props;
-    getReplaceKey(item.id)
+    getReplaceKey(item.id);
     this.closeModal();
   };
 
@@ -40,14 +40,26 @@ class DeleteKeyModal extends Component {
 
     return (
       <Modal visible={isModalVisible} transparent={true} animationType="fade">
-        <TouchableOpacity style={styles.modalBackground} onPressOut={() => this.closeModal()}>
+        <TouchableOpacity
+          style={styles.modalBackground}
+          onPressOut={() => this.closeModal()}>
           <View style={styles.modalList}>
-            {list.length !== 0 ? <FlatList
-              data={list}
-              renderItem={({item}) => this.displayLabel(item)}
-            /> : <View style={styles.labelView}>
-        <Text style={styles.label}> No Current Data </Text>
-      </View>}
+            {list.length !== 0 ? (
+              <>
+                <Text style={styles.label}>
+                  {' '}
+                  Please select replacement key{' '}
+                </Text>
+                <FlatList
+                  data={list}
+                  renderItem={({item}) => this.displayLabel(item)}
+                />
+              </>
+            ) : (
+              <View style={styles.labelView}>
+                <Text style={styles.label}> No Current Data </Text>
+              </View>
+            )}
           </View>
         </TouchableOpacity>
       </Modal>

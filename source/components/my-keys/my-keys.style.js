@@ -1,10 +1,10 @@
 import {StyleSheet} from 'react-native';
 
 const styles = StyleSheet.create({
-    view: {
-        padding: 10,
-    },
-   titleSubTitle: {
+  view: {
+    padding: 10,
+  },
+  titleSubTitle: {
     flexDirection: 'column',
     padding: 5,
     justifyContent: 'center',
@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgb(243,243,243)',
     width: '100%',
     padding: 15,
-    borderRadius: 9
+    borderRadius: 9,
   },
   titleIcon: {
     flexDirection: 'row',
@@ -38,10 +38,6 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: 0,
   },
-  clipboard: {
-    position: 'absolute',
-    right: 0,
-  },
-})
+});
 
 export default styles;

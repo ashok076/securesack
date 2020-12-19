@@ -343,3 +343,17 @@ export const deleteKeys = async (access_token, data) => {
       throw error;
     })
 }
+
+export const unlinkKeys = async (access_token, data) => {
+  return axios(`${BASE_URL}/actions/sharing/unlinkKey`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      Authorization: 'Bearer ' + access_token,
+    },
+    data
+  }).then((response) => response.data)
+    .catch((error) => {
+      throw error;
+    })
+}
