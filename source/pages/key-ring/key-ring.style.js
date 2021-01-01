@@ -1,12 +1,6 @@
 import {StyleSheet, StatusBar, Dimensions} from 'react-native';
 
 const styles = StyleSheet.create({
-  container: {
-    padding: 15,
-    paddingTop: 30,
-    backgroundColor : '#FFFFFF',
-    height: '100%'
-  },
   contentView: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -20,7 +14,7 @@ const styles = StyleSheet.create({
   caption: {
     fontFamily: 'PublicSans-ExtraLight',
     fontSize: 16,
-    marginLeft: 20,
+    marginLeft: 20, 
   },
   outerView: {
     marginTop: 30,

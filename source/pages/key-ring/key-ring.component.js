@@ -193,11 +193,13 @@ class KeyRing extends Component {
         <SafeAreaView style={styles.outerView}>
           <ScrollView keyboardShouldPersistTaps="handled">
             <View>
-              <HeaderView
+              <View style={{marginLeft: 15}}>
+                <HeaderView
                 navigation={navigation}
                 title="Key Ring"
                 theme={'dark'}
               />
+              </View>
               <View style={styles.outerView}>
                 <MyKeys
                   keyList={myKeyList}

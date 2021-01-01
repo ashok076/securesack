@@ -110,13 +110,13 @@ class Notes extends Component {
       .then((response) => {
         this.setState({isLoader: false});
         navigation.goBack();
+      })
+      .catch((error) => {
+        this.setState({isLoader: false});
         navigation.reset({
           index: 0,
           routes: [{name: 'Login'}],
         })
-      })
-      .catch((error) => {
-        this.setState({isLoader: false});
       });
   };
 

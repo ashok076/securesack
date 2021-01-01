@@ -4,6 +4,7 @@ const styles = StyleSheet.create({
   rowObject: {
     flexDirection: 'row',
     alignItems: 'center',
+    marginTop: 15
   },
   icons: {
     position: 'absolute',

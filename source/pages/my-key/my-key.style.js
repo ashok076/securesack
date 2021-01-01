@@ -19,6 +19,7 @@ const styles = StyleSheet.create({
     text: {
         fontFamily: 'PublicSans-Regular',
         fontSize: 20,
+        marginTop: 20
     },
     tiny: {
     marginVertical: 2,

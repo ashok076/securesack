@@ -1,5 +1,12 @@
 import React, {Component} from 'react';
-import {View, Text, FlatList, Image, TouchableOpacity} from 'react-native';
+import {
+  View,
+  Text,
+  FlatList,
+  Image,
+  TouchableOpacity,
+  Alert,
+} from 'react-native';
 import {connect} from 'react-redux';
 import Icon from 'react-native-vector-icons/AntDesign';
 import {Title, Caption, TouchableRipple} from 'react-native-paper';
@@ -14,11 +21,11 @@ import styles from './insurance-data-type.style';
 class InsuranceDataType extends Component {
   initialState = {
     dataType: insuranceDataTypeList,
-  }
+  };
   constructor(props) {
     super(props);
     this.state = {
-      ...this.initialState
+      ...this.initialState,
     };
   }
 
@@ -26,7 +33,7 @@ class InsuranceDataType extends Component {
     const {navigation} = this.props;
     navigation.addListener('focus', () => {
       this.getType();
-      this.setState(this.initialState)
+      this.setState(this.initialState);
     });
   }
 
@@ -48,7 +55,7 @@ class InsuranceDataType extends Component {
         url: `${BASE_URL}/data/${type}`,
         params: {
           archive: archive,
-          sortBy: 'lastAccessed'
+          sortBy: 'lastAccessed',
         },
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
@@ -61,12 +68,12 @@ class InsuranceDataType extends Component {
           this.updateArray(res.data.data.items, res.data.datatype.name);
         })
         .catch((error) => {
-          console.log('Bank account error: ', error)
+          console.log('Bank account error: ', error);
           navigation.reset({
             index: 0,
             routes: [{name: 'Login'}],
-          })
           });
+        });
     }
   };
 
@@ -82,7 +89,7 @@ class InsuranceDataType extends Component {
   };
 
   category = (item, index) => {
-    const {title, id, category, type, icon, show} = item
+    const {title, id, category, type, icon, show} = item;
     return (
       <View style={styles.container}>
         <View style={styles.titleIcon}>
@@ -95,7 +102,11 @@ class InsuranceDataType extends Component {
           </TouchableOpacity>
         </View>
         <FlatList
-          data={category === undefined ? category : category.slice(0, show ? category.length : 3)}
+          data={
+            category === undefined
+              ? category
+              : category.slice(0, show ? category.length : 3)
+          }
           renderItem={({item}) => this.renderTitleSubtitle(item, type, title)}
           maxToRenderPerBatch={show ? category.length : 3}
         />
@@ -104,7 +115,7 @@ class InsuranceDataType extends Component {
     );
   };
 
-    viewAll = (category, show, index) => {
+  viewAll = (category, show, index) => {
     const {isExpanded} = this.state;
     if (category !== undefined) {
       if (category.length > 3) return this.viewAllComponent(index, show);
@@ -137,19 +148,32 @@ class InsuranceDataType extends Component {
   };
 
   navigation = (type, title, recid, mode) => {
-    const {navigation} = this.props;
-    navigation.navigate(type, {
-      type: type,
-      title: title,
-      recid: recid,
-      mode: mode
-    });
+    const {navigation, userData} = this.props;
+    if (userData.userData.showUpgrade) {
+      Alert.alert(
+        //title
+        'Important',
+        //body
+        'You have reached your free record limit, please upgrade your service under the billing section on the SecureSack website',
+        [{text: 'Ok', onPress: () => console.log('Cancelled')}],
+        {cancelable: false},
+        //clicking out side of alert will not cancel
+      );
+    } else {
+      navigation.navigate(type, {
+        type: type,
+        title: title,
+        recid: recid,
+        mode: mode,
+      });
+    }
   };
 
   renderTitleSubtitle = (item, type, title) => {
     return (
-      <TouchableRipple rippleColor="rgba(0, 0, 0, .32)"
-      onPress={() => this.navigation(type, title, item.id, 'View')}>
+      <TouchableRipple
+        rippleColor="rgba(0, 0, 0, .32)"
+        onPress={() => this.navigation(type, title, item.id, 'View')}>
         <View>
           <View style={styles.titleSubTitle}>
             <Title style={styles.catTitle}>{this.getTitle(type, item)}</Title>

@@ -27,7 +27,6 @@ const MultilineInput = ({
       underlineColor={'rgb(33, 47, 60)'}
       placeholder={example}
       multiline={true}
-      selection={{start:0, end:0}}
     />
   </View>
 );

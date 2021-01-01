@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {View, Text, FlatList, Image, TouchableOpacity} from 'react-native';
+import {View, Text, FlatList, Image, TouchableOpacity, Alert} from 'react-native';
 import {connect} from 'react-redux';
 import Icon from 'react-native-vector-icons/AntDesign';
 import {Title, Caption, TouchableRipple} from 'react-native-paper';
@@ -139,13 +139,27 @@ class GovernmentRecordsData extends Component {
   };
 
   navigation = (type, title, recid, mode) => {
-    const {navigation} = this.props;
-    navigation.navigate(type, {
-      type: type,
-      title: title,
-      recid: recid,
-      mode: mode,
-    });
+    const {navigation, userData} = this.props;
+    if (userData.userData.showUpgrade) {
+      Alert.alert(
+      //title
+      'Important',
+      //body
+      'You have reached your free record limit, please upgrade your service under the billing section on the SecureSack website',
+      [
+        {text: 'Ok', onPress: () => console.log("Cancelled")},
+      ],
+      {cancelable: false},
+      //clicking out side of alert will not cancel
+    );
+    } else {
+      navigation.navigate(type, {
+        type: type,
+        title: title,
+        recid: recid,
+        mode: mode,
+      });
+    }
   };
 
   renderTitleSubtitle = (item, type, title) => {

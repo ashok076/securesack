@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {View, Modal, TouchableOpacity, Text, FlatList, ToastAndroid} from 'react-native';
+import {View, Modal, TouchableOpacity, Text, FlatList, ToastAndroid, SafeAreaView} from 'react-native';
 import {Toast, Root} from 'native-base';
 import DocumentPicker from 'react-native-document-picker';
 import Icons from 'react-native-vector-icons/MaterialIcons';
@@ -237,7 +237,7 @@ listFilledView = (fileListData) =>  (
                 transparent={false}
                 animationType={'fade'}
                 visible={show}>
-                <View>
+                <SafeAreaView>
                 <TouchableOpacity style={styles.closeModal} onPress={() => this.closeModal()}>
                   <Icons name="close" color="#000000" size={25} />
                 </TouchableOpacity>
@@ -245,7 +245,7 @@ listFilledView = (fileListData) =>  (
                   this.listEmptyView() : 
                   this.listFilledView(fileListData)
                   }
-                </View>
+                </SafeAreaView>
               </Modal>
         )
     }
