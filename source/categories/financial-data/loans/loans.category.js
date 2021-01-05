@@ -22,7 +22,8 @@ import Loader from '../../../components/loader/loader.component';
 import ModalScreen from '../../../components/modal/modal.component';
 import TitleView from '../../../components/title-view/title-view.component';
 import AutoCompleteText from '../../../components/auto-complete-text-input/auto-complete-text-input.component';
-import MultilineInput from '../../../components/multiline-input-text/multiline-input-text.component'
+import MultilineInput from '../../../components/multiline-input-text/multiline-input-text.component';
+import SwitchKey from '../../../components/switch-key/switch-key.component';
 import {
   createOrUpdateRecord,
   viewRecords,
@@ -68,7 +69,8 @@ class ConsumerLoan extends Component {
     editable: true,
     hideResult: true,
     refArray: [],
-    changes: false
+    changes: false,
+    shareKeyId: ''
   };
 
   constructor(props) {
@@ -86,7 +88,7 @@ class ConsumerLoan extends Component {
       if (this.props.userData && this.props.userData.userData)
         this.setState(
           {access_token: this.props.userData.userData.access_token},
-          () => this.viewRecord(navigation),
+          () => this.viewRecord(),
           this.getBusinessEntity(),
         );
     });
@@ -96,8 +98,9 @@ class ConsumerLoan extends Component {
     BackHandler.removeEventListener('hardwareBackPress');
 }
 
-  viewRecord = async (navigation) => {
-    const {recid, mode} = this.props.route.params;
+  viewRecord = async () => {
+    const {navigation, route} = this.props;
+    const {recid, mode} = route.params;
     this.setState({isLoader: true});
     await viewRecords(
       'ConsumerLoan',
@@ -118,6 +121,10 @@ class ConsumerLoan extends Component {
       });
     if (mode === 'Add') this.setState({editable: false, hideResult: false});
   };
+
+  refreshData = () => {
+    this.viewRecord()
+  }
 
   setViewData = (data) => {
     this.setState(
@@ -142,6 +149,7 @@ class ConsumerLoan extends Component {
         refiance: data.Refinanced,
         notes: data.Note,
         isLoader: false,
+        shareKeyId: data.shareKeyId
       },
       () => this.referenceObj(),
     );
@@ -641,7 +649,7 @@ changesMade = () => {
   render() {
     const {isLoader, modal, array, key, editable, refBusModal} = this.state;
     const {route, navigation} = this.props;
-    const {title, type, mode} = route.params;
+    const {title, type, mode, recid} = route.params;
     return (
       <Root>
         <SafeAreaView style={styles.outerView}>
@@ -676,6 +684,7 @@ changesMade = () => {
                   refBusModal,
                 )}
               </View>
+              <SwitchKey type={'BrokerageAccount'} recid={recid} shareKeyId={shareKeyId} refresh={this.refreshData}/>
             </ScrollView>
           </ImageBackground>
         </SafeAreaView>

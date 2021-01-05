@@ -357,3 +357,17 @@ export const unlinkKeys = async (access_token, data) => {
       throw error;
     })
 }
+
+export const switchKey = async (access_token, data) => {
+  return axios(`${BASE_URL}/actions/sharing/switchKey`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      Authorization: 'Bearer ' + access_token,
+    },
+    data
+  }).then((response) => response.data)
+    .catch((error) => {
+      throw error;
+    })
+}

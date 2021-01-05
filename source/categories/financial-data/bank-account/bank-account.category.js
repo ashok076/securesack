@@ -14,14 +14,15 @@ import {connect} from 'react-redux';
 import {Root} from 'native-base';
 
 import InputTextDynamic from '../../../components/input-text-dynamic/input-text-dynamic.component';
-import InputTextIconDynamic from '../../../components/input-text-icon-dynamic/input-text-icon-dynamic.component.js';
+import InputTextIconDynamic from '../../../components/input-text-icon-dynamic/input-text-icon-dynamic.component';
 import ModalPicker from '../../../components/modal-picker/modal-picker.component';
 import Loader from '../../../components/loader/loader.component';
 import ModalScreen from '../../../components/modal/modal.component';
 import RefBusinessModal from '../../../components/ref-business-modal/ref-business-modal.component';
 import TitleView from '../../../components/title-view/title-view.component';
 import AutoCompleteText from '../../../components/auto-complete-text-input/auto-complete-text-input.component';
-import MultilineInput from '../../../components/multiline-input-text/multiline-input-text.component'
+import MultilineInput from '../../../components/multiline-input-text/multiline-input-text.component';
+import SwitchKey from '../../../components/switch-key/switch-key.component';
 import {
   createOrUpdateRecord,
   viewRecords,
@@ -30,13 +31,13 @@ import {
   lookupType,
 } from '../../../configuration/api/api.functions';
 import {account_type, size, payment_due_type} from './bank-account.list';
-import {Color} from '../../../assets/color/color.js';
+import {Color} from '../../../assets/color/color';
 import {
   formatCardNumber,
   formatExpiry,
   formatDate,
 } from '../../../configuration/card-formatter/card-formatter';
-import CopyClipboard from '../../../components/copy-clipboard/copy-clipboard.component.js';
+import CopyClipboard from '../../../components/copy-clipboard/copy-clipboard.component';
 
 import styles from './bank-account.style';
 
@@ -103,6 +104,7 @@ class BankAccounts extends Component {
     hideResult: true,
     refArray: [],
     changes: false,
+    shareKeyId: ''
   };
   constructor(props) {
     super(props);
@@ -121,7 +123,7 @@ class BankAccounts extends Component {
           {
             access_token: this.props.userData.userData.access_token,
           },
-          () => this.viewRecord(navigation),
+          () => this.viewRecord(),
           this.getBusinessEntity(),
         );
     });
@@ -131,8 +133,9 @@ class BankAccounts extends Component {
     BackHandler.removeEventListener('hardwareBackPress', () => this.onBack());
   }
 
-  viewRecord = async (navigation) => {
-    const {recid, mode} = this.props.route.params;
+  viewRecord = async () => {
+    const { navigation, route } = this.props
+    const {recid, mode} = route.params;
     this.setState({isLoader: true});
     await viewRecords(
       'BankAccounts',
@@ -140,7 +143,7 @@ class BankAccounts extends Component {
       this.props.userData.userData.access_token,
     )
       .then((response) => {
-        console.log('View res: ', response);
+        console.log('View res: ', JSON.stringify(response));
         this.setViewData(response.data);
         if (mode === 'View') {
           this.checkSecurityQuestions(response.data);
@@ -152,11 +155,15 @@ class BankAccounts extends Component {
         navigation.reset({
           index: 0,
           routes: [{name: 'Login'}],
-        })
+        });
       });
     this.setState({isLoader: false});
     if (mode === 'Add') this.setState({editable: false, hideResult: false});
   };
+
+  refreshData = () => {
+    this.viewRecord()
+  }
 
   setViewData = (data) => {
     this.setState(
@@ -208,6 +215,7 @@ class BankAccounts extends Component {
         country: data.BankBranchAddress.Country,
         accountType: data.AccountType,
         notes: data.Comment,
+        shareKeyId: data.shareKeyId,
         isLoader: false,
       },
       () => this.referenceObj(),
@@ -835,7 +843,9 @@ class BankAccounts extends Component {
       <View style={styles.inputContainer}>
         <MultilineInput
           placeholder="Note"
-          onChangeText={(notes) => this.setState({notes}, () => this.changesMade())}
+          onChangeText={(notes) =>
+            this.setState({notes}, () => this.changesMade())
+          }
           keyboardType="default"
           color={Color.lightishBlue}
           value={this.state.notes}
@@ -843,11 +853,8 @@ class BankAccounts extends Component {
         />
       </View>
       <View style={styles.clipboard}>
-          <CopyClipboard
-            text={this.state.notes}
-            editable={this.state.editable}
-          />
-        </View>
+        <CopyClipboard text={this.state.notes} editable={this.state.editable} />
+      </View>
     </View>
   );
 
@@ -962,9 +969,9 @@ class BankAccounts extends Component {
       .catch((error) => {
         this.setState({isLoader: false});
         navigation.reset({
-              index: 0,
-              routes: [{name: 'Home'}],
-            });
+          index: 0,
+          routes: [{name: 'Home'}],
+        });
       });
   };
 
@@ -978,12 +985,12 @@ class BankAccounts extends Component {
     )
       .then((response) => navigation.goBack())
       .catch((error) => {
-        console.log('Error in delete', error)
+        console.log('Error in delete', error);
         navigation.reset({
           index: 0,
           routes: [{name: 'Login'}],
-        })
         });
+      });
   };
 
   archive = async () => {
@@ -1010,7 +1017,7 @@ class BankAccounts extends Component {
         navigation.reset({
           index: 0,
           routes: [{name: 'Login'}],
-        })
+        });
       });
   };
 
@@ -1143,16 +1150,17 @@ class BankAccounts extends Component {
       navigation.goBack();
       console.log('See: ');
     }
-    return true
+    return true;
   };
 
   background = () =>
     require('../../../assets/jpg-images/Financial-Data-Background/financial-data-background.jpg');
 
   render() {
-    const {isLoader, modal, array, key, editable, refBusModal} = this.state;
+    const {isLoader, modal, array, key, editable, refBusModal, shareKeyId} = this.state;
     const {route, navigation} = this.props;
-    const {title, type, mode} = route.params;
+    const {title, type, mode, recid} = route.params;
+    console.log("Share Id: ", shareKeyId)
     return (
       <Root>
         <SafeAreaView style={styles.outerView}>
@@ -1191,6 +1199,7 @@ class BankAccounts extends Component {
                   refBusModal,
                 )}
               </View>
+              <SwitchKey type={'BankAccounts'} recid={recid} shareKeyId={shareKeyId} refresh={this.refreshData}/>
             </ScrollView>
           </ImageBackground>
         </SafeAreaView>

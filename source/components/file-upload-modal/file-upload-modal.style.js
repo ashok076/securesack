@@ -57,7 +57,7 @@ const styles = StyleSheet.create({
         padding: 7
     },
     tagList: {
-        marginLeft: 7,
+        marginLeft: 7, 
     },
 })
 export default styles

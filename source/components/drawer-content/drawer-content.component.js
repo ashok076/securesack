@@ -24,7 +24,7 @@ const DrawerComponent = ({navigation, userData}) => {
   let access_token = null;
   let email = 'email';
   let avatar_text = ''
-  console.log('Draewr: ', userData);
+  console.log('Draewr: ', JSON.stringify(userData));
   if (userData && userData.userData) {
     name = userData.userData.fullname;
     access_token = userData.userData.access_token;

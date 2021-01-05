@@ -22,7 +22,8 @@ import RefBusinessModal from '../../../components/ref-business-modal/ref-busines
 import ModalScreen from '../../../components/modal/modal.component';
 import TitleView from '../../../components/title-view/title-view.component';
 import AutoCompleteText from '../../../components/auto-complete-text-input/auto-complete-text-input.component';
-import MultilineInput from '../../../components/multiline-input-text/multiline-input-text.component'
+import MultilineInput from '../../../components/multiline-input-text/multiline-input-text.component';
+import SwitchKey from '../../../components/switch-key/switch-key.component';
 import {
   createOrUpdateRecord,
   viewRecords,
@@ -82,6 +83,7 @@ class CreditCard extends Component {
     hideResult: true,
     refArray: [],
     changes: false,
+    shareKeyId: ''
   };
   constructor(props) {
     super(props);
@@ -99,7 +101,7 @@ class CreditCard extends Component {
       if (this.props.userData && this.props.userData.userData)
         this.setState(
           {access_token: this.props.userData.userData.access_token},
-          () => this.viewRecord(navigation),
+          () => this.viewRecord(),
           this.getBusinessEntity(),
         );
     });
@@ -110,8 +112,9 @@ class CreditCard extends Component {
       BackHandler.removeEventListener('hardwareBackPress', () => this.onBack());
   }
 
-  viewRecord = async (navigation) => {
-    const {recid, mode} = this.props.route.params;
+  viewRecord = async () => {
+    const {navigation, route} = this.props;
+    const {recid, mode} = route.params;
     this.setState({isLoader: true});
     await viewRecords(
       'CreditCard',
@@ -135,6 +138,10 @@ class CreditCard extends Component {
       });
     if (mode === 'Add') this.setState({editable: false, hideResult: false});
   };
+
+  refreshData = () => {
+    this.viewRecord()
+  }
 
   setViewData = (data) => {
     this.setState(
@@ -168,6 +175,7 @@ class CreditCard extends Component {
         creditCardType: data.CreditCardType,
         notes: data.Comment,
         isLoader: false,
+        shareKeyId: data.shareKeyId
       },
       () => this.referenceObj(),
     );
@@ -910,7 +918,7 @@ class CreditCard extends Component {
   render() {
     const {isLoader, modal, array, key, editable, refBusModal} = this.state;
     const {route, navigation} = this.props;
-    const {title, type, mode} = route.params;
+    const {title, type, mode, recid} = route.params;
     return (
       <Root>
         <SafeAreaView style={styles.outerView}>
@@ -945,6 +953,7 @@ class CreditCard extends Component {
                   refBusModal,
                 )}
               </View>
+              <SwitchKey type={'BrokerageAccount'} recid={recid} shareKeyId={shareKeyId} refresh={this.refreshData}/>
             </ScrollView>
           </ImageBackground>
         </SafeAreaView>

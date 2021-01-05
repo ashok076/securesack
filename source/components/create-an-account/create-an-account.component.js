@@ -199,7 +199,7 @@ class CreateAnAccount extends Component {
 
   savePasswordError = (password) => {
       let reg = /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,16}$/;
-    let cancel = false;
+      let cancel = false;
 
     if (reg.test(password) === false) {
       cancel = true;

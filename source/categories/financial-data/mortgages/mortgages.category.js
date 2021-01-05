@@ -22,7 +22,8 @@ import ModalScreen from '../../../components/modal/modal.component';
 import RefBusinessModal from '../../../components/ref-business-modal/ref-business-modal.component';
 import TitleView from '../../../components/title-view/title-view.component';
 import AutoCompleteText from '../../../components/auto-complete-text-input/auto-complete-text-input.component';
-import MultilineInput from '../../../components/multiline-input-text/multiline-input-text.component'
+import MultilineInput from '../../../components/multiline-input-text/multiline-input-text.component';
+import SwitchKey from '../../../components/switch-key/switch-key.component';
 import {
   createOrUpdateRecord,
   viewRecords,
@@ -79,7 +80,8 @@ class Mortgage extends Component {
     issuerId: '',
     notes: '',
     showQuestion: false,
-    changes: false
+    changes: false,
+    shareKeyId: ''
   };
 
   constructor(props) {
@@ -101,7 +103,7 @@ class Mortgage extends Component {
       if (this.props.userData && this.props.userData.userData)
         this.setState(
           {access_token: this.props.userData.userData.access_token},
-          () => this.viewRecord(navigation),
+          () => this.viewRecord(),
           this.getBusinessEntity(),
         );
     });
@@ -111,8 +113,9 @@ class Mortgage extends Component {
     BackHandler.removeEventListener('hardwareBackPress');
 }
 
-  viewRecord = async (navigation) => {
-    const {recid, mode} = this.props.route.params;
+  viewRecord = async () => {
+    const {navigation, route} = this.props;
+    const {recid, mode} = route.params;
     this.setState({isLoader: true});
     await viewRecords(
       'Mortgage',
@@ -136,6 +139,10 @@ class Mortgage extends Component {
       });
     if (mode === 'Add') this.setState({editable: false});
   };
+
+  refreshData = () => {
+    this.viewRecord()
+  }
 
   setViewData = (data) => {
     this.setState(
@@ -168,6 +175,7 @@ class Mortgage extends Component {
         repayment: data.repayment ? 'Yes' : 'No',
         notes: data.Comment,
         isLoader: false,
+        shareKeyId: data.shareKeyId
       },
       () => this.referenceObj(),
     );
@@ -826,7 +834,7 @@ class Mortgage extends Component {
   render() {
     const {isLoader, modal, array, key, editable, refBusModal} = this.state;
     const {route, navigation} = this.props;
-    const {title, type, mode} = route.params;
+    const {title, type, mode, recid} = route.params;
     console.log('Ref Bus Modal: ', refBusModal);
     return (
       <Root>
@@ -855,6 +863,7 @@ class Mortgage extends Component {
               <View style={styles.container}>
                 {this.editComponent(isLoader, modal, array, key, refBusModal)}
               </View>
+              <SwitchKey type={'BrokerageAccount'} recid={recid} shareKeyId={shareKeyId} refresh={this.refreshData}/>
             </ScrollView>
           </ImageBackground>
         </SafeAreaView>
