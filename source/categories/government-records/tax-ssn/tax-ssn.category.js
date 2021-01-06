@@ -21,6 +21,7 @@ import Loader from '../../../components/loader/loader.component';
 import TitleView from '../../../components/title-view/title-view.component';
 import ModalScreen from '../../../components/modal/modal.component';
 import MultilineInput from '../../../components/multiline-input-text/multiline-input-text.component'
+import SwitchKey from '../../../components/switch-key/switch-key.component';
 import {
   createOrUpdateRecord,
   viewRecords,
@@ -59,7 +60,8 @@ class TaxIdentification extends Component {
     sob: '',
     cob: '',
     notes: '',
-    changes: false
+    changes: false,
+    shareKeyId: '',
   };
 
   constructor(props) {
@@ -79,7 +81,7 @@ class TaxIdentification extends Component {
           {
             access_token: this.props.userData.userData.access_token,
           },
-          () => this.viewRecord(navigation),
+          () => this.viewRecord(),
         );
     });
   }
@@ -88,8 +90,9 @@ class TaxIdentification extends Component {
     BackHandler.removeEventListener('hardwareBackPress');
 }
 
-  viewRecord = async (navigation) => {
-    const {recid, mode} = this.props.route.params;
+  viewRecord = async () => {
+    const {navigation, route} = this.props;
+    const {recid, mode} = route.params;
     this.setState({isLoader: true});
     await viewRecords(
       'TaxIdentification',
@@ -113,6 +116,10 @@ class TaxIdentification extends Component {
     if (mode === 'Add') this.setState({editable: false, hideResult: false});
   };
 
+  refreshData = () => {
+    this.viewRecord();
+  };
+
   setViewData = (data) => {
     console.log('Data: ', data);
     this.setState({
@@ -132,7 +139,9 @@ class TaxIdentification extends Component {
       countryofbirth: data.CountryOfBirth,
       sob: data.StateOfBirth,
       cob: data.CityOfBirth,
-      notes: data.Note
+      notes: data.Note,
+      shareKeyId: data.shareKeyId,
+      isLoader: false,
     });
   };
 
@@ -565,9 +574,9 @@ changesMade = () => {
     require('../../../assets/jpg-images/Government-Record-Background/government-records-background.jpg');
 
   render() {
-    const {isLoader, modal, array, key, editable} = this.state;
+    const {isLoader, modal, array, key, editable, shareKeyId} = this.state;
     const {route, navigation} = this.props;
-    const {title, type, mode} = route.params;
+    const {title, type, mode, recid} = route.params;
     return (
       <Root>
         <SafeAreaView style={styles.outerView}>
@@ -599,6 +608,7 @@ changesMade = () => {
               <View style={styles.container}>
                 {this.editComponent(isLoader, modal, array, key, editable)}
               </View>
+              <SwitchKey type={'TaxIdentification'} recid={recid} shareKeyId={shareKeyId} refresh={this.refreshData}/>
             </ScrollView>
           </ImageBackground>
         </SafeAreaView>

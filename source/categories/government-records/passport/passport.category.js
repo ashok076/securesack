@@ -6,7 +6,7 @@ import {
   ImageBackground,
   SafeAreaView,
   Alert,
-  BackHandler
+  BackHandler,
 } from 'react-native';
 import {Text} from 'react-native-paper';
 import qs from 'qs';
@@ -20,7 +20,8 @@ import Button from '../../../components/button/button.component';
 import Loader from '../../../components/loader/loader.component';
 import TitleView from '../../../components/title-view/title-view.component';
 import ModalScreen from '../../../components/modal/modal.component';
-import MultilineInput from '../../../components/multiline-input-text/multiline-input-text.component'
+import MultilineInput from '../../../components/multiline-input-text/multiline-input-text.component';
+import SwitchKey from '../../../components/switch-key/switch-key.component';
 import {
   createOrUpdateRecord,
   viewRecords,
@@ -60,7 +61,8 @@ class Passport extends Component {
     dateOfIssue2: '',
     expiredOn2: '',
     notes: '',
-    changes: false
+    changes: false,
+    shareKeyId: '',
   };
   constructor(props) {
     super(props);
@@ -71,6 +73,7 @@ class Passport extends Component {
 
   componentDidMount() {
     const {navigation, route} = this.props;
+    const {recid, mode} = route.params;
     BackHandler.addEventListener('hardwareBackPress', () => this.onBack());
     navigation.addListener('focus', () => {
       this.setState(this.initialState);
@@ -79,17 +82,18 @@ class Passport extends Component {
           {
             access_token: this.props.userData.userData.access_token,
           },
-          () => this.viewRecord(navigation),
+          () => this.viewRecord(),
         );
     });
   }
 
   componentWillUnmount() {
     BackHandler.removeEventListener('hardwareBackPress');
-}
+  }
 
-  viewRecord = async (navigation) => {
-    const {recid, mode} = this.props.route.params;
+  viewRecord = async () => {
+    const {navigation, route} = this.props;
+    const {recid, mode} = route.params;
     this.setState({isLoader: true});
     await viewRecords(
       'Passport',
@@ -107,10 +111,14 @@ class Passport extends Component {
         navigation.reset({
           index: 0,
           routes: [{name: 'Login'}],
-        })
+        });
       });
     this.setState({isLoader: false});
     if (mode === 'Add') this.setState({editable: false, hideResult: false});
+  };
+
+  refreshData = () => {
+    this.viewRecord();
   };
 
   setViewData = (data) => {
@@ -136,6 +144,8 @@ class Passport extends Component {
       dateOfIssue2: data.PreviousDateOfIssue2,
       expiredOn2: data.PreviousExpirationDate2,
       notes: data.Note,
+      shareKeyId: data.shareKeyId,
+      isLoader: false,
     });
   };
 
@@ -201,7 +211,7 @@ class Passport extends Component {
         navigation.reset({
           index: 0,
           routes: [{name: 'Login'}],
-        })
+        });
       });
   };
 
@@ -215,11 +225,11 @@ class Passport extends Component {
     )
       .then((response) => navigation.goBack())
       .catch((error) => {
-        console.log('Error in delete', error)
+        console.log('Error in delete', error);
         navigation.reset({
           index: 0,
           routes: [{name: 'Login'}],
-        })
+        });
       });
   };
 
@@ -247,7 +257,7 @@ class Passport extends Component {
         navigation.reset({
           index: 0,
           routes: [{name: 'Login'}],
-        })
+        });
       });
   };
 
@@ -256,7 +266,9 @@ class Passport extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Name"
-          onChangeText={(name) => this.setState({name}, () => this.changesMade())}
+          onChangeText={(name) =>
+            this.setState({name}, () => this.changesMade())
+          }
           keyboardType="default"
           color={Color.salmon}
           value={this.state.name}
@@ -271,11 +283,14 @@ class Passport extends Component {
               : this.state.countryofIssue
           }
           onPress={() =>
-            this.setState({
-              modal: true,
-              array: this.props.country.country,
-              key: 'countryofIssue',
-            }, () => this.changesMade())
+            this.setState(
+              {
+                modal: true,
+                array: this.props.country.country,
+                key: 'countryofIssue',
+              },
+              () => this.changesMade(),
+            )
           }
           color={Color.veryLightPink}
           editable={this.state.editable}
@@ -285,7 +300,9 @@ class Passport extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Passport Number"
-          onChangeText={(passportNo) => this.setState({passportNo}, () => this.changesMade())}
+          onChangeText={(passportNo) =>
+            this.setState({passportNo}, () => this.changesMade())
+          }
           keyboardType="default"
           color={Color.salmon}
           value={this.state.passportNo}
@@ -303,7 +320,9 @@ class Passport extends Component {
           <InputTextDynamic
             placeholder="Date of Issue"
             onChangeText={(dateOfIssue) =>
-              this.setState({dateOfIssue: formatDate(dateOfIssue)}, () => this.changesMade())
+              this.setState({dateOfIssue: formatDate(dateOfIssue)}, () =>
+                this.changesMade(),
+              )
             }
             keyboardType="default"
             color={Color.salmon}
@@ -316,7 +335,9 @@ class Passport extends Component {
           <InputTextDynamic
             placeholder="Expiration Date"
             onChangeText={(expirationDate) =>
-              this.setState({expirationDate: formatDate(expirationDate)}, () => this.changesMade())
+              this.setState({expirationDate: formatDate(expirationDate)}, () =>
+                this.changesMade(),
+              )
             }
             keyboardType="default"
             color={Color.salmon}
@@ -334,7 +355,9 @@ class Passport extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Address Line 1"
-          onChangeText={(address1) => this.setState({address1}, () => this.changesMade())}
+          onChangeText={(address1) =>
+            this.setState({address1}, () => this.changesMade())
+          }
           keyboardType="default"
           color={Color.salmon}
           value={this.state.address1}
@@ -344,7 +367,9 @@ class Passport extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Address Line 2"
-          onChangeText={(address2) => this.setState({address2}, () => this.changesMade())}
+          onChangeText={(address2) =>
+            this.setState({address2}, () => this.changesMade())
+          }
           keyboardType="default"
           color={Color.salmon}
           value={this.state.address2}
@@ -354,7 +379,9 @@ class Passport extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="City"
-          onChangeText={(city) => this.setState({city}, () => this.changesMade())}
+          onChangeText={(city) =>
+            this.setState({city}, () => this.changesMade())
+          }
           keyboardType="default"
           color={Color.salmon}
           value={this.state.city}
@@ -364,7 +391,9 @@ class Passport extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="State"
-          onChangeText={(state) => this.setState({state}, () => this.changesMade())}
+          onChangeText={(state) =>
+            this.setState({state}, () => this.changesMade())
+          }
           keyboardType="default"
           color={Color.salmon}
           value={this.state.state}
@@ -387,11 +416,14 @@ class Passport extends Component {
             this.state.country.length === 0 ? 'Country' : this.state.country
           }
           onPress={() =>
-            this.setState({
-              modal: true,
-              array: this.props.country.country,
-              key: 'country',
-            }, () => this.changesMade())
+            this.setState(
+              {
+                modal: true,
+                array: this.props.country.country,
+                key: 'country',
+              },
+              () => this.changesMade(),
+            )
           }
           color={Color.veryLightPink}
           editable={this.state.editable}
@@ -406,7 +438,9 @@ class Passport extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Old Passport Number 1"
-          onChangeText={(oldPassportNo1) => this.setState({oldPassportNo1}, () => this.changesMade())}
+          onChangeText={(oldPassportNo1) =>
+            this.setState({oldPassportNo1}, () => this.changesMade())
+          }
           keyboardType="default"
           color={Color.salmon}
           value={this.state.oldPassportNo1}
@@ -416,7 +450,9 @@ class Passport extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Place of Issue"
-          onChangeText={(placeOfIssue1) => this.setState({placeOfIssue1}, () => this.changesMade())}
+          onChangeText={(placeOfIssue1) =>
+            this.setState({placeOfIssue1}, () => this.changesMade())
+          }
           keyboardType="default"
           color={Color.salmon}
           value={this.state.placeOfIssue1}
@@ -428,7 +464,9 @@ class Passport extends Component {
           <InputTextDynamic
             placeholder="Date of Issue"
             onChangeText={(dateOfIssue1) =>
-              this.setState({dateOfIssue1: formatDate(dateOfIssue1)}, () => this.changesMade())
+              this.setState({dateOfIssue1: formatDate(dateOfIssue1)}, () =>
+                this.changesMade(),
+              )
             }
             keyboardType="default"
             color={Color.salmon}
@@ -441,7 +479,9 @@ class Passport extends Component {
           <InputTextDynamic
             placeholder="Expired On"
             onChangeText={(expiredOn1) =>
-              this.setState({expiredOn1: formatDate(expiredOn1)}, () => this.changesMade())
+              this.setState({expiredOn1: formatDate(expiredOn1)}, () =>
+                this.changesMade(),
+              )
             }
             keyboardType="default"
             color={Color.salmon}
@@ -454,7 +494,9 @@ class Passport extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Old Passport Number 2"
-          onChangeText={(oldPassportNo2) => this.setState({oldPassportNo2}, () => this.changesMade())}
+          onChangeText={(oldPassportNo2) =>
+            this.setState({oldPassportNo2}, () => this.changesMade())
+          }
           keyboardType="default"
           color={Color.salmon}
           value={this.state.oldPassportNo2}
@@ -464,7 +506,9 @@ class Passport extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Place of Issue"
-          onChangeText={(placeOfIssue2) => this.setState({placeOfIssue2}, () => this.changesMade())}
+          onChangeText={(placeOfIssue2) =>
+            this.setState({placeOfIssue2}, () => this.changesMade())
+          }
           keyboardType="default"
           color={Color.salmon}
           value={this.state.placeOfIssue2}
@@ -476,7 +520,9 @@ class Passport extends Component {
           <InputTextDynamic
             placeholder="Date of Issue"
             onChangeText={(dateOfIssue2) =>
-              this.setState({dateOfIssue2: formatDate(dateOfIssue2)}, () => this.changesMade())
+              this.setState({dateOfIssue2: formatDate(dateOfIssue2)}, () =>
+                this.changesMade(),
+              )
             }
             keyboardType="default"
             color={Color.salmon}
@@ -489,7 +535,9 @@ class Passport extends Component {
           <InputTextDynamic
             placeholder="Expired On"
             onChangeText={(expiredOn2) =>
-              this.setState({expiredOn2: formatDate(expiredOn2)}, () => this.changesMade())
+              this.setState({expiredOn2: formatDate(expiredOn2)}, () =>
+                this.changesMade(),
+              )
             }
             keyboardType="default"
             color={Color.salmon}
@@ -507,7 +555,9 @@ class Passport extends Component {
       <View style={styles.inputContainer}>
         <MultilineInput
           placeholder="Notes"
-          onChangeText={(notes) => this.setState({notes}, () => this.changesMade())}
+          onChangeText={(notes) =>
+            this.setState({notes}, () => this.changesMade())
+          }
           keyboardType="default"
           color={Color.veryLightPink}
           value={this.state.notes}
@@ -531,11 +581,11 @@ class Passport extends Component {
     this.setState({modal: bool});
   };
 
-changesMade = () => {
-  const {mode} = this.props.route.params;
-  const {editable} = this.state;
-  if (!editable) this.setState({ changes: true }, () => console.log("Check: "));
-}
+  changesMade = () => {
+    const {mode} = this.props.route.params;
+    const {editable} = this.state;
+    if (!editable) this.setState({changes: true}, () => console.log('Check: '));
+  };
 
   editComponent = (isLoader, modal, array, key, editable) => (
     <View>
@@ -591,32 +641,32 @@ changesMade = () => {
   onBack = () => {
     const {navigation} = this.props;
     const {changes} = this.state;
-    if (changes){
+    if (changes) {
       Alert.alert(
-      //title
-      'Save',
-      //body
-      'Do you want to save changes ?',
-      [
-        {text: 'Save', onPress: () => this.submit()},
-        {text: 'Cancel', onPress: () => navigation.goBack(), style: 'cancel'},
-      ],
-      {cancelable: false},
-      //clicking out side of alert will not cancel
-    );
-    }else {
+        //title
+        'Save',
+        //body
+        'Do you want to save changes ?',
+        [
+          {text: 'Save', onPress: () => this.submit()},
+          {text: 'Cancel', onPress: () => navigation.goBack(), style: 'cancel'},
+        ],
+        {cancelable: false},
+        //clicking out side of alert will not cancel
+      );
+    } else {
       navigation.goBack();
     }
-    return true
-  }
+    return true;
+  };
 
   background = () =>
     require('../../../assets/jpg-images/Government-Record-Background/government-records-background.jpg');
 
   render() {
-    const {isLoader, modal, array, key, editable} = this.state;
+    const {isLoader, modal, array, key, editable, shareKeyId} = this.state;
     const {route, navigation} = this.props;
-    const {title, type, mode} = route.params;
+    const {title, type, mode, recid} = route.params;
     return (
       <Root>
         <SafeAreaView style={styles.outerView}>
@@ -648,6 +698,7 @@ changesMade = () => {
               <View style={styles.container}>
                 {this.editComponent(isLoader, modal, array, key, editable)}
               </View>
+              <SwitchKey type={'Passport'} recid={recid} shareKeyId={shareKeyId} refresh={this.refreshData}/>
             </ScrollView>
           </ImageBackground>
         </SafeAreaView>

@@ -20,7 +20,8 @@ import Button from '../../../components/button/button.component';
 import Loader from '../../../components/loader/loader.component';
 import TitleView from '../../../components/title-view/title-view.component';
 import ModalScreen from '../../../components/modal/modal.component';
-import MultilineInput from '../../../components/multiline-input-text/multiline-input-text.component'
+import MultilineInput from '../../../components/multiline-input-text/multiline-input-text.component';
+import SwitchKey from '../../../components/switch-key/switch-key.component';
 import {
   createOrUpdateRecord,
   viewRecords,
@@ -54,6 +55,7 @@ class IdentificationCards extends Component {
     country: '',
     notes: '',
     changes: false,
+    shareKeyId: '',
   };
   constructor(props) {
     super(props);
@@ -72,7 +74,7 @@ class IdentificationCards extends Component {
           {
             access_token: this.props.userData.userData.access_token,
           },
-          () => this.viewRecord(navigation),
+          () => this.viewRecord(),
         );
     });
   }
@@ -81,8 +83,9 @@ class IdentificationCards extends Component {
     BackHandler.removeEventListener('hardwareBackPress');
 }
 
-  viewRecord = async (navigation) => {
-    const {recid, mode} = this.props.route.params;
+  viewRecord = async () => {
+    const {navigation, route} = this.props;
+    const {recid, mode} = route.params;
     this.setState({isLoader: true});
     await viewRecords(
       'IdentificationCards',
@@ -106,6 +109,10 @@ class IdentificationCards extends Component {
     if (mode === 'Add') this.setState({editable: false, hideResult: false});
   };
 
+  refreshData = () => {
+    this.viewRecord();
+  };
+
   setViewData = (data) => {
     this.setState({
       name: data.IDName,
@@ -120,7 +127,9 @@ class IdentificationCards extends Component {
       state: data.AddressGiven.State,
       zip: data.AddressGiven.Zip,
       country: data.AddressGiven.Country,
-      notes: data.Note
+      notes: data.Note,
+      shareKeyId: data.shareKeyId,
+      isLoader: false,
     });
   };
 
@@ -482,9 +491,9 @@ changesMade = () => {
     require('../../../assets/jpg-images/Government-Record-Background/government-records-background.jpg');
 
   render() {
-    const {isLoader, modal, array, key, editable} = this.state;
+    const {isLoader, modal, array, key, editable, shareKeyId} = this.state;
     const {route, navigation} = this.props;
-    const {title, type, mode} = route.params;
+    const {title, type, mode, recid} = route.params;
     return (
       <Root>
         <SafeAreaView style={styles.outerView}>
@@ -516,6 +525,7 @@ changesMade = () => {
               <View style={styles.container}>
                 {this.editComponent(isLoader, modal, array, key, editable)}
               </View>
+              <SwitchKey type={'IdentificationCards'} recid={recid} shareKeyId={shareKeyId} refresh={this.refreshData}/>
             </ScrollView>
           </ImageBackground>
         </SafeAreaView>

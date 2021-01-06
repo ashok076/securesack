@@ -6,7 +6,7 @@ import {
   ImageBackground,
   SafeAreaView,
   Alert,
-  BackHandler
+  BackHandler,
 } from 'react-native';
 import {Text} from 'react-native-paper';
 import qs from 'qs';
@@ -20,7 +20,8 @@ import Button from '../../../components/button/button.component';
 import Loader from '../../../components/loader/loader.component';
 import TitleView from '../../../components/title-view/title-view.component';
 import ModalScreen from '../../../components/modal/modal.component';
-import MultilineInput from '../../../components/multiline-input-text/multiline-input-text.component'
+import MultilineInput from '../../../components/multiline-input-text/multiline-input-text.component';
+import SwitchKey from '../../../components/switch-key/switch-key.component';
 import {
   createOrUpdateRecord,
   viewRecords,
@@ -51,6 +52,7 @@ class DriverLicense extends Component {
     notes: '',
     array: [],
     changes: false,
+    shareKeyId: '',
   };
 
   constructor(props) {
@@ -70,17 +72,18 @@ class DriverLicense extends Component {
           {
             access_token: this.props.userData.userData.access_token,
           },
-          () => this.viewRecord(navigation),
+          () => this.viewRecord(),
         );
     });
   }
 
   componentWillUnmount() {
     BackHandler.removeEventListener('hardwareBackPress');
-}
+  }
 
-  viewRecord = async (navigation) => {
-    const {recid, mode} = this.props.route.params;
+  viewRecord = async () => {
+    const {navigation, route} = this.props;
+    const {recid, mode} = route.params;
     this.setState({isLoader: true});
     await viewRecords(
       'DriverLicense',
@@ -98,10 +101,14 @@ class DriverLicense extends Component {
         navigation.reset({
           index: 0,
           routes: [{name: 'Login'}],
-        })
+        });
       });
     this.setState({isLoader: false});
     if (mode === 'Add') this.setState({editable: false, hideResult: false});
+  };
+
+  refreshData = () => {
+    this.viewRecord();
   };
 
   setViewData = (data) => {
@@ -115,7 +122,9 @@ class DriverLicense extends Component {
       noOfDrivingVoilation: data.DrivingViolation,
       drivingViolationType1: data.DrivingViolationType1,
       drivingViolationType2: data.DrivingViolationType2,
-      notes: data.Notes
+      notes: data.Notes,
+      shareKeyId: data.shareKeyId,
+      isLoader: false,
     });
   };
 
@@ -148,7 +157,7 @@ class DriverLicense extends Component {
       DrivingViolation: noOfDrivingVoilation,
       DrivingViolationType1: drivingViolationType1,
       DrivingViolationType2: drivingViolationType2,
-      Notes: notes
+      Notes: notes,
     });
 
     await createOrUpdateRecord('DriverLicense', recid, data, access_token)
@@ -158,7 +167,7 @@ class DriverLicense extends Component {
         navigation.reset({
           index: 0,
           routes: [{name: 'Login'}],
-        })
+        });
       })
       .catch((error) => {
         this.setState({isLoader: false});
@@ -175,11 +184,11 @@ class DriverLicense extends Component {
     )
       .then((response) => navigation.goBack())
       .catch((error) => {
-      console.log('Error in delete', error)
-      navigation.reset({
+        console.log('Error in delete', error);
+        navigation.reset({
           index: 0,
           routes: [{name: 'Login'}],
-        })
+        });
       });
   };
 
@@ -207,7 +216,7 @@ class DriverLicense extends Component {
         navigation.reset({
           index: 0,
           routes: [{name: 'Login'}],
-        })
+        });
       });
   };
 
@@ -257,7 +266,9 @@ class DriverLicense extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Name"
-          onChangeText={(name) => this.setState({name}, () => this.changesMade())}
+          onChangeText={(name) =>
+            this.setState({name}, () => this.changesMade())
+          }
           keyboardType="default"
           color={Color.salmon}
           value={this.state.name}
@@ -272,11 +283,14 @@ class DriverLicense extends Component {
               : this.state.countryOfIssue
           }
           onPress={() =>
-            this.setState({
-              modal: true,
-              array: this.props.country.country,
-              key: 'countryOfIssue',
-            }, () => this.changesMade())
+            this.setState(
+              {
+                modal: true,
+                array: this.props.country.country,
+                key: 'countryOfIssue',
+              },
+              () => this.changesMade(),
+            )
           }
           color={Color.veryLightPink}
           editable={this.state.editable}
@@ -286,7 +300,9 @@ class DriverLicense extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="State of Issue"
-          onChangeText={(stateOfIssue) => this.setState({stateOfIssue}, () => this.changesMade())}
+          onChangeText={(stateOfIssue) =>
+            this.setState({stateOfIssue}, () => this.changesMade())
+          }
           keyboardType="default"
           color={Color.salmon}
           value={this.state.stateOfIssue}
@@ -296,7 +312,9 @@ class DriverLicense extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="License #"
-          onChangeText={(license) => this.setState({license}, () => this.changesMade())}
+          onChangeText={(license) =>
+            this.setState({license}, () => this.changesMade())
+          }
           keyboardType="default"
           color={Color.salmon}
           value={this.state.license}
@@ -314,7 +332,9 @@ class DriverLicense extends Component {
           <InputTextDynamic
             placeholder="Date of Issue"
             onChangeText={(dateOfIssue) =>
-              this.setState({dateOfIssue: formatDate(dateOfIssue)}, () => this.changesMade())
+              this.setState({dateOfIssue: formatDate(dateOfIssue)}, () =>
+                this.changesMade(),
+              )
             }
             keyboardType="default"
             color={Color.salmon}
@@ -327,7 +347,9 @@ class DriverLicense extends Component {
           <InputTextDynamic
             placeholder="Expiration Date"
             onChangeText={(expiryDate) =>
-              this.setState({expiryDate: formatDate(expiryDate)}, () => this.changesMade())
+              this.setState({expiryDate: formatDate(expiryDate)}, () =>
+                this.changesMade(),
+              )
             }
             keyboardType="default"
             color={Color.salmon}
@@ -345,7 +367,9 @@ class DriverLicense extends Component {
       <View style={styles.inputContainer}>
         <MultilineInput
           placeholder="Notes"
-          onChangeText={(notes) => this.setState({notes}, () => this.changesMade())}
+          onChangeText={(notes) =>
+            this.setState({notes}, () => this.changesMade())
+          }
           keyboardType="default"
           color={Color.veryLightPink}
           value={this.state.notes}
@@ -369,11 +393,11 @@ class DriverLicense extends Component {
     this.setState({modal: bool});
   };
 
-changesMade = () => {
-  const {mode} = this.props.route.params;
-  const {editable} = this.state;
-  if (!editable) this.setState({ changes: true }, () => console.log("Check: "));
-}
+  changesMade = () => {
+    const {mode} = this.props.route.params;
+    const {editable} = this.state;
+    if (!editable) this.setState({changes: true}, () => console.log('Check: '));
+  };
 
   editComponent = (isLoader, modal, array, key, editable) => (
     <View>
@@ -426,32 +450,32 @@ changesMade = () => {
   onBack = () => {
     const {navigation} = this.props;
     const {changes} = this.state;
-    if (changes){
+    if (changes) {
       Alert.alert(
-      //title
-      'Save',
-      //body
-      'Do you want to save changes ?',
-      [
-        {text: 'Save', onPress: () => this.submit()},
-        {text: 'Cancel', onPress: () => navigation.goBack(), style: 'cancel'},
-      ],
-      {cancelable: false},
-      //clicking out side of alert will not cancel
-    );
-    }else {
+        //title
+        'Save',
+        //body
+        'Do you want to save changes ?',
+        [
+          {text: 'Save', onPress: () => this.submit()},
+          {text: 'Cancel', onPress: () => navigation.goBack(), style: 'cancel'},
+        ],
+        {cancelable: false},
+        //clicking out side of alert will not cancel
+      );
+    } else {
       navigation.goBack();
     }
-    return true
-  }
+    return true;
+  };
 
   background = () =>
     require('../../../assets/jpg-images/Government-Record-Background/government-records-background.jpg');
 
   render() {
-    const {isLoader, modal, array, key, editable} = this.state;
+    const {isLoader, modal, array, key, editable, shareKeyId} = this.state;
     const {route, navigation} = this.props;
-    const {title, type, mode} = route.params;
+    const {title, type, mode, recid} = route.params;
     return (
       <Root>
         <SafeAreaView style={styles.outerView}>
@@ -483,6 +507,12 @@ changesMade = () => {
               <View style={styles.container}>
                 {this.editComponent(isLoader, modal, array, key, editable)}
               </View>
+              <SwitchKey
+                type={'DriverLicense'}
+                recid={recid}
+                shareKeyId={shareKeyId}
+                refresh={this.refreshData}
+              />
             </ScrollView>
           </ImageBackground>
         </SafeAreaView>
