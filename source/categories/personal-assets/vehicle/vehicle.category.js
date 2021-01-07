@@ -1,15 +1,16 @@
 import React, {Component} from 'react';
-import {  View,
+import {
+  View,
   ScrollView,
   Modal,
   ImageBackground,
   SafeAreaView,
   Alert,
-  BackHandler
+  BackHandler,
 } from 'react-native';
 import {Text} from 'react-native-paper';
 import qs from 'qs';
-import {connect} from 'react-redux'
+import {connect} from 'react-redux';
 import {Root} from 'native-base';
 
 import InputTextDynamic from '../../../components/input-text-dynamic/input-text-dynamic.component';
@@ -19,7 +20,8 @@ import TitleView from '../../../components/title-view/title-view.component';
 import Button from '../../../components/button/button.component';
 import Loader from '../../../components/loader/loader.component';
 import ModalScreen from '../../../components/modal/modal.component';
-import MultilineInput from '../../../components/multiline-input-text/multiline-input-text.component'
+import MultilineInput from '../../../components/multiline-input-text/multiline-input-text.component';
+import SwitchKey from '../../../components/switch-key/switch-key.component';
 import {
   createOrUpdateRecord,
   viewRecords,
@@ -34,31 +36,32 @@ import styles from './vehicle.style';
 
 class Vehicle extends Component {
   initialState = {
-      isLoader: false,
-      editable: true,
-      access_token: '',
-      modal: '',
-      array: [],
-      key: '',
-      make: '',
-      modal: '',
-      licensePlate: '',
-      vin: '',
-      vehicleType: '',   
-      renewalDate: '',
-      engineType: '',
-      color: '',
-      numOfDoors: '',
-      boughtOn: '',
-      soldOn: '',
-      isStillOwned: '',
-      notes: '',
+    isLoader: false,
+    editable: true,
+    access_token: '',
+    modal: '',
+    array: [],
+    key: '',
+    make: '',
+    modal: '',
+    licensePlate: '',
+    vin: '',
+    vehicleType: '',
+    renewalDate: '',
+    engineType: '',
+    color: '',
+    numOfDoors: '',
+    boughtOn: '',
+    soldOn: '',
+    isStillOwned: '',
+    notes: '',
     changes: false,
-  }
+    shareKeyId: '',
+  };
   constructor(props) {
     super(props);
     this.state = {
-      ...this.initialState
+      ...this.initialState,
     };
   }
 
@@ -79,10 +82,11 @@ class Vehicle extends Component {
 
   componentWillUnmount() {
     BackHandler.removeEventListener('hardwareBackPress');
-}
+  }
 
   viewRecord = async () => {
-    const {recid, mode} = this.props.route.params;
+    const { navigation, route } = this.props
+    const {recid, mode} = route.params;
     this.setState({isLoader: true});
     await viewRecords(
       'Vehicle',
@@ -102,10 +106,13 @@ class Vehicle extends Component {
     if (mode === 'Add') this.setState({editable: false, hideResult: false});
   };
 
+  refreshData = () => {
+    this.viewRecord()
+  }
+
   setViewData = (data) => {
     console.log('Data: ', data);
-    this.setState(
-      {
+    this.setState({
       make: data.Make,
       model: data.Model,
       licensePlate: data.LicensePlateNumber,
@@ -118,8 +125,8 @@ class Vehicle extends Component {
       boughtOn: data.DateAcquired,
       soldOn: data.DateReleased,
       isStillOwned: data.IsOwned ? 'Yes' : 'No',
-      notes: data.Comment
-      });
+      notes: data.Comment,
+    });
   };
 
   submit = async () => {
@@ -138,7 +145,7 @@ class Vehicle extends Component {
       boughtOn,
       soldOn,
       isStillOwned,
-      notes
+      notes,
     } = this.state;
     const {navigation, route} = this.props;
     const {recid} = route.params;
@@ -155,7 +162,7 @@ class Vehicle extends Component {
       DateAcquired: boughtOn,
       DateReleased: soldOn,
       IsOwned: isStillOwned === 'Yes' ? true : false,
-      Comment: notes
+      Comment: notes,
     });
     await createOrUpdateRecord('Vehicle', recid, data, access_token)
       .then((response) => {
@@ -213,11 +220,14 @@ class Vehicle extends Component {
               : this.state.engineType
           }
           onPress={() =>
-            this.setState({
-              modal: true,
-              array: engine_type,
-              key: 'engineType',
-            }, () => this.changesMade())
+            this.setState(
+              {
+                modal: true,
+                array: engine_type,
+                key: 'engineType',
+              },
+              () => this.changesMade(),
+            )
           }
           color={Color.veryLightBlue}
           editable={this.state.editable}
@@ -227,28 +237,36 @@ class Vehicle extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Color"
-          onChangeText={(color) => this.setState({color}, () => this.changesMade())}
+          onChangeText={(color) =>
+            this.setState({color}, () => this.changesMade())
+          }
           keyboardType="default"
           color={Color.paleRed}
-            value={this.state.color}
-            editable={this.state.editable}
+          value={this.state.color}
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Number of Doors"
-          onChangeText={(numOfDoors) => this.setState({numOfDoors}, () => this.changesMade())}
+          onChangeText={(numOfDoors) =>
+            this.setState({numOfDoors}, () => this.changesMade())
+          }
           keyboardType="default"
           color={Color.paleRed}
-            value={this.state.numOfDoors}
-            editable={this.state.editable}
+          value={this.state.numOfDoors}
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.miniContainer}>
         <View style={[styles.miniInputContainer, {marginRight: 10}]}>
           <InputTextDynamic
             placeholder="Bought On"
-            onChangeText={(boughtOn) => this.setState({boughtOn: formatDate(boughtOn)}, () => this.changesMade())}
+            onChangeText={(boughtOn) =>
+              this.setState({boughtOn: formatDate(boughtOn)}, () =>
+                this.changesMade(),
+              )
+            }
             keyboardType="default"
             color={Color.paleRed}
             value={this.state.boughtOn}
@@ -259,7 +277,11 @@ class Vehicle extends Component {
         <View style={styles.miniInputContainer}>
           <InputTextDynamic
             placeholder="Sold On"
-            onChangeText={(soldOn) => this.setState({soldOn: formatDate(soldOn)}, () => this.changesMade())}
+            onChangeText={(soldOn) =>
+              this.setState({soldOn: formatDate(soldOn)}, () =>
+                this.changesMade(),
+              )
+            }
             keyboardType="default"
             color={Color.paleRed}
             value={this.state.soldOn}
@@ -276,11 +298,14 @@ class Vehicle extends Component {
               : this.state.isStillOwned
           }
           onPress={() =>
-            this.setState({
-              modal: true,
-              array: is_still_owned,
-              key: 'isStillOwned',
-            }, () => this.changesMade())
+            this.setState(
+              {
+                modal: true,
+                array: is_still_owned,
+                key: 'isStillOwned',
+              },
+              () => this.changesMade(),
+            )
           }
           color={Color.veryLightBlue}
           editable={this.state.editable}
@@ -295,31 +320,37 @@ class Vehicle extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Make"
-          onChangeText={(make) => this.setState({make}, () => this.changesMade())}
+          onChangeText={(make) =>
+            this.setState({make}, () => this.changesMade())
+          }
           keyboardType="default"
           color={Color.paleRed}
-            value={this.state.make}
-            editable={this.state.editable}
+          value={this.state.make}
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Model"
-          onChangeText={(model) => this.setState({model}, () => this.changesMade())}
+          onChangeText={(model) =>
+            this.setState({model}, () => this.changesMade())
+          }
           keyboardType="default"
           color={Color.paleRed}
-            value={this.state.model}
-            editable={this.state.editable}
+          value={this.state.model}
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="License Plate"
-          onChangeText={(licensePlate) => this.setState({licensePlate}, () => this.changesMade())}
+          onChangeText={(licensePlate) =>
+            this.setState({licensePlate}, () => this.changesMade())
+          }
           keyboardType="default"
           color={Color.paleRed}
-            value={this.state.licensePlate}
-            editable={this.state.editable}
+          value={this.state.licensePlate}
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -328,17 +359,21 @@ class Vehicle extends Component {
           onChangeText={(vin) => this.setState({vin}, () => this.changesMade())}
           keyboardType="default"
           color={Color.paleRed}
-            value={this.state.vin}
-            editable={this.state.editable}
+          value={this.state.vin}
+          editable={this.state.editable}
         />
       </View>
       <View style={styles.miniContainer}>
         <View style={[styles.miniInputContainer, {marginRight: 10}]}>
           <InputTextDynamic
             placeholder="Registration Renewal Date"
-            onChangeText={(renewalDate) => this.setState({renewalDate: formatDate(renewalDate)}, () => this.changesMade())}
+            onChangeText={(renewalDate) =>
+              this.setState({renewalDate: formatDate(renewalDate)}, () =>
+                this.changesMade(),
+              )
+            }
             keyboardType="default"
-          color={Color.paleRed}
+            color={Color.paleRed}
             value={this.state.renewalDate}
             editable={this.state.editable}
             example="DD/MM/YYYY"
@@ -352,15 +387,18 @@ class Vehicle extends Component {
                 : this.state.vehicleType
             }
             onPress={() =>
-              this.setState({
-                modal: true,
-                array: vehicle_type,
-                key: 'vehicleType',
-              }, () => this.changesMade())
+              this.setState(
+                {
+                  modal: true,
+                  array: vehicle_type,
+                  key: 'vehicleType',
+                },
+                () => this.changesMade(),
+              )
             }
-          color={Color.veryLightBlue}
-          editable={this.state.editable}
-          name="Vehicle Type"
+            color={Color.veryLightBlue}
+            editable={this.state.editable}
+            name="Vehicle Type"
           />
         </View>
       </View>
@@ -372,7 +410,9 @@ class Vehicle extends Component {
       <View style={styles.inputContainer}>
         <MultilineInput
           placeholder="Notes"
-          onChangeText={(notes) => this.setState({notes}, () => this.changesMade())}
+          onChangeText={(notes) =>
+            this.setState({notes}, () => this.changesMade())
+          }
           keyboardType="default"
           color={Color.veryLightBlue}
           value={this.state.notes}
@@ -393,29 +433,29 @@ class Vehicle extends Component {
   changesMade = () => {
     const {mode} = this.props.route.params;
     const {editable} = this.state;
-    if (!editable) this.setState({ changes: true }, () => console.log("Check: "));
-  }
+    if (!editable) this.setState({changes: true}, () => console.log('Check: '));
+  };
 
   editComponent = (isLoader, modal, array, key, editable) => (
     <View>
       <Text style={styles.title}>Basic Information</Text>
-        {this.basicInformation()}
-        <View style={styles.gap} />
-        <Text style={styles.title}>Additional Information</Text>
-        {this.additionalInformation()}
-        <View style={styles.gap} />
-        <Text style={styles.title}>Notes</Text>
-        {this.notes()}
-        <Loader isLoader={isLoader} />
-        <ModalScreen
-          isModalVisible={modal}
-          list={array}
-          changeModalVisibility={this.changeModalVisibility}
-          id={key}
-          changeState={this.changeState}
-        />
+      {this.basicInformation()}
+      <View style={styles.gap} />
+      <Text style={styles.title}>Additional Information</Text>
+      {this.additionalInformation()}
+      <View style={styles.gap} />
+      <Text style={styles.title}>Notes</Text>
+      {this.notes()}
+      <Loader isLoader={isLoader} />
+      <ModalScreen
+        isModalVisible={modal}
+        list={array}
+        changeModalVisibility={this.changeModalVisibility}
+        id={key}
+        changeState={this.changeState}
+      />
     </View>
-  )
+  );
 
   onSave = () => {
     this.submit();
@@ -447,26 +487,27 @@ class Vehicle extends Component {
   onBack = () => {
     const {navigation} = this.props;
     const {changes} = this.state;
-    if (changes){
+    if (changes) {
       Alert.alert(
-      //title
-      'Save',
-      //body
-      'Do you want to save changes ?',
-      [
-        {text: 'Save', onPress: () => this.submit()},
-        {text: 'Cancel', onPress: () =>  navigation.goBack(), style: 'cancel'},
-      ],
-      {cancelable: false},
-      //clicking out side of alert will not cancel
-    );
-    }else {
+        //title
+        'Save',
+        //body
+        'Do you want to save changes ?',
+        [
+          {text: 'Save', onPress: () => this.submit()},
+          {text: 'Cancel', onPress: () => navigation.goBack(), style: 'cancel'},
+        ],
+        {cancelable: false},
+        //clicking out side of alert will not cancel
+      );
+    } else {
       navigation.goBack();
     }
-    return true
-  }
+    return true;
+  };
 
-background = () => require('../../../assets/jpg-images/Personal-Assets-Background/personal-assets-background.jpg')
+  background = () =>
+    require('../../../assets/jpg-images/Personal-Assets-Background/personal-assets-background.jpg');
 
   render() {
     const {isLoader, modal, array, key, editable} = this.state;
@@ -475,7 +516,9 @@ background = () => require('../../../assets/jpg-images/Personal-Assets-Backgroun
     return (
       <Root>
         <SafeAreaView style={styles.outerView}>
-          <ImageBackground source={this.background()} style={styles.backgroundImage}>
+          <ImageBackground
+            source={this.background()}
+            style={styles.backgroundImage}>
             <View style={styles.titleView}>
               <TitleView
                 navigation={navigation}
@@ -501,6 +544,7 @@ background = () => require('../../../assets/jpg-images/Personal-Assets-Backgroun
               <View style={styles.container}>
                 {this.editComponent(isLoader, modal, array, key, editable)}
               </View>
+              <SwitchKey type={'Vehicle'} recid={recid} shareKeyId={shareKeyId} refresh={this.refreshData}/>
             </ScrollView>
           </ImageBackground>
         </SafeAreaView>
@@ -509,8 +553,8 @@ background = () => require('../../../assets/jpg-images/Personal-Assets-Backgroun
   }
 }
 
-const mapStateToProps = ({ userData }) => ({
-  userData
-})
+const mapStateToProps = ({userData}) => ({
+  userData,
+});
 
 export default connect(mapStateToProps)(Vehicle);

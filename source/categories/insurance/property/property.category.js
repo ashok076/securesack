@@ -833,9 +833,9 @@ class PropertyInsurance extends Component {
     require('../../../assets/jpg-images/Insurance-Background/insurance-background.jpg');
 
   render() {
-    const {isLoader, modal, array, key, editable} = this.state;
+    const {isLoader, modal, array, key, editable, shareKeyId} = this.state;
     const {route, navigation} = this.props;
-    const {title, type, background, theme, mode} = route.params;
+    const {title, type, background, theme, mode, recid} = route.params;
     return (
       <Root>
         <SafeAreaView style={styles.outerView}>

@@ -6,11 +6,11 @@ import {
   ImageBackground,
   SafeAreaView,
   Alert,
-  BackHandler
-  } from 'react-native';
+  BackHandler,
+} from 'react-native';
 import {Text} from 'react-native-paper';
 import qs from 'qs';
-import {connect} from 'react-redux'
+import {connect} from 'react-redux';
 import {Root} from 'native-base';
 
 import InputTextDynamic from '../../../components/input-text-dynamic/input-text-dynamic.component';
@@ -20,7 +20,8 @@ import TitleView from '../../../components/title-view/title-view.component';
 import Button from '../../../components/button/button.component';
 import Loader from '../../../components/loader/loader.component';
 import ModalScreen from '../../../components/modal/modal.component';
-import MultilineInput from '../../../components/multiline-input-text/multiline-input-text.component'
+import MultilineInput from '../../../components/multiline-input-text/multiline-input-text.component';
+import SwitchKey from '../../../components/switch-key/switch-key.component';
 import {
   createOrUpdateRecord,
   viewRecords,
@@ -42,53 +43,53 @@ import {Color} from '../../../assets/color/color';
 import styles from './property.style';
 
 class Property extends Component {
-
   initialState = {
-      isLoader: false,
-      editable: true,
-      access_token: '',
-      countries: '',
-      modal: '',
-      array: [],
-      key: '',
-      name: '',
-      address1: '',
-      address2: '',
-      city: '',
-      state: '',
-      zip: '',
-      country: '',
-      boughtOn: '',
-      houseSize: '',
-      lotSize: '',
-      county: '',
-      schoolDistrict: '',
-      apn: '',
-      propertyTaxAmnt: '',
-      yearOfConstruction: '',
-      age: '',
-      numberOfLevels: '',
-      garageSize: '',
-      respondingFireDepartment: '',
-      distanceToFireDepartment: '',
-      soldOn: '',
-      purpose: '',
-      residenceType: '',
-      constructionType: '',
-      garageType: '',
-      sprinklerType: '',
-      fireAlarmType: '',
-      burgularAlarmType: '',
-      smokeDetector: '',
-      isFireHydrant: '',
-      notes: '',
+    isLoader: false,
+    editable: true,
+    access_token: '',
+    countries: '',
+    modal: '',
+    array: [],
+    key: '',
+    name: '',
+    address1: '',
+    address2: '',
+    city: '',
+    state: '',
+    zip: '',
+    country: '',
+    boughtOn: '',
+    houseSize: '',
+    lotSize: '',
+    county: '',
+    schoolDistrict: '',
+    apn: '',
+    propertyTaxAmnt: '',
+    yearOfConstruction: '',
+    age: '',
+    numberOfLevels: '',
+    garageSize: '',
+    respondingFireDepartment: '',
+    distanceToFireDepartment: '',
+    soldOn: '',
+    purpose: '',
+    residenceType: '',
+    constructionType: '',
+    garageType: '',
+    sprinklerType: '',
+    fireAlarmType: '',
+    burgularAlarmType: '',
+    smokeDetector: '',
+    isFireHydrant: '',
+    notes: '',
     changes: false,
-  }
+    shareKeyId: '',
+  };
 
   constructor(props) {
     super(props);
     this.state = {
-      ...this.initialState
+      ...this.initialState,
     };
   }
 
@@ -109,10 +110,11 @@ class Property extends Component {
 
   componentWillUnmount() {
     BackHandler.removeEventListener('hardwareBackPress');
-}
+  }
 
   viewRecord = async () => {
-    const {recid, mode} = this.props.route.params;
+    const {navigation, route} = this.props;
+    const {recid, mode} = route.params;
     this.setState({isLoader: true});
     await viewRecords(
       'Property',
@@ -127,15 +129,22 @@ class Property extends Component {
       .catch((error) => {
         console.log('Error: ', error);
         this.setState({isLoader: false});
+        navigation.reset({
+          index: 0,
+          routes: [{name: 'Login'}],
+        });
       });
     this.setState({isLoader: false});
     if (mode === 'Add') this.setState({editable: false, hideResult: false});
   };
 
+  refreshData = () => {
+    this.viewRecord();
+  };
+
   setViewData = (data) => {
     console.log('Data: ', data);
-    this.setState(
-      {
+    this.setState({
       name: data.Name,
       address1: data.Address.Line1,
       address2: data.Address.Line2,
@@ -166,8 +175,10 @@ class Property extends Component {
       burgularAlarmType: data.BurglarAlarmType,
       smokeDetector: data.HasSmokeDetectors ? 'Yes' : 'No',
       isFireHydrant: data.IsFireHydrantWithinThousandFeet ? 'Yes' : 'No',
-      notes: data.Notes
-      });
+      notes: data.Notes,
+      shareKeyId: data.shareKeyId,
+      isLoader: false,
+    });
   };
 
   submit = async () => {
@@ -204,11 +215,11 @@ class Property extends Component {
       burgularAlarmType,
       smokeDetector,
       isFireHydrant,
-      notes
+      notes,
     } = this.state;
 
     const {navigation, route} = this.props;
-    const {recid} = route.params
+    const {recid} = route.params;
 
     let data = qs.stringify({
       Name: name,
@@ -241,7 +252,7 @@ class Property extends Component {
       BurglarAlarmType: burgularAlarmType,
       HasSmokeDetectors: smokeDetector === 'Yes' ? true : false,
       IsFireHydrantWithinThousandFeet: isFireHydrant === 'Yes' ? true : false,
-      Notes: notes
+      Notes: notes,
     });
 
     await createOrUpdateRecord('Property', recid, data, access_token)
@@ -301,15 +312,18 @@ class Property extends Component {
                 : this.state.sprinklerType
             }
             onPress={() =>
-              this.setState({
-                modal: true,
-                array: sprinkler_type,
-                key: 'sprinklerType',
-              }, () => this.changesMade())
+              this.setState(
+                {
+                  modal: true,
+                  array: sprinkler_type,
+                  key: 'sprinklerType',
+                },
+                () => this.changesMade(),
+              )
             }
-          color={Color.veryLightBlue}
-          editable={this.state.editable}
-          name="Sprinkler Type"
+            color={Color.veryLightBlue}
+            editable={this.state.editable}
+            name="Sprinkler Type"
           />
         </View>
         <View style={styles.miniInputContainer}>
@@ -320,15 +334,18 @@ class Property extends Component {
                 : this.state.fireAlarmType
             }
             onPress={() =>
-              this.setState({
-                modal: true,
-                array: alarm_type,
-                key: 'fireAlarmType',
-              }, () => this.changesMade())
+              this.setState(
+                {
+                  modal: true,
+                  array: alarm_type,
+                  key: 'fireAlarmType',
+                },
+                () => this.changesMade(),
+              )
             }
-          color={Color.veryLightBlue}
-          editable={this.state.editable}
-          name="Fire Alarm Type"
+            color={Color.veryLightBlue}
+            editable={this.state.editable}
+            name="Fire Alarm Type"
           />
         </View>
       </View>
@@ -341,15 +358,18 @@ class Property extends Component {
                 : this.state.burgularAlarmType
             }
             onPress={() =>
-              this.setState({
-                modal: true,
-                array: alarm_type,
-                key: 'burgularAlarmType',
-              }, () => this.changesMade())
+              this.setState(
+                {
+                  modal: true,
+                  array: alarm_type,
+                  key: 'burgularAlarmType',
+                },
+                () => this.changesMade(),
+              )
             }
-          color={Color.veryLightBlue}
-          editable={this.state.editable}
-          name="Burglar Alarm Type"
+            color={Color.veryLightBlue}
+            editable={this.state.editable}
+            name="Burglar Alarm Type"
           />
         </View>
         <View style={styles.miniInputContainer}>
@@ -360,15 +380,18 @@ class Property extends Component {
                 : this.state.smokeDetector
             }
             onPress={() =>
-              this.setState({
-                modal: true,
-                array: boolean_value,
-                key: 'smokeDetector',
-              }, () => this.changesMade())
+              this.setState(
+                {
+                  modal: true,
+                  array: boolean_value,
+                  key: 'smokeDetector',
+                },
+                () => this.changesMade(),
+              )
             }
-          color={Color.veryLightBlue}
-          editable={this.state.editable}
-          name="Smoke Detectors"
+            color={Color.veryLightBlue}
+            editable={this.state.editable}
+            name="Smoke Detectors"
           />
         </View>
       </View>
@@ -404,11 +427,14 @@ class Property extends Component {
               : this.state.isFireHydrant
           }
           onPress={() =>
-            this.setState({
-              modal: true,
-              array: boolean_value,
-              key: 'isFireHydrant',
-            }, () => this.changesMade())
+            this.setState(
+              {
+                modal: true,
+                array: boolean_value,
+                key: 'isFireHydrant',
+              },
+              () => this.changesMade(),
+            )
           }
           color={Color.veryLightBlue}
           editable={this.state.editable}
@@ -418,12 +444,16 @@ class Property extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Sold On"
-          onChangeText={(soldOn) => this.setState({soldOn: formatDate(soldOn)}, () => this.changesMade())}
+          onChangeText={(soldOn) =>
+            this.setState({soldOn: formatDate(soldOn)}, () =>
+              this.changesMade(),
+            )
+          }
           keyboardType="default"
           color={Color.paleRed}
           value={this.state.soldOn}
           editable={this.state.editable}
-            example="DD/MM/YYYY"
+          example="DD/MM/YYYY"
         />
       </View>
     </View>
@@ -434,7 +464,9 @@ class Property extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Name"
-          onChangeText={(name) => this.setState({name}, () => this.changesMade())}
+          onChangeText={(name) =>
+            this.setState({name}, () => this.changesMade())
+          }
           keyboardType="default"
           color={Color.paleRed}
           value={this.state.name}
@@ -447,11 +479,14 @@ class Property extends Component {
             this.state.purpose.length === 0 ? 'Purpose' : this.state.purpose
           }
           onPress={() =>
-            this.setState({
-              modal: true,
-              array: purpose,
-              key: 'purpose',
-            }, () => this.changesMade())
+            this.setState(
+              {
+                modal: true,
+                array: purpose,
+                key: 'purpose',
+              },
+              () => this.changesMade(),
+            )
           }
           color={Color.veryLightBlue}
           editable={this.state.editable}
@@ -466,11 +501,14 @@ class Property extends Component {
               : this.state.residenceType
           }
           onPress={() =>
-            this.setState({
-              modal: true,
-              array: residence_type,
-              key: 'residenceType',
-            }, () => this.changesMade())
+            this.setState(
+              {
+                modal: true,
+                array: residence_type,
+                key: 'residenceType',
+              },
+              () => this.changesMade(),
+            )
           }
           color={Color.veryLightBlue}
           editable={this.state.editable}
@@ -480,7 +518,9 @@ class Property extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Address Line 1"
-          onChangeText={(address1) => this.setState({address1}, () => this.changesMade())}
+          onChangeText={(address1) =>
+            this.setState({address1}, () => this.changesMade())
+          }
           keyboardType="default"
           color={Color.paleRed}
           value={this.state.address1}
@@ -490,7 +530,9 @@ class Property extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Address Line 2"
-          onChangeText={(address2) => this.setState({address2}, () => this.changesMade())}
+          onChangeText={(address2) =>
+            this.setState({address2}, () => this.changesMade())
+          }
           keyboardType="default"
           color={Color.paleRed}
           value={this.state.address2}
@@ -500,7 +542,9 @@ class Property extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="City"
-          onChangeText={(city) => this.setState({city}, () => this.changesMade())}
+          onChangeText={(city) =>
+            this.setState({city}, () => this.changesMade())
+          }
           keyboardType="default"
           color={Color.paleRed}
           value={this.state.city}
@@ -510,7 +554,9 @@ class Property extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="State"
-          onChangeText={(state) => this.setState({state}, () => this.changesMade())}
+          onChangeText={(state) =>
+            this.setState({state}, () => this.changesMade())
+          }
           keyboardType="default"
           color={Color.paleRed}
           value={this.state.state}
@@ -533,11 +579,14 @@ class Property extends Component {
             this.state.country.length === 0 ? 'Country' : this.state.country
           }
           onPress={() =>
-            this.setState({
-              modal: true,
-              array: this.props.country.country,
-              key: 'country',
-            }, () => this.changesMade())
+            this.setState(
+              {
+                modal: true,
+                array: this.props.country.country,
+                key: 'country',
+              },
+              () => this.changesMade(),
+            )
           }
           color={Color.veryLightBlue}
           editable={this.state.editable}
@@ -547,18 +596,24 @@ class Property extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Bought On"
-          onChangeText={(boughtOn) => this.setState({boughtOn: formatDate(boughtOn)}, () => this.changesMade())}
+          onChangeText={(boughtOn) =>
+            this.setState({boughtOn: formatDate(boughtOn)}, () =>
+              this.changesMade(),
+            )
+          }
           keyboardType="default"
           color={Color.paleRed}
           value={this.state.boughtOn}
           editable={this.state.editable}
-            example="DD/MM/YYYY"
+          example="DD/MM/YYYY"
         />
       </View>
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="House Size"
-          onChangeText={(houseSize) => this.setState({houseSize}, () => this.changesMade())}
+          onChangeText={(houseSize) =>
+            this.setState({houseSize}, () => this.changesMade())
+          }
           keyboardType="default"
           color={Color.paleRed}
           value={this.state.houseSize}
@@ -568,7 +623,9 @@ class Property extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Lot Size"
-          onChangeText={(lotSize) => this.setState({lotSize}, () => this.changesMade())}
+          onChangeText={(lotSize) =>
+            this.setState({lotSize}, () => this.changesMade())
+          }
           keyboardType="default"
           color={Color.paleRed}
           value={this.state.lotSize}
@@ -578,7 +635,9 @@ class Property extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="County"
-          onChangeText={(county) => this.setState({county}, () => this.changesMade())}
+          onChangeText={(county) =>
+            this.setState({county}, () => this.changesMade())
+          }
           keyboardType="default"
           color={Color.paleRed}
           value={this.state.county}
@@ -588,7 +647,9 @@ class Property extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="School District"
-          onChangeText={(schoolDistrict) => this.setState({schoolDistrict}, () => this.changesMade())}
+          onChangeText={(schoolDistrict) =>
+            this.setState({schoolDistrict}, () => this.changesMade())
+          }
           keyboardType="default"
           color={Color.paleRed}
           value={this.state.schoolDistrict}
@@ -613,7 +674,9 @@ class Property extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Property Tax Amount"
-          onChangeText={(propertyTaxAmnt) => this.setState({propertyTaxAmnt}, () => this.changesMade())}
+          onChangeText={(propertyTaxAmnt) =>
+            this.setState({propertyTaxAmnt}, () => this.changesMade())
+          }
           keyboardType="default"
           color={Color.paleRed}
           value={this.state.propertyTaxAmnt}
@@ -645,7 +708,9 @@ class Property extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Number of Levels"
-          onChangeText={(numberOfLevels) => this.setState({numberOfLevels}, () => this.changesMade())}
+          onChangeText={(numberOfLevels) =>
+            this.setState({numberOfLevels}, () => this.changesMade())
+          }
           keyboardType="default"
           color={Color.paleRed}
           value={this.state.numberOfLevels}
@@ -660,11 +725,14 @@ class Property extends Component {
               : this.state.constructionType
           }
           onPress={() =>
-            this.setState({
-              modal: true,
-              array: construction_type,
-              key: 'constructionType',
-            }, () => this.changesMade())
+            this.setState(
+              {
+                modal: true,
+                array: construction_type,
+                key: 'constructionType',
+              },
+              () => this.changesMade(),
+            )
           }
           color={Color.veryLightBlue}
           editable={this.state.editable}
@@ -674,7 +742,9 @@ class Property extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Garage Size"
-          onChangeText={(garageSize) => this.setState({garageSize}, () => this.changesMade())}
+          onChangeText={(garageSize) =>
+            this.setState({garageSize}, () => this.changesMade())
+          }
           keyboardType="default"
           color={Color.paleRed}
           value={this.state.garageSize}
@@ -689,11 +759,14 @@ class Property extends Component {
               : this.state.garageType
           }
           onPress={() =>
-            this.setState({
-              modal: true,
-              array: garage_type,
-              key: 'garageType',
-            }, () => this.changesMade())
+            this.setState(
+              {
+                modal: true,
+                array: garage_type,
+                key: 'garageType',
+              },
+              () => this.changesMade(),
+            )
           }
           color={Color.veryLightBlue}
           editable={this.state.editable}
@@ -708,7 +781,9 @@ class Property extends Component {
       <View style={styles.inputContainer}>
         <MultilineInput
           placeholder="Notes"
-          onChangeText={(notes) => this.setState({notes}, () => this.changesMade())}
+          onChangeText={(notes) =>
+            this.setState({notes}, () => this.changesMade())
+          }
           keyboardType="default"
           color={Color.veryLightBlue}
           value={this.state.notes}
@@ -729,8 +804,8 @@ class Property extends Component {
   changesMade = () => {
     const {mode} = this.props.route.params;
     const {editable} = this.state;
-    if (!editable) this.setState({ changes: true }, () => console.log("Check: "));
-  }
+    if (!editable) this.setState({changes: true}, () => console.log('Check: '));
+  };
 
   editComponent = (isLoader, modal, array, key) => (
     <View>
@@ -786,26 +861,27 @@ class Property extends Component {
   onBack = () => {
     const {navigation} = this.props;
     const {changes} = this.state;
-    if (changes){
+    if (changes) {
       Alert.alert(
-      //title
-      'Save',
-      //body
-      'Do you want to save changes ?',
-      [
-        {text: 'Save', onPress: () => this.submit()},
-        {text: 'Cancel', onPress: () =>  navigation.goBack(), style: 'cancel'},
-      ],
-      {cancelable: false},
-      //clicking out side of alert will not cancel
-    );
-    }else {
+        //title
+        'Save',
+        //body
+        'Do you want to save changes ?',
+        [
+          {text: 'Save', onPress: () => this.submit()},
+          {text: 'Cancel', onPress: () => navigation.goBack(), style: 'cancel'},
+        ],
+        {cancelable: false},
+        //clicking out side of alert will not cancel
+      );
+    } else {
       navigation.goBack();
     }
-    return true
-  }
+    return true;
+  };
 
-background = () => require('../../../assets/jpg-images/Personal-Assets-Background/personal-assets-background.jpg')
+  background = () =>
+    require('../../../assets/jpg-images/Personal-Assets-Background/personal-assets-background.jpg');
 
   render() {
     const {isLoader, modal, array, key, editable} = this.state;
@@ -814,7 +890,9 @@ background = () => require('../../../assets/jpg-images/Personal-Assets-Backgroun
     return (
       <Root>
         <SafeAreaView style={styles.outerView}>
-          <ImageBackground source={this.background()} style={styles.backgroundImage}>
+          <ImageBackground
+            source={this.background()}
+            style={styles.backgroundImage}>
             <View style={styles.titleView}>
               <TitleView
                 navigation={navigation}
@@ -840,17 +918,18 @@ background = () => require('../../../assets/jpg-images/Personal-Assets-Backgroun
               <View style={styles.container}>
                 {this.editComponent(isLoader, modal, array, key, editable)}
               </View>
+              <SwitchKey type={'Property'} recid={recid} shareKeyId={shareKeyId} refresh={this.refreshData}/>
             </ScrollView>
           </ImageBackground>
         </SafeAreaView>
       </Root>
-    )
+    );
   }
 }
 
-const mapStateToProps = ({ userData, country }) =>({
+const mapStateToProps = ({userData, country}) => ({
   userData,
-  country
-})
+  country,
+});
 
 export default connect(mapStateToProps)(Property);
