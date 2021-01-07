@@ -108,6 +108,10 @@ class WebSiteAccount extends Component {
     if (mode === 'Add') this.setState({editable: false, hideResult: false});
   };
 
+  refreshData = () => {
+    this.viewRecord()
+  }
+
   setViewData = (data) => {
     console.log('Data: ', data);
     this.setState({

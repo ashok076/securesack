@@ -6,7 +6,7 @@ import {
   ImageBackground,
   SafeAreaView,
   Alert,
-  BackHandler
+  BackHandler,
 } from 'react-native';
 import {Text} from 'react-native-paper';
 import qs from 'qs';
@@ -22,7 +22,8 @@ import ModalScreen from '../../../components/modal/modal.component';
 import RefBusinessModal from '../../../components/ref-business-modal/ref-business-modal.component';
 import TitleView from '../../../components/title-view/title-view.component';
 import AutoCompleteText from '../../../components/auto-complete-text-input/auto-complete-text-input.component';
-import MultilineInput from '../../../components/multiline-input-text/multiline-input-text.component'
+import MultilineInput from '../../../components/multiline-input-text/multiline-input-text.component';
+import SwitchKey from '../../../components/switch-key/switch-key.component';
 import {
   createOrUpdateRecord,
   viewRecords,
@@ -84,6 +85,7 @@ class ServiceAccount extends Component {
     refArray: [],
     showQuestion: false,
     changes: false,
+    shareKeyId: '',
   };
   constructor(props) {
     super(props);
@@ -102,7 +104,7 @@ class ServiceAccount extends Component {
           {
             access_token: this.props.userData.userData.access_token,
           },
-          () => this.viewRecord(navigation),
+          () => this.viewRecord(),
           this.getBusinessEntity(),
           this.getCreditCard(),
         );
@@ -111,10 +113,11 @@ class ServiceAccount extends Component {
 
   componentWillUnmount() {
     BackHandler.removeEventListener('hardwareBackPress');
-}
+  }
 
-  viewRecord = async (navigation) => {
-    const {recid, mode} = this.props.route.params;
+  viewRecord = async () => {
+    const {navigation, route} = this.props;
+    const {recid, mode} = route.params;
     this.setState({isLoader: true});
     await viewRecords(
       'ServiceAccount',
@@ -135,7 +138,7 @@ class ServiceAccount extends Component {
         navigation.reset({
           index: 0,
           routes: [{name: 'Login'}],
-        })
+        });
       });
     this.setState({isLoader: false});
     if (mode === 'Add') this.setState({editable: false, hideResult: false});
@@ -178,6 +181,8 @@ class ServiceAccount extends Component {
           data.CreditCardProvided.label === undefined
             ? ''
             : data.CreditCardProvided.label,
+        shareKeyId: data.shareKeyId,
+        isLoader: false,
       },
       () => this.referenceObj(),
     );
@@ -300,10 +305,11 @@ class ServiceAccount extends Component {
         navigation.goBack();
       })
       .catch((error) => {
-        this.setState({isLoader: false});navigation.reset({
+        this.setState({isLoader: false});
+        navigation.reset({
           index: 0,
           routes: [{name: 'Login'}],
-        })
+        });
       });
   };
 
@@ -328,11 +334,11 @@ class ServiceAccount extends Component {
     )
       .then((response) => navigation.goBack())
       .catch((error) => {
-        console.log('Error in delete', error)
+        console.log('Error in delete', error);
         navigation.reset({
           index: 0,
           routes: [{name: 'Login'}],
-        })
+        });
       });
   };
 
@@ -356,10 +362,11 @@ class ServiceAccount extends Component {
       })
       .catch((error) => {
         this.setState({isLoader: false});
-        console.log('Error in delete', error);navigation.reset({
+        console.log('Error in delete', error);
+        navigation.reset({
           index: 0,
           routes: [{name: 'Login'}],
-        })
+        });
       });
   };
 
@@ -374,7 +381,9 @@ class ServiceAccount extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Name"
-          onChangeText={(name) => this.setState({name}, () => this.changesMade())}
+          onChangeText={(name) =>
+            this.setState({name}, () => this.changesMade())
+          }
           keyboardType="default"
           color={Color.veryLightBlue}
           value={this.state.name}
@@ -384,7 +393,9 @@ class ServiceAccount extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Account Number"
-          onChangeText={(accNo) => this.setState({accNo}, () => this.changesMade())}
+          onChangeText={(accNo) =>
+            this.setState({accNo}, () => this.changesMade())
+          }
           keyboardType="number-pad"
           color={Color.veryLightBlue}
           value={this.state.accNo}
@@ -400,7 +411,9 @@ class ServiceAccount extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Primary Account Holder"
-          onChangeText={(primaryAcHolder) => this.setState({primaryAcHolder}, () => this.changesMade())}
+          onChangeText={(primaryAcHolder) =>
+            this.setState({primaryAcHolder}, () => this.changesMade())
+          }
           keyboardType="default"
           color={Color.veryLightBlue}
           value={this.state.primaryAcHolder}
@@ -410,7 +423,9 @@ class ServiceAccount extends Component {
       <View style={styles.inputContainer}>
         <AutoCompleteText
           placeholder="Provider"
-          onChangeText={(provider) => this.setState({provider}, () => this.changesMade())}
+          onChangeText={(provider) =>
+            this.setState({provider}, () => this.changesMade())
+          }
           keyboardType="default"
           value={this.state.provider}
           color={Color.veryLightBlue}
@@ -427,11 +442,14 @@ class ServiceAccount extends Component {
               : this.state.serviceType
           }
           onPress={() =>
-            this.setState({
-              modal: true,
-              array: serviceType,
-              key: 'serviceType',
-            }, () => this.changesMade())
+            this.setState(
+              {
+                modal: true,
+                array: serviceType,
+                key: 'serviceType',
+              },
+              () => this.changesMade(),
+            )
           }
           color={Color.veryLightBlue}
           editable={this.state.editable}
@@ -441,7 +459,9 @@ class ServiceAccount extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="User Name"
-          onChangeText={(username) => this.setState({username}, () => this.changesMade())}
+          onChangeText={(username) =>
+            this.setState({username}, () => this.changesMade())
+          }
           keyboardType="default"
           color={Color.veryLightBlue}
           value={this.state.username}
@@ -457,7 +477,9 @@ class ServiceAccount extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Password"
-          onChangeText={(password) => this.setState({password}, () => this.changesMade())}
+          onChangeText={(password) =>
+            this.setState({password}, () => this.changesMade())
+          }
           keyboardType="default"
           color={Color.veryLightBlue}
           value={this.state.password}
@@ -473,7 +495,9 @@ class ServiceAccount extends Component {
       <View style={styles.inputContainer}>
         <InputTextIconDynamic
           placeholder="Installment"
-          onChangeText={(installment) => this.setState({installment}, () => this.changesMade())}
+          onChangeText={(installment) =>
+            this.setState({installment}, () => this.changesMade())
+          }
           icon="dollar-sign"
           keyboardType="number-pad"
           color={Color.veryLightBlue}
@@ -489,11 +513,14 @@ class ServiceAccount extends Component {
               : this.state.paymentDueType
           }
           onPress={() =>
-            this.setState({
-              modal: true,
-              array: payment_due_type,
-              key: 'paymentDueType',
-            }, () => this.changesMade())
+            this.setState(
+              {
+                modal: true,
+                array: payment_due_type,
+                key: 'paymentDueType',
+              },
+              () => this.changesMade(),
+            )
           }
           color={Color.veryLightBlue}
           editable={this.state.editable}
@@ -504,7 +531,9 @@ class ServiceAccount extends Component {
         <View style={[styles.miniInputContainer, {marginRight: 10}]}>
           <InputTextDynamic
             placeholder="From"
-            onChangeText={(from) => this.setState({from: formatDate(from)}, () => this.changesMade())}
+            onChangeText={(from) =>
+              this.setState({from: formatDate(from)}, () => this.changesMade())
+            }
             keyboardType="number-pad"
             color={Color.veryLightBlue}
             value={this.state.from}
@@ -515,7 +544,9 @@ class ServiceAccount extends Component {
         <View style={styles.miniInputContainer}>
           <InputTextDynamic
             placeholder="To"
-            onChangeText={(to) => this.setState({to: formatDate(to)}, () => this.changesMade())}
+            onChangeText={(to) =>
+              this.setState({to: formatDate(to)}, () => this.changesMade())
+            }
             keyboardType="number-pad"
             color={Color.veryLightBlue}
             value={this.state.to}
@@ -527,7 +558,9 @@ class ServiceAccount extends Component {
       <View style={styles.inputContainer}>
         <InputTextIconDynamic
           placeholder="Total"
-          onChangeText={(total) => this.setState({total}, () => this.changesMade())}
+          onChangeText={(total) =>
+            this.setState({total}, () => this.changesMade())
+          }
           icon="dollar-sign"
           keyboardType="number-pad"
           color={Color.veryLightBlue}
@@ -543,7 +576,9 @@ class ServiceAccount extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Address Line 1"
-          onChangeText={(address1) => this.setState({address1}, () => this.changesMade())}
+          onChangeText={(address1) =>
+            this.setState({address1}, () => this.changesMade())
+          }
           keyboardType="default"
           color={Color.veryLightBlue}
           value={this.state.address1}
@@ -553,7 +588,9 @@ class ServiceAccount extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Address Line 2"
-          onChangeText={(address2) => this.setState({address2}, () => this.changesMade())}
+          onChangeText={(address2) =>
+            this.setState({address2}, () => this.changesMade())
+          }
           keyboardType="default"
           color={Color.veryLightBlue}
           value={this.state.address2}
@@ -563,7 +600,9 @@ class ServiceAccount extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="City"
-          onChangeText={(city) => this.setState({city}, () => this.changesMade())}
+          onChangeText={(city) =>
+            this.setState({city}, () => this.changesMade())
+          }
           keyboardType="default"
           color={Color.veryLightBlue}
           value={this.state.city}
@@ -573,7 +612,9 @@ class ServiceAccount extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="State"
-          onChangeText={(state) => this.setState({state}, () => this.changesMade())}
+          onChangeText={(state) =>
+            this.setState({state}, () => this.changesMade())
+          }
           keyboardType="default"
           color={Color.veryLightBlue}
           value={this.state.state}
@@ -596,11 +637,14 @@ class ServiceAccount extends Component {
             this.state.country.length === 0 ? 'Country' : this.state.country
           }
           onPress={() =>
-            this.setState({
-              modal: true,
-              array: this.props.country.country,
-              key: 'country',
-            }, () => this.changesMade())
+            this.setState(
+              {
+                modal: true,
+                array: this.props.country.country,
+                key: 'country',
+              },
+              () => this.changesMade(),
+            )
           }
           color={Color.veryLightBlue}
           editable={this.state.editable}
@@ -615,7 +659,9 @@ class ServiceAccount extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Security Question 1"
-          onChangeText={(securityQ1) => this.setState({securityQ1}, () => this.changesMade())}
+          onChangeText={(securityQ1) =>
+            this.setState({securityQ1}, () => this.changesMade())
+          }
           keyboardType="default"
           color={Color.veryLightBlue}
           value={this.state.securityQ1}
@@ -631,7 +677,9 @@ class ServiceAccount extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Answer 1"
-          onChangeText={(securityA1) => this.setState({securityA1}, () => this.changesMade())}
+          onChangeText={(securityA1) =>
+            this.setState({securityA1}, () => this.changesMade())
+          }
           keyboardType="default"
           color={Color.veryLightBlue}
           value={this.state.securityA1}
@@ -641,7 +689,9 @@ class ServiceAccount extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Security Question 2"
-          onChangeText={(securityQ2) => this.setState({securityQ2}, () => this.changesMade())}
+          onChangeText={(securityQ2) =>
+            this.setState({securityQ2}, () => this.changesMade())
+          }
           keyboardType="default"
           color={Color.veryLightBlue}
           value={this.state.securityQ2}
@@ -657,7 +707,9 @@ class ServiceAccount extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Answer 2"
-          onChangeText={(securityA2) => this.setState({securityA2}, () => this.changesMade())}
+          onChangeText={(securityA2) =>
+            this.setState({securityA2}, () => this.changesMade())
+          }
           keyboardType="default"
           color={Color.veryLightBlue}
           value={this.state.securityA2}
@@ -667,7 +719,9 @@ class ServiceAccount extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Security Question 3"
-          onChangeText={(securityQ3) => this.setState({securityQ3}, () => this.changesMade())}
+          onChangeText={(securityQ3) =>
+            this.setState({securityQ3}, () => this.changesMade())
+          }
           keyboardType="default"
           color={Color.veryLightBlue}
           value={this.state.securityQ3}
@@ -683,7 +737,9 @@ class ServiceAccount extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Answer 3"
-          onChangeText={(securityA3) => this.setState({securityA3}, () => this.changesMade())}
+          onChangeText={(securityA3) =>
+            this.setState({securityA3}, () => this.changesMade())
+          }
           keyboardType="default"
           color={Color.veryLightBlue}
           value={this.state.securityA3}
@@ -728,11 +784,14 @@ class ServiceAccount extends Component {
                 : this.state.isCreditCardProvided
             }
             onPress={() =>
-              this.setState({
-                modal: true,
-                array: is_credit_card_provided,
-                key: 'isCreditCardProvided',
-              }, () => this.changesMade())
+              this.setState(
+                {
+                  modal: true,
+                  array: is_credit_card_provided,
+                  key: 'isCreditCardProvided',
+                },
+                () => this.changesMade(),
+              )
             }
             color={Color.veryLightBlue}
             editable={this.state.editable}
@@ -762,11 +821,14 @@ class ServiceAccount extends Component {
     creditCardArray.map((label) => {
       arr.push(label.label);
     });
-    this.setState({
-      modal: true,
-      array: arr,
-      key: 'creditCardProvided',
-    }, () => this.changesMade());
+    this.setState(
+      {
+        modal: true,
+        array: arr,
+        key: 'creditCardProvided',
+      },
+      () => this.changesMade(),
+    );
   };
 
   notes = () => (
@@ -774,7 +836,9 @@ class ServiceAccount extends Component {
       <View style={styles.inputContainer}>
         <MultilineInput
           placeholder="Notes"
-          onChangeText={(notes) => this.setState({notes}, () => this.changesMade())}
+          onChangeText={(notes) =>
+            this.setState({notes}, () => this.changesMade())
+          }
           keyboardType="default"
           color={Color.veryLightBlue}
           value={this.state.notes}
@@ -888,32 +952,32 @@ class ServiceAccount extends Component {
   onBack = () => {
     const {navigation} = this.props;
     const {changes} = this.state;
-    if (changes){
+    if (changes) {
       Alert.alert(
-      //title
-      'Save',
-      //body
-      'Do you want to save changes ?',
-      [
-        {text: 'Save', onPress: () => this.submit()},
-        {text: 'Cancel', onPress: () =>  navigation.goBack(), style: 'cancel'},
-      ],
-      {cancelable: false},
-      //clicking out side of alert will not cancel
-    );
-    }else {
+        //title
+        'Save',
+        //body
+        'Do you want to save changes ?',
+        [
+          {text: 'Save', onPress: () => this.submit()},
+          {text: 'Cancel', onPress: () => navigation.goBack(), style: 'cancel'},
+        ],
+        {cancelable: false},
+        //clicking out side of alert will not cancel
+      );
+    } else {
       navigation.goBack();
     }
-    return true
-  }
+    return true;
+  };
 
   background = () =>
     require('../../../assets/jpg-images/Service-Reward-Background/service-and-reward-background.jpg');
 
   render() {
-    const {isLoader, modal, array, key, editable, refBusModal} = this.state;
+    const {isLoader, modal, array, key, editable, refBusModal, shareKeyId} = this.state;
     const {route, navigation} = this.props;
-    const {title, type, mode} = route.params;
+    const {title, type, mode, recid} = route.params;
     console.log('Array: ', this.state.creditCardArray);
     return (
       <Root>
@@ -953,6 +1017,7 @@ class ServiceAccount extends Component {
                   refBusModal,
                 )}
               </View>
+              <SwitchKey type={'ServiceAccount'} recid={recid} shareKeyId={shareKeyId} refresh={this.refreshData}/>
             </ScrollView>
           </ImageBackground>
         </SafeAreaView>

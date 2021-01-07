@@ -22,7 +22,8 @@ import ModalScreen from '../../../components/modal/modal.component';
 import RefBusinessModal from '../../../components/ref-business-modal/ref-business-modal.component';
 import TitleView from '../../../components/title-view/title-view.component';
 import AutoCompleteText from '../../../components/auto-complete-text-input/auto-complete-text-input.component';
-import MultilineInput from '../../../components/multiline-input-text/multiline-input-text.component'
+import MultilineInput from '../../../components/multiline-input-text/multiline-input-text.component';
+import SwitchKey from '../../../components/switch-key/switch-key.component';
 import {
   createOrUpdateRecord,
   viewRecords,
@@ -65,6 +66,7 @@ class RewardProgram extends Component {
     refArray: [],
     showQuestion: false,
     changes: false,
+    shareKeyId: ''
   };
   constructor(props) {
     super(props);
@@ -83,7 +85,7 @@ class RewardProgram extends Component {
           {
             access_token: this.props.userData.userData.access_token,
           },
-          () => this.viewRecord(navigation),
+          () => this.viewRecord(),
           this.getBusinessEntity(),
         );
     });
@@ -93,8 +95,9 @@ class RewardProgram extends Component {
     BackHandler.removeEventListener('hardwareBackPress');
 }
 
-  viewRecord = async (navigation) => {
-    const {recid, mode} = this.props.route.params;
+  viewRecord = async () => {
+    const { navigation, route } = this.props
+    const {recid, mode} = route.params;
     this.setState({isLoader: true});
     await viewRecords(
       'RewardProgram',
@@ -121,6 +124,10 @@ class RewardProgram extends Component {
     if (mode === 'Add') this.setState({editable: false, hideResult: false});
   };
 
+  refreshData = () => {
+    this.viewRecord()
+  }
+
   setViewData = (data) => {
     this.setState(
       {
@@ -140,6 +147,8 @@ class RewardProgram extends Component {
         securityA3: data.SecurityAnswer3,
         programType: data.ProgramType,
         notes: data.Notes,
+        shareKeyId: data.shareKeyId,
+        isLoader: false,
       },
       () => this.referenceObj(),
     );
@@ -598,9 +607,9 @@ class RewardProgram extends Component {
     require('../../../assets/jpg-images/Service-Reward-Background/service-and-reward-background.jpg');
 
   render() {
-    const {isLoader, modal, array, key, editable, refBusModal} = this.state;
+    const {isLoader, modal, array, key, editable, refBusModal, shareKeyId} = this.state;
     const {route, navigation} = this.props;
-    const {title, type, mode} = route.params;
+    const {title, type, mode, recid} = route.params;
     return (
       <Root>
         <SafeAreaView style={styles.outerView}>
@@ -639,6 +648,7 @@ class RewardProgram extends Component {
                   refBusModal,
                 )}
               </View>
+              <SwitchKey type={'RewardProgram'} recid={recid} shareKeyId={shareKeyId} refresh={this.refreshData}/>
             </ScrollView>
           </ImageBackground>
         </SafeAreaView>
