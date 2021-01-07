@@ -6,7 +6,7 @@ import {
   ImageBackground,
   SafeAreaView,
   Alert,
-  BackHandler
+  BackHandler,
 } from 'react-native';
 import {Text} from 'react-native-paper';
 import qs from 'qs';
@@ -21,7 +21,8 @@ import Button from '../../../components/button/button.component';
 import Loader from '../../../components/loader/loader.component';
 import ModalScreen from '../../../components/modal/modal.component';
 import AutoCompleteText from '../../../components/auto-complete-text-input/auto-complete-text-input.component';
-import MultilineInput from '../../../components/multiline-input-text/multiline-input-text.component'
+import MultilineInput from '../../../components/multiline-input-text/multiline-input-text.component';
+import SwitchKey from '../../../components/switch-key/switch-key.component';
 import {
   createOrUpdateRecord,
   viewRecords,
@@ -73,6 +74,7 @@ class HealthCareProvider extends Component {
     dependent3: '',
     dependent4: '',
     changes: false,
+    shareKeyId: '',
   };
 
   constructor(props) {
@@ -99,10 +101,11 @@ class HealthCareProvider extends Component {
 
   componentWillUnmount() {
     BackHandler.removeEventListener('hardwareBackPress');
-}
+  }
 
   viewRecord = async () => {
-    const {recid, mode} = this.props.route.params;
+    const {navigation, route} = this.props;
+    const {recid, mode} = route.params;
     this.setState({isLoader: true});
     await viewRecords(
       'HealthCareProvider',
@@ -117,10 +120,18 @@ class HealthCareProvider extends Component {
       .catch((error) => {
         console.log('Error: ', error);
         this.setState({isLoader: false});
+        navigation.reset({
+          index: 0,
+          routes: [{name: 'Login'}],
+        });
       });
     this.setState({isLoader: false});
     if (mode === 'Add') this.setState({editable: false, hideResult: false});
   };
+
+  refreshData = () => {
+    this.viewRecord()
+  }
 
   setViewData = (data) => {
     console.log('Data: ', data);
@@ -153,7 +164,9 @@ class HealthCareProvider extends Component {
       dependent2: data.Dependent2,
       dependent3: data.Dependent3,
       dependent4: data.Dependent4,
-      notes: data.Note
+      notes: data.Note,
+      shareKeyId: data.shareKeyId,
+      isLoader: false,
     });
   };
 
@@ -295,11 +308,14 @@ class HealthCareProvider extends Component {
               : this.state.insuranceType
           }
           onPress={() =>
-            this.setState({
-              modal: true,
-              array: insurance_type,
-              key: 'insuranceType',
-            }, () => this.changesMade())
+            this.setState(
+              {
+                modal: true,
+                array: insurance_type,
+                key: 'insuranceType',
+              },
+              () => this.changesMade(),
+            )
           }
           color={Color.veryLightPink}
           editable={this.state.editable}
@@ -312,11 +328,14 @@ class HealthCareProvider extends Component {
             this.state.planType.length === 0 ? 'Plan Type' : this.state.planType
           }
           onPress={() =>
-            this.setState({
-              modal: true,
-              array: plan_type,
-              key: 'planType',
-            }, () => this.changesMade())
+            this.setState(
+              {
+                modal: true,
+                array: plan_type,
+                key: 'planType',
+              },
+              () => this.changesMade(),
+            )
           }
           color={Color.veryLightPink}
           editable={this.state.editable}
@@ -326,7 +345,9 @@ class HealthCareProvider extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Group ID Number"
-          onChangeText={(groupIdNumber) => this.setState({groupIdNumber}, () => this.changesMade())}
+          onChangeText={(groupIdNumber) =>
+            this.setState({groupIdNumber}, () => this.changesMade())
+          }
           keyboardType="default"
           color={Color.veryLightPink}
           value={this.state.groupIdNumber}
@@ -336,7 +357,9 @@ class HealthCareProvider extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Plan Coverage"
-          onChangeText={(planCoverage) => this.setState({planCoverage}, () => this.changesMade())}
+          onChangeText={(planCoverage) =>
+            this.setState({planCoverage}, () => this.changesMade())
+          }
           keyboardType="default"
           color={Color.veryLightPink}
           value={this.state.planCoverage}
@@ -346,7 +369,9 @@ class HealthCareProvider extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Deductible"
-          onChangeText={(deductible) => this.setState({deductible}, () => this.changesMade())}
+          onChangeText={(deductible) =>
+            this.setState({deductible}, () => this.changesMade())
+          }
           keyboardType="default"
           value={this.state.deductible}
           color={Color.veryLightPink}
@@ -369,7 +394,9 @@ class HealthCareProvider extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Username"
-          onChangeText={(username) => this.setState({username}, () => this.changesMade())}
+          onChangeText={(username) =>
+            this.setState({username}, () => this.changesMade())
+          }
           keyboardType="default"
           color={Color.veryLightPink}
           value={this.state.username}
@@ -385,7 +412,9 @@ class HealthCareProvider extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Password"
-          onChangeText={(password) => this.setState({password}, () => this.changesMade())}
+          onChangeText={(password) =>
+            this.setState({password}, () => this.changesMade())
+          }
           keyboardType="default"
           color={Color.veryLightPink}
           value={this.state.password}
@@ -418,7 +447,9 @@ class HealthCareProvider extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Email Provided"
-          onChangeText={(emailProvided) => this.setState({emailProvided}, () => this.changesMade())}
+          onChangeText={(emailProvided) =>
+            this.setState({emailProvided}, () => this.changesMade())
+          }
           keyboardType="default"
           color={Color.veryLightPink}
           value={this.state.emailProvided}
@@ -430,7 +461,9 @@ class HealthCareProvider extends Component {
           <InputTextDynamic
             placeholder="Effective From"
             onChangeText={(effectiveFrom) =>
-              this.setState({effectiveFrom: formatDate(effectiveFrom)}, () => this.changesMade())
+              this.setState({effectiveFrom: formatDate(effectiveFrom)}, () =>
+                this.changesMade(),
+              )
             }
             keyboardType="default"
             color={Color.veryLightPink}
@@ -443,7 +476,9 @@ class HealthCareProvider extends Component {
           <InputTextDynamic
             placeholder="Expiration"
             onChangeText={(expiration) =>
-              this.setState({expiration: formatDate(expiration)}, () => this.changesMade())
+              this.setState({expiration: formatDate(expiration)}, () =>
+                this.changesMade(),
+              )
             }
             keyboardType="default"
             color={Color.veryLightPink}
@@ -456,7 +491,9 @@ class HealthCareProvider extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Installment"
-          onChangeText={(installment) => this.setState({installment}, () => this.changesMade())}
+          onChangeText={(installment) =>
+            this.setState({installment}, () => this.changesMade())
+          }
           keyboardType="default"
           color={Color.veryLightPink}
           value={this.state.installment}
@@ -471,11 +508,14 @@ class HealthCareProvider extends Component {
               : this.state.paymentDueType
           }
           onPress={() =>
-            this.setState({
-              modal: true,
-              array: payment_due_type,
-              key: 'paymentDueType',
-            }, () => this.changesMade())
+            this.setState(
+              {
+                modal: true,
+                array: payment_due_type,
+                key: 'paymentDueType',
+              },
+              () => this.changesMade(),
+            )
           }
           color={Color.veryLightPink}
           editable={this.state.editable}
@@ -485,7 +525,9 @@ class HealthCareProvider extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="From"
-          onChangeText={(from) => this.setState({from: formatDate(from)}, () => this.changesMade())}
+          onChangeText={(from) =>
+            this.setState({from: formatDate(from)}, () => this.changesMade())
+          }
           color={Color.veryLightPink}
           value={this.state.from}
           editable={this.state.editable}
@@ -495,7 +537,9 @@ class HealthCareProvider extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="To"
-          onChangeText={(to) => this.setState({to: formatDate(to)}, () => this.changesMade())}
+          onChangeText={(to) =>
+            this.setState({to: formatDate(to)}, () => this.changesMade())
+          }
           color={Color.veryLightPink}
           value={this.state.to}
           editable={this.state.editable}
@@ -505,7 +549,9 @@ class HealthCareProvider extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Total"
-          onChangeText={(total) => this.setState({total}, () => this.changesMade())}
+          onChangeText={(total) =>
+            this.setState({total}, () => this.changesMade())
+          }
           color={Color.veryLightPink}
           value={this.state.total}
           editable={this.state.editable}
@@ -519,7 +565,9 @@ class HealthCareProvider extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Address Line 1"
-          onChangeText={(address1) => this.setState({address1}, () => this.changesMade())}
+          onChangeText={(address1) =>
+            this.setState({address1}, () => this.changesMade())
+          }
           keyboardType="default"
           color={Color.veryLightPink}
           value={this.state.address1}
@@ -529,7 +577,9 @@ class HealthCareProvider extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Address Line 2"
-          onChangeText={(address2) => this.setState({address2}, () => this.changesMade())}
+          onChangeText={(address2) =>
+            this.setState({address2}, () => this.changesMade())
+          }
           keyboardType="default"
           color={Color.veryLightPink}
           value={this.state.address2}
@@ -539,7 +589,9 @@ class HealthCareProvider extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="City"
-          onChangeText={(city) => this.setState({city}, () => this.changesMade())}
+          onChangeText={(city) =>
+            this.setState({city}, () => this.changesMade())
+          }
           keyboardType="default"
           color={Color.veryLightPink}
           value={this.state.city}
@@ -549,7 +601,9 @@ class HealthCareProvider extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="State"
-          onChangeText={(state) => this.setState({state}, () => this.changesMade())}
+          onChangeText={(state) =>
+            this.setState({state}, () => this.changesMade())
+          }
           keyboardType="default"
           color={Color.veryLightPink}
           value={this.state.state}
@@ -572,11 +626,14 @@ class HealthCareProvider extends Component {
             this.state.country.length === 0 ? 'Country' : this.state.country
           }
           onPress={() =>
-            this.setState({
-              modal: true,
-              array: this.props.country.country,
-              key: 'country',
-            }, () => this.changesMade())
+            this.setState(
+              {
+                modal: true,
+                array: this.props.country.country,
+                key: 'country',
+              },
+              () => this.changesMade(),
+            )
           }
           color={Color.veryLightPink}
           editable={this.state.editable}
@@ -591,7 +648,9 @@ class HealthCareProvider extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Dependent 1"
-          onChangeText={(dependent1) => this.setState({dependent1}, () => this.changesMade())}
+          onChangeText={(dependent1) =>
+            this.setState({dependent1}, () => this.changesMade())
+          }
           keyboardType="default"
           color={Color.veryLightPink}
           value={this.state.dependent1}
@@ -601,7 +660,9 @@ class HealthCareProvider extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Dependent 2"
-          onChangeText={(dependent2) => this.setState({dependent2}, () => this.changesMade())}
+          onChangeText={(dependent2) =>
+            this.setState({dependent2}, () => this.changesMade())
+          }
           keyboardType="default"
           color={Color.veryLightPink}
           value={this.state.dependent2}
@@ -611,7 +672,9 @@ class HealthCareProvider extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Dependent 3"
-          onChangeText={(dependent3) => this.setState({dependent3}, () => this.changesMade())}
+          onChangeText={(dependent3) =>
+            this.setState({dependent3}, () => this.changesMade())
+          }
           keyboardType="default"
           color={Color.veryLightPink}
           value={this.state.dependent3}
@@ -621,7 +684,9 @@ class HealthCareProvider extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Dependent 4"
-          onChangeText={(dependent4) => this.setState({dependent4}, () => this.changesMade())}
+          onChangeText={(dependent4) =>
+            this.setState({dependent4}, () => this.changesMade())
+          }
           keyboardType="default"
           color={Color.veryLightPink}
           value={this.state.dependent4}
@@ -636,7 +701,9 @@ class HealthCareProvider extends Component {
       <View style={styles.inputContainer}>
         <MultilineInput
           placeholder="Notes"
-          onChangeText={(notes) => this.setState({notes}, () => this.changesMade())}
+          onChangeText={(notes) =>
+            this.setState({notes}, () => this.changesMade())
+          }
           keyboardType="default"
           color={Color.veryLightPink}
           value={this.state.notes}
@@ -660,12 +727,11 @@ class HealthCareProvider extends Component {
     this.setState({[key]: value});
   };
 
-changesMade = () => {
-  const {mode} = this.props.route.params;
-  const {editable} = this.state;
-  if (!editable) this.setState({ changes: true }, () => console.log("Check: "));
-}
-
+  changesMade = () => {
+    const {mode} = this.props.route.params;
+    const {editable} = this.state;
+    if (!editable) this.setState({changes: true}, () => console.log('Check: '));
+  };
 
   editComponent = (isLoader, modal, array, key, editable) => (
     <View style={styles.container}>
@@ -724,32 +790,32 @@ changesMade = () => {
   onBack = () => {
     const {navigation} = this.props;
     const {changes} = this.state;
-    if (changes){
+    if (changes) {
       Alert.alert(
-      //title
-      'Save',
-      //body
-      'Do you want to save changes ?',
-      [
-        {text: 'Save', onPress: () => this.submit()},
-        {text: 'Cancel', onPress: () => navigation.goBack(), style: 'cancel'},
-      ],
-      {cancelable: false},
-      //clicking out side of alert will not cancel
-    );
-    }else {
+        //title
+        'Save',
+        //body
+        'Do you want to save changes ?',
+        [
+          {text: 'Save', onPress: () => this.submit()},
+          {text: 'Cancel', onPress: () => navigation.goBack(), style: 'cancel'},
+        ],
+        {cancelable: false},
+        //clicking out side of alert will not cancel
+      );
+    } else {
       navigation.goBack();
     }
-    return true
-  }
+    return true;
+  };
 
   background = () =>
     require('../../../assets/jpg-images/Insurance-Background/insurance-background.jpg');
 
   render() {
-    const {isLoader, modal, array, key, editable} = this.state;
+    const {isLoader, modal, array, key, editable, shareKeyId} = this.state;
     const {route, navigation} = this.props;
-    const {title, type, mode} = route.params;
+    const {title, type, mode, recid} = route.params;
     return (
       <Root>
         <SafeAreaView style={styles.outerView}>
@@ -781,6 +847,7 @@ changesMade = () => {
               <View style={styles.container}>
                 {this.editComponent(isLoader, modal, array, key, editable)}
               </View>
+              <SwitchKey type={'HealthCareProvider'} recid={recid} shareKeyId={shareKeyId} refresh={this.refreshData}/>
             </ScrollView>
           </ImageBackground>
         </SafeAreaView>

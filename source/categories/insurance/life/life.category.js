@@ -22,7 +22,8 @@ import Loader from '../../../components/loader/loader.component';
 import RefBusinessModal from '../../../components/ref-business-modal/ref-business-modal.component';
 import ModalScreen from '../../../components/modal/modal.component';
 import AutoCompleteText from '../../../components/auto-complete-text-input/auto-complete-text-input.component';
-import MultilineInput from '../../../components/multiline-input-text/multiline-input-text.component'
+import MultilineInput from '../../../components/multiline-input-text/multiline-input-text.component';
+import SwitchKey from '../../../components/switch-key/switch-key.component';
 import {
   createOrUpdateRecord,
   viewRecords,
@@ -79,6 +80,7 @@ class LifeInsurance extends Component {
     issuerId: '',
     notes: '',
     changes: false,
+    shareKeyId: ''
   };
 
   constructor(props) {
@@ -109,7 +111,8 @@ class LifeInsurance extends Component {
 }
 
   viewRecord = async () => {
-    const {recid, mode} = this.props.route.params;
+    const { navigation, route } = this.props
+    const {recid, mode} = route.params;
     this.setState({isLoader: true});
     await viewRecords(
       'LifeInsurance',
@@ -124,10 +127,18 @@ class LifeInsurance extends Component {
       .catch((error) => {
         console.log('Error: ', error);
         this.setState({isLoader: false});
+        navigation.reset({
+          index: 0,
+          routes: [{name: 'Login'}],
+        });
       });
     this.setState({isLoader: false});
     if (mode === 'Add') this.setState({editable: false, hideResult: false});
   };
+
+  refreshData = () => {
+    this.viewRecord()
+  }
 
   setViewData = (data) => {
     console.log('Data: ', data);
@@ -162,7 +173,9 @@ class LifeInsurance extends Component {
         beneficiaries2: data.Beneficiary2,
         beneficiaries3: data.Beneficiary3,
         beneficiaries4: data.Beneficiary4,
-        notes: data.Note
+        notes: data.Note,
+        shareKeyId: data.shareKeyId,
+        isLoader: false,
       },
       () => this.referenceObj(),
     );
@@ -837,6 +850,7 @@ changesMade = () => {
               <View style={styles.container}>
                 {this.editComponent(isLoader, modal, array, key, editable)}
               </View>
+              <SwitchKey type={'LifeInsurance'} recid={recid} shareKeyId={shareKeyId} refresh={this.refreshData}/>
             </ScrollView>
           </ImageBackground>
         </SafeAreaView>

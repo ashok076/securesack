@@ -22,7 +22,8 @@ import ModalScreen from '../../../components/modal/modal.component';
 import RefBusinessModal from '../../../components/ref-business-modal/ref-business-modal.component';
 import Loader from '../../../components/loader/loader.component';
 import AutoCompleteText from '../../../components/auto-complete-text-input/auto-complete-text-input.component';
-import MultilineInput from '../../../components/multiline-input-text/multiline-input-text.component'
+import MultilineInput from '../../../components/multiline-input-text/multiline-input-text.component';
+import SwitchKey from '../../../components/switch-key/switch-key.component';
 import {
   createOrUpdateRecord,
   viewRecords,
@@ -76,6 +77,7 @@ class PropertyInsurance extends Component {
     issuerId: '',
     notes: '',
     changes: false,
+    shareKeyId: ''
   };
 
   constructor(props) {
@@ -129,8 +131,13 @@ class PropertyInsurance extends Component {
     return ownedRef;
   };
 
+  refreshData = () => {
+    this.viewRecord()
+  }
+
   viewRecord = async () => {
-    const {recid, mode} = this.props.route.params;
+    const { navigation, route } = this.props
+    const {recid, mode} = route.params;
     this.setState({isLoader: true});
     await viewRecords(
       'PropertyInsurance',
@@ -186,6 +193,8 @@ class PropertyInsurance extends Component {
             ? ''
             : data.OwnedProperty.label,
         notes: data.Note,
+        shareKeyId: data.shareKeyId,
+        isLoader: false,
       },
       () => this.referenceObj(),
     );
@@ -858,6 +867,7 @@ class PropertyInsurance extends Component {
               <View style={styles.container}>
                 {this.editComponent(isLoader, modal, array, key, editable)}
               </View>
+              <SwitchKey type={'PropertyInsurance'} recid={recid} shareKeyId={shareKeyId} refresh={this.refreshData}/>
             </ScrollView>
           </ImageBackground>
         </SafeAreaView>
