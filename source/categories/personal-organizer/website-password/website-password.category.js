@@ -19,7 +19,8 @@ import ModalPicker from '../../../components/modal-picker/modal-picker.component
 import Button from '../../../components/button/button.component';
 import Loader from '../../../components/loader/loader.component';
 import TitleView from '../../../components/title-view/title-view.component';
-import MultilineInput from '../../../components/multiline-input-text/multiline-input-text.component'
+import MultilineInput from '../../../components/multiline-input-text/multiline-input-text.component';
+import SwitchKey from '../../../components/switch-key/switch-key.component';
 import {
   createOrUpdateRecord,
   viewRecords,
@@ -50,6 +51,7 @@ class WebSiteAccount extends Component {
     securityA3: '',
     notes: '',
     changes: false,
+    shareKeyId: '',
   };
 
   constructor(props) {
@@ -69,7 +71,7 @@ class WebSiteAccount extends Component {
           {
             access_token: this.props.userData.userData.access_token,
           },
-          () => this.viewRecord(navigation),
+          () => this.viewRecord(),
         );
     });
   }
@@ -78,8 +80,9 @@ class WebSiteAccount extends Component {
     BackHandler.removeEventListener('hardwareBackPress');
 }
 
-  viewRecord = async (navigation) => {
-    const {recid, mode} = this.props.route.params;
+  viewRecord = async () => {
+    const {navigation, route} = this.props;
+    const {recid, mode} = route.params;
     this.setState({isLoader: true});
     await viewRecords(
       'WebSiteAccount',
@@ -119,6 +122,8 @@ class WebSiteAccount extends Component {
       securityQ3: data.SecurityQuestion3,
       securityA3: data.SecurityAnswer3,
       notes: data.Comment,
+      shareKeyId: data.shareKeyId,
+      isLoader: false,
     });
   };
 
@@ -468,9 +473,9 @@ class WebSiteAccount extends Component {
     require('../../../assets/jpg-images/Personal-Organisation-Background/personal-organisation-background.jpg');
 
   render() {
-    const {isLoader, editable} = this.state;
+    const {isLoader, editable, shareKeyId} = this.state;
     const {route, navigation} = this.props;
-    const {title, type, mode} = route.params;
+    const {title, type, mode, recid} = route.params;
     return (
       <Root>
         <SafeAreaView style={styles.outerView}>
@@ -491,7 +496,7 @@ class WebSiteAccount extends Component {
                 backpress={this.onBack}
                 editable={editable}
               />
-            </View>
+            </View>WebSiteAccount
             <ScrollView
               ref={(ref) => (this.scroll = ref)}
               onContentSizeChange={() => {
@@ -501,6 +506,7 @@ class WebSiteAccount extends Component {
                 styles.outerContainerView}
               keyboardShouldPersistTaps="handled">
               {this.editComponent(isLoader)}
+              <SwitchKey type={'Notes'} recid={recid} shareKeyId={shareKeyId} refresh={this.refreshData}/>
             </ScrollView>
           </ImageBackground>
         </SafeAreaView>

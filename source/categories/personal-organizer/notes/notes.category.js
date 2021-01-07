@@ -6,7 +6,7 @@ import {
   ImageBackground,
   SafeAreaView,
   Alert,
-  BackHandler
+  BackHandler,
 } from 'react-native';
 import {Text, TextInput} from 'react-native-paper';
 import qs from 'qs';
@@ -19,7 +19,8 @@ import ModalPicker from '../../../components/modal-picker/modal-picker.component
 import TitleView from '../../../components/title-view/title-view.component';
 import Button from '../../../components/button/button.component';
 import Loader from '../../../components/loader/loader.component';
-import MultilineInput from '../../../components/multiline-input-text/multiline-input-text.component'
+import MultilineInput from '../../../components/multiline-input-text/multiline-input-text.component';
+import SwitchKey from '../../../components/switch-key/switch-key.component';
 import {
   createOrUpdateRecord,
   viewRecords,
@@ -39,6 +40,7 @@ class Notes extends Component {
     name: '',
     notes: '',
     changes: false,
+    shareKeyId: '',
   };
 
   constructor(props) {
@@ -58,17 +60,18 @@ class Notes extends Component {
           {
             access_token: this.props.userData.userData.access_token,
           },
-          () => this.viewRecord(navigation),
+          () => this.viewRecord(),
         );
     });
   }
 
   componentWillUnmount() {
     BackHandler.removeEventListener('hardwareBackPress');
-}
+  }
 
-  viewRecord = async (navigation) => {
-    const {recid, mode} = this.props.route.params;
+  viewRecord = async () => {
+    const {navigation, route} = this.props;
+    const {recid, mode} = route.params;
     this.setState({isLoader: true});
     await viewRecords('Notes', recid, this.props.userData.userData.access_token)
       .then((response) => {
@@ -82,10 +85,14 @@ class Notes extends Component {
         navigation.reset({
           index: 0,
           routes: [{name: 'Login'}],
-        })
+        });
       });
     this.setState({isLoader: false});
     if (mode === 'Add') this.setState({editable: false, hideResult: false});
+  };
+
+  refreshData = () => {
+    this.viewRecord();
   };
 
   setViewData = (data) => {
@@ -93,6 +100,8 @@ class Notes extends Component {
     this.setState({
       name: data.Name,
       notes: data.Note,
+      shareKeyId: data.shareKeyId,
+      isLoader: false,
     });
   };
 
@@ -116,7 +125,7 @@ class Notes extends Component {
         navigation.reset({
           index: 0,
           routes: [{name: 'Login'}],
-        })
+        });
       });
   };
 
@@ -129,11 +138,12 @@ class Notes extends Component {
       this.props.userData.userData.access_token,
     )
       .then((response) => navigation.goBack())
-      .catch((error) => {console.log('Error in delete', error)
-      navigation.reset({
+      .catch((error) => {
+        console.log('Error in delete', error);
+        navigation.reset({
           index: 0,
           routes: [{name: 'Login'}],
-        })
+        });
       });
   };
 
@@ -161,7 +171,7 @@ class Notes extends Component {
         navigation.reset({
           index: 0,
           routes: [{name: 'Login'}],
-        })
+        });
       });
   };
 
@@ -170,7 +180,9 @@ class Notes extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Name"
-          onChangeText={(name) => this.setState({name}, () => this.changesMade())}
+          onChangeText={(name) =>
+            this.setState({name}, () => this.changesMade())
+          }
           keyboardType="default"
           color={Color.lightNavyBlue}
           value={this.state.name}
@@ -180,7 +192,9 @@ class Notes extends Component {
       <View style={styles.inputContainer}>
         <MultilineInput
           placeholder="Notes"
-          onChangeText={(notes) => this.setState({notes}, () => this.changesMade())}
+          onChangeText={(notes) =>
+            this.setState({notes}, () => this.changesMade())
+          }
           keyboardType="default"
           color={Color.lightNavyBlue}
           value={this.state.notes}
@@ -207,8 +221,8 @@ class Notes extends Component {
   changesMade = () => {
     const {mode} = this.props.route.params;
     const {editable} = this.state;
-    if (!editable) this.setState({ changes: true }, () => console.log("Check: "));
-  }
+    if (!editable) this.setState({changes: true}, () => console.log('Check: '));
+  };
 
   onSave = () => {
     this.submit();
@@ -240,32 +254,32 @@ class Notes extends Component {
   onBack = () => {
     const {navigation} = this.props;
     const {changes} = this.state;
-    if (changes){
+    if (changes) {
       Alert.alert(
-      //title
-      'Save',
-      //body
-      'Do you want to save changes ?',
-      [
-        {text: 'Save', onPress: () => this.submit()},
-        {text: 'Cancel', onPress: () =>  navigation.goBack(), style: 'cancel'},
-      ],
-      {cancelable: false},
-      //clicking out side of alert will not cancel
-    );
-    }else {
+        //title
+        'Save',
+        //body
+        'Do you want to save changes ?',
+        [
+          {text: 'Save', onPress: () => this.submit()},
+          {text: 'Cancel', onPress: () => navigation.goBack(), style: 'cancel'},
+        ],
+        {cancelable: false},
+        //clicking out side of alert will not cancel
+      );
+    } else {
       navigation.goBack();
     }
-    return true
-  }
+    return true;
+  };
 
   background = () =>
     require('../../../assets/jpg-images/Personal-Organisation-Background/personal-organisation-background.jpg');
 
   render() {
-    const {editable, isLoader} = this.state;
+    const {editable, isLoader, shareKeyId} = this.state;
     const {route, navigation} = this.props;
-    const {title, type, background, theme, mode} = route.params;
+    const {title, type, background, theme, mode, recid} = route.params;
     return (
       <Root>
         <SafeAreaView style={styles.outerView}>
@@ -295,6 +309,7 @@ class Notes extends Component {
               style={styles.outerContainerView}
               keyboardShouldPersistTaps="handled">
               {this.editComponent(isLoader)}
+              <SwitchKey type={'Notes'} recid={recid} shareKeyId={shareKeyId} refresh={this.refreshData}/>
             </ScrollView>
           </ImageBackground>
         </SafeAreaView>

@@ -6,7 +6,7 @@ import {
   ImageBackground,
   SafeAreaView,
   Alert,
-  BackHandler
+  BackHandler,
 } from 'react-native';
 import {Text} from 'react-native-paper';
 import qs from 'qs';
@@ -20,7 +20,8 @@ import Button from '../../../components/button/button.component';
 import Loader from '../../../components/loader/loader.component';
 import ModalScreen from '../../../components/modal/modal.component';
 import TitleView from '../../../components/title-view/title-view.component';
-import MultilineInput from '../../../components/multiline-input-text/multiline-input-text.component'
+import MultilineInput from '../../../components/multiline-input-text/multiline-input-text.component';
+import SwitchKey from '../../../components/switch-key/switch-key.component';
 import {
   createOrUpdateRecord,
   viewRecords,
@@ -47,6 +48,7 @@ class Recipies extends Component {
     recipe: '',
     cuisine: '',
     changes: false,
+    shareKeyId: '',
   };
 
   constructor(props) {
@@ -66,17 +68,18 @@ class Recipies extends Component {
           {
             access_token: this.props.userData.userData.access_token,
           },
-          () => this.viewRecord(navigation),
+          () => this.viewRecord(),
         );
     });
   }
 
   componentWillUnmount() {
     BackHandler.removeEventListener('hardwareBackPress');
-}
+  }
 
-  viewRecord = async (navigation) => {
-    const {recid, mode} = this.props.route.params;
+  viewRecord = async () => {
+    const {navigation, route} = this.props;
+    const {recid, mode} = route.params;
     this.setState({isLoader: true});
     await viewRecords(
       'Recipies',
@@ -90,13 +93,18 @@ class Recipies extends Component {
       })
       .catch((error) => {
         console.log('Error: ', error);
-        this.setState({isLoader: false});navigation.reset({
+        this.setState({isLoader: false});
+        navigation.reset({
           index: 0,
           routes: [{name: 'Login'}],
-        })
+        });
       });
     this.setState({isLoader: false});
     if (mode === 'Add') this.setState({editable: false, hideResult: false});
+  };
+
+  refreshData = () => {
+    this.viewRecord();
   };
 
   setViewData = (data) => {
@@ -108,6 +116,8 @@ class Recipies extends Component {
       passwrd: data.WebSitePassword,
       recipe: data.RecipeText,
       cuisine: data.CuisineType,
+      shareKeyId: data.shareKeyId,
+      isLoader: false,
     });
   };
 
@@ -139,10 +149,11 @@ class Recipies extends Component {
         navigation.goBack();
       })
       .catch((error) => {
-        this.setState({isLoader: false});navigation.reset({
+        this.setState({isLoader: false});
+        navigation.reset({
           index: 0,
           routes: [{name: 'Login'}],
-        })
+        });
       });
   };
 
@@ -155,11 +166,12 @@ class Recipies extends Component {
       this.props.userData.userData.access_token,
     )
       .then((response) => navigation.goBack())
-      .catch((error) => {console.log('Error in delete', error)
-      navigation.reset({
+      .catch((error) => {
+        console.log('Error in delete', error);
+        navigation.reset({
           index: 0,
           routes: [{name: 'Login'}],
-        })
+        });
       });
   };
 
@@ -183,10 +195,11 @@ class Recipies extends Component {
       })
       .catch((error) => {
         this.setState({isLoader: false});
-        console.log('Error in delete', error);navigation.reset({
+        console.log('Error in delete', error);
+        navigation.reset({
           index: 0,
           routes: [{name: 'Login'}],
-        })
+        });
       });
   };
 
@@ -195,7 +208,9 @@ class Recipies extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Name"
-          onChangeText={(name) => this.setState({name}, () => this.changesMade())}
+          onChangeText={(name) =>
+            this.setState({name}, () => this.changesMade())
+          }
           keyboardType="default"
           color={Color.lightNavyBlue}
           value={this.state.name}
@@ -208,11 +223,14 @@ class Recipies extends Component {
             this.state.cuisine.length === 0 ? 'Cuisine' : this.state.cuisine
           }
           onPress={() =>
-            this.setState({
-              modal: true,
-              array: cuisine,
-              key: 'cuisine',
-            }, () => this.changesMade())
+            this.setState(
+              {
+                modal: true,
+                array: cuisine,
+                key: 'cuisine',
+              },
+              () => this.changesMade(),
+            )
           }
           color={Color.veryLightPink}
           editable={this.state.editable}
@@ -232,7 +250,9 @@ class Recipies extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Username"
-          onChangeText={(username) => this.setState({username}, () => this.changesMade())}
+          onChangeText={(username) =>
+            this.setState({username}, () => this.changesMade())
+          }
           keyboardType="default"
           color={Color.lightNavyBlue}
           value={this.state.username}
@@ -242,7 +262,9 @@ class Recipies extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Password"
-          onChangeText={(passwrd) => this.setState({passwrd}, () => this.changesMade())}
+          onChangeText={(passwrd) =>
+            this.setState({passwrd}, () => this.changesMade())
+          }
           keyboardType="default"
           color={Color.lightNavyBlue}
           value={this.state.passwrd}
@@ -252,7 +274,9 @@ class Recipies extends Component {
       <View style={styles.inputContainer}>
         <MultilineInput
           placeholder="Recipe"
-          onChangeText={(recipe) => this.setState({recipe}, () => this.changesMade())}
+          onChangeText={(recipe) =>
+            this.setState({recipe}, () => this.changesMade())
+          }
           keyboardType="default"
           color={Color.lightNavyBlue}
           value={this.state.recipe}
@@ -273,8 +297,8 @@ class Recipies extends Component {
   changesMade = () => {
     const {mode} = this.props.route.params;
     const {editable} = this.state;
-    if (!editable) this.setState({ changes: true }, () => console.log("Check: "));
-  }
+    if (!editable) this.setState({changes: true}, () => console.log('Check: '));
+  };
 
   editComponent = (isLoader, modal, array, key) => (
     <View>
@@ -321,32 +345,32 @@ class Recipies extends Component {
   onBack = () => {
     const {navigation} = this.props;
     const {changes} = this.state;
-    if (changes){
+    if (changes) {
       Alert.alert(
-      //title
-      'Save',
-      //body
-      'Do you want to save changes ?',
-      [
-        {text: 'Save', onPress: () => this.submit()},
-        {text: 'Cancel', onPress: () =>  navigation.goBack(), style: 'cancel'},
-      ],
-      {cancelable: false},
-      //clicking out side of alert will not cancel
-    );
-    }else {
+        //title
+        'Save',
+        //body
+        'Do you want to save changes ?',
+        [
+          {text: 'Save', onPress: () => this.submit()},
+          {text: 'Cancel', onPress: () => navigation.goBack(), style: 'cancel'},
+        ],
+        {cancelable: false},
+        //clicking out side of alert will not cancel
+      );
+    } else {
       navigation.goBack();
     }
-    return true
-  }
+    return true;
+  };
 
   background = () =>
     require('../../../assets/jpg-images/Personal-Organisation-Background/personal-organisation-background.jpg');
 
   render() {
-    const {isLoader, modal, array, key, editable} = this.state;
+    const {isLoader, modal, array, key, editable, shareKeyId} = this.state;
     const {route, navigation} = this.props;
-    const {title, type, mode} = route.params;
+    const {title, type, mode, recid} = route.params;
     return (
       <Root>
         <SafeAreaView style={styles.outerView}>
@@ -378,6 +402,7 @@ class Recipies extends Component {
               <View style={styles.container}>
                 {this.editComponent(isLoader, modal, array, key)}
               </View>
+              <SwitchKey type={'Recipies'} recid={recid} shareKeyId={shareKeyId} refresh={this.refreshData}/>
             </ScrollView>
           </ImageBackground>
         </SafeAreaView>

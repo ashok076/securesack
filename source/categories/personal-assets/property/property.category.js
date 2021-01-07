@@ -884,9 +884,9 @@ class Property extends Component {
     require('../../../assets/jpg-images/Personal-Assets-Background/personal-assets-background.jpg');
 
   render() {
-    const {isLoader, modal, array, key, editable} = this.state;
+    const {isLoader, modal, array, key, editable, shareKeyId} = this.state;
     const {route, navigation} = this.props;
-    const {title, type, mode} = route.params;
+    const {title, type, mode, recid} = route.params;
     return (
       <Root>
         <SafeAreaView style={styles.outerView}>
