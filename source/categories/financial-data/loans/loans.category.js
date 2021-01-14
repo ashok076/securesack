@@ -498,14 +498,19 @@ class ConsumerLoan extends Component {
   notes = () => (
     <View>
       <View style={styles.inputContainer}>
-        <MultilineInput
-          placeholder="Notes"
-          onChangeText={(notes) => this.setState({notes}, () => this.changesMade())}
-          keyboardType="default"
-          color={Color.lightishBlue}
-          value={this.state.notes}
-          editable={this.state.editable}
-        />
+        {!this.state.editable ? (
+          <MultilineInput
+            placeholder="Note"
+            onChangeText={(notes) =>
+              this.setState({notes}, () => this.changesMade())
+            }
+            keyboardType="default"
+            color={Color.lightishBlue}
+            value={this.state.notes}
+          />
+        ) : (
+          <Text style={styles.notes}>{this.state.notes}</Text>
+        )}
         <View style={styles.clipboard}>
           <CopyClipboard
             text={this.state.notes}
@@ -647,7 +652,7 @@ changesMade = () => {
     require('../../../assets/jpg-images/Financial-Data-Background/financial-data-background.jpg');
 
   render() {
-    const {isLoader, modal, array, key, editable, refBusModal} = this.state;
+    const {isLoader, modal, array, key, editable, refBusModal, shareKeyId} = this.state;
     const {route, navigation} = this.props;
     const {title, type, mode, recid} = route.params;
     return (

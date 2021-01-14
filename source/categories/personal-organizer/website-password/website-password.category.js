@@ -379,14 +379,19 @@ class WebSiteAccount extends Component {
   notes = () => (
     <View>
       <View style={styles.inputContainer}>
-        <MultilineInput
-          placeholder="Notes"
-          onChangeText={(notes) => this.setState({notes}, () => this.changesMade())}
-          keyboardType="default"
+        {!this.state.editable ? (
+          <MultilineInput
+            placeholder="Note"
+            onChangeText={(notes) =>
+              this.setState({notes}, () => this.changesMade())
+            }
+            keyboardType="default"
           color={Color.lightNavyBlue}
-          value={this.state.notes}
-          editable={this.state.editable}
-        />
+            value={this.state.notes}
+          />
+        ) : (
+          <Text style={styles.notes}>{this.state.notes}</Text>
+        )}
         <View style={styles.clipboard}>
           <CopyClipboard
             text={this.state.notes}
@@ -500,7 +505,7 @@ class WebSiteAccount extends Component {
                 backpress={this.onBack}
                 editable={editable}
               />
-            </View>WebSiteAccount
+            </View>
             <ScrollView
               ref={(ref) => (this.scroll = ref)}
               onContentSizeChange={() => {

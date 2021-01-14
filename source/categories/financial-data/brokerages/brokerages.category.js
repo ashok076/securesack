@@ -65,7 +65,7 @@ class BrokerageAccount extends Component {
     hideResult: true,
     refArray: [],
     changes: false,
-    shareKeyId: ''
+    shareKeyId: '',
   };
   constructor(props) {
     super(props);
@@ -114,14 +114,14 @@ class BrokerageAccount extends Component {
         navigation.reset({
           index: 0,
           routes: [{name: 'Login'}],
-        })
+        });
       });
     if (mode === 'Add') this.setState({editable: false, hideResult: false});
   };
 
   refreshData = () => {
-    this.viewRecord()
-  }
+    this.viewRecord();
+  };
 
   setViewData = (data) => {
     this.setState(
@@ -147,7 +147,7 @@ class BrokerageAccount extends Component {
         closedOn: data.AccountClosingDate,
         notes: data.Notes,
         isLoader: false,
-        shareKeyId: data.shareKeyId
+        shareKeyId: data.shareKeyId,
       },
       () => this.referenceObj(),
     );
@@ -230,7 +230,7 @@ class BrokerageAccount extends Component {
         navigation.reset({
           index: 0,
           routes: [{name: 'Login'}],
-        })
+        });
       });
   };
 
@@ -244,12 +244,12 @@ class BrokerageAccount extends Component {
     )
       .then((response) => navigation.goBack())
       .catch((error) => {
-        console.log('Error in delete', error)
+        console.log('Error in delete', error);
         navigation.reset({
           index: 0,
           routes: [{name: 'Login'}],
-        })
         });
+      });
   };
 
   archive = async () => {
@@ -274,7 +274,7 @@ class BrokerageAccount extends Component {
         navigation.reset({
           index: 0,
           routes: [{name: 'Login'}],
-        })
+        });
       });
   };
 
@@ -563,14 +563,19 @@ class BrokerageAccount extends Component {
   notes = () => (
     <View>
       <View style={styles.inputContainer}>
-        <MultilineInput
-          placeholder="Notes"
-          onChangeText={(notes) => this.setState({notes}, () => this.changesMade())}
-          keyboardType="default"
-          color={Color.lightishBlue}
-          value={this.state.notes}
-          editable={this.state.editable}
-        />
+        {!this.state.editable ? (
+          <MultilineInput
+            placeholder="Note"
+            onChangeText={(notes) =>
+              this.setState({notes}, () => this.changesMade())
+            }
+            keyboardType="default"
+            color={Color.lightishBlue}
+            value={this.state.notes}
+          />
+        ) : (
+          <Text style={styles.notes}>{this.state.notes}</Text>
+        )}
         <View style={styles.clipboard}>
           <CopyClipboard
             text={this.state.notes}
@@ -681,7 +686,7 @@ class BrokerageAccount extends Component {
     } else {
       navigation.goBack();
     }
-    return true
+    return true;
   };
 
   onDelete = () => {
@@ -703,7 +708,7 @@ class BrokerageAccount extends Component {
     require('../../../assets/jpg-images/Financial-Data-Background/financial-data-background.jpg');
 
   render() {
-    const {isLoader, editable, refBusModal} = this.state;
+    const {isLoader, editable, refBusModal, shareKeyId} = this.state;
     const {route, navigation} = this.props;
     const {title, type, mode, recid} = route.params;
     return (
@@ -733,7 +738,12 @@ class BrokerageAccount extends Component {
               <View style={styles.container}>
                 {this.editComponent(isLoader, editable, refBusModal)}
               </View>
-              <SwitchKey type={'BrokerageAccount'} recid={recid} shareKeyId={shareKeyId} refresh={this.refreshData}/>
+              <SwitchKey
+                type={'BrokerageAccount'}
+                recid={recid}
+                shareKeyId={shareKeyId}
+                refresh={this.refreshData}
+              />
             </ScrollView>
           </ImageBackground>
         </SafeAreaView>

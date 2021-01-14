@@ -408,16 +408,19 @@ class Vehicle extends Component {
   notes = () => (
     <View>
       <View style={styles.inputContainer}>
-        <MultilineInput
-          placeholder="Notes"
-          onChangeText={(notes) =>
-            this.setState({notes}, () => this.changesMade())
-          }
-          keyboardType="default"
+        {!this.state.editable ? (
+          <MultilineInput
+            placeholder="Note"
+            onChangeText={(notes) =>
+              this.setState({notes}, () => this.changesMade())
+            }
+            keyboardType="default"
           color={Color.veryLightBlue}
-          value={this.state.notes}
-          editable={this.state.editable}
-        />
+            value={this.state.notes}
+          />
+        ) : (
+          <Text style={styles.notes}>{this.state.notes}</Text>
+        )}
       </View>
     </View>
   );

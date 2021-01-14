@@ -164,13 +164,13 @@ class DriverLicense extends Component {
       .then((response) => {
         this.setState({isLoader: false});
         navigation.goBack();
+      })
+      .catch((error) => {
+        this.setState({isLoader: false});
         navigation.reset({
           index: 0,
           routes: [{name: 'Login'}],
         });
-      })
-      .catch((error) => {
-        this.setState({isLoader: false});
       });
   };
 
@@ -365,16 +365,19 @@ class DriverLicense extends Component {
   notes = () => (
     <View>
       <View style={styles.inputContainer}>
-        <MultilineInput
-          placeholder="Notes"
-          onChangeText={(notes) =>
-            this.setState({notes}, () => this.changesMade())
-          }
-          keyboardType="default"
-          color={Color.veryLightPink}
-          value={this.state.notes}
-          editable={this.state.editable}
-        />
+        {!this.state.editable ? (
+          <MultilineInput
+            placeholder="Note"
+            onChangeText={(notes) =>
+              this.setState({notes}, () => this.changesMade())
+            }
+            keyboardType="default"
+            color={Color.salmon}
+            value={this.state.notes}
+          />
+        ) : (
+          <Text style={styles.notes}>{this.state.notes}</Text>
+        )}
         <View style={styles.clipboard}>
           <CopyClipboard
             text={this.state.notes}

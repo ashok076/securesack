@@ -104,7 +104,7 @@ class BankAccounts extends Component {
     hideResult: true,
     refArray: [],
     changes: false,
-    shareKeyId: ''
+    shareKeyId: '',
   };
   constructor(props) {
     super(props);
@@ -134,7 +134,7 @@ class BankAccounts extends Component {
   }
 
   viewRecord = async () => {
-    const { navigation, route } = this.props
+    const {navigation, route} = this.props;
     const {recid, mode} = route.params;
     this.setState({isLoader: true});
     await viewRecords(
@@ -162,8 +162,8 @@ class BankAccounts extends Component {
   };
 
   refreshData = () => {
-    this.viewRecord()
-  }
+    this.viewRecord();
+  };
 
   setViewData = (data) => {
     this.setState(
@@ -841,16 +841,19 @@ class BankAccounts extends Component {
   notes = () => (
     <View>
       <View style={styles.inputContainer}>
-        <MultilineInput
-          placeholder="Note"
-          onChangeText={(notes) =>
-            this.setState({notes}, () => this.changesMade())
-          }
-          keyboardType="default"
-          color={Color.lightishBlue}
-          value={this.state.notes}
-          editable={this.state.editable}
-        />
+        {!this.state.editable ? (
+          <MultilineInput
+            placeholder="Note"
+            onChangeText={(notes) =>
+              this.setState({notes}, () => this.changesMade())
+            }
+            keyboardType="default"
+            color={Color.lightishBlue}
+            value={this.state.notes}
+          />
+        ) : (
+          <Text style={styles.notes}>{this.state.notes}</Text>
+        )}
       </View>
       <View style={styles.clipboard}>
         <CopyClipboard text={this.state.notes} editable={this.state.editable} />
@@ -1157,10 +1160,18 @@ class BankAccounts extends Component {
     require('../../../assets/jpg-images/Financial-Data-Background/financial-data-background.jpg');
 
   render() {
-    const {isLoader, modal, array, key, editable, refBusModal, shareKeyId} = this.state;
+    const {
+      isLoader,
+      modal,
+      array,
+      key,
+      editable,
+      refBusModal,
+      shareKeyId,
+    } = this.state;
     const {route, navigation} = this.props;
     const {title, type, mode, recid} = route.params;
-    console.log("Share Id: ", shareKeyId)
+    console.log('Share Id: ', shareKeyId);
     return (
       <Root>
         <SafeAreaView style={styles.outerView}>
@@ -1199,7 +1210,12 @@ class BankAccounts extends Component {
                   refBusModal,
                 )}
               </View>
-              <SwitchKey type={'BankAccounts'} recid={recid} shareKeyId={shareKeyId} refresh={this.refreshData}/>
+              <SwitchKey
+                type={'BankAccounts'}
+                recid={recid}
+                shareKeyId={shareKeyId}
+                refresh={this.refreshData}
+              />
             </ScrollView>
           </ImageBackground>
         </SafeAreaView>

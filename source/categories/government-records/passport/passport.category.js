@@ -553,16 +553,19 @@ class Passport extends Component {
   notes = () => (
     <View>
       <View style={styles.inputContainer}>
-        <MultilineInput
-          placeholder="Notes"
-          onChangeText={(notes) =>
-            this.setState({notes}, () => this.changesMade())
-          }
-          keyboardType="default"
-          color={Color.veryLightPink}
-          value={this.state.notes}
-          editable={this.state.editable}
-        />
+        {!this.state.editable ? (
+          <MultilineInput
+            placeholder="Notes"
+            onChangeText={(notes) =>
+              this.setState({notes}, () => this.changesMade())
+            }
+            keyboardType="default"
+            color={Color.salmon}
+            value={this.state.notes}
+          />
+        ) : (
+          <Text style={styles.notes}>{this.state.notes}</Text>
+        )}
         <View style={styles.clipboard}>
           <CopyClipboard
             text={this.state.notes}

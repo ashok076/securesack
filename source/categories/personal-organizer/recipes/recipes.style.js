@@ -54,6 +54,11 @@ const styles = {
     position: 'absolute',
     right: 0,
   },
+  recipe: {
+    fontFamily: 'PublicSans-Regular',
+    fontSize: 16,
+    color: 'rgba(33, 47, 60, 0.6)',
+  },
 };
 
 export default styles;

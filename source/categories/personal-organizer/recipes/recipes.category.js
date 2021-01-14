@@ -272,16 +272,19 @@ class Recipies extends Component {
         />
       </View>
       <View style={styles.inputContainer}>
-        <MultilineInput
-          placeholder="Recipe"
-          onChangeText={(recipe) =>
-            this.setState({recipe}, () => this.changesMade())
-          }
-          keyboardType="default"
-          color={Color.lightNavyBlue}
-          value={this.state.recipe}
-          editable={this.state.editable}
-        />
+        {!this.state.editable ? (
+          <MultilineInput
+            placeholder="Recipe"
+            onChangeText={(recipe) =>
+              this.setState({recipe}, () => this.changesMade())
+            }
+            keyboardType="default"
+            color={Color.lightNavyBlue}
+            value={this.state.recipe}
+          />
+        ) : (
+          <Text style={styles.recipe}>{this.state.recipe}</Text>
+        )}
       </View>
     </View>
   );
@@ -402,7 +405,12 @@ class Recipies extends Component {
               <View style={styles.container}>
                 {this.editComponent(isLoader, modal, array, key)}
               </View>
-              <SwitchKey type={'Recipies'} recid={recid} shareKeyId={shareKeyId} refresh={this.refreshData}/>
+              <SwitchKey
+                type={'Recipies'}
+                recid={recid}
+                shareKeyId={shareKeyId}
+                refresh={this.refreshData}
+              />
             </ScrollView>
           </ImageBackground>
         </SafeAreaView>

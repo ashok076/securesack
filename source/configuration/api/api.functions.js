@@ -148,14 +148,15 @@ export const addTag = async (access_token, tags) => {
     });
 };
 
-export const uploadFile = async (access_token, data) => {
+export const uploadFile = async (access_token, data, name) => {
   return axios(`${BASE_URL}/files/__NEW__`, {
     method: 'POST',
     headers: {
       'Content-Type': 'multipart/form-data',
       Authorization: 'Bearer ' + access_token,
-      "X-File-Name": data
-    }
+      "X-File-Name": name
+    },
+    data
   })
     .then((response) => response.data)
     .catch((error) => {

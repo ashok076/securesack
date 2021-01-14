@@ -25,7 +25,7 @@ export const formatDate = (str) => {
         return '' }
   
     var re = new RegExp(/(\d{6})(\d{2})?/);
-  
+   
     if (re.test(str))
     {
         if (str.length == 8) {

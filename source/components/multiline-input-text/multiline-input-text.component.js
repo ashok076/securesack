@@ -9,7 +9,6 @@ const MultilineInput = ({
   onChangeText,
   value,
   keyboardType,
-  editable,
   color,
   example,
   onChange
@@ -20,7 +19,6 @@ const MultilineInput = ({
       value={value}
       onChangeText={onChangeText}
       keyboardType={keyboardType}
-      // disabled={editable}
       style={styles.input}
       selectionColor={color}
       theme={{colors: {primary: color}}}

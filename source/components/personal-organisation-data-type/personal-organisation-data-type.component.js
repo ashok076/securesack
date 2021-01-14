@@ -144,7 +144,7 @@ class PersonalOrganisationData extends Component {
 
   navigation = (type, title, recid, mode) => {
     const {navigation, userData} = this.props;
-    if (userData.userData.showUpgrade) {
+    if (userData.userData.showUpgrade && mode === "Add") {
       Alert.alert(
       //title
       'Important',

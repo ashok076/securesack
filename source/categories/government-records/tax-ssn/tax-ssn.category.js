@@ -6,7 +6,7 @@ import {
   ImageBackground,
   SafeAreaView,
   Alert,
-  BackHandler
+  BackHandler,
 } from 'react-native';
 import {Text} from 'react-native-paper';
 import qs from 'qs';
@@ -20,7 +20,7 @@ import Button from '../../../components/button/button.component';
 import Loader from '../../../components/loader/loader.component';
 import TitleView from '../../../components/title-view/title-view.component';
 import ModalScreen from '../../../components/modal/modal.component';
-import MultilineInput from '../../../components/multiline-input-text/multiline-input-text.component'
+import MultilineInput from '../../../components/multiline-input-text/multiline-input-text.component';
 import SwitchKey from '../../../components/switch-key/switch-key.component';
 import {
   createOrUpdateRecord,
@@ -88,7 +88,7 @@ class TaxIdentification extends Component {
 
   componentWillUnmount() {
     BackHandler.removeEventListener('hardwareBackPress');
-}
+  }
 
   viewRecord = async () => {
     const {navigation, route} = this.props;
@@ -110,7 +110,7 @@ class TaxIdentification extends Component {
         navigation.reset({
           index: 0,
           routes: [{name: 'Login'}],
-        })
+        });
       });
     this.setState({isLoader: false});
     if (mode === 'Add') this.setState({editable: false, hideResult: false});
@@ -165,7 +165,7 @@ class TaxIdentification extends Component {
       sob,
       cob,
       access_token,
-      notes
+      notes,
     } = this.state;
 
     const {navigation, route} = this.props;
@@ -188,7 +188,7 @@ class TaxIdentification extends Component {
       CountryOfBirth: countryofbirth,
       StateOfBirth: sob,
       CityOfBirth: cob,
-      Note: notes
+      Note: notes,
     });
 
     await createOrUpdateRecord('TaxIdentification', recid, data, access_token)
@@ -201,7 +201,7 @@ class TaxIdentification extends Component {
         navigation.reset({
           index: 0,
           routes: [{name: 'Login'}],
-        })
+        });
       });
   };
 
@@ -215,11 +215,11 @@ class TaxIdentification extends Component {
     )
       .then((response) => navigation.goBack())
       .catch((error) => {
-        console.log('Error in delete', error)
+        console.log('Error in delete', error);
         navigation.reset({
           index: 0,
           routes: [{name: 'Login'}],
-        })
+        });
       });
   };
 
@@ -247,7 +247,7 @@ class TaxIdentification extends Component {
         navigation.reset({
           index: 0,
           routes: [{name: 'Login'}],
-        })
+        });
       });
   };
 
@@ -256,7 +256,9 @@ class TaxIdentification extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Tax Filing Number"
-          onChangeText={(taxFillingNumber) => this.setState({taxFillingNumber}, () => this.changesMade())}
+          onChangeText={(taxFillingNumber) =>
+            this.setState({taxFillingNumber}, () => this.changesMade())
+          }
           keyboardType="default"
           color={Color.salmon}
           value={this.state.taxFillingNumber}
@@ -271,11 +273,14 @@ class TaxIdentification extends Component {
               : this.state.martialStatus
           }
           onPress={() =>
-            this.setState({
-              modal: true,
-              array: martial_status,
-              key: 'martialStatus',
-            }, () => this.changesMade())
+            this.setState(
+              {
+                modal: true,
+                array: martial_status,
+                key: 'martialStatus',
+              },
+              () => this.changesMade(),
+            )
           }
           color={Color.veryLightPink}
           editable={this.state.editable}
@@ -290,11 +295,14 @@ class TaxIdentification extends Component {
               : this.state.softwareUsed
           }
           onPress={() =>
-            this.setState({
-              modal: true,
-              array: software_used,
-              key: 'softwareUsed',
-            }, () => this.changesMade())
+            this.setState(
+              {
+                modal: true,
+                array: software_used,
+                key: 'softwareUsed',
+              },
+              () => this.changesMade(),
+            )
           }
           color={Color.veryLightPink}
           editable={this.state.editable}
@@ -304,7 +312,9 @@ class TaxIdentification extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Software Name"
-          onChangeText={(softwareName) => this.setState({softwareName}, () => this.changesMade())}
+          onChangeText={(softwareName) =>
+            this.setState({softwareName}, () => this.changesMade())
+          }
           keyboardType="default"
           color={Color.salmon}
           value={this.state.softwareName}
@@ -324,7 +334,9 @@ class TaxIdentification extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Username"
-          onChangeText={(username) => this.setState({username}, () => this.changesMade())}
+          onChangeText={(username) =>
+            this.setState({username}, () => this.changesMade())
+          }
           keyboardType="default"
           color={Color.salmon}
           value={this.state.username}
@@ -334,7 +346,9 @@ class TaxIdentification extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Password"
-          onChangeText={(password) => this.setState({password}, () => this.changesMade())}
+          onChangeText={(password) =>
+            this.setState({password}, () => this.changesMade())
+          }
           keyboardType="default"
           color={Color.salmon}
           value={this.state.password}
@@ -349,7 +363,9 @@ class TaxIdentification extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Date Of Birth"
-          onChangeText={(dob) => this.setState({dob: formatDate(dob)}, () => this.changesMade())}
+          onChangeText={(dob) =>
+            this.setState({dob: formatDate(dob)}, () => this.changesMade())
+          }
           keyboardType="default"
           color={Color.salmon}
           value={this.state.dob}
@@ -360,7 +376,9 @@ class TaxIdentification extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Citizenship"
-          onChangeText={(citizenship) => this.setState({citizenship}, () => this.changesMade())}
+          onChangeText={(citizenship) =>
+            this.setState({citizenship}, () => this.changesMade())
+          }
           keyboardType="default"
           color={Color.salmon}
           value={this.state.citizenship}
@@ -385,11 +403,14 @@ class TaxIdentification extends Component {
               : this.state.countryofbirth
           }
           onPress={() =>
-            this.setState({
-              modal: true,
-              array: this.props.country.country,
-              key: 'countryofbirth',
-            }, () => this.changesMade())
+            this.setState(
+              {
+                modal: true,
+                array: this.props.country.country,
+                key: 'countryofbirth',
+              },
+              () => this.changesMade(),
+            )
           }
           color={Color.veryLightPink}
           editable={this.state.editable}
@@ -424,7 +445,9 @@ class TaxIdentification extends Component {
       <View style={styles.inputContainer}>
         <InputTextDynamic
           placeholder="Name"
-          onChangeText={(name) => this.setState({name}, () => this.changesMade())}
+          onChangeText={(name) =>
+            this.setState({name}, () => this.changesMade())
+          }
           keyboardType="default"
           color={Color.salmon}
           value={this.state.name}
@@ -465,14 +488,19 @@ class TaxIdentification extends Component {
   notes = () => (
     <View>
       <View style={styles.inputContainer}>
-        <MultilineInput
-          placeholder="Notes"
-          onChangeText={(notes) => this.setState({notes}, () => this.changesMade())}
-          keyboardType="default"
-          color={Color.veryLightPink}
-          value={this.state.notes}
-          editable={this.state.editable}
-        />
+        {!this.state.editable ? (
+          <MultilineInput
+            placeholder="Note"
+            onChangeText={(notes) =>
+              this.setState({notes}, () => this.changesMade())
+            }
+            keyboardType="default"
+            color={Color.salmon}
+            value={this.state.notes}
+          />
+        ) : (
+          <Text style={styles.notes}>{this.state.notes}</Text>
+        )}
         <View style={styles.clipboard}>
           <CopyClipboard
             text={this.state.notes}
@@ -491,11 +519,11 @@ class TaxIdentification extends Component {
     this.setState({[key]: value});
   };
 
-changesMade = () => {
-  const {mode} = this.props.route.params;
-  const {editable} = this.state;
-  if (!editable) this.setState({ changes: true }, () => console.log("Check: "));
-}
+  changesMade = () => {
+    const {mode} = this.props.route.params;
+    const {editable} = this.state;
+    if (!editable) this.setState({changes: true}, () => console.log('Check: '));
+  };
 
   editComponent = (isLoader, modal, array, key, editable) => (
     <View>
@@ -551,24 +579,24 @@ changesMade = () => {
   onBack = () => {
     const {navigation} = this.props;
     const {changes} = this.state;
-    if (changes){
+    if (changes) {
       Alert.alert(
-      //title
-      'Save',
-      //body
-      'Do you want to save changes ?',
-      [
-        {text: 'Save', onPress: () => this.submit()},
-        {text: 'Cancel', onPress: () => navigation.goBack(), style: 'cancel'},
-      ],
-      {cancelable: false},
-      //clicking out side of alert will not cancel
-    );
-    }else {
+        //title
+        'Save',
+        //body
+        'Do you want to save changes ?',
+        [
+          {text: 'Save', onPress: () => this.submit()},
+          {text: 'Cancel', onPress: () => navigation.goBack(), style: 'cancel'},
+        ],
+        {cancelable: false},
+        //clicking out side of alert will not cancel
+      );
+    } else {
       navigation.goBack();
     }
-    return true
-  }
+    return true;
+  };
 
   background = () =>
     require('../../../assets/jpg-images/Government-Record-Background/government-records-background.jpg');
@@ -608,7 +636,12 @@ changesMade = () => {
               <View style={styles.container}>
                 {this.editComponent(isLoader, modal, array, key, editable)}
               </View>
-              <SwitchKey type={'TaxIdentification'} recid={recid} shareKeyId={shareKeyId} refresh={this.refreshData}/>
+              <SwitchKey
+                type={'TaxIdentification'}
+                recid={recid}
+                shareKeyId={shareKeyId}
+                refresh={this.refreshData}
+              />
             </ScrollView>
           </ImageBackground>
         </SafeAreaView>

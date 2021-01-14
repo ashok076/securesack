@@ -175,6 +175,17 @@ class AuthCode extends Component {
     return false;
   };
 
+  message = (message) => {
+    Toast.show({
+      text: message,
+        buttonText: 'DISMISS',
+        type: 'success',
+        position: 'bottom',
+        duration: 7000,
+        textStyle: styles.toastText,
+    })
+  }
+
   resend = async () => {
     const {email, password, clientid} = this.props.route.params;
     this.setState({ isLoader: true })
@@ -195,6 +206,7 @@ class AuthCode extends Component {
       await axios(config)
         .then((response) => {
           console.log('Response Login Api: ', JSON.stringify(response.data));
+          this.message('Security code has been sent to your resgistered email')
           this.setState({ isLoader: false });
         })
         .catch((error) => {

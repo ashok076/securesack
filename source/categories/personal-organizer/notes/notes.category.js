@@ -189,17 +189,21 @@ class Notes extends Component {
           editable={this.state.editable}
         />
       </View>
+      <Text style={styles.title}>Notes</Text>
       <View style={styles.inputContainer}>
-        <MultilineInput
-          placeholder="Notes"
-          onChangeText={(notes) =>
-            this.setState({notes}, () => this.changesMade())
-          }
-          keyboardType="default"
+        {!this.state.editable ? (
+          <MultilineInput
+            placeholder="Note"
+            onChangeText={(notes) =>
+              this.setState({notes}, () => this.changesMade())
+            }
+            keyboardType="default"
           color={Color.lightNavyBlue}
-          value={this.state.notes}
-          editable={this.state.editable}
-        />
+            value={this.state.notes}
+          />
+        ) : (
+          <Text style={styles.notes}>{this.state.notes}</Text>
+        )}
         <View style={styles.clipboard}>
           <CopyClipboard
             text={this.state.notes}
